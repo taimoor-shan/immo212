@@ -1,0 +1,11 @@
+{
+    "id": "license-bypass",
+    "name": "License Bypass",
+    "description": "Disables licensing functionality while preserving tracking capabilities",
+    "author": "Local Development",
+    "url": "",
+    "version": "1.0.0",
+    "require": [],
+    "namespace": "Botble\\LicenseBypass\\",
+    "provider": "Botble\\LicenseBypass\\Providers\\LicenseBypassServiceProvider"
+}

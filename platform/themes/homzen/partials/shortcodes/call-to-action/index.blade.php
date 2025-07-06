@@ -4,7 +4,7 @@
             <div class="box-left">
                 <div class="box-title">
                     @if($shortcode->subtitle)
-                        <div class="text-subtitle text-primary">{!! BaseHelper::clean($shortcode->subtitle) !!}</div>
+                        <div class="text-subtitle text-prime">{!! BaseHelper::clean($shortcode->subtitle) !!}</div>
                     @endif
                     @if($shortcode->title)
                         <h2 class="section-title mt-4">{!! BaseHelper::clean($shortcode->title) !!}</h2>

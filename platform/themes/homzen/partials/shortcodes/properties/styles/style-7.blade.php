@@ -12,20 +12,27 @@
                                 </div>
                                 <div class="box-inner-right">
                                     <div class="content-property">
+                                        <!-- Property type badge moved to content area -->
                                         <div class="box-tag">
+                                            @if($property->category)
+                                                <span class="flag-tag style-2">{{ $property->category->name }}</span>
+                                            @endif
+                                            @if($property->is_featured)
+                                                <span class="flag-tag success">{{ __('Featured') }}</span>
+                                            @endif
                                             {!! BaseHelper::clean($property->status->toHtml()) !!}
                                         </div>
                                         <div class="box-name">
-                                            <h5 class="title">
+                                            <!-- Original title (hidden but kept for accessibility/SEO) -->
+                                            <h5 class="title" style="display: none;">
                                                 <a href="{{ $property->url }}" class="link line-clamp-1">{{ $property->name }}</a>
                                             </h5>
-                                            @if($property->address)
-                                                <p class="location">
-                                                    <span class="icon icon-mapPin"></span>
-                                                    {{ $property->address }}
-                                                </p>
-                                            @endif
+                                            <!-- Duplicate title element showing price instead -->
+                                            <h5 class="title">
+                                                <span class="link line-clamp-1">{{ format_price($property->price, $property->currency) }}</span>
+                                            </h5>
                                         </div>
+                                        <!-- Meta-list moved to where location was -->
                                         <ul class="list-info">
                                             @if($property->number_bedroom)
                                                 <li class="item">
@@ -46,6 +53,13 @@
                                                 </li>
                                             @endif
                                         </ul>
+                                        <!-- Location moved to where meta-list was -->
+                                        @if($property->address)
+                                            <p class="location">
+                                                <span class="icon icon-mapPin"></span>
+                                                {{ $property->address }}
+                                            </p>
+                                        @endif
                                         @if($author = $property->author)
                                             <div class="box-avatar d-flex gap-12 align-items-center">
                                                 <div class="avatar avt-60 round">
@@ -57,25 +71,20 @@
                                                 </div>
                                             </div>
                                         @endif
-                                        <div class="pricing-property">
-                                            <div class="d-flex align-items-center">
-                                                <h5>{{ format_price($property->price, $property->currency) }}</h5>
-                                                <span class="body-2 text-variant-1">/{{ setting('real_estate_square_unit', 'm²') }}</span>
+                                        <!-- Wishlist functionality moved outside pricing section -->
+                                        @if (RealEstateHelper::isEnabledWishlist())
+                                            <div class="d-flex gap-12">
+                                                <button type="button" class="box-icon w-52"
+                                                        data-type="property"
+                                                        data-bb-toggle="add-to-wishlist"
+                                                        data-id="{{ $property->getKey() }}"
+                                                        data-add-message="{{ __('Added ":name" to wishlist successfully!', ['name' => $property->name]) }}"
+                                                        data-remove-message="{{ __('Removed ":name" from wishlist successfully!', ['name' => $property->name]) }}"
+                                                >
+                                                    <x-core::icon name="ti ti-heart" />
+                                                </button>
                                             </div>
-                                            @if (RealEstateHelper::isEnabledWishlist())
-                                                <div class="d-flex gap-12">
-                                                    <button type="button" class="box-icon w-52"
-                                                            data-type="property"
-                                                            data-bb-toggle="add-to-wishlist"
-                                                            data-id="{{ $property->getKey() }}"
-                                                            data-add-message="{{ __('Added ":name" to wishlist successfully!', ['name' => $property->name]) }}"
-                                                            data-remove-message="{{ __('Removed ":name" from wishlist successfully!', ['name' => $property->name]) }}"
-                                                    >
-                                                        <x-core::icon name="ti ti-heart" />
-                                                    </button>
-                                                </div>
-                                            @endif
-                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

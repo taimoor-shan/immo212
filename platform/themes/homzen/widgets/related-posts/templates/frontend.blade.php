@@ -4,7 +4,7 @@
             @if($config['title'] || $config['subtitle'])
                 <div class="box-title-relatest text-center">
                     @if($config['subtitle'])
-                        <div class="text-subheading text-primary">{!! BaseHelper::clean($config['subtitle']) !!}</div>
+                        <div class="text-subheading text-prime">{!! BaseHelper::clean($config['subtitle']) !!}</div>
                     @endif
                     @if($config['title'])
                         <h5 class="mt-4">{!! BaseHelper::clean($config['title']) !!}</h5>

@@ -316,25 +316,25 @@ h6 {
 h1 {
     font-size: 60px;
     line-height: 68px;
-    font-weight: 500;
+
 }
 
 h2 {
     font-size: 56px;
     line-height: 68px;
-    font-weight: 500;
+
 }
 
 h3 {
     font-size: 44px;
     line-height: 62px;
-    font-weight: 500;
+
 }
 
 h4 {
     font-size: 36px;
     line-height: 44px;
-    font-weight: 500;
+
 }
 
 h5 {
@@ -345,7 +345,6 @@ h5 {
 h6 {
     font-size: 24px;
     line-height: 30px;
-    font-weight: 500;
 }
 a {
     @include transition3;
@@ -374,6 +373,12 @@ label {
     &:hover {
         color: $primary !important;
     }
+}
+.h6 {
+    font-size: 24px;
+    line-height: 30px;
+    font-weight: 500;
+    font-family: $font-2;
 }
 
 .h7 {
@@ -496,7 +501,7 @@ label {
 }
 
 // color text
-.text-primary {
+.text-prime {
     color: $primary !important;
 }
 .text-danger {
@@ -517,9 +522,15 @@ label {
 .text-variant-2 {
     color: $variant-2;
 }
+.text-body {
+    color: $body;
+}
 // background color
 .bg-surface {
     background-color: $surface;
+}
+.bg-prime {
+    background-color: $primary;
 }
 
 // margin-top

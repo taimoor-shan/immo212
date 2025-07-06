@@ -9,7 +9,7 @@
                 <div class="slider-content">
                     <div class="text-center">
                         <div class="heading">
-                            <h1 class="text-primary animationtext slide">
+                            <h1 class="text-prime animationtext slide">
                                 {!! BaseHelper::clean($shortcode->title) !!}
                                 {!! Theme::partial('shortcodes.hero-banner.partials.animation-text', compact('shortcode')) !!}
                             </h1>

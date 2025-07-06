@@ -27,25 +27,22 @@
                     </div>
                 @endif
             </div>
-            @if($property->category)
-                <div class="bottom">
-                    <span class="flag-tag style-2">{{ $property->category->name }}</span>
-                </div>
-            @endif
         </a>
         <div class="content">
-            <{{ $class === 'lg' ? 'h5' : 'div' }} @class(['text-capitalize', 'h7 fw-5' => $class !== 'lg'])>
-                <a href="{{ $property->url }}" class="link line-clamp-1" title="{{ $property->name }}">{!! BaseHelper::clean($property->name) !!}</a>
-            </{{ $class === 'lg' ? 'h5' : 'div' }}>
-            @if($property->short_address)
-                <div class="desc">
-                    <i class="icon icon-mapPin"></i>
-                    <p class="line-clamp-1">{{ $property->short_address }}</p>
+            @if($property->category)
+                <div class="property-type-badge">
+                    <span class="fw-5 text-variant-2">{{ $property->category->name }}</span>
                 </div>
             @endif
-            @if($class === 'lg' && $property->description)
-                <p class="note">{!! Str::limit(BaseHelper::clean($property->description)) !!}</p>
-            @endif
+            <!-- Original title (hidden but kept for accessibility/SEO) -->
+            <{{ $class === 'lg' ? 'h5' : 'div' }} @class(['text-capitalize', 'h7 fw-5' => $class !== 'lg']) style="display: none;">
+                <a href="{{ $property->url }}" class="link line-clamp-1" title="{{ $property->name }}">{!! BaseHelper::clean($property->name) !!}</a>
+            </{{ $class === 'lg' ? 'h5' : 'div' }}>
+            <!-- Duplicate title element showing price instead -->
+            <{{ $class === 'lg' ? 'h5' : 'div' }} @class(['text-capitalize', 'h6 text-prime' => $class !== 'lg'])>
+                <span class="link line-clamp-1">{{ format_price($property->price, $property->currency) }}</span>
+            </{{ $class === 'lg' ? 'h5' : 'div' }}>
+            <!-- Meta-list moved to where location was -->
             <ul class="meta-list">
                 @if($property->number_bedroom)
                     <li class="item">
@@ -66,21 +63,16 @@
                     </li>
                 @endif
             </ul>
-        </div>
-    </div>
-    <div class="archive-bottom d-flex justify-content-between align-items-center">
-        @if (! \Botble\RealEstate\Facades\RealEstateHelper::isDisabledPublicProfile() && ($author = $property->author) && $property->author->name)
-            <div class="d-flex gap-8 align-items-center">
-                @if ($itemsPerRow < 4)
-                    <div class="avatar avt-40 round">
-                        {{ RvMedia::image($author->avatar_url, $author->name, 'thumb') }}
-                    </div>
-                @endif
-                <span>{{ $author->name }}</span>
-            </div>
-        @endif
-        <div class="d-flex align-items-center">
-            <h6>{{ format_price($property->price, $property->currency) }}</h6>
+            <!-- Location moved to where meta-list was -->
+            @if($property->short_address)
+                <div class="desc">
+                    <i class="icon icon-mapPin"></i>
+                    <p class="line-clamp-1">{{ $property->short_address }}</p>
+                </div>
+            @endif
+            @if($class === 'lg' && $property->description)
+                <p class="note">{!! Str::limit(BaseHelper::clean($property->description)) !!}</p>
+            @endif
         </div>
     </div>
 </div>

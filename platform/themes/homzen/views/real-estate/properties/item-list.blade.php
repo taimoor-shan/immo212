@@ -5,6 +5,9 @@
         </div>
         <div class="top">
             <ul class="d-flex gap-4 flex-column">
+                @if($property->is_featured)
+                    <span class="flag-tag success">{{ __('Featured') }}</span>
+                @endif
                 {!! BaseHelper::clean($property->status->toHtml()) !!}
             </ul>
             @if (RealEstateHelper::isEnabledWishlist())
@@ -58,19 +61,6 @@
                     </li>
                 @endif
             </ul>
-        </div>
-        <div class="d-flex justify-content-between align-items-center archive-bottom">
-            @if (! \Botble\RealEstate\Facades\RealEstateHelper::isDisabledPublicProfile() && ($author = $property->author) && $property->author->name)
-                <div class="d-flex gap-8 align-items-center">
-                    <div class="avatar avt-40 round">
-                        {{ RvMedia::image($author->avatar_url, $author->name, 'thumb') }}
-                    </div>
-                    <span>{{ $author->name }}</span>
-                </div>
-            @endif
-            <div class="d-flex align-items-center">
-                <div class="h7 fw-7">{{ format_price($property->price, $property->currency) }}</div>
-            </div>
         </div>
     </div>
 </div>

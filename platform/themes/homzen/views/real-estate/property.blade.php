@@ -24,18 +24,22 @@
                 {!! BaseHelper::clean($property->status_html) !!}
             </div>
             <div class="content">
-                @if($property->short_address)
-                    <p class="location">
-                        <x-core::icon name="ti ti-map-pin" />
-                        {{ $property->short_address }}
-                    </p>
+                @if($property->category)
+                    <div class="property-type-badge">
+                        <span class="flag-tag style-2">{{ $property->category->name }}</span>
+                    </div>
                 @endif
-                <div class="title">
+                <!-- Original title (hidden but kept for accessibility/SEO) -->
+                <div class="title" style="display: none;">
                     <a href="{{ $property->url }}" title="{{ $property->name }}">
                         {{ $property->name }}
                     </a>
                 </div>
-                <div class="price">{{ $property->price_html }}</div>
+                <!-- Duplicate title element showing price instead -->
+                <div class="title">
+                    <span>{{ $property->price_html }}</span>
+                </div>
+                <!-- Meta-list moved to where location was -->
                 <ul class="list-info">
                     <li>
                         <x-core::icon name="ti ti-bed" />
@@ -50,6 +54,13 @@
                         {{ $property->square_text }}
                     </li>
                 </ul>
+                <!-- Location moved to where meta-list was -->
+                @if($property->short_address)
+                    <p class="location">
+                        <x-core::icon name="ti ti-map-pin" />
+                        {{ $property->short_address }}
+                    </p>
+                @endif
             </div>
         </div>
     </div>

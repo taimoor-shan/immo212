@@ -8,19 +8,29 @@
                 __status__
             </div>
             <div class="content">
-                <p class="location">
-                    <x-core::icon name="ti ti-map-pin" />
-                    __location__
-                </p>
-                <div class="title">
+                <!-- Property type badge moved to content area -->
+                <div class="property-type-badge">
+                    __category__
+                </div>
+                <!-- Original title (hidden but kept for accessibility/SEO) -->
+                <div class="title" style="display: none;">
                     <a href="__url__" title="__name__" class="line-clamp-2">__name__</a>
                 </div>
-                <div class="price">__price__</div>
+                <!-- Duplicate title element showing price instead -->
+                <div class="title">
+                    <span class="line-clamp-2">__price__</span>
+                </div>
+                <!-- Meta-list moved to where location was -->
                 <ul class="list-info">
                     <li><x-core::icon name="ti ti-bed" />__bedroom__</li>
                     <li><x-core::icon name="ti ti-bath" />__bathroom__</li>
                     <li><x-core::icon name="ti ti-ruler" />__square__</li>
                 </ul>
+                <!-- Location moved to where meta-list was -->
+                <p class="location">
+                    <x-core::icon name="ti ti-map-pin" />
+                    __location__
+                </p>
             </div>
         </div>
     </div>

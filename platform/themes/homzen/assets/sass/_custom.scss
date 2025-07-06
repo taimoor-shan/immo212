@@ -20,7 +20,6 @@ svg {
     margin-top: 0;
     margin-bottom: .5rem;
     line-height: 1.2;
-    color: #161e2d;
 }
 
 .show-admin-bar {
@@ -212,7 +211,7 @@ svg {
 
     form {
         label {
-            color: $variant-1;
+            color: $primary;
         }
 
         .auth-input-icon {
@@ -845,6 +844,9 @@ h2.section-title {
 
     a {
         color: inherit;
+        &:hover {
+            color: initial !important;
+        }
     }
 
     @media (min-width: 992px) {

@@ -10,7 +10,7 @@
                         @if($shortcode->subtitle || $shortcode->title)
                             <div class="title">
                                 @if($shortcode->subtitle)
-                                    <div class="text-subtitle text-primary">{!! BaseHelper::clean($shortcode->subtitle) !!}</div>
+                                    <div class="text-subtitle text-prime">{!! BaseHelper::clean($shortcode->subtitle) !!}</div>
                                 @endif
                                 @if($shortcode->title)
                                     <h2 class="section-title fw-6 text-white">

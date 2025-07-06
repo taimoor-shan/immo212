@@ -111,10 +111,10 @@
 .navigation-btn {
     position: absolute;
     top: 0;
-    width: 48px;
-    height: 48px;
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid #e5e5e5;
+    width: 40px;
+    height: 40px;
+    background: $white;
+    border: 1px solid $primary;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -131,21 +131,13 @@
     }
 
     &.swiper-button-disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-        background: rgba(255, 255, 255, 0.5);
-        border-color: rgba(229, 229, 229, 0.5);
-        box-shadow: none;
-
-        svg {
-            color: rgba(51, 51, 51, 0.5);
-        }
+        opacity: 0;
     }
 
     svg {
-        width: 20px;
-        height: 20px;
-        color: #333;
+        width: 24px;
+        height: 24px;
+        color: $primary;
         transition: color 0.3s ease;
     }
 }
@@ -180,9 +172,9 @@
 
 // Tablet and desktop: Show navigation with proper spacing
 @media (min-width: 768px) {
-    .wrap-sw-property-v8 {
-        margin: 0 30px; // Space for navigation buttons
-    }
+    // .wrap-sw-property-v8 {
+       
+    // }
 
     .tf-sw-property-v8 {
         overflow: hidden; // Contain slides on larger screens

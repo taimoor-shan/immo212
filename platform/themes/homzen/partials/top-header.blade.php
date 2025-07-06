@@ -2,7 +2,8 @@
     $announcements = apply_filters('announcement_display_html', null);
     $canRenderAnnouncements = is_plugin_active('announcement') && $announcements && \ArchiElite\Announcement\Models\Announcement::query()->exists();
 @endphp
-{{-- 
+<div class="container-fluid bg-prime">
+<div class="container">
 <div class="top-header">
     <div class="top-header-left">
         @if($canRenderAnnouncements)
@@ -79,6 +80,7 @@
         @endif
     </div>
 </div>
---}}
+</div>
+</div>
 
 

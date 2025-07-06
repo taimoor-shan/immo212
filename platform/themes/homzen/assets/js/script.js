@@ -1415,7 +1415,9 @@ $(() => {
                     clickable: true,
                     nextEl: '.nav-next-property-v8',
                     prevEl: '.nav-prev-property-v8',
+                    disabledClass: 'swiper-button-disabled',
                 },
+                watchSlidesProgress: true,
                 breakpoints: {
                     600: {
                         slidesPerView: 2,

@@ -236,13 +236,55 @@ $(() => {
     const clickSearchForm = function () {
         const widgetSearchForm = $('.wd-search-form')
         if (widgetSearchForm.length) {
-            $('.pull-right').on('click', function () {
+            $('.pull-right').on('click', function (e) {
+                e.preventDefault()
+                const $filterButton = $(this)
+                const $filterText = $filterButton.find('.filter-text')
+                const defaultText = $filterButton.data('filter-text-default')
+                const activeText = $filterButton.data('filter-text-active')
+
+                // Toggle the search form
                 widgetSearchForm.toggleClass('show')
+
+                // Toggle button state and update text/icon
+                $filterButton.toggleClass('active')
+
+                // Update text with fade effect
+                if ($filterButton.hasClass('active')) {
+                    $filterText.fadeOut(150, function() {
+                        $(this).text(activeText).fadeIn(150)
+                    })
+                    // Update ARIA attributes for accessibility
+                    $filterButton.attr('aria-expanded', 'true')
+                        .attr('aria-label', activeText)
+                } else {
+                    $filterText.fadeOut(150, function() {
+                        $(this).text(defaultText).fadeIn(150)
+                    })
+                    // Update ARIA attributes for accessibility
+                    $filterButton.attr('aria-expanded', 'false')
+                        .attr('aria-label', defaultText)
+                }
             })
+
             $(document).on('click', '.pull-right, .offcanvas-backdrop', function (a) {
                 a.preventDefault()
                 if ($(a.target).closest('.pull-right, .wd-search-form').length === 0) {
+                    // Reset filter button state when closing
+                    const $filterButton = $('.filter-advanced.pull-right')
+                    const $filterText = $filterButton.find('.filter-text')
+                    const defaultText = $filterButton.data('filter-text-default')
+
                     widgetSearchForm.removeClass('show')
+                    $filterButton.removeClass('active')
+
+                    $filterText.fadeOut(150, function() {
+                        $(this).text(defaultText).fadeIn(150)
+                    })
+
+                    // Update ARIA attributes
+                    $filterButton.attr('aria-expanded', 'false')
+                        .attr('aria-label', defaultText)
                 }
             })
         }
@@ -1700,6 +1742,16 @@ $(() => {
 
             $('.wd-search-form').removeClass('show')
             $('.search-box-offcanvas').removeClass('active')
+
+            // Reset filter button state
+            const $filterButton = $('.filter-advanced.pull-right')
+            const $filterText = $filterButton.find('.filter-text')
+            const defaultText = $filterButton.data('filter-text-default')
+
+            $filterButton.removeClass('active')
+            $filterText.text(defaultText)
+            $filterButton.attr('aria-expanded', 'false')
+                .attr('aria-label', defaultText)
 
             const $dataListing = $('[data-bb-toggle="data-listing"]')
             const $form = $(e.currentTarget)

@@ -211,7 +211,6 @@ input[type='url'],
 input[type='search'],
 input[type='tel'],
 input[type='color'] {
-    font-family: $font-2;
     border: 1px solid $outline;
     outline: 0;
     -webkit-box-shadow: none;
@@ -245,7 +244,7 @@ input[type='url']::placeholder,
 input[type='search']::placeholder,
 input[type='tel']::placeholder,
 input[type='color']::placeholder {
-    color: $variant-2;
+    color: $variant-1;
     @include transition3;
 }
 textarea {
@@ -254,15 +253,15 @@ textarea {
 }
 /* Placeholder color */
 ::-webkit-input-placeholder {
-    color: #8a8aa0;
+    color: $variant-1;
 }
 
 :-moz-placeholder {
-    color: #8a8aa0;
+    color: $variant-1;
 }
 
 ::-moz-placeholder {
-    color: #8a8aa0;
+    color: $variant-1;
     opacity: 1;
 }
 
@@ -278,7 +277,7 @@ textarea {
 /* Since FF19 lowers the opacity of the placeholder by default */
 
 :-ms-input-placeholder {
-    color: #8a8aa0;
+    color: $variant-1;
 }
 
 p {
@@ -314,37 +313,37 @@ h6 {
 }
 
 h1 {
-    font-size: 60px;
-    line-height: 68px;
+    font-size: 50px;
+    line-height: 60px;
 
 }
 
 h2 {
-    font-size: 56px;
-    line-height: 68px;
+    font-size: 44px;
+    line-height: 50px;
 
 }
 
 h3 {
-    font-size: 44px;
-    line-height: 62px;
-
-}
-
-h4 {
     font-size: 36px;
     line-height: 44px;
 
 }
 
+h4 {
+    font-size: 28px;
+    line-height: 34px;
+
+}
+
 h5 {
-    font-size: 30px;
-    line-height: 42px;
+    font-size: 24px;
+    line-height: 30px;
 }
 
 h6 {
-    font-size: 24px;
-    line-height: 30px;
+    font-size: 20px;
+    line-height: 28px;
 }
 a {
     @include transition3;

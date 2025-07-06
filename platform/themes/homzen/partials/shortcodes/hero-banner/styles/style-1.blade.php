@@ -5,7 +5,7 @@
 <section class="flat-slider home-1" @style(["background-image: url('$backgroundImage') !important" => $backgroundImage])>
     <div class="container relative">
         <div class="row justify-content-center">
-            <div class="col-xl-10">
+            <div class="col-xl-8">
                 <div class="slider-content">
                     <div class="text-center">
                         <div class="heading">

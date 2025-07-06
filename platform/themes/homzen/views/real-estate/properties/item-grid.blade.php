@@ -11,9 +11,6 @@
             </div>
             <div class="top">
                 <div class="d-flex gap-8">
-                    @if($property->is_featured)
-                        <span class="flag-tag success">{{ __('Featured') }}</span>
-                    @endif
                     {!! BaseHelper::clean($property->status->toHtml()) !!}
                 </div>
                 @if (RealEstateHelper::isEnabledWishlist())

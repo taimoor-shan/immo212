@@ -29,12 +29,12 @@
             </div>
         </div>
 
-        @if($shortcode->button_url && $shortcode->button_label)
+        <!-- @if($shortcode->button_url && $shortcode->button_label)
             <div class="text-center mt-4">
                 <a href="{{ $shortcode->button_url }}" class="tf-btn primary size-1">
                     {!! BaseHelper::clean($shortcode->button_label) !!}
                 </a>
             </div>
-        @endif
+        @endif -->
     </div>
 </section>

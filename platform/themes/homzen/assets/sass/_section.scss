@@ -895,8 +895,8 @@
             margin-top: 12px;
             display: flex;
             align-items: center;
-            column-gap: 30px;
-            row-gap: 15px;
+            column-gap: 14px;
+            row-gap: 14px;
             flex-wrap: wrap;
 
             .item {
@@ -911,7 +911,7 @@
                 }
 
                 span {
-                    font-weight: 600;
+                    font-weight: 400;
                 }
             }
         }

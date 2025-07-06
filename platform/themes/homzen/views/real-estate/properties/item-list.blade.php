@@ -5,9 +5,6 @@
         </div>
         <div class="top">
             <ul class="d-flex gap-4 flex-column">
-                @if($property->is_featured)
-                    <span class="flag-tag success">{{ __('Featured') }}</span>
-                @endif
                 {!! BaseHelper::clean($property->status->toHtml()) !!}
             </ul>
             @if (RealEstateHelper::isEnabledWishlist())

@@ -5,9 +5,6 @@
         </div>
         <div class="top">
             <ul class="d-flex gap-4 flex-column">
-                @if($project->is_featured)
-                    <span class="flag-tag success">{{ __('Featured') }}</span>
-                @endif
             </ul>
             @if (RealEstateHelper::isEnabledWishlist())
                 <button type="button" class="box-icon w-32"

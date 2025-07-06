@@ -29,7 +29,7 @@
             @endif
         </a>
         <div class="content">
-            <div class="text-capitalize h7 fw-7">
+            <div class="text-capitalize h7">
                 <a href="{{ $project->url }}" class="link line-clamp-1" title="{{ $project->name }}">{!! BaseHelper::clean($project->name) !!}</a>
             </div>
             @if($project->short_address)

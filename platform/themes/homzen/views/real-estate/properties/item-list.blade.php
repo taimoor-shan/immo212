@@ -32,7 +32,7 @@
     </a>
     <div class="content">
         <div class="archive-top">
-            <div class="h7 text-capitalize fw-7">
+            <div class="h7 text-capitalize fw-5">
                 <a href="{{ $property->url }}" class="link line-clamp-1" title="{{ $property->name }}">{!! BaseHelper::clean($property->name) !!}</a>
             </div>
             @if($property->short_address)

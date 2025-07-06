@@ -8,18 +8,18 @@
         background-attachment: fixed;
         .overlay {
             background: $on-surface;
-            opacity: 0.6;
+            opacity: 0;
         }
         .slider-content {
             position: relative;
             z-index: 1;
-            padding: 233px 0;
+            padding: 190px 0;
             .heading {
                 margin-bottom: 40px;
             }
             .subtitle {
                 margin-top: 20px;
-                padding: 0 280px;
+                padding: 0 180px;
             }
         }
     }

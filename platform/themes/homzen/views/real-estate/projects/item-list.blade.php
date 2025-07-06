@@ -29,7 +29,7 @@
     </a>
     <div class="content">
         <div class="archive-top border-bottom-0">
-            <div class="h7 text-capitalize fw-7">
+            <div class="h7 text-capitalize">
                 <a href="{{ $project->url }}" class="link line-clamp-1" title="{{ $project->name }}">{!! BaseHelper::clean($project->name) !!}</a>
             </div>
             @if($project->short_address)
@@ -41,7 +41,7 @@
         </div>
         <div class="d-flex justify-content-between align-items-center archive-bottom">
             <div class="d-flex align-items-center">
-                <div class="h7 fw-7">{{ $project->formatted_price }}</div>
+                <div class="h7 fw-5">{{ $project->formatted_price }}</div>
             </div>
         </div>
     </div>

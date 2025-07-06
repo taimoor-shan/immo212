@@ -9,7 +9,7 @@
     <label for="category_id" aria-hidden="true" hidden>{{ __('Category') }}</label>
     <div class="group-select">
         <select name="category_id" id="category_id" class="select_js">
-            <option value="">{{ __('All') }}</option>
+            <option value="">{{ __('Property Type') }}</option>
             @foreach($categories as $category)
                 <option value="{{ $category->getKey() }}"@selected(request()->query('category_id') == $category->getKey())>{{ $category->name }}</option>
             @endforeach

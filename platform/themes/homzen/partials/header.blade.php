@@ -2,7 +2,7 @@
     id="header"
     @class(['main-header', 'fixed-header' => theme_option('sticky_header_enabled', true), Theme::get('headerClass')])
 >
-    <div class="header-lower">
+    <div class="header-lower container">
         <div class="row">
             <div class="col-lg-12">
                 <div class="inner-container d-flex justify-content-between align-items-center">

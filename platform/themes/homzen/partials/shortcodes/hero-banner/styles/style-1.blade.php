@@ -4,17 +4,17 @@
 
 <section class="flat-slider home-1" @style(["background-image: url('$backgroundImage') !important" => $backgroundImage])>
     <div class="container relative">
-        <div class="row">
-            <div class="col-lg-12">
+        <div class="row justify-content-center">
+            <div class="col-xl-10">
                 <div class="slider-content">
                     <div class="text-center">
                         <div class="heading">
-                            <h1 class="text-white animationtext slide">
+                            <h1 class="text-primary animationtext slide">
                                 {!! BaseHelper::clean($shortcode->title) !!}
                                 {!! Theme::partial('shortcodes.hero-banner.partials.animation-text', compact('shortcode')) !!}
                             </h1>
                             @if ($shortcode->description)
-                                <p class="subtitle text-white body-1 wow fadeIn" data-wow-delay=".8s" data-wow-duration="2000ms">
+                                <p class="subtitle body-2 wow fadeIn" data-wow-delay=".8s" data-wow-duration="2000ms">
                                     {!! BaseHelper::clean($shortcode->description) !!}
                                 </p>
                             @endif

@@ -37,7 +37,7 @@
             @endif
         </a>
         <div class="content">
-            <{{ $class === 'lg' ? 'h5' : 'div' }} @class(['text-capitalize', 'h7 fw-7' => $class !== 'lg'])>
+            <{{ $class === 'lg' ? 'h5' : 'div' }} @class(['text-capitalize', 'h7 fw-5' => $class !== 'lg'])>
                 <a href="{{ $property->url }}" class="link line-clamp-1" title="{{ $property->name }}">{!! BaseHelper::clean($property->name) !!}</a>
             </{{ $class === 'lg' ? 'h5' : 'div' }}>
             @if($property->short_address)

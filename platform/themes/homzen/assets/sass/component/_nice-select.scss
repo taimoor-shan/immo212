@@ -68,6 +68,8 @@
     width: 100%;
     -moz-transform: scale(1) translateY(0);
     -o-transform: scale(1) translateY(0);
+    box-shadow: rgba(0, 0, 0, 0.1) 0 8px 24px 0, rgba(0, 0, 0, 0.02) 0 0 0 1px;
+
 }
 
 .nice-select.disabled {
@@ -191,7 +193,7 @@
 
 .nice-select .option {
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 400;
     line-height: 40px;
     list-style: none;
     min-height: 40px;
@@ -212,7 +214,7 @@
     color: $primary;
 }
 .nice-select .option.selected {
-    font-weight: 600;
+    font-weight: 400;
     // color: $white !important;
     // background-color: $primary !important;
 }

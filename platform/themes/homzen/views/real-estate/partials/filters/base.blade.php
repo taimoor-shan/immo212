@@ -8,7 +8,7 @@
             <div @class(['form-group-4 box-filter', 'form-style' => $style === 3])>
                 <a class="filter-advanced pull-right" href="#">
                     <!-- <x-core::icon name="ti ti-adjustments-alt" /> -->
-                    <span @class(['text-1' => $style !== 3, 'text-advanced fw-7' => $style === 3])>{{ __('More Filters') }}</span>
+                    <span>{{ __('More Filters') }}</span>
                 </a>
             </div>
         @endif

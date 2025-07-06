@@ -1405,6 +1405,35 @@ $(() => {
         }
     }
 
+    const initPropertiesV8 = () => {
+        if ($('.tf-sw-property-v8').length > 0) {
+            new Swiper('.tf-sw-property-v8', {
+                rtl: Theme.isRtl(),
+                slidesPerView: 1.2, // Show partial next slide on mobile
+                spaceBetween: 16,
+                navigation: {
+                    clickable: true,
+                    nextEl: '.nav-next-property-v8',
+                    prevEl: '.nav-prev-property-v8',
+                },
+                breakpoints: {
+                    600: {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                    },
+                    991: {
+                        slidesPerView: 3,
+                        spaceBetween: 20,
+                    },
+                    1200: {
+                        slidesPerView: 4,
+                        spaceBetween: 30,
+                    },
+                },
+            })
+        }
+    }
+
     initImageSlider()
     initImageSlider()
     initLocation()
@@ -1880,6 +1909,10 @@ $(() => {
 
                 if (attributes.style === '7') {
                     initProperties()
+                }
+
+                if (attributes.style === '8') {
+                    initPropertiesV8()
                 }
 
                 break

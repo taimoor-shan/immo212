@@ -80,7 +80,7 @@ app()->booted(function (): void {
                     UiSelectorFieldOption::make()
                         ->label(__('Style'))
                         ->choices(
-                            collect(range(1, 7))
+                            collect(range(1, 8))
                                 ->mapWithKeys(fn ($number) => [
                                     $number => [
                                         'label' => __('Style :number', ['number' => $number]),

@@ -16,6 +16,8 @@
                     'is_featured' => $shortcode->is_featured ? 1 : 0,
                     'limit' => $shortcode->limit,
                     'category_ids' => $categoryIds,
+                    'city_id' => $shortcode->city_id,
+                    'author_id' => $shortcode->author_id,
                 ]) }}"
             >
                 <li class="nav-tab-item" role="presentation">

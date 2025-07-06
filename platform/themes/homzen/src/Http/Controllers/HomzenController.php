@@ -31,6 +31,8 @@ class HomzenController extends PublicController
             'is_featured' => ['boolean'],
             'category_id' => ['nullable', 'string'],
             'category_ids' => ['nullable', 'array'],
+            'city_id' => ['nullable', 'integer'],
+            'author_id' => ['nullable', 'integer'],
         ]);
 
         $properties = $getPropertiesAction->handle(
@@ -38,7 +40,9 @@ class HomzenController extends PublicController
             $request->input('category_id'),
             $request->string('type'),
             $request->boolean('is_featured'),
-            (array) $request->input('category_ids', [])
+            (array) $request->input('category_ids', []),
+            $request->integer('city_id'),
+            $request->integer('author_id')
         );
 
         return $this

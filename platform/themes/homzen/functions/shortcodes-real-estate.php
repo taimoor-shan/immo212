@@ -14,6 +14,7 @@ use Botble\RealEstate\Enums\PropertyTypeEnum;
 use Botble\RealEstate\Facades\RealEstateHelper;
 use Botble\RealEstate\Models\Account;
 use Botble\RealEstate\Models\Category;
+use Botble\Location\Models\City;
 use Botble\RealEstate\Models\Package;
 use Botble\RealEstate\Models\Project;
 use Botble\Shortcode\Compilers\Shortcode as ShortcodeCompiler;
@@ -35,6 +36,8 @@ app()->booted(function (): void {
             $tabs = collect();
 
             $categoryIds = Shortcode::fields()->getIds('category_ids', $shortcode) ?: [];
+            $cityId = $shortcode->city_id ?: null;
+            $authorId = $shortcode->author_id ?: null;
 
             if ($shortcode->style == 2 && $categoryIds) {
                 $tabs = Category::query()
@@ -48,14 +51,18 @@ app()->booted(function (): void {
                         limit: (int) $shortcode->limit ?: 4,
                         type: $shortcode->type,
                         featured: (bool) $shortcode->is_featured,
-                        categoryIds: $categoryIds
+                        categoryIds: $categoryIds,
+                        cityId: $cityId,
+                        authorId: $authorId
                     );
             } else {
                 $properties = (new GetPropertiesAction())->handle(
                     limit: (int) $shortcode->limit ?: 4,
                     type: $shortcode->type,
                     featured: (bool) $shortcode->is_featured,
-                    categoryIds: $categoryIds
+                    categoryIds: $categoryIds,
+                    cityId: $cityId,
+                    authorId: $authorId
                 );
             }
 
@@ -113,6 +120,46 @@ app()->booted(function (): void {
                     OnOffField::class,
                     OnOffFieldOption::make()
                         ->label(__('Only show featured properties'))
+                )
+                ->add(
+                    'city_id',
+                    SelectField::class,
+                    SelectFieldOption::make()
+                        ->label(__('City'))
+                        ->helperText(__('Select a specific city to filter properties.'))
+                        ->searchable()
+                        ->choices(
+                            ['' => __('All Cities')] +
+                            (is_plugin_active('location') ?
+                                City::query()
+                                    ->wherePublished()
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                                    ->all() : []
+                            )
+                        )
+                        ->selected(Arr::get($attributes, 'city_id', ''))
+                )
+                ->add(
+                    'author_id',
+                    SelectField::class,
+                    SelectFieldOption::make()
+                        ->label(__('Agent'))
+                        ->helperText(__('Select a specific agent to filter properties.'))
+                        ->searchable()
+                        ->choices(
+                            ['' => __('All Agents')] +
+                            Account::query()
+                                ->orderBy('first_name')
+                                ->orderBy('last_name')
+                                ->get()
+                                ->mapWithKeys(function ($account) {
+                                    $name = trim($account->first_name . ' ' . $account->last_name);
+                                    return [$account->id => $name ?: $account->username];
+                                })
+                                ->all()
+                        )
+                        ->selected(Arr::get($attributes, 'author_id', ''))
                 )
                 ->addLimitField()
                 ->addSectionButtonAction()

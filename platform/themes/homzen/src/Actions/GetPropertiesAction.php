@@ -17,7 +17,9 @@ class GetPropertiesAction
         ?string $categoryId = null,
         ?string $type = null,
         bool $featured = false,
-        array $categoryIds = []
+        array $categoryIds = [],
+        ?int $cityId = null,
+        ?int $authorId = null
     ): Collection {
         return Property::query()
             ->where(RealEstateHelper::getPropertyDisplayQueryConditions())
@@ -35,6 +37,10 @@ class GetPropertiesAction
             )
             ->when($categoryIds, function (Builder $query, array $categoryIds) {
                 return $query->whereHas('categories', fn (Builder $query) => $query->whereIn('id', $categoryIds));
+            })
+            ->when($cityId, fn (Builder $query, int $cityId) => $query->where('city_id', $cityId))
+            ->when($authorId, function (Builder $query, int $authorId) {
+                return $query->where('author_id', $authorId)->where('author_type', \Botble\RealEstate\Models\Account::class);
             })
             ->take($limit)
             ->orderByDesc('is_featured')

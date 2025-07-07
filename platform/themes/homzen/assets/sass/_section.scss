@@ -47,7 +47,7 @@
 
         li {
             &:last-child {
-                color: $variant-2;
+                color: $body;
             }
         }
     }
@@ -343,7 +343,7 @@
                 }
 
                 &:last-child {
-                    color: $variant-2;
+                    color: $body;
                 }
             }
 
@@ -451,7 +451,7 @@
 
         .subtitle {
             font-weight: 700;
-            color: $variant-2;
+            color: $body;
             margin-bottom: 4px;
             font-size: 16px;
             line-height: 26px;
@@ -664,7 +664,7 @@
     }
 
     &.primary {
-        background-color: $orange;
+        background-color: $accent;
     }
 
     &:hover {
@@ -1283,7 +1283,7 @@
             background-color: $white;
 
             .sub-title {
-                color: $variant-2;
+                color: $body;
             }
 
             .title {
@@ -1297,7 +1297,7 @@
             background-color: $white;
 
             .sub-title {
-                color: $variant-2;
+                color: $body;
             }
 
             .title {
@@ -2332,7 +2332,7 @@
             }
 
             .icon {
-                color: $variant-2;
+                color: $body;
                 width: 1.25rem;
                 height: 1.25rem;
                 stroke-width: 2;

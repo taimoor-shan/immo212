@@ -839,13 +839,13 @@ h2.section-title {
 .top-header {
     display: none;
     justify-content: space-between;
-    padding: 8px 30px;
+    padding: 10px 0;
     font-size: 14px;
 
     a {
-        color: inherit;
+        color: #F5F7FA;
         &:hover {
-            color: initial !important;
+            color: $white;
         }
     }
 

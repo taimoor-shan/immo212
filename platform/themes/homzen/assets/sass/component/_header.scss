@@ -1067,7 +1067,7 @@
                 margin-bottom: 0px;
             }
             .content {
-                color: $variant-2;
+                color: $body;
                 h5 {
                     color: $variant-1;
                 }
@@ -1160,11 +1160,11 @@
             padding: 0px 16px;
             font-size: 18px;
             line-height: 28px;
-            color: $variant-2;
+            color: $body;
             border: 0;
             border-radius: 0;
             &::placeholder {
-                color: $variant-2;
+                color: $body;
             }
         }
     }

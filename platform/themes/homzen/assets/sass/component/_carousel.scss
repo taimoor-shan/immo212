@@ -24,7 +24,7 @@
         align-items: center;
         border: 1px solid $outline;
         background-color: $white;
-        border-radius: 8px;
+        border-radius: 6px;
         @include transition3;
         .icon {
             color: $on-surface;
@@ -111,8 +111,8 @@
 .navigation-btn {
     position: absolute;
     top: 0;
-    width: 40px;
-    height: 40px;
+    width: 34px;
+    height: 34px;
     background: $white;
     border: 1px solid $primary;
     border-radius: 50%;
@@ -125,7 +125,7 @@
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 
     &:hover:not(.swiper-button-disabled) {
-        background: $white;
+        background: $outline;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
         transform: scale(1.05);
     }
@@ -142,12 +142,12 @@
     }
 }
 
-.nav-prev-property-v8 {
-    left: -24px;
+.nav-prev {
+    left: -20px;
 }
 
-.nav-next-property-v8 {
-    right: -24px;
+.nav-next {
+    right: -20px;
 }
 
 // Mobile styles: Hide navigation, enable touch/swipe
@@ -173,10 +173,12 @@
 // Tablet and desktop: Show navigation with proper spacing
 @media (min-width: 768px) {
     // .wrap-sw-property-v8 {
-       
+
     // }
 
     .tf-sw-property-v8 {
         overflow: hidden; // Contain slides on larger screens
     }
 }
+
+

@@ -18,7 +18,7 @@
 
 @if ($videoUrl)
     <div @class(['single-property-video', $class ?? null])>
-        <div class="h7 title fw-7">{{ __('Video') }}</div>
+        <div class="h7 title fw-6">{{ __('Video') }}</div>
         <div class="img-video">
             <img src="{{ RvMedia::getImageUrl($videoThumbnail) }}" alt="{{ $property->name }}">
             <a href="{{ $videoUrl }}" @if ($isYouTubeVideo) data-fancybox="gallery2" @endif class="btn-video">

@@ -1,5 +1,5 @@
  <div @class(['single-property-map', $class ?? null])>
-    <div class="h7 title fw-7">{{ __('Location') }}</div>
+    <div class="h7 title fw-6">{{ __('Location') }}</div>
 
      @if (theme_option('real_estate_show_map_on_single_detail_page', 'yes') === 'yes')
         @if ($property->latitude && $property->longitude)
@@ -19,7 +19,7 @@
          @endphp
          <ul class="info-map">
              <li>
-                 <div class="fw-7">{{ __('Address') }}</div>
+                 <div class="fw-6">{{ __('Address') }}</div>
                  <a class="mt-4 text-variant-1" href="{{ $mapUrl }}" target="_blank">
                      {{ $locationOnMap }}
                  </a>

@@ -7,7 +7,7 @@
     ul {
         margin-right: 20px;
         li {
-            font-weight: 700;
+            font-weight: 600;
             a {
                 font-family: $font-2;
                 color: $on-surface;
@@ -330,7 +330,7 @@
         content: '';
         width: 0;
         height: 2px;
-        bottom: 25px;
+        bottom: -2px;
         position: absolute;
         left: auto;
         right: 0;
@@ -497,7 +497,7 @@
     display: block;
     line-height: 24px;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 600;
     text-align: center;
     z-index: 5;
 }
@@ -625,7 +625,7 @@
     padding: 16px 24px;
     display: block;
     line-height: 24px;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 16px;
     color: $variant-1;
     transition: all 500ms ease;
@@ -1053,7 +1053,7 @@
         //     margin-bottom: 13px;
         //     font-size: 18px;
         //     line-height: 28px;
-        //     font-weight: 700;
+        //     font-weight: 600;
         //     color: $on-surface;
         // }
         .box {
@@ -1128,7 +1128,7 @@
         padding: 10px 6px;
         padding-left: 0px;
         border: 1px solid $outline;
-        border-radius: 8px;
+        border-radius: 6px;
         display: flex;
         align-items: center;
         .form-box {
@@ -1175,7 +1175,7 @@
         background-color: $primary;
         @include flex(center, center);
         border: 0;
-        border-radius: 8px;
+        border-radius: 6px;
         @include transition3;
         &:hover {
             background-color: $primary-hover;
@@ -1210,7 +1210,7 @@
             @include transition3;
             .icon {
                 font-size: 16px;
-                font-weight: 700;
+                font-weight: 600;
                 transform: rotate(-90deg);
                 @include transition3;
             }

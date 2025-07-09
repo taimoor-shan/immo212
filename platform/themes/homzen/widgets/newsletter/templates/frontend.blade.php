@@ -1,7 +1,7 @@
 <div class="col-lg-4 col-md-6">
     <div class="footer-cl-4">
         @if($config['title'])
-            <div class="fw-7 text-white">
+            <div class="fw-6 text-white">
                 {!! BaseHelper::clean($config['title']) !!}
             </div>
         @endif

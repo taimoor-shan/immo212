@@ -1,10 +1,11 @@
-<section class="flat-section">
+<section class="flat-section-v4">
     {!! apply_filters('ads_render', null, 'blog_list_before') !!}
 
     <div class="row">
         <div class="col-lg-8">
-            <div class="flat-blog-list">
+            <div class="flat-blog-list row">
                 @foreach($posts as $post)
+                <div class="col-lg-6">
                     <div class="flat-blog-item">
                         <a class="img-style" href="{{ $post->url }}">
                             {{ RvMedia::image($post->image, $post->name) }}
@@ -13,7 +14,7 @@
                         <div class="content-box">
                             <div class="post-author">
                                 @if (theme_option('blog_show_author_name', 'yes') == 'yes' && class_exists($post->author_type) && ($author = $post->author ?? null) && trim($author->name))
-                                    <span class="text-black fw-7">{{ $author->name }}</span>
+                                    <span class="text-black fw-6">{{ $author->name }}</span>
                                 @endif
 
                                 @if($category = $post->firstCategory)
@@ -33,6 +34,7 @@
                             <a href="{{ $post->url }}" class="btn-read-more">{{ __('Read More') }}</a>
                         </div>
                     </div>
+                </div>
                 @endforeach
 
                 {{ $posts->links(Theme::getThemeNamespace('partials.pagination')) }}

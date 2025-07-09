@@ -4,9 +4,9 @@
             <span class="title-price">{{ __('Price Range') }}</span>
             <div class="caption-price">
                 <span>{{ __('from') }}</span>
-                <span data-bb-toggle="range-from-value" class="fw-7 ms-1 me-1"></span>
+                <span data-bb-toggle="range-from-value" class="fw-6 ms-1 me-1"></span>
                 <span>{{ __('to') }}</span>
-                <span data-bb-toggle="range-to-value" class="fw-7 ms-1"></span>
+                <span data-bb-toggle="range-to-value" class="fw-6 ms-1"></span>
             </div>
         </div>
         <div data-bb-toggle="range-slider" data-currency-prefix-symbol="{{ get_application_currency()->is_prefix_symbol }}" data-currency-symbol="{{ get_application_currency()->symbol }}" data-currency-with-space="{{ (setting('real_estate_add_space_between_price_and_currency', 0) == 1) }}"></div>

@@ -81,7 +81,7 @@
                             @foreach($relatedPosts as $post)
                                 <div @class(['previous-post' => $loop->first, 'next-post' => ! $loop->first])>
                                     <div class="subtitle">{{ $loop->first ? __('Previous') : __('Next') }}</div>
-                                    <div class="h7 fw-7 text-black text-capitalize">
+                                    <div class="h7 fw-6 text-black text-capitalize">
                                         <a href="{{ $post->url }}">{!! BaseHelper::clean($post->name) !!}</a>
                                     </div>
                                 </div>

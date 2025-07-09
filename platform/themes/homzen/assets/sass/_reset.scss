@@ -218,7 +218,7 @@ input[type='color'] {
     box-shadow: none;
     font-size: 16px;
     line-height: 26px;
-    border-radius: 8px;
+    border-radius: 6px;
     padding: 14px 16px;
     width: 100%;
     background: $white;
@@ -364,8 +364,8 @@ a {
     }
 }
 label {
-    font-family: $font-2;
-    font-weight: 400;
+    font-family: $primary;
+    font-weight: 500;
 }
 .link {
     @include transition3;
@@ -399,8 +399,9 @@ label {
 }
 .text-1 {
     font-size: 18px;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 28px;
+    color: $primary;
 }
 .text-2 {
     font-size: 16px;
@@ -457,7 +458,7 @@ label {
 }
 
 .fw-7 {
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .fw-8 {
@@ -555,7 +556,7 @@ label {
 }
 // radius
 .round-8 {
-    border-radius: 8px;
+    border-radius: 6px;
 }
 .round-12 {
     border-radius: 12px;

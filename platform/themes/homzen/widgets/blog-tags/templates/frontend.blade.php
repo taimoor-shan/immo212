@@ -1,7 +1,7 @@
 @if ($tags->isNotEmpty())
     <div class="widget-box bg-surface tag">
         @if ($config['name'])
-            <div class="h7 fw-7 text-black">{!! BaseHelper::clean($config['name']) !!}</div>
+            <div class="h7 fw-6 text-black">{!! BaseHelper::clean($config['name']) !!}</div>
         @endif
 
         <ul>

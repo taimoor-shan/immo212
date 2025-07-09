@@ -1,6 +1,6 @@
 @if ($property->features->isNotEmpty())
     <div @class(['single-property-feature', $class ?? null])>
-        <div class="h7 title fw-7">{{ __('Amenities and features') }}</div>
+        <div class="h7 title fw-6">{{ __('Amenities and features') }}</div>
         <div class="box-feature">
             <ul>
                 @foreach ($property->features as $feature)

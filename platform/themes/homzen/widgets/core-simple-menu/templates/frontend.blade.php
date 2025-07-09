@@ -3,7 +3,7 @@
         <div class="col-lg-2 col-md-4 col-6">
             <div class="footer-cl-3">
                 @if ($config['name'])
-                    <div class="fw-7 text-white">{!! BaseHelper::clean($config['name']) !!}</div>
+                    <div class="fw-6 text-white">{!! BaseHelper::clean($config['name']) !!}</div>
                 @endif
                 <ul class="mt-10 navigation-menu-footer">
                     @foreach ($items as $item)

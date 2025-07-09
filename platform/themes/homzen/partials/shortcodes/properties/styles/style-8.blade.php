@@ -1,14 +1,13 @@
 <section
-    class="flat-section flat-property-v8 wow fadeInUpSmall"
+    class="flat-section pt-3 flat-property-v8 wow fadeInUpSmall"
     data-wow-delay=".2s"
     data-wow-duration="2000ms"
-    @style(["background-color: $shortcode->background_color" => $shortcode->background_color])
->
+    @style(["background-color: $shortcode->background_color" => $shortcode->background_color])>
     <div class="container">
         {!! Theme::partial('shortcode-heading', compact('shortcode')) !!}
 
         <div class="wrap-sw-property-v8 position-relative">
-            <div class="swiper tf-sw-property-v8">
+            <div class="swiper tf-sw-property-v8" id="tf-sw-property-v8">
                 <div class="swiper-wrapper">
                     @foreach($properties as $property)
                         <div class="swiper-slide">
@@ -20,10 +19,10 @@
 
             <!-- Navigation positioned outside carousel on sides -->
             <div class="carousel-navigation-v8">
-                <div class="navigation-btn nav-prev-property-v8">
+                <div class="navigation-btn nav-prev-property-v8 nav-prev">
                     <x-core::icon name="ti ti-chevron-left" />
                 </div>
-                <div class="navigation-btn nav-next-property-v8">
+                <div class="navigation-btn nav-next-property-v8 nav-next">
                     <x-core::icon name="ti ti-chevron-right" />
                 </div>
             </div>

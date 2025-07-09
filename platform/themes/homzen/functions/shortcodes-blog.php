@@ -18,7 +18,7 @@ if (! is_plugin_active('blog')) {
 
 Event::listen(RouteMatched::class, function (): void {
     Shortcode::register('blog-posts', __('Blog Posts'), __('Blog Posts'), function (ShortcodeCompiler $shortcode) {
-        $limit = (int) $shortcode->limit ?: 3;
+        $limit = (int) $shortcode->limit ?: 6;
 
         /**
          * @var Collection<\Botble\Blog\Models\Post> $posts
@@ -49,7 +49,7 @@ Event::listen(RouteMatched::class, function (): void {
                 UiSelectorFieldOption::make()
                     ->label(__('Style'))
                     ->choices(
-                        collect(range(1, 2))
+                        collect(range(1, 3))
                             ->mapWithKeys(fn ($number) => [
                                 $number => [
                                     'label' => __('Style :number', ['number' => $number]),
@@ -73,7 +73,7 @@ Event::listen(RouteMatched::class, function (): void {
                     ])
                     ->defaultValue('recent')
             )
-            ->addLimitField(defaultValue: 3)
+            ->addLimitField(defaultValue: 6)
             ->addBackgroundColorField(defaultValue: '#f7f7f7');
     });
 });

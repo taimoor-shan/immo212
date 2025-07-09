@@ -1,6 +1,6 @@
 @if ($property->formatted_floor_plans->isNotEmpty())
      <div @class(['single-property-floor', $class ?? null])>
-        <div class="h7 title fw-7">{{ __('Floor plans') }}</div>
+        <div class="h7 title fw-6">{{ __('Floor plans') }}</div>
         <ul class="box-floor" id="parent-floor">
             @foreach ($property->formatted_floor_plans as $floorPlan)
                 @php
@@ -11,7 +11,7 @@
                     <div class="floor-header" data-bs-target="#floor-{{ $slug }}" data-bs-toggle="collapse" aria-expanded="false" aria-controls="floor-{{ $slug }}">
                         <div class="inner-left">
                             <i class="icon icon-arr-r"></i>
-                            <span class="fw-7">{!! BaseHelper::clean($floorPlan['name']) !!}</span>
+                            <span class="fw-6">{!! BaseHelper::clean($floorPlan['name']) !!}</span>
                         </div>
                         <ul class="inner-right">
                             @if ($floorPlan['bedrooms'])

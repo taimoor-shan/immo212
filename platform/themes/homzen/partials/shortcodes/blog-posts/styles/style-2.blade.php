@@ -11,7 +11,7 @@
                         </div>
                         <div class="content-box">
                             <span class="date-post">{{ Theme::formatDate($post->created_at) }}</span>
-                            <div class="title h7 fw-7 link">
+                            <div class="title h7 fw-6 link">
                                 <a href="{{ $post->url }}" class="line-clamp-1">{{ $post->name }}</a>
                             </div>
                             <div class="post-author">

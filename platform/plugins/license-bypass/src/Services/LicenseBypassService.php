@@ -186,6 +186,14 @@ class LicenseBypassService
     }
 
     /**
+     * Check if logging is enabled
+     */
+    public function isLoggingEnabled(): bool
+    {
+        return $this->config['logging']['enabled'] ?? false;
+    }
+
+    /**
      * Log messages if logging is enabled
      */
     private function log(string $level, string $message): void

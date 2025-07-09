@@ -10,9 +10,9 @@
                 <span class="title-price">{{ __('Flat Range') }}</span>
                 <div class="caption-price">
                     <span>{{ __('from') }}</span>
-                    <span id="slider-flat-value01" class="fw-7 ms-1 me-1"></span>
+                    <span id="slider-flat-value01" class="fw-6 ms-1 me-1"></span>
                     <span>{{ __('to') }}</span>
-                    <span id="slider-flat-value02" class="fw-7 ms-1"></span>
+                    <span id="slider-flat-value02" class="fw-6 ms-1"></span>
                 </div>
             </div>
             <div id="slider-flat"

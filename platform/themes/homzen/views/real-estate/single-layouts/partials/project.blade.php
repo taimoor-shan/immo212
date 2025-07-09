@@ -1,6 +1,6 @@
 @if (RealEstateHelper::isEnabledProjects() && $property->project_id && ($project = $property->project))
     <div @class(['single-property-project', $class ?? null])>
-        <div class="h7 title fw-7">{{ __("Project's Information") }}</div>
+        <div class="h7 title fw-6">{{ __("Project's Information") }}</div>
         <div class="box-project mt-3">
             <div class="project-thumb">
                 <a href="{{ $project->url }}">

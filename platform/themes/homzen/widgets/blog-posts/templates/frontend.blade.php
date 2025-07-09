@@ -1,7 +1,7 @@
 @if ($posts->isNotEmpty())
     <div class="widget-box bg-surface recent">
         @if($config['name'])
-            <div class="h7 fw-7 text-black">{{ $config['name'] }}</div>
+            <div class="h7 fw-6 text-black">{{ $config['name'] }}</div>
         @endif
 
         <ul>

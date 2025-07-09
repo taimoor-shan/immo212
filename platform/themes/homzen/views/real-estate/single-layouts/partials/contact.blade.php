@@ -1,5 +1,5 @@
  <div @class(['widget-box single-property-contact', $class ?? null])>
-    <div class="h7 title fw-7">{{ __('Contact Agency') }}</div>
+    <div class="h7 title fw-6">{{ __('Contact Agency') }}</div>
     @if (! RealEstateHelper::hideAgentInfoInPropertyDetailPage() && ($account = $property->author))
         <div class="box-avatar">
             <div class="avatar avt-100 round">

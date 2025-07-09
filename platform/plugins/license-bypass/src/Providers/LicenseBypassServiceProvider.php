@@ -34,6 +34,9 @@ class LicenseBypassServiceProvider extends ServiceProvider
         $this->app->singleton(HttpInterceptorService::class, function ($app) {
             return new HttpInterceptorService($app->make(LicenseBypassService::class));
         });
+
+        // We'll handle the license bypass through middleware and filters instead
+        // since the Core class is final and the middleware has strict type hints
     }
 
     /**
@@ -116,13 +119,38 @@ class LicenseBypassServiceProvider extends ServiceProvider
                 \Botble\LicenseBypass\Http\Middleware\DisableLicenseMiddleware::class
             );
 
-            // Listen for route matched event to ensure middleware is applied
+            // Listen for route matched event to remove license middleware after it's been added
             Event::listen(RouteMatched::class, function (): void {
+                $this->removeLicenseMiddleware();
                 $this->ensureMiddlewareRegistration();
             });
         } catch (\Exception $e) {
             if (function_exists('logger')) {
                 logger()->error('[License Bypass] Failed to register middleware: ' . $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Remove the license middleware from the core middleware group
+     */
+    private function removeLicenseMiddleware(): void
+    {
+        try {
+            // Get the current core middleware array
+            $coreMiddleware = $this->app->make('core.middleware');
+
+            // Remove the license middleware
+            $filteredMiddleware = array_filter($coreMiddleware, function ($middleware) {
+                return $middleware !== \Botble\Base\Http\Middleware\EnsureLicenseHasBeenActivated::class;
+            });
+
+            // Update the core middleware
+            $this->app->instance('core.middleware', array_values($filteredMiddleware));
+
+        } catch (\Exception $e) {
+            if (function_exists('logger')) {
+                logger()->error('[License Bypass] Failed to remove license middleware: ' . $e->getMessage());
             }
         }
     }

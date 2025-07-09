@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="mt-5 box-title-review d-flex justify-content-between align-items-center flex-wrap gap-20">
-            <div class="h7 fw-7">
+            <div class="h7 fw-6">
                 @if($model->reviews_count === 1)
                     {{ __('1 Review') }}
                 @else

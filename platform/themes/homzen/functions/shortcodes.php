@@ -443,7 +443,24 @@ Event::listen(RouteMatched::class, function (): void {
         return ShortcodeForm::createFromArray($attributes)
             ->lazyLoading()
             ->addSectionHeadingFields()
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->label(__('Description'))
+                    ->rows(4)
+            )
             ->addSectionButtonAction()
+            ->add(
+                'button_2_label',
+                TextField::class,
+                TextFieldOption::make()->label(__('Second Button Label')),
+            )
+            ->add(
+                'button_2_url',
+                TextField::class,
+                TextFieldOption::make()->label(__('Second Button URL')),
+            )
             ->add(
                 'image',
                 MediaImageField::class,

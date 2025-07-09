@@ -7,7 +7,7 @@
                 </div>
                 <div class="content w-100">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div class="name h7 fw-7 text-black">
+                        <div class="name h7 fw-6 text-black">
                             {{ $review->author->name }}
                         </div>
                         <span class="mt-4 d-inline-block date body-3 text-variant-2">

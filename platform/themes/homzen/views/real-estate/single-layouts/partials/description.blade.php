@@ -1,7 +1,7 @@
 @if ($property->content || $property->private_notes)
     <div @class(['single-property-desc', $class ?? null])>
         @if($property->content)
-            <div class="h7 title fw-7">{{ __('Description') }}</div>
+            <div class="h7 title fw-6">{{ __('Description') }}</div>
             <div class="body-2 text-variant-1">
                 <div class="ck-content single-detail">
                     {!! BaseHelper::clean($property->content) !!}
@@ -11,7 +11,7 @@
 
         @if($property->can_see_private_notes && $property->private_notes)
             <div class="bd-callout bd-callout-info">
-                <div class="h7 title fw-7 mb-2">{{ __('Private Notes') }}</div>
+                <div class="h7 title fw-6 mb-2">{{ __('Private Notes') }}</div>
 
                 {!! BaseHelper::clean(nl2br($property->private_notes)) !!}
             </div>
@@ -20,7 +20,7 @@
 @endif
 
 <div @class(['single-property-overview', $class ?? null])>
-    <div class="h7 title fw-7">{{ __('Overview') }}</div>
+    <div class="h7 title fw-6">{{ __('Overview') }}</div>
     <div class="row row-cols-sm-2 row-cols-lg-3 g-3 g-lg-4 info-box">
         <div class="col item">
             <div class="box-icon w-52">

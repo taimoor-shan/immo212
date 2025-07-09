@@ -67,7 +67,7 @@
                                                 </div>
                                                 <div class="info">
                                                     <p class="body-2 text-variant-1">{{ __('Agent') }}</p>
-                                                    <div class="mt-4 h7 fw-7">{{ $author->name }}</div>
+                                                    <div class="mt-4 h7 fw-6">{{ $author->name }}</div>
                                                 </div>
                                             </div>
                                         @endif

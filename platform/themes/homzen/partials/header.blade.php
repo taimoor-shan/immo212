@@ -26,7 +26,7 @@
                     <div class="header-account">
                         @if (is_plugin_active('real-estate') && RealEstateHelper::isLoginEnabled())
                             <div class="flat-bt-top">
-                                <a class="tf-btn primary" href="{{ route('public.account.properties.index') }}">{{ __('Submit Property') }}</a>
+                                <a class="tf-btn" href="{{ route('public.account.properties.index') }}">{{ __('Submit Listing') }}</a>
                             </div>
                         @endif
                     </div>

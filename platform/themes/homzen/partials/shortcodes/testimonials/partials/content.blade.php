@@ -21,7 +21,7 @@
         {{ RvMedia::image($testimonial->image, $testimonial->name) }}
     </div>
     <div class="info">
-        <div class="h7 fw-7">{{ $testimonial->name }}</div>
+        <div class="h7 fw-6">{{ $testimonial->name }}</div>
         <p class="text-variant-1 mt-4">{{ $testimonial->company }}</p>
     </div>
 </div>

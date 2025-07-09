@@ -9,12 +9,22 @@
                     @if($shortcode->title)
                         <h2 class="section-title mt-4">{!! BaseHelper::clean($shortcode->title) !!}</h2>
                     @endif
+                    @if($shortcode->description)
+                        <p class="mt-3">{!! BaseHelper::clean($shortcode->description) !!}</p>
+                    @endif
                 </div>
+                <div class="box-buttons d-flex align-items-center justify-content-start gap-3">
                 @if($shortcode->button_label)
-                    <a href="{{ $shortcode->button_url }}" class="tf-btn primary size-1">
-                        {{ $shortcode->button_label }}
-                    </a>
-                @endif
+                        <a href="{{ $shortcode->button_url }}" class="tf-btn primary">
+                            {{ $shortcode->button_label }}
+                        </a>
+                    @endif
+                    @if($shortcode->button_2_label)
+                        <a href="{{ $shortcode->button_2_url }}" class="tf-btn secondary">
+                            {{ $shortcode->button_2_label }}
+                        </a>
+                    @endif
+                </div>
             </div>
             @if($shortcode->image)
                 <div class="box-right">

@@ -104,6 +104,120 @@
             line-height: 26px;
         }
     }
+}
+
+// Blog carousel specific styles (style-3)
+.flat-blog-item-carousel {
+    margin-bottom: 0; // Remove default margin in carousel
+    display: block;
+    height: 100%; // Ensure consistent card heights
+    border-radius: 6px;
+    overflow: hidden;
+    background: $white;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .img-style {
+        position: relative;
+        overflow: hidden;
+        border-radius: 6px 6px 0 0;
+
+        img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        &:hover img {
+            transform: scale(1.05);
+        }
+    }
+
+    .date-post {
+        z-index: 1;
+        position: absolute;
+        inset-inline-start: 16px;
+        bottom: 16px;
+        display: inline-block;
+        font-family: $font-2;
+        padding: 6px 12px;
+        background-color: $primary;
+        color: $white;
+        font-size: 12px;
+        line-height: 19px;
+        letter-spacing: 0.8px;
+        font-weight: 600;
+        border-radius: 6px;
+    }
+
+    .content-box {
+        padding: 16px;
+        height: calc(100% - 200px); // Adjust based on image height
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #054ba1;
+
+        .post-author {
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: $variant-1;
+
+            span {
+                margin-right: 12px;
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+
+            a {
+                color: $primary;
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+
+        .title {
+            margin: 0 0 1rem;
+            flex-grow: 1;
+            color: $white;
+            line-height:1.4;
+            font-size:18px;
+            font-weight:400;
+
+            a {
+                color: $white;
+                text-decoration: none;
+                font-weight: 500;
+                padding-inline: 1rem;
+
+                &:hover {
+                    color: $primary;
+                }
+            }
+        }
+
+        .description {
+            margin: 0;
+            color: $variant-1;
+            font-size: 14px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    }
 
     &.style-1 {
         position: relative;
@@ -159,11 +273,11 @@
             background: $garden-4;
         }
 
-        &:hover {
-            &::after {
-                height: 100%;
-            }
-        }
+        // &:hover {
+        //     &::after {
+        //         height: 100%;
+        //     }
+        // }
     }
 }
 
@@ -275,7 +389,7 @@
             border-bottom: 1px solid $outline;
 
             .img-style {
-                border-radius: 8px;
+                border-radius: 6px;
                 width: 110px;
                 height: 110px;
                 flex-shrink: 0;
@@ -294,7 +408,7 @@
                 .title {
                     font-size: 18px;
                     line-height: 28px;
-                    font-weight: 700;
+                    font-weight: 600;
                     color: $on-surface;
                 }
             }
@@ -450,7 +564,7 @@
         }
 
         .subtitle {
-            font-weight: 700;
+            font-weight: 600;
             color: $body;
             margin-bottom: 4px;
             font-size: 16px;
@@ -481,7 +595,7 @@
     .quote {
         font-size: 24px;
         line-height: 30px;
-        font-weight: 700;
+        font-weight: 600;
         color: $on-surface;
         margin-bottom: 16px;
     }
@@ -491,7 +605,7 @@
         font-size: 16px;
         line-height: 26px;
         letter-spacing: 0.8px;
-        font-weight: 700;
+        font-weight: 600;
         position: relative;
         padding-left: 28px;
 
@@ -550,13 +664,13 @@
         align-items: center;
         justify-content: center;
         font-size: 16px;
-        font-weight: 700;
+        font-weight: 600;
         color: $on-surface;
         text-align: center;
         width: 48px;
         height: 50px;
         line-height: 50px;
-        border-radius: 8px;
+        border-radius: 6px;
         object-fit: cover;
         position: relative;
         -webkit-transition: all 0.3s ease;
@@ -624,7 +738,7 @@
 
     .view-question {
         margin-top: 22px;
-        font-weight: 700;
+        font-weight: 600;
         display: inline-block;
         border-bottom: 1px solid $on-surface;
     }
@@ -635,12 +749,12 @@
     font-weight: 500;
     font-size: 12px;
     line-height: 1;
-    letter-spacing: 0.8px;
+    letter-spacing: 0;
     text-align: center;
     display: inline-block;
-    padding: 8px 16px;
-    border-radius: 32px;
-    background-color: rgba(11, 33, 50, 0.4);
+    padding: 4px 6px;
+    border-radius: 2px;
+    background-color: $primary;
     color: $white;
     text-transform: uppercase;
    
@@ -718,7 +832,7 @@
             }
 
             span {
-                font-weight: 700;
+                font-weight: 600;
                 font-size: 18px;
                 line-height: 28px;
             }
@@ -751,7 +865,7 @@
             gap: 16px;
 
             .nav-link-item {
-                border-radius: 8px;
+                border-radius: 6px;
                 background-color: $surface;
                 color: $on-surface;
             }
@@ -787,7 +901,12 @@
     display: block;
     border-radius: 6px;
     overflow: hidden;
-    border: 1px solid $primary;
+    border: 1px solid $outline;
+    @include transition3;
+
+    &:hover{
+        border-color: $primary;
+    }
 
     .images-group {
         position: relative;
@@ -808,10 +927,12 @@
         }
 
         .box-icon {
-            background-color: $rgba-black;
-            border-radius: 4px;
+            background-color: $rgba-prime;
+            border-radius: 30px;
             border: none;
-
+&.active{
+        background-color: $primary;
+}
             &.w-40 {
                 .icon {
                     color: $white;
@@ -866,14 +987,20 @@
         img {
             @include transition3;
             width: 100%;
-            aspect-ratio: 16 / 9;
+            aspect-ratio: 16 / 10;
             object-fit: cover;
         }
     }
 
     .content {
-        padding: 16px 20px;
-        border-bottom: 1px solid $outline;
+        padding: 14px;
+        border-bottom: none;
+
+        .property-type-badge{
+            font-size: 14px;
+            font-weight:600;
+            color:$body;
+        }
 
         .desc {
             display: flex;
@@ -892,7 +1019,7 @@
         }
 
         .meta-list {
-            margin-top: 12px;
+            margin-top: 0;
             display: flex;
             align-items: center;
             column-gap: 14px;
@@ -982,7 +1109,7 @@
                     }
 
                     span {
-                        font-weight: 700;
+                        font-weight: 600;
                         font-size: 20px;
                         line-height: 28px;
                     }
@@ -1043,7 +1170,7 @@
                 height: 132px;
                 @include transition4;
                 background: $garden-2;
-                opacity: 1;
+                opacity: 0;
             }
 
             .flag-tag.style-2 {
@@ -1170,7 +1297,7 @@
 
 // box title
 .box-title {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 
     &.style-1 {
         @include flex(center, space-between);
@@ -1455,7 +1582,7 @@
     display: flex;
     align-items: center;
     gap: 24px;
-    border-radius: 8px;
+    border-radius: 6px;
     overflow: hidden;
     background-color: $surface;
     box-shadow: 0px 2px 2px 0px #1c24331a;
@@ -1504,6 +1631,108 @@
                     color: $white;
                 }
             }
+        }
+    }
+}
+
+// Location Style 5 - 2x6 Grid Layout
+.grid-location-v5 {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+
+    @media (max-width: 1199px) {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+    }
+
+    @media (max-width: 767px) {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+        gap: 15px;
+    }
+}
+
+.box-location-v5 {
+    position: relative;
+    display: block;
+    border-radius: 6px;
+    overflow: hidden;
+    @include transition6;
+
+    .image-wrapper {
+        position: relative;
+        width: 100%;
+        height: 200px;
+
+        @media (max-width: 767px) {
+            height: 150px;
+        }
+    }
+
+    .image {
+        width: 100%;
+        height: 100%;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+            @include transition6;
+        }
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 6px;
+        @include transition6;
+    }
+
+    .content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px 16px;
+        z-index: 10;
+
+        @media (max-width: 767px) {
+            padding: 15px 12px;
+        }
+
+        .title {
+            color: $white;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin: 0;
+            text-align: center;
+            @include transition6;
+
+            @media (max-width: 767px) {
+                font-size: 14px;
+            }
+        }
+    }
+
+    &:hover {
+        .overlay {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .image img {
+            transform: scale(1.05);
+        }
+
+        .content .title {
+            transform: translateY(-2px);
         }
     }
 }
@@ -1680,7 +1909,7 @@
             gap: 8px;
             font-size: 18px;
             line-height: 28px;
-            font-weight: 700;
+            font-weight: 600;
 
             &:last-child,
             &:nth-child(2) {
@@ -1887,7 +2116,7 @@
             font-family: $font-2;
             font-size: 24px;
             line-height: 30px;
-            font-weight: 700;
+            font-weight: 600;
             letter-spacing: 0.8px;
             color: $on-surface;
         }
@@ -2025,7 +2254,7 @@
                 .flag-tag {
                     font-size: 16px;
                     line-height: 26px;
-                    font-weight: 700;
+                    font-weight: 600;
                 }
             }
 
@@ -2059,7 +2288,7 @@
                     gap: 12px;
                     font-size: 20px;
                     line-height: 28px;
-                    font-weight: 700;
+                    font-weight: 600;
                     color: $on-surface;
 
                     .icon {
@@ -2318,7 +2547,7 @@
             bottom: 0px;
             background-color: $white;
             padding: 12px 0px;
-            border-radius: 8px;
+            border-radius: 6px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             left: 37px;
@@ -2506,7 +2735,7 @@
 .homeya-categories {
     padding: 30px 24px 24px 24px;
     background-color: $surface;
-    border-radius: 8px;
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2574,7 +2803,7 @@
         transition: transform 400ms ease;
         transform-origin: bottom center;
         z-index: -1;
-        border-radius: 8px;
+        border-radius: 6px;
     }
 
     &.style-1 {
@@ -2707,7 +2936,7 @@
         width: 40px;
         height: 40px;
         z-index: 123;
-        border-radius: 8px;
+        border-radius: 6px;
 
         .icon {
             font-size: 16px;
@@ -2837,7 +3066,7 @@
     height: 24px;
     line-height: 24px;
     font-size: 12px;
-    border-radius: 8px;
+    border-radius: 6px;
     z-index: 9;
     text-align: center;
     cursor: pointer;
@@ -2895,13 +3124,13 @@
         font-size: 18px;
         line-height: 28px;
         margin-top: 4px;
-        font-weight: 700;
+        font-weight: 600;
     }
 
     .price {
         font-size: 14px;
         line-height: 20px;
-        font-weight: 700;
+        font-weight: 600;
         color: $primary;
         margin-top: 4px;
         text-align: start;
@@ -2959,7 +3188,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 20px;
+    border-radius: 6px;
+    overflow: hidden;
 
     .box-left {
         padding: 60px 20px 60px 80px;
@@ -2971,10 +3201,11 @@
 
     .box-right {
         flex-shrink: 0;
-        max-width: 60%;
+        max-width: 50%;
 
         img {
-            margin-top: -60px;
+            aspect-ratio: 16 / 8;
+            object-fit: cover;
         }
     }
 }
@@ -3151,8 +3382,8 @@
         width: 48px;
         height: 50px;
         @include flex(center, center);
-        font-weight: 700;
-        border-radius: 8px;
+        font-weight: 600;
+        border-radius: 6px;
 
         &:hover,
         &.active {
@@ -3192,7 +3423,7 @@
     .images-style {
         position: relative;
         overflow: hidden;
-        border-radius: 8px;
+        border-radius: 6px;
         width: 110px;
         height: 110px;
 
@@ -3278,7 +3509,7 @@
         z-index: 12;
 
         .item {
-            border-radius: 8px;
+            border-radius: 6px;
             width: 52px;
             height: 52px;
             @include transition5;
@@ -3342,7 +3573,7 @@
             .label {
                 margin-bottom: 12px;
                 letter-spacing: 0.8px;
-                font-weight: 700;
+                font-weight: 600;
                 color: $variant-1;
                 opacity: 0.8;
             }
@@ -3360,7 +3591,7 @@
                 gap: 8px;
                 font-size: 18px;
                 line-height: 28px;
-                font-weight: 700;
+                font-weight: 600;
                 color: $on-surface;
 
                 .meta-item-review {
@@ -3448,7 +3679,7 @@
             gap: 12px;
 
             span {
-                font-weight: 700;
+                font-weight: 600;
             }
 
             .label {
@@ -3459,7 +3690,7 @@
             }
 
             .box-icon {
-                border-radius: 8px;
+                border-radius: 6px;
                 background-color: $surface;
                 min-width: 52px;
 
@@ -3683,7 +3914,7 @@
         gap: 12px;
 
         .box-icon {
-            border-radius: 8px;
+            border-radius: 6px;
             background-color: $surface;
         }
 
@@ -3930,7 +4161,7 @@
             flex-shrink: 0;
             width: 143px;
             height: 48px;
-            font-weight: 700;
+            font-weight: 600;
             @include flex(center, center);
             @include transition4;
             border-bottom: 2px solid transparent;
@@ -4109,7 +4340,7 @@
     }
 
     .img-thumb-pagi {
-        border-radius: 8px;
+        border-radius: 6px;
         overflow: hidden;
     }
 }
@@ -4249,7 +4480,7 @@
             display: block;
             font-size: 20px;
             line-height: 28px;
-            font-weight: 700;
+            font-weight: 600;
             position: relative;
 
             &::after {
@@ -4562,7 +4793,7 @@
             .item {
                 width: 44px;
                 height: 44px;
-                border-radius: 8px;
+                border-radius: 6px;
                 border: 1px solid $outline;
                 background-color: $white;
                 @include flex(center, center);
@@ -4655,10 +4886,10 @@
     .btn-login-social {
         @include flex(center, center);
         gap: 12px;
-        font-weight: 700;
+        font-weight: 600;
         height: 48px;
         border: 1px solid $outline;
-        border-radius: 8px;
+        border-radius: 6px;
         background-color: $white;
 
         img {

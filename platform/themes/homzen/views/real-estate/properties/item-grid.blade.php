@@ -31,7 +31,7 @@
         <div class="content">
             @if($property->category)
                 <div class="property-type-badge">
-                    <span class="fw-5 text-variant-2">{{ $property->category->name }}</span>
+                    <span class="">{{ $property->category->name }}</span>
                 </div>
             @endif
             <!-- Original title (hidden but kept for accessibility/SEO) -->

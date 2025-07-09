@@ -227,7 +227,7 @@ svg {
             font-family: $font-2;
             font-size: 16px;
             line-height: 26px;
-            font-weight: 700;
+            font-weight: 600;
             text-align: center;
             padding: 10px 20px;
             border-radius: 4px;
@@ -462,7 +462,7 @@ svg {
 .flat-banner-blog {
     img {
         height: 100%;
-        max-height: 60rem;
+        max-height: 35rem;
         object-fit: cover;
     }
 }
@@ -619,7 +619,7 @@ svg {
         .title {
             a {
                 font-size: 1.5rem;
-                font-weight: 700;
+                font-weight: 600;
 
                 &:hover {
                     color: var(--primary-color);
@@ -698,7 +698,7 @@ svg {
         .search-suggestion-content {
             h6 {
                 font-size: 1rem;
-                font-weight: 700;
+                font-weight: 600;
                 color: var(--bs-gray-800);
                 line-height: 1.5;
             }
@@ -760,6 +760,8 @@ svg {
 
 h2.section-title {
     font-size: var(--h4-size);
+    color: $primary;
+    text-align:left;
 }
 
 .property-share-social {
@@ -823,7 +825,7 @@ h2.section-title {
     border-radius: var(--bs-border-radius);
     color: #fff;
     display: inline-block;
-    font-weight: 700;
+    font-weight: 600;
     padding: 2px 5px;
     text-align: center;
     white-space: nowrap;
@@ -902,7 +904,7 @@ h2.section-title {
 
         .agent-name {
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 600;
             line-height: 1;
         }
 
@@ -916,7 +918,7 @@ h2.section-title {
             font-size: 1rem;
 
             strong {
-                font-weight: 700;
+                font-weight: 600;
             }
         }
 
@@ -986,7 +988,7 @@ h2.section-title {
 
         h5 {
             font-size: 1.25rem;
-            font-weight: 700;
+            font-weight: 600;
             margin-bottom: 1rem;
             line-height: 1;
         }
@@ -1129,7 +1131,7 @@ body[dir="rtl"] {
 
         .career-title {
             font-size: 1.25rem;
-            font-weight: 700;
+            font-weight: 600;
             margin-bottom: 0.5rem;
             line-height: 1;
 
@@ -1153,7 +1155,7 @@ body[dir="rtl"] {
 
         .career-name {
             font-size: 2rem;
-            font-weight: 700;
+            font-weight: 600;
             margin-bottom: 1rem;
             line-height: 1;
         }
@@ -1169,7 +1171,7 @@ body[dir="rtl"] {
             }
 
             h1, h2, h3, h4, h5, h6 {
-                font-weight: 700;
+                font-weight: 600;
                 margin: 1rem 0 0.5rem;
                 line-height: 1;
             }
@@ -1203,7 +1205,7 @@ body[dir="rtl"] {
     .career-related {
         .career-related-title {
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 600;
             margin-bottom: 1rem;
             line-height: 1;
         }
@@ -1231,7 +1233,7 @@ body[dir="rtl"] {
             width: 80px;
             height: 80px;
             font-size: 35px;
-            font-weight: 700;
+            font-weight: 600;
             padding: 10px;
             background-color: var(--primary-color);
             border-radius: 12px;
@@ -1615,7 +1617,7 @@ label.required:after {
 
                 h3 {
                     font-size: 1.25rem !important;
-                    font-weight: 700;
+                    font-weight: 600;
                     line-height: 1;
                     margin-bottom: 0;
                 }
@@ -1771,7 +1773,7 @@ a {
     width: 100% !important;
     height: 45px;
     line-height: 45px;
-    border-radius: 8px;
+    border-radius: 6px;
 }
 
 .nice-select {
@@ -1782,7 +1784,7 @@ a {
 
 .form-search-location .nice-select .list {
     width: 100% !important;
-    border-radius: 8px;
+    border-radius: 6px;
 }
 
 .nice-select .nice-select-search-wrapper {
@@ -1877,11 +1879,11 @@ a {
 }
 
 .ck-content {
-    a {
-        color: var(--primary-color);
+    // a {
+    //     color: var(--primary-color);
 
-        &:hover {
-            color: var(--primary-color-hover);
-        }
-    }
+    //     &:hover {
+    //         color: var(--primary-color-hover);
+    //     }
+    // }
 }

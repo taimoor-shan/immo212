@@ -1448,8 +1448,8 @@ $(() => {
     }
 
     const initPropertiesV8 = () => {
-        if ($('.tf-sw-property-v8').length > 0) {
-            new Swiper('.tf-sw-property-v8', {
+        if ($('#tf-sw-property-v8').length > 0) {
+            new Swiper('#tf-sw-property-v8', {
                 rtl: Theme.isRtl(),
                 slidesPerView: 1.2, // Show partial next slide on mobile
                 spaceBetween: 16,
@@ -1477,6 +1477,48 @@ $(() => {
             })
         }
     }
+    const initBlogsV8 = () => {
+        if ($('#tf-sw-blog-v8').length > 0) {
+            console.log('Initializing blog carousel v8...');
+            console.log('Found slides:', $('#tf-sw-blog-v8 .swiper-slide').length);
+
+            const swiper = new Swiper('#tf-sw-blog-v8', {
+                rtl: Theme.isRtl(),
+                slidesPerView: 1.2, // Show partial next slide on mobile
+                spaceBetween: 16,
+                navigation: {
+                    clickable: true,
+                    nextEl: '.nav-next-blog-v8',
+                    prevEl: '.nav-prev-blog-v8',
+                    disabledClass: 'swiper-button-disabled',
+                },
+                watchSlidesProgress: true,
+                breakpoints: {
+                    600: {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                    },
+                    991: {
+                        slidesPerView: 3,
+                        spaceBetween: 20,
+                    },
+                    1200: {
+                        slidesPerView: 4,
+                        spaceBetween: 30,
+                    },
+                },
+                on: {
+                    init: function() {
+                        console.log('Blog carousel initialized with', this.slides.length, 'slides');
+                    }
+                }
+            })
+        } else {
+            console.log('Blog carousel element #tf-sw-blog-v8 not found');
+        }
+    }
+
+
 
     initImageSlider()
     initImageSlider()
@@ -1980,6 +2022,15 @@ $(() => {
                 initServices()
 
                 break
+
+            case 'blog-posts':
+                console.log('Blog posts shortcode loaded with style:', attributes.style);
+                if (attributes.style === '3') {
+                    console.log('Initializing blog carousel style 3...');
+                    initBlogsV8()
+                }
+
+                break
         }
     })
 
@@ -2180,4 +2231,12 @@ $(() => {
     }
 
     enhancedLocationDropdown()
+
+    // Fallback initialization for blog carousel in case shortcode event doesn't fire
+    setTimeout(() => {
+        if ($('#tf-sw-blog-v8').length > 0 && !$('#tf-sw-blog-v8').hasClass('swiper-initialized')) {
+            console.log('Fallback: Initializing blog carousel...');
+            initBlogsV8()
+        }
+    }, 1000)
 })

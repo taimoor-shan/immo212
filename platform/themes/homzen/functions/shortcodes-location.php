@@ -68,7 +68,7 @@ Event::listen(RouteMatched::class, function (): void {
                 UiSelectorField::class,
                 UiSelectorFieldOption::make()
                     ->choices(
-                        collect(range(1, 4))
+                        collect(range(1, 5))
                             ->mapWithKeys(fn ($number) => [
                                 $number => [
                                     'label' => __('Style :number', ['number' => $number]),

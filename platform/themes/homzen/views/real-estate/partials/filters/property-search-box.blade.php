@@ -8,7 +8,7 @@
 
 @if($style === 'sidebar')
     <div class="flat-tab flat-tab-form widget-filter-search widget-box bg-surface">
-        <div class="h7 title fw-7">{{ __('Search') }}</div>
+        <div class="h7 title fw-6">{{ __('Search') }}</div>
         <div class="form-sl">
             <div class="wd-filter-select">
                 <div class="inner-group inner-filter">

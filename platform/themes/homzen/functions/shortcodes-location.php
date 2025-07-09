@@ -8,7 +8,12 @@ use Botble\Base\Forms\Fields\SelectField;
 use Botble\Base\Forms\Fields\UiSelectorField;
 use Botble\Location\Models\City;
 use Botble\Location\Models\State;
+use Botble\RealEstate\Enums\ModerationStatusEnum;
+use Botble\RealEstate\Enums\PropertyStatusEnum;
+use Botble\RealEstate\Facades\RealEstateHelper;
+use Botble\RealEstate\Models\Property;
 use Botble\Shortcode\Compilers\Shortcode as ShortcodeCompiler;
+use Carbon\Carbon;
 use Botble\Shortcode\Facades\Shortcode;
 use Botble\Theme\Facades\Theme;
 use Illuminate\Routing\Events\RouteMatched;
@@ -31,6 +36,28 @@ Event::listen(RouteMatched::class, function (): void {
             'city' => City::query()
                 ->wherePublished()
                 ->whereIn('id', $cityIds)
+                ->when(is_plugin_active('real-estate'), function ($query) {
+                    $query->whereIn('id', function ($subQuery) {
+                        $subQuery->select('city_id')
+                            ->from('re_properties')
+                            ->whereNotNull('city_id')
+                            ->distinct();
+
+                        // Apply active property conditions manually
+                        $subQuery->where('moderation_status', ModerationStatusEnum::APPROVED);
+
+                        // Exclude excepted statuses
+                        foreach (RealEstateHelper::exceptedPropertyStatuses() as $status) {
+                            $subQuery->where('status', '!=', $status);
+                        }
+
+                        // Apply not expired conditions
+                        $subQuery->where(function ($expiredQuery) {
+                            $expiredQuery->where('expire_date', '>=', Carbon::now()->toDateTimeString())
+                                ->orWhere('never_expired', true);
+                        });
+                    });
+                })
                 ->select(['id', 'name', 'image', 'slug'])
                 ->oldest('order')
                 ->oldest('name')
@@ -102,6 +129,28 @@ Event::listen(RouteMatched::class, function (): void {
                     ->choices(
                         City::query()
                             ->wherePublished()
+                            ->when(is_plugin_active('real-estate'), function ($query) {
+                                $query->whereIn('id', function ($subQuery) {
+                                    $subQuery->select('city_id')
+                                        ->from('re_properties')
+                                        ->whereNotNull('city_id')
+                                        ->distinct();
+
+                                    // Apply active property conditions manually
+                                    $subQuery->where('moderation_status', ModerationStatusEnum::APPROVED);
+
+                                    // Exclude excepted statuses
+                                    foreach (RealEstateHelper::exceptedPropertyStatuses() as $status) {
+                                        $subQuery->where('status', '!=', $status);
+                                    }
+
+                                    // Apply not expired conditions
+                                    $subQuery->where(function ($expiredQuery) {
+                                        $expiredQuery->where('expire_date', '>=', Carbon::now()->toDateTimeString())
+                                            ->orWhere('never_expired', true);
+                                    });
+                                });
+                            })
                             ->pluck('name', 'id')
                             ->all()
                     )
@@ -138,6 +187,35 @@ Event::listen(RouteMatched::class, function (): void {
             )
             ->addBackgroundColorField(defaultValue: '#f7f7f7')
             ->addSectionButtonAction()
-            ->addSliderFields();
+            // Slider fields - only show for carousel styles (1, 4)
+            ->add(
+                'is_autoplay',
+                SelectField::class,
+                SelectFieldOption::make()
+                    ->label(__('Is autoplay?'))
+                    ->choices(['yes' => __('Yes'), 'no' => __('No')])
+                    ->collapsible('style', [1, 4], Arr::get($attributes, 'style', 1))
+            )
+            ->add(
+                'autoplay_speed',
+                SelectField::class,
+                SelectFieldOption::make()
+                    ->label(__('Autoplay speed (if autoplay enabled)'))
+                    ->choices(
+                        array_combine(
+                            [2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+                            [2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
+                        )
+                    )
+                    ->collapsible('style', [1, 4], Arr::get($attributes, 'style', 1))
+            )
+            ->add(
+                'is_loop',
+                SelectField::class,
+                SelectFieldOption::make()
+                    ->label(__('Loop?'))
+                    ->choices(['yes' => __('Continuously'), 'no' => __('Stop on the last slide')])
+                    ->collapsible('style', [1, 4], Arr::get($attributes, 'style', 1))
+            );
     });
 });

@@ -1703,21 +1703,47 @@ $(() => {
         const projectWishlistArray = projectWishlist ? projectWishlist.split(',') : []
 
         wishlistArray.forEach((id) => {
-            $(`[data-bb-toggle="add-to-wishlist"][data-type="property"][data-id="${id}"]`).addClass('active').html(`
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />
-                </svg>
-            `)
+            const $button = $(`[data-bb-toggle="add-to-wishlist"][data-type="property"][data-id="${id}"]`)
+            $button.addClass('active')
+
+            // Update the icon
+            const $icon = $button.find('.icon, svg')
+            if ($icon.length) {
+                $icon.replaceWith(`
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />
+                    </svg>
+                `)
+            }
+
+            // Update the text to "Remove"
+            const $text = $button.find('span')
+            if ($text.length) {
+                $text.text('Remove')
+            }
         })
 
         projectWishlistArray.forEach((id) => {
-            $(`[data-bb-toggle="add-to-wishlist"][data-type="project"][data-id="${id}"]`).addClass('active').html(`
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />
-                </svg>
-            `)
+            const $button = $(`[data-bb-toggle="add-to-wishlist"][data-type="project"][data-id="${id}"]`)
+            $button.addClass('active')
+
+            // Update the icon
+            const $icon = $button.find('.icon, svg')
+            if ($icon.length) {
+                $icon.replaceWith(`
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />
+                    </svg>
+                `)
+            }
+
+            // Update the text to "Remove"
+            const $text = $button.find('span')
+            if ($text.length) {
+                $text.text('Remove')
+            }
         })
 
         initWishlistCount()
@@ -1941,22 +1967,46 @@ $(() => {
 
             if (wishlistArray.includes(String(id))) {
                 wishlistArray.splice(wishlistArray.indexOf(id), 1)
-                $currentTarget.removeClass('active').html(`
-                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path>
-                    </svg>
-                `)
+                $currentTarget.removeClass('active')
+
+                // Update the icon
+                const $icon = $currentTarget.find('.icon, svg')
+                if ($icon.length) {
+                    $icon.replaceWith(`
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path>
+                        </svg>
+                    `)
+                }
+
+                // Update the text to "Save"
+                const $text = $currentTarget.find('span')
+                if ($text.length) {
+                    $text.text('Save')
+                }
 
                 Theme.showSuccess($currentTarget.data('remove-message'))
             } else {
                 wishlistArray.push(id)
-                $currentTarget.addClass('active').html(`
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />
-                    </svg>
-                `)
+                $currentTarget.addClass('active')
+
+                // Update the icon
+                const $icon = $currentTarget.find('.icon, svg')
+                if ($icon.length) {
+                    $icon.replaceWith(`
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />
+                        </svg>
+                    `)
+                }
+
+                // Update the text to "Remove"
+                const $text = $currentTarget.find('span')
+                if ($text.length) {
+                    $text.text('Remove')
+                }
 
                 Theme.showSuccess($currentTarget.data('add-message'))
             }

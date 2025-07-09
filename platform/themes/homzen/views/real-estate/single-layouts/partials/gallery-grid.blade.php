@@ -9,7 +9,7 @@
                     </div>
                 </div>
             @else
-                <a href="{{ RvMedia::getImageUrl($image) }}" class="item-{{ $loop->iteration }} box-img" data-fancybox="gallery" @style(['display: none' => $loop->iteration > 5])>
+                <a href="{{ RvMedia::getImageUrl($image) }}" class="item-{{ $loop->iteration }} box-img" data-fancybox="gallery" @style(['display: none' => $loop->iteration > 4])>
                     {{ RvMedia::image($image, $property->name, lazy: false) }}
                 </a>
             @endif

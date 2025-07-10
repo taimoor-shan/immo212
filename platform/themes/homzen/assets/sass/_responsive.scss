@@ -1010,6 +1010,38 @@
         "image3 cta3 cta3"
         "image3 image4 image4";
     }
+
+    // Blog Bento Grid Mobile Adjustments
+    .blog-bento-grid {
+        .bento-blog-item {
+            &.content-area {
+                padding: 16px;
+
+                .content-box {
+                    .title a {
+                        font-size: 16px;
+                        line-height: 20px;
+                    }
+
+                    .description {
+                        font-size: 13px;
+                        line-height: 18px;
+                    }
+                }
+            }
+
+            &.image-overlay {
+                .content-overlay {
+                    padding: 16px;
+
+                    .title a {
+                        font-size: 16px;
+                        line-height: 20px;
+                    }
+                }
+            }
+        }
+    }
 }
 
 @media only screen and (max-width: 767px) {

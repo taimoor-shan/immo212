@@ -5080,6 +5080,208 @@
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: 325px 235px;
     grid-template-areas: "cta1  cta1  image1 image1 image1 image2 image2 cta2  cta2  cta2" "image3 image3 cta3  cta3  cta3  image2 image2 image4 image4 image4";
+
+    // Grid area classes
+    .cta1 {
+        grid-area: cta1;
+    }
+
+    .cta2 {
+        grid-area: cta2;
+    }
+
+    .cta3 {
+        grid-area: cta3;
+    }
+
+    .image1 {
+        grid-area: image1;
+    }
+
+    .image2 {
+        grid-area: image2;
+    }
+
+    .image3 {
+        grid-area: image3;
+    }
+
+    .image4 {
+        grid-area: image4;
+    }
+}
+
+// Blog Bento Grid Specific Styles
+.blog-bento-grid {
+    display: grid;
+    @extend .bGrid;
+
+    .bento-blog-item {
+        border-radius: 16px;
+        overflow: hidden;
+        background: $white;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        position: relative;
+
+        &:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        // Content areas (cta1, cta2, cta3)
+        &.content-area {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .content-box {
+                margin-top: 0;
+
+                .date-post {
+                    position: static;
+                    display: inline-block;
+                    padding: 6px 12px;
+                    background-color: $primary;
+                    color: $white;
+                    font-size: 12px;
+                    line-height: 19px;
+                    letter-spacing: 0.8px;
+                    font-weight: 600;
+                    border-radius: 6px;
+                    margin-bottom: 12px;
+                }
+
+                .title {
+                    margin-top: 8px;
+                    margin-bottom: 12px;
+
+                    a {
+                        color: $on-surface;
+                        text-decoration: none;
+                        font-weight: 600;
+
+                        &:hover {
+                            color: $primary;
+                        }
+                    }
+                }
+
+                .description {
+                    color: $variant-1;
+                    font-size: 14px;
+                    line-height: 22px;
+                    margin-top: 8px;
+                }
+
+                .post-author {
+                    margin-top: 16px;
+                    font-size: 14px;
+                    color: $variant-1;
+                }
+            }
+        }
+
+        // Image areas (image1, image2, image3, image4)
+        &.image-area {
+            .img-style {
+                position: relative;
+                height: 100%;
+                overflow: hidden;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.3s ease;
+                }
+
+                &:hover img {
+                    transform: scale(1.05);
+                }
+            }
+        }
+
+        // Image with overlay content (image2 - the tall area)
+        &.image-overlay {
+            .img-style {
+                position: relative;
+                height: 100%;
+                overflow: hidden;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.3s ease;
+                }
+
+                &:hover img {
+                    transform: scale(1.05);
+                }
+
+                // Gradient overlay
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    height: 60%;
+                    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
+                    pointer-events: none;
+                }
+            }
+
+            .content-overlay {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 24px;
+                z-index: 2;
+                color: $white;
+
+                .date-post {
+                    display: inline-block;
+                    padding: 4px 8px;
+                    background-color: rgba(255, 255, 255, 0.2);
+                    color: $white;
+                    font-size: 11px;
+                    line-height: 16px;
+                    letter-spacing: 0.6px;
+                    font-weight: 600;
+                    border-radius: 4px;
+                    margin-bottom: 8px;
+                    backdrop-filter: blur(4px);
+                }
+
+                .title {
+                    margin-top: 8px;
+                    margin-bottom: 8px;
+
+                    a {
+                        color: $white;
+                        text-decoration: none;
+                        font-weight: 600;
+                        font-size: 18px;
+                        line-height: 24px;
+
+                        &:hover {
+                            color: rgba(255, 255, 255, 0.9);
+                        }
+                    }
+                }
+
+                .post-author {
+                    font-size: 13px;
+                    color: rgba(255, 255, 255, 0.8);
+                    margin-top: 8px;
+                }
+            }
+        }
+    }
 }
 
 

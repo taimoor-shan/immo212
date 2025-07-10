@@ -1,25 +1,25 @@
 <template id="property-map-content">
-    <div class="map-listing-item">
+    <a href="__url__" class="map-listing-item">
         <div class="inner-box">
             <div class="image-box">
-                <a href="__url__">
+             
                     <img src="__image__" alt="__name__">
-                </a>
+              
                 __status__
             </div>
             <div class="content">
                 <!-- Property type badge moved to content area -->
-                <div class="property-type-badge">
+                <span class="property-type-badge ">
                     __category__
-                </div>
+</span>
                 <!-- Original title (hidden but kept for accessibility/SEO) -->
-                <div class="title" style="display: none;">
-                    <a href="__url__" title="__name__" class="line-clamp-2">__name__</a>
+                <div class="title text-prime">
+                    <h7 title="__name__" class="line-clamp-2">__name__</h7>
                 </div>
                 <!-- Duplicate title element showing price instead -->
-                <div class="title">
+                <!-- <div class="title">
                     <span class="line-clamp-2">__price__</span>
-                </div>
+                </div> -->
                 <!-- Meta-list moved to where location was -->
                 <ul class="list-info">
                     <li><x-core::icon name="ti ti-bed" />__bedroom__</li>
@@ -33,5 +33,5 @@
                 </p>
             </div>
         </div>
-    </div>
+    </a>
 </template>

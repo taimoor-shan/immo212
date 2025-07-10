@@ -12,6 +12,7 @@
     text-decoration: none;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 4px;
     svg {
         width: 1.2rem;
@@ -93,9 +94,6 @@
 }
 
 .btn-view {
-    padding: 8px 14px;
-    border-radius: 30px;
-    border: 1px solid $primary;
     .text {
         font-size: 15px;
         line-height: 26px;
@@ -103,6 +101,7 @@
         color: $primary;
         position: relative;
         transition: all 0.3s ease;
+        text-decoration: underline;
         &::before {
             position: absolute;
             content: none;
@@ -125,9 +124,9 @@
   
 
     &:hover {
-        background-color: $primary;
         .text {
-            color: $white;
+            color: $on-surface;
+         
         }
         .icon {
             animation: 0.3s link-icon linear;

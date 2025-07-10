@@ -1647,6 +1647,7 @@ $(() => {
                                     .replace(new RegExp('__bedroom__', 'gi'), item.number_bedroom)
                                     .replace(new RegExp('__bathroom__', 'gi'), item.number_bathroom)
                                     .replace(new RegExp('__square__', 'gi'), item.square_text)
+                                    .replace(new RegExp('__category__', 'gi'), item.category_name || '')
                             }
 
                             const marker = L.marker(L.latLng(item.latitude, item.longitude), {

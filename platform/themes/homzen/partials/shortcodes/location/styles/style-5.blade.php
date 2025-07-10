@@ -1,5 +1,5 @@
 <section
-    class="flat-section flat-location-v5"
+    class="flat-section-v4 flat-location-v5"
     @style(["background-color: $shortcode->background_color" => $shortcode->background_color])
 >
     <div class="container">

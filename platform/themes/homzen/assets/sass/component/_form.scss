@@ -227,6 +227,7 @@
         padding: 18px 10px 18px 20px;
         flex-wrap: nowrap;
         display: flex;
+        align-items: center;
         gap: 20px;
         flex-grow: 1;
 
@@ -412,7 +413,9 @@
     position: absolute;
     z-index: 10;
     width: 100%;
-    background: $white;
+    background: rgba(255, 255, 255, 0.7); /* optional overlay */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* for Safari */
     border: 1px solid $outline;
     border-radius: 6px;
     padding: 28px 20px;
@@ -435,7 +438,7 @@
         gap: 80px;
     }
     .group-price {
-        margin-bottom: 40px;
+        margin-bottom: 30px;
     }
     .box-title-price {
         display: flex;
@@ -446,9 +449,9 @@
             font-size: 16px;
             line-height: 24px;
             color: $primary;
-            font-weight: 400;
+            font-weight: 500;
         }
-        .fw-7.ms-1{
+        .fw-6.ms-1{
             color: $primary;
             font-weight: 500;
         }
@@ -722,7 +725,7 @@
         }
         .tf-btn {
             margin: 0;
-            padding: 10px 20px;
+            border-radius:6px;
         }
     }
 }

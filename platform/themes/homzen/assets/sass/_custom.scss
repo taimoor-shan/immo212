@@ -512,6 +512,7 @@ svg {
     a {
         font-size: 1rem;
         line-height: 1.5;
+        color: unset !important;
     }
 
     .leaflet-popup-content-wrapper {
@@ -520,7 +521,7 @@ svg {
 
         .leaflet-popup-content {
             margin: 0.5rem;
-            min-width: 348px;
+            min-width: 290px;
 
             .map-popup-content {
                 display: flex;
@@ -760,7 +761,7 @@ svg {
 
 h2.section-title {
     font-size: var(--h4-size);
-    color: $primary;
+    color: $on-surface;
     text-align:left;
 }
 

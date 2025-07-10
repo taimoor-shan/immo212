@@ -24,10 +24,11 @@
         @endif
         @if($hasButton)
             </div>
+            <span>|</span>
 
             <a href="{{ $buttonUrl }}" class="btn-view">
                 <span class="text">{{ $buttonLabel }}</span>
-                <x-core::icon name="ti ti-arrow-right" class="icon" style="stroke-width: 2" />
+                <!-- <x-core::icon name="ti ti-arrow-right" class="icon" style="stroke-width: 2" /> -->
             </a>
         @endif
     </div>

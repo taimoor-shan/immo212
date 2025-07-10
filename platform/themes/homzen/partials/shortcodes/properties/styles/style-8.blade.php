@@ -1,5 +1,5 @@
 <section
-    class="flat-section pt-3 flat-property-v8 wow fadeInUpSmall"
+    class="flat-section-v4 flat-property-v8 wow fadeInUpSmall"
     data-wow-delay=".2s"
     data-wow-duration="2000ms"
     @style(["background-color: $shortcode->background_color" => $shortcode->background_color])>

@@ -614,7 +614,6 @@
 
             .form-style {
                 border-right: 0;
-
                 label {
                     margin-bottom: 8px;
                 }
@@ -998,6 +997,18 @@
         .icon {
             font-size: 70px;
         }
+    }
+
+    // Bento
+    .bGrid {
+        gap: 8px;
+        grid-template-columns: calc(40% - 8px) calc(30% - 8px) 30%;
+        grid-template-rows: 135px 170px 135px 170px;
+        grid-template-areas:
+        "cta1 image1 image1"
+        "cta2 cta2 image2"
+        "image3 cta3 cta3"
+        "image3 image4 image4";
     }
 }
 

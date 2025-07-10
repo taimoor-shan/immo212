@@ -218,7 +218,7 @@ input[type='color'] {
     box-shadow: none;
     font-size: 16px;
     line-height: 26px;
-    border-radius: 6px;
+    border-radius: 10px;
     padding: 14px 16px;
     width: 100%;
     background: $white;
@@ -306,7 +306,7 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: $font-2;
+    font-family: $font-1;
     font-weight: 500;
     text-rendering: optimizeLegibility;
     color: $on-surface;
@@ -315,19 +315,20 @@ h6 {
 h1 {
     font-size: 50px;
     line-height: 60px;
+    font-family: $font-2;
 
 }
 
 h2 {
     font-size: 44px;
     line-height: 50px;
-
+    font-family: $font-2;
 }
 
 h3 {
     font-size: 36px;
     line-height: 44px;
-
+    font-family: $font-2;
 }
 
 h4 {
@@ -377,11 +378,11 @@ label {
     font-size: 24px;
     line-height: 30px;
     font-weight: 500;
-    font-family: $font-2;
+    font-family: $font-1;
 }
 
 .h7 {
-    font-family: $font-2;
+    font-family: $font-1;
     font-size: 20px;
     line-height: 28px;
     font-weight: 500;
@@ -425,7 +426,7 @@ label {
     line-height: 26px;
 }
 .text-subheading {
-    font-family: $font-2;
+    font-family: $font-1;
     font-size: 12px;
     line-height: 19px;
     font-weight: 4  00;
@@ -433,7 +434,7 @@ label {
     text-transform: uppercase;
 }
 .text-subtitle {
-    font-family: $font-2;
+    font-family: $font-1;
     font-size: 14px;
     line-height: 24px;
     font-weight: 400;
@@ -559,7 +560,7 @@ label {
 }
 // radius
 .round-8 {
-    border-radius: 6px;
+    border-radius: 10px;
 }
 .round-12 {
     border-radius: 12px;

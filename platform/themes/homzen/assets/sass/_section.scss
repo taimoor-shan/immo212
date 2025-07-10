@@ -80,7 +80,7 @@
         inset-inline-start: 0;
         bottom: 0;
         display: inline-block;
-        font-family: $font-2;
+        font-family: $font-1;
         padding: 6px 12px;
         background-color: $primary;
         color: $white;
@@ -111,7 +111,7 @@
     margin-bottom: 0; // Remove default margin in carousel
     display: block;
     height: 100%; // Ensure consistent card heights
-    border-radius: 6px;
+    border-radius: 10px;
     overflow: hidden;
     background: $white;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
@@ -124,7 +124,7 @@
     .img-style {
         position: relative;
         overflow: hidden;
-        border-radius: 6px 6px 0 0;
+        border-radius: 10px 6px 0 0;
 
         img {
             width: 100%;
@@ -144,7 +144,7 @@
         inset-inline-start: 16px;
         bottom: 16px;
         display: inline-block;
-        font-family: $font-2;
+        font-family: $font-1;
         padding: 6px 12px;
         background-color: $primary;
         color: $white;
@@ -152,7 +152,7 @@
         line-height: 19px;
         letter-spacing: 0.8px;
         font-weight: 600;
-        border-radius: 6px;
+        border-radius: 10px;
     }
 
     .content-box {
@@ -283,7 +283,7 @@
 
 .post-author {
     span {
-        font-family: $font-2;
+        font-family: $font-1;
 
         &:not(:first-child) {
             color: $variant-1;
@@ -389,7 +389,7 @@
             border-bottom: 1px solid $outline;
 
             .img-style {
-                border-radius: 6px;
+                border-radius: 10px;
                 width: 110px;
                 height: 110px;
                 flex-shrink: 0;
@@ -401,7 +401,7 @@
                     line-height: 19px;
                     letter-spacing: 0.8px;
                     color: $variant-1;
-                    font-family: $font-2;
+                    font-family: $font-1;
                     font-weight: 600;
                 }
 
@@ -491,7 +491,7 @@
             position: relative;
             font-size: 12px;
             line-height: 19px;
-            font-family: $font-2;
+            font-family: $font-1;
             font-weight: 600;
             color: $variant-1;
 
@@ -628,7 +628,7 @@
     font-size: 12px;
     line-height: 19px;
     letter-spacing: 0.8px;
-    font-family: $font-2;
+    font-family: $font-1;
     font-weight: 600;
 
     &:hover {
@@ -670,7 +670,7 @@
         width: 48px;
         height: 50px;
         line-height: 50px;
-        border-radius: 6px;
+        border-radius: 10px;
         object-fit: cover;
         position: relative;
         -webkit-transition: all 0.3s ease;
@@ -865,7 +865,7 @@
             gap: 16px;
 
             .nav-link-item {
-                border-radius: 6px;
+                border-radius: 10px;
                 background-color: $surface;
                 color: $on-surface;
             }
@@ -885,7 +885,7 @@
 
             .tf-btn {
                 padding: 11px 20px;
-                border-radius: 6px;
+                border-radius: 10px;
             }
         }
 
@@ -899,7 +899,7 @@
 // widget home box
 .homeya-box {
     display: block;
-    border-radius: 6px;
+    border-radius: 10px;
     overflow: hidden;
     border: 1px solid $outline;
     @include transition3;
@@ -1032,7 +1032,7 @@
                 display: flex;
                 align-items: center;
                 gap: 8px;
-                font-family: $font-2;
+                font-family: $font-1;
 
                 .icon {
                     font-size: 24px;
@@ -1299,7 +1299,7 @@
 
 // box title
 .box-title {
-    margin-bottom: 20px;
+    margin-bottom: 2rem;
 
     &.style-1 {
         @include flex(center, flex-start);
@@ -1584,7 +1584,7 @@
     display: flex;
     align-items: center;
     gap: 24px;
-    border-radius: 6px;
+    border-radius: 10px;
     overflow: hidden;
     background-color: $surface;
     box-shadow: 0px 2px 2px 0px #1c24331a;
@@ -1659,7 +1659,7 @@
 .box-location-v5 {
     position: relative;
     display: block;
-    border-radius: 6px;
+    border-radius: 10px;
     overflow: hidden;
     @include transition6;
 
@@ -1684,7 +1684,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 10px;
             @include transition5;
          
         }
@@ -1697,7 +1697,7 @@
         right: 0;
         bottom: 0;
         background: $garden-5;
-        border-radius: 6px;
+        border-radius: 10px;
         @include transition3;
     }
 
@@ -1910,7 +1910,7 @@
         grid-row-gap: 12px;
 
         li {
-            font-family: $font-2;
+            font-family: $font-1;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -2114,13 +2114,13 @@
         .number {
             font-size: 64px;
             line-height: 66px;
-            font-family: $font-2;
+            font-family: $font-1;
             color: $primary;
             font-weight: 600;
         }
 
         .title-count {
-            font-family: $font-2;
+            font-family: $font-1;
             font-size: 24px;
             line-height: 30px;
             font-weight: 600;
@@ -2554,7 +2554,7 @@
             bottom: 0px;
             background-color: $white;
             padding: 12px 0px;
-            border-radius: 6px;
+            border-radius: 10px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             left: 37px;
@@ -2742,7 +2742,7 @@
 .homeya-categories {
     padding: 30px 24px 24px 24px;
     background-color: $surface;
-    border-radius: 6px;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2810,7 +2810,7 @@
         transition: transform 400ms ease;
         transform-origin: bottom center;
         z-index: -1;
-        border-radius: 6px;
+        border-radius: 10px;
     }
 
     &.style-1 {
@@ -2943,7 +2943,7 @@
         width: 40px;
         height: 40px;
         z-index: 123;
-        border-radius: 6px;
+        border-radius: 10px;
 
         .icon {
             font-size: 16px;
@@ -3073,7 +3073,7 @@
     height: 24px;
     line-height: 24px;
     font-size: 12px;
-    border-radius: 6px;
+    border-radius: 10px;
     z-index: 9;
     text-align: center;
     cursor: pointer;
@@ -3200,7 +3200,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 6px;
+    border-radius: 10px;
     overflow: hidden;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 
@@ -3246,7 +3246,7 @@
 
         .title {
             font-weight: 600;
-            font-family: $font-2;
+            font-family: $font-1;
             margin-bottom: 20px;
         }
     }
@@ -3396,7 +3396,7 @@
         height: 50px;
         @include flex(center, center);
         font-weight: 600;
-        border-radius: 6px;
+        border-radius: 10px;
 
         &:hover,
         &.active {
@@ -3436,7 +3436,7 @@
     .images-style {
         position: relative;
         overflow: hidden;
-        border-radius: 6px;
+        border-radius: 10px;
         width: 110px;
         height: 110px;
 
@@ -3522,7 +3522,7 @@
         z-index: 12;
 
         .item {
-            border-radius: 6px;
+            border-radius: 10px;
             width: 52px;
             height: 52px;
             @include transition5;
@@ -3703,7 +3703,7 @@
             }
 
             .box-icon {
-                border-radius: 6px;
+                border-radius: 10px;
                 background-color: $surface;
                 min-width: 52px;
 
@@ -3927,7 +3927,7 @@
         gap: 12px;
 
         .box-icon {
-            border-radius: 6px;
+            border-radius: 10px;
             background-color: $surface;
         }
 
@@ -4295,7 +4295,7 @@
             .box-icon {
                 width: 48px;
                 height: 48px;
-                border-radius: 6px;
+                border-radius: 10px;
                 background-color: $white;
                 font-size: 28px;
             }
@@ -4319,7 +4319,7 @@
     // }
 
     .box-img {
-        border-radius: 6px;
+        border-radius: 10px;
         overflow: hidden;
 
         img {
@@ -4357,7 +4357,7 @@
     }
 
     .img-thumb-pagi {
-        border-radius: 6px;
+        border-radius: 10px;
         overflow: hidden;
     }
 }
@@ -4633,7 +4633,7 @@
         line-height: 19px;
         letter-spacing: 0.8px;
         font-weight: 600;
-        font-family: $font-2;
+        font-family: $font-1;
     }
 }
 
@@ -4810,7 +4810,7 @@
             .item {
                 width: 44px;
                 height: 44px;
-                border-radius: 6px;
+                border-radius: 10px;
                 border: 1px solid $outline;
                 background-color: $white;
                 @include flex(center, center);
@@ -4906,7 +4906,7 @@
         font-weight: 600;
         height: 48px;
         border: 1px solid $outline;
-        border-radius: 6px;
+        border-radius: 10px;
         background-color: $white;
 
         img {
@@ -5072,3 +5072,14 @@
         color: $success;
     }
 }
+
+
+// Bento Grid
+.bGrid {
+    gap: 16px;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: 325px 235px;
+    grid-template-areas: "cta1  cta1  image1 image1 image1 image2 image2 cta2  cta2  cta2" "image3 image3 cta3  cta3  cta3  image2 image2 image4 image4 image4";
+}
+
+

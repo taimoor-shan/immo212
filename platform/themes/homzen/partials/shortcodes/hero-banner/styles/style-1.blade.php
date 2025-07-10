@@ -9,7 +9,7 @@
                 <div class="slider-content">
                     <div class="text-center">
                         <div class="heading">
-                            <h1 class="text-prime animationtext slide">
+                            <h1 class="text-white wow fadeIn animationtext slide" data-wow-delay=".2s" data-wow-duration="2000ms">
                                 {!! BaseHelper::clean($shortcode->title) !!}
                                 {!! Theme::partial('shortcodes.hero-banner.partials.animation-text', compact('shortcode')) !!}
                             </h1>
@@ -22,7 +22,7 @@
                         {!! Theme::partial('shortcodes.hero-banner.partials.action-button', ['shortcode' => $shortcode, 'class' => 'mb-4']) !!}
                     </div>
                     @if(is_plugin_active('real-estate') && $shortcode->search_box_enabled)
-                        @include(Theme::getThemeNamespace('views.real-estate.partials.search-box'), ['style' => 1, 'centeredTabs' => true])
+                        @include(Theme::getThemeNamespace('views.real-estate.partials.search-box'), ['style' => 1, 'centeredTabs' => false])
                     @endif
                 </div>
             </div>

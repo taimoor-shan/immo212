@@ -9,7 +9,7 @@
         li {
             font-weight: 600;
             a {
-                font-family: $font-2;
+                font-family: $font-1;
                 color: $on-surface;
                 font-weight: 600;
                 &:hover {
@@ -311,7 +311,7 @@
 }
 
 .main-header .main-menu .navigation > li > a {
-    font-family: $font-2;
+    font-family: $font-1;
     position: relative;
     display: block;
     text-align: center;
@@ -445,7 +445,7 @@
 }
 
 .main-header .main-menu .navigation > li > ul > li > a {
-    font-family: $font-2;
+    font-family: $font-1;
     position: relative;
     padding: 16px 24px;
     display: block;
@@ -941,7 +941,7 @@
 }
 
 .mobile-menu .navigation li > a {
-    font-family: $font-2;
+    font-family: $font-1;
     position: relative;
     display: block;
     font-weight: 600;
@@ -1031,7 +1031,7 @@
         }
         a,
         span {
-            font-family: $font-2;
+            font-family: $font-1;
             font-weight: 600;
         }
     }
@@ -1128,7 +1128,7 @@
         padding: 10px 6px;
         padding-left: 0px;
         border: 1px solid $outline;
-        border-radius: 6px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         .form-box {
@@ -1175,7 +1175,7 @@
         background-color: $primary;
         @include flex(center, center);
         border: 0;
-        border-radius: 6px;
+        border-radius: 10px;
         @include transition3;
         &:hover {
             background-color: $primary-hover;
@@ -1201,7 +1201,7 @@
         padding-bottom: 20px;
         margin-bottom: 20px;
         .nav-link {
-            font-family: $font-2;
+            font-family: $font-1;
             padding: 10px 0px;
             font-size: 16px;
             line-height: 26px;
@@ -1237,7 +1237,7 @@
             .sub-nav-link {
                 padding: 7px 0px;
                 display: block;
-                font-family: $font-2;
+                font-family: $font-1;
                 font-weight: 500;
                 color: $variant-1;
                 &.current,

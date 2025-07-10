@@ -1,7 +1,7 @@
 @if (is_plugin_active('location'))
     @if (theme_option('real_estate_use_location_in_search_box_as_dropdown', 'no') === 'yes')
         <div class="form-group-2 form-style form-search-location">
-            <label aria-hidden="true" hidden>{{ __('City') }}</label>
+            <label for="location">{{ __('City') }}</label>
             <div class="position-relative">
                 <div class="group-select">
                     <select name="city_id" id="location" class="select_js">

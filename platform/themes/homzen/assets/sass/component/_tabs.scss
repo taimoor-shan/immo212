@@ -2,26 +2,34 @@
     .nav-tab-form {
         display: flex;
         align-items: center;
-        gap: 1em;
-        margin-bottom: 24px;
+        gap: 0;
+        margin-bottom: 0;
         .nav-link-item {
-            padding: 8px 18px;
-            border-radius: 6px;
-            border:1px solid $outline;
-            font-size: 16px;
+            text-transform: none;
+            color: #1A3431;
+            margin: 0px;
+            padding: 15px 20px;
+            font-size: 18px;
             line-height: 24px;
-            letter-spacing: 0.4px;
+            font-weight: 600;
             text-align: center;
-            font-weight: 500;
+            background-color: $white;
+            border-radius: 0;
+            @include transition3;
+
+            &:first-child {
+                border-top-left-radius: 10px;
+            }
+
+            &:last-child {
+                border-top-right-radius: 10px;
+            }
         }
         &.style-1 {
             .nav-link-item {
-                background-color: $surface;
-                color: $primary;
                 &.active,
                 &:hover {
-                    background-color: $primary;
-                    color: $white;
+                    border-bottom: 2px solid $primary;
                 }
             }
         }
@@ -78,7 +86,7 @@
     .nav-link-item {
         
         cursor: pointer;
-        font-family: $font-2;
+        font-family: $font-1;
         font-size: 16px;
         line-height: 26px;
         font-weight: 400;

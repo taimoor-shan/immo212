@@ -224,7 +224,7 @@ svg {
         }
 
         .btn-auth-submit {
-            font-family: $font-2;
+            font-family: $font-1;
             font-size: 16px;
             line-height: 26px;
             font-weight: 600;
@@ -760,9 +760,12 @@ svg {
 }
 
 h2.section-title {
-    font-size: var(--h4-size);
+    font-family: $font-2;
+    font-size: 36px;
+    line-height: 44px;
+    font-weight: 600;
     color: $on-surface;
-    text-align:left;
+    text-align:center;
 }
 
 .property-share-social {
@@ -1774,7 +1777,7 @@ a {
     width: 100% !important;
     height: auto;
     line-height: 45px;
-    border-radius: 6px;
+    border-radius: 10px;
 }
 
 .nice-select {
@@ -1785,7 +1788,7 @@ a {
 
 .form-search-location .nice-select .list {
     width: 100% !important;
-    border-radius: 6px;
+    border-radius: 10px;
 }
 
 .nice-select .nice-select-search-wrapper {

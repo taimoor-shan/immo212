@@ -4,32 +4,43 @@
         align-items: center;
         gap: 0;
         margin-bottom: 0;
-        .nav-link-item {
-            text-transform: none;
-            color: #1A3431;
-            margin: 0px;
-            padding: 15px 20px;
-            font-size: 18px;
-            line-height: 24px;
-            font-weight: 600;
-            text-align: center;
-            background-color: $white;
-            border-radius: 0;
-            @include transition3;
+        border-bottom: 1px solid $outline;
+        .nav-tab-item {
+           
+            .nav-link-item {
+                text-transform: none;
+                color: #1A3431;
+                margin: 0px;
+                padding: 15px 20px;
+                font-size: 18px;
+                line-height: 24px;
+                font-weight: 600;
+                text-align: center;
+                background-color: $white;
+                border-radius: 0;
+                @include transition3;
+            }
 
             &:first-child {
-                border-top-left-radius: 10px;
-            }
-
-            &:last-child {
-                border-top-right-radius: 10px;
-            }
+                .nav-link-item {
+                  border-left: 1px solid #ddd; // restore border for first
+                  border-top-left-radius: 8px;
+                }
+              }
+          
+              &:last-child {
+                .nav-link-item {
+                  border-top-right-radius: 8px;
+            
+                }
+              }
         }
+       
         &.style-1 {
             .nav-link-item {
-                &.active,
-                &:hover {
-                    border-bottom: 2px solid $primary;
+                &.active {
+                    color: $primary;
+                    border-bottom: 1px solid $primary;
                 }
             }
         }
@@ -74,10 +85,6 @@
     }
 }
 
-.flat-tab-recommended .nav-tab-recommended {
-    margin-bottom: 40px;
-    margin-top: 32px;
-}
 
 .nav-tab-recommended {
     display: flex;

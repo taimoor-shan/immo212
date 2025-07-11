@@ -111,7 +111,7 @@ Event::listen(RouteMatched::class, function (): void {
                 UiSelectorFieldOption::make()
                     ->label(__('Style'))
                     ->choices(
-                        collect(range(1, 5))
+                        collect(range(1, 6))
                             ->mapWithKeys(fn ($number) => [
                                 $number => [
                                     'label' => __('Style :number', ['number' => $number]),
@@ -216,7 +216,7 @@ Event::listen(RouteMatched::class, function (): void {
                 MediaImageField::class,
                 MediaImageFieldOption::make()
                     ->label(__('Background image'))
-                    ->collapsible('style', '4', Arr::get($attributes, 'style', '1'))
+                    ->collapsible('style', ['4', '6'], Arr::get($attributes, 'style', '1'))
             )
             ->addSectionButtonAction()
             ->add(

@@ -5076,6 +5076,7 @@
 
 // Bento Grid
 .bGrid {
+    display: grid;     
     gap: 16px;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: 325px 235px;
@@ -5113,7 +5114,7 @@
 
 // Blog Bento Grid Specific Styles
 .blog-bento-grid {
-    display: grid;
+    
     @extend .bGrid;
 
     .bento-blog-item {
@@ -5278,6 +5279,151 @@
                     font-size: 13px;
                     color: rgba(255, 255, 255, 0.8);
                     margin-top: 8px;
+                }
+            }
+        }
+    }
+}
+
+// Services Bento Grid Specific Styles
+.services-bento-grid {
+    @extend .bGrid;
+
+    .bento-service-item {
+        overflow: hidden;
+        background: $white;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        position: relative;
+
+        &:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        // Content areas (cta1, cta2, cta3)
+        &.content-area {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-radius: 10px;
+
+            .icon-box {
+                margin-bottom: 16px;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+
+            .content {
+                .title {
+                    color: $on-surface;
+                    font-weight: 600;
+                    font-size: 18px;
+                    line-height: 24px;
+                    margin-bottom: 12px;
+                }
+
+                .description {
+                    color: $variant-1;
+                    font-size: 14px;
+                    line-height: 22px;
+                    margin-bottom: 16px;
+                }
+
+                .btn-view {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    color: $primary;
+                    font-weight: 500;
+                    font-size: 14px;
+                    text-decoration: none;
+                    transition: all 0.3s ease;
+
+                    &:hover {
+                        
+                        gap: 12px;
+                    }
+
+                    .icon {
+                        font-size: 16px;
+                        transition: transform 0.3s ease;
+                    }
+
+                    &:hover .icon {
+                        transform: translateX(4px);
+                    }
+                }
+            }
+        }
+
+        // Image areas (image1, image3, image4)
+        &.image-area {
+            .img-style {
+                position: relative;
+                height: 100%;
+                overflow: hidden;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.3s ease;
+                }
+
+                &:hover img {
+                    transform: scale(1.05);
+                }
+            }
+        }
+
+        // Background image area (image2 - the tall area)
+        &.background-area {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+
+            // Optional overlay for better contrast
+            &::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+                pointer-events: none;
+            }
+
+            // Optional content overlay if needed
+            .content-overlay {
+                position: absolute;
+                bottom: 24px;
+                left: 24px;
+                right: 24px;
+                z-index: 2;
+                color: $white;
+                text-align: center;
+
+                .title {
+                    font-weight: 600;
+                    font-size: 20px;
+                    line-height: 26px;
+                    margin-bottom: 8px;
+                    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+                }
+
+                .subtitle {
+                    font-size: 14px;
+                    line-height: 20px;
+                    opacity: 0.9;
+                    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
                 }
             }
         }

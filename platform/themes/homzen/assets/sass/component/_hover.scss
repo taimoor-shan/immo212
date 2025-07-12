@@ -50,7 +50,7 @@
     }
     .img-style2 {
         overflow: hidden;
-        $border-radius;
+        border-radius :$border-radius;
         .img-hv {
             width: 100%;
             object-fit: cover;
@@ -115,7 +115,7 @@
         }
     }
     .img-style {
-        $border-radius;
+        border-radius :$border-radius;
         overflow: hidden;
         &::before {
             content: '';
@@ -132,7 +132,7 @@
             // transform: scale(0, 0);
             opacity: 0;
             // transition: transform 500ms ease;
-            $border-radius;
+            border-radius :$border-radius;
         }
         &.s-one::before {
             border-radius: 50%;
@@ -167,7 +167,7 @@
             visibility: hidden;
             background: rgba(0, 0, 0, 0.5);
             z-index: 1;
-            $border-radius;
+            border-radius :$border-radius;
         }
     }
 }

@@ -99,7 +99,7 @@
 
         .description {
             margin-top: 12px;
-            color: $variant-1;
+            color: $dull;
             font-size: 16px;
             line-height: 26px;
         }
@@ -111,7 +111,7 @@
     margin-bottom: 0; // Remove default margin in carousel
     display: block;
     height: 100%; // Ensure consistent card heights
-    $border-radius;
+    border-radius :$border-radius;
     overflow: hidden;
     background: $white;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
@@ -152,7 +152,7 @@
         line-height: 19px;
         letter-spacing: 0.8px;
         font-weight: 600;
-        $border-radius;
+        border-radius :$border-radius;
     }
 
     .content-box {
@@ -166,7 +166,7 @@
         .post-author {
             margin-bottom: 8px;
             font-size: 14px;
-            color: $variant-1;
+            color: $dull;
 
             span {
                 margin-right: 12px;
@@ -208,7 +208,7 @@
 
         .description {
             margin: 0;
-            color: $variant-1;
+            color: $dull;
             font-size: 14px;
             line-height: 1.5;
             display: -webkit-box;
@@ -286,13 +286,13 @@
         font-family: $font-1;
 
         &:not(:first-child) {
-            color: $variant-1;
+            color: $dull;
             margin-inline-start: 4px;
             padding-inline-start: 8px;
             position: relative;
 
             a {
-                color: $variant-1;
+                color: $dull;
             }
 
             &::before {
@@ -389,7 +389,7 @@
             border-bottom: 1px solid $outline;
 
             .img-style {
-                $border-radius;
+                border-radius :$border-radius;
                 width: 110px;
                 height: 110px;
                 flex-shrink: 0;
@@ -400,7 +400,7 @@
                     font-size: 12px;
                     line-height: 19px;
                     letter-spacing: 0.8px;
-                    color: $variant-1;
+                    color: $dull;
                     font-family: $font-1;
                     font-weight: 600;
                 }
@@ -432,7 +432,7 @@
             margin-bottom: 16px;
             display: flex;
             gap: 4px;
-            color: $variant-1;
+            color: $dull;
 
             span {
                 @include transition3;
@@ -493,7 +493,7 @@
             line-height: 19px;
             font-family: $font-1;
             font-weight: 600;
-            color: $variant-1;
+            color: $dull;
 
             &::before {
                 content: '';
@@ -601,7 +601,7 @@
     }
 
     .author {
-        color: $variant-1;
+        color: $dull;
         font-size: 16px;
         line-height: 26px;
         letter-spacing: 0.8px;
@@ -617,7 +617,7 @@
             left: 10px;
             top: 50%;
             transform: translateX(-50%);
-            background-color: $variant-1;
+            background-color: $dull;
         }
     }
 }
@@ -670,7 +670,7 @@
         width: 48px;
         height: 50px;
         line-height: 50px;
-        $border-radius;
+        border-radius :$border-radius;
         object-fit: cover;
         position: relative;
         -webkit-transition: all 0.3s ease;
@@ -810,7 +810,7 @@
         align-items: center;
         gap: 4px;
         margin-top: 8px;
-        color: $variant-1;
+        color: $dull;
     }
 
     .meta-list {
@@ -828,7 +828,7 @@
 
             .icon {
                 font-size: 28px;
-                color: $variant-1;
+                color: $dull;
             }
 
             span {
@@ -865,7 +865,7 @@
             gap: 16px;
 
             .nav-link-item {
-                $border-radius;
+                border-radius :$border-radius;
                 background-color: $surface;
                 color: $on-surface;
             }
@@ -885,7 +885,7 @@
 
             .tf-btn {
                 padding: 11px 20px;
-                $border-radius;
+                border-radius :$border-radius;
             }
         }
 
@@ -899,9 +899,9 @@
 // widget home box
 .homeya-box {
     display: block;
-    $border-radius;
+    border-radius :$border-radius;
     overflow: hidden;
-    border: 1px solid $outline;
+    border: 1.5px solid $outline;
     @include transition3;
 
     &:hover{
@@ -1008,7 +1008,7 @@
             display: flex;
             gap: 4px;
             margin-top: 8px;
-            color: $variant-1;
+            color: $dull;
 
             .icon {
                 margin-top: 4px;
@@ -1566,7 +1566,7 @@
         padding-top: 20px;
 
         p {
-            color: $variant-1;
+            color: $dull;
             font-size: 16px;
             line-height: 26px;
             margin-top: 8px;
@@ -1584,7 +1584,7 @@
     display: flex;
     align-items: center;
     gap: 24px;
-    $border-radius;
+    border-radius :$border-radius;
     overflow: hidden;
     background-color: $surface;
     box-shadow: 0px 2px 2px 0px #1c24331a;
@@ -1688,7 +1688,7 @@
 .box-location-v5 {
     position: relative;
     display: block;
-    $border-radius;
+    border-radius :$border-radius;
     overflow: hidden;
     @include transition6;
 
@@ -1713,7 +1713,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            $border-radius;
+            border-radius :$border-radius;
             @include transition5;
          
         }
@@ -1726,7 +1726,7 @@
         right: 0;
         bottom: 0;
         background: $garden-5;
-        $border-radius;
+        border-radius :$border-radius;
         @include transition3;
     }
 
@@ -1791,7 +1791,7 @@
             margin-top: 12px;
             font-size: 16px;
             line-height: 26px;
-            color: $variant-1;
+            color: $dull;
         }
 
         .btn-view {
@@ -1923,7 +1923,7 @@
         p {
             font-size: 16px;
             line-height: 26px;
-            color: $variant-1;
+            color: $dull;
         }
 
         .list-view {
@@ -2069,7 +2069,7 @@
                 margin-top: 12px;
                 font-size: 16px;
                 line-height: 26px;
-                color: $variant-1;
+                color: $dull;
             }
         }
 
@@ -2179,7 +2179,7 @@
             margin-top: 12px;
             font-size: 16px;
             line-height: 26px;
-            color: $variant-1;
+            color: $dull;
         }
     }
 
@@ -2302,7 +2302,7 @@
                     gap: 4px;
                     font-size: 18px;
                     line-height: 28px;
-                    color: $variant-1;
+                    color: $dull;
 
                     .icon {
                         font-size: 20px;
@@ -2329,7 +2329,7 @@
 
                     .icon {
                         font-size: 32px;
-                        color: $variant-1;
+                        color: $dull;
                     }
                 }
             }
@@ -2583,7 +2583,7 @@
             bottom: 0px;
             background-color: $white;
             padding: 12px 0px;
-            $border-radius;
+            border-radius :$border-radius;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             left: 37px;
@@ -2636,7 +2636,7 @@
             border-radius: 1000px;
             background-color: $surface;
             font-size: 28px;
-            color: $variant-1;
+            color: $dull;
             @include transition6;
         }
 
@@ -2771,7 +2771,7 @@
 .homeya-categories {
     padding: 30px 24px 24px 24px;
     background-color: $surface;
-    $border-radius;
+    border-radius :$border-radius;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2839,7 +2839,7 @@
         transition: transform 400ms ease;
         transform-origin: bottom center;
         z-index: -1;
-        $border-radius;
+        border-radius :$border-radius;
     }
 
     &.style-1 {
@@ -2924,13 +2924,13 @@
         .icon {
             @include transition5;
             font-size: 40px;
-            color: $variant-1;
+            color: $dull;
         }
     }
 
     .content {
         @include transition5;
-        color: $variant-1;
+        color: $dull;
     }
 
     &::after {
@@ -2972,7 +2972,7 @@
         width: 40px;
         height: 40px;
         z-index: 123;
-        $border-radius;
+        border-radius :$border-radius;
 
         .icon {
             font-size: 16px;
@@ -3102,7 +3102,7 @@
     height: 24px;
     line-height: 24px;
     font-size: 12px;
-    $border-radius;
+    border-radius :$border-radius;
     z-index: 9;
     text-align: center;
     cursor: pointer;
@@ -3143,7 +3143,7 @@
     position: relative;
 
     .location {
-        color: $variant-1;
+        color: $dull;
         font-size: 12px;
         line-height: 16px;
         display: flex;
@@ -3193,7 +3193,7 @@
             .icon {
                 width: 16px;
                 height: 16px;
-                color: $variant-1;
+                color: $dull;
             }
         }
     }
@@ -3229,7 +3229,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    $border-radius;
+    border-radius :$border-radius;
     overflow: hidden;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 
@@ -3338,7 +3338,7 @@
         }
 
         &::-webkit-scrollbar-thumb {
-            background: $variant-1;
+            background: $dull;
         }
 
         .widget-filter-search {
@@ -3358,7 +3358,7 @@
         }
 
         &::-webkit-scrollbar-thumb {
-            background: $variant-1;
+            background: $dull;
         }
     }
 
@@ -3425,7 +3425,7 @@
         height: 50px;
         @include flex(center, center);
         font-weight: 600;
-        $border-radius;
+        border-radius :$border-radius;
 
         &:hover,
         &.active {
@@ -3465,7 +3465,7 @@
     .images-style {
         position: relative;
         overflow: hidden;
-        $border-radius;
+        border-radius :$border-radius;
         width: 110px;
         height: 110px;
 
@@ -3551,7 +3551,7 @@
         z-index: 12;
 
         .item {
-            $border-radius;
+            border-radius :$border-radius;
             width: 52px;
             height: 52px;
             @include transition5;
@@ -3616,7 +3616,7 @@
                 margin-bottom: 12px;
                 letter-spacing: 0.8px;
                 font-weight: 600;
-                color: $variant-1;
+                color: $dull;
                 opacity: 0.8;
             }
 
@@ -3669,7 +3669,7 @@
                 .icon {
                     width: 28px;
                     height: 28px;
-                    color: $variant-1;
+                    color: $dull;
                 }
 
                 &:hover {
@@ -3725,14 +3725,14 @@
             }
 
             .label {
-                color: $variant-1;
+                color: $dull;
                 font-weight: 400;
                 display: block;
                 opacity: 0.8;
             }
 
             .box-icon {
-                $border-radius;
+                border-radius :$border-radius;
                 background-color: $surface;
                 min-width: 52px;
 
@@ -3805,7 +3805,7 @@
         margin-bottom: 8px;
 
         .label {
-            color: $variant-1;
+            color: $dull;
             opacity: 0.8;
             width: 32%;
         }
@@ -3829,7 +3829,7 @@
         .feature-item {
             display: flex;
             align-items: center;
-            color: $variant-1;
+            color: $dull;
             gap: 8px;
 
             .icon {
@@ -3956,7 +3956,7 @@
         gap: 12px;
 
         .box-icon {
-            $border-radius;
+            border-radius :$border-radius;
             background-color: $surface;
         }
 
@@ -4021,7 +4021,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: $variant-1;
+            color: $dull;
             opacity: 0.8;
             margin-inline-end: 10px;
         }
@@ -4057,7 +4057,7 @@
 
         .item-calc {
             .label {
-                color: $variant-1;
+                color: $dull;
                 margin-bottom: 8px;
             }
         }
@@ -4116,7 +4116,7 @@
         }
 
         .info-item {
-            color: $variant-1;
+            color: $dull;
         }
     }
 
@@ -4274,7 +4274,7 @@
 
         label {
             margin-bottom: 8px;
-            color: $variant-1;
+            color: $dull;
         }
 
         input {
@@ -4324,7 +4324,7 @@
             .box-icon {
                 width: 48px;
                 height: 48px;
-                $border-radius;
+                border-radius :$border-radius;
                 background-color: $white;
                 font-size: 28px;
             }
@@ -4348,7 +4348,7 @@
     // }
 
     .box-img {
-        $border-radius;
+        border-radius :$border-radius;
         overflow: hidden;
 
         img {
@@ -4386,7 +4386,7 @@
     }
 
     .img-thumb-pagi {
-        $border-radius;
+        border-radius :$border-radius;
         overflow: hidden;
     }
 }
@@ -4471,7 +4471,7 @@
         margin-top: 12px;
         font-size: 18px;
         line-height: 28px;
-        color: $variant-1;
+        color: $dull;
     }
 
     .box-list {
@@ -4550,7 +4550,7 @@
         .faq-body {
             border-top: 1px solid $outline;
             padding: 12px 0px 20px;
-            color: $variant-1;
+            color: $dull;
             font-size: 18px;
             line-height: 28px;
         }
@@ -4589,7 +4589,7 @@
         .desc {
             font-size: 16px;
             line-height: 26px;
-            color: $variant-1;
+            color: $dull;
             @include transition5;
         }
     }
@@ -4764,7 +4764,7 @@
 
     .box {
         .label {
-            color: $variant-1;
+            color: $dull;
             margin-bottom: 8px;
         }
 
@@ -4839,7 +4839,7 @@
             .item {
                 width: 44px;
                 height: 44px;
-                $border-radius;
+                border-radius :$border-radius;
                 border: 1px solid $outline;
                 background-color: $white;
                 @include flex(center, center);
@@ -4935,7 +4935,7 @@
         font-weight: 600;
         height: 48px;
         border: 1px solid $outline;
-        $border-radius;
+        border-radius :$border-radius;
         background-color: $white;
 
         img {
@@ -4980,7 +4980,7 @@
 
         .icon-pass {
             font-size: 20px;
-            color: $variant-1;
+            color: $dull;
         }
 
         &.active {
@@ -5199,7 +5199,7 @@
                 }
 
                 .description {
-                    color: $variant-1;
+                    color: $dull;
                     font-size: 14px;
                     line-height: 22px;
                     margin-top: 8px;
@@ -5208,7 +5208,7 @@
                 .post-author {
                     margin-top: 16px;
                     font-size: 14px;
-                    color: $variant-1;
+                    color: $dull;
                 }
             }
         }
@@ -5323,12 +5323,12 @@
         background: $surface;
         transition: all 0.3s ease;
         position: relative;
-        border:1px solid #ebebeb;
+        border:1px solid $outline;
 
         // Content areas (cta1, cta2, cta3)
         &.content-area {
             padding: 24px;
-            $border-radius;
+            border-radius :$border-radius;
 
             .icon-box {
                 margin-bottom: 16px;
@@ -5349,14 +5349,14 @@
                 align-items: flex-start;
                 .title {
                     color: $on-surface;
-                    font-weight: 600;
+                    font-weight: 500;
                     font-size: 24px;
                     line-height: 30px;
                     margin-bottom: 12px;
                 }
 
                 .description {
-                    color: $variant-1;
+                    color: $dull;
                     font-size: 14px;
                     line-height: 22px;
                     margin-bottom: 16px;

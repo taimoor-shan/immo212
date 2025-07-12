@@ -218,7 +218,7 @@ input[type='color'] {
     box-shadow: none;
     font-size: 16px;
     line-height: 26px;
-    $border-radius;
+    border-radius: 10px;
     padding: 14px 16px;
     width: 100%;
     background: $white;
@@ -244,7 +244,7 @@ input[type='url']::placeholder,
 input[type='search']::placeholder,
 input[type='tel']::placeholder,
 input[type='color']::placeholder {
-    color: $variant-1;
+    color: $dull;
     @include transition3;
 }
 textarea {
@@ -253,15 +253,15 @@ textarea {
 }
 /* Placeholder color */
 ::-webkit-input-placeholder {
-    color: $variant-1;
+    color: $dull;
 }
 
 :-moz-placeholder {
-    color: $variant-1;
+    color: $dull;
 }
 
 ::-moz-placeholder {
-    color: $variant-1;
+    color: $dull;
     opacity: 1;
 }
 
@@ -277,7 +277,7 @@ textarea {
 /* Since FF19 lowers the opacity of the placeholder by default */
 
 :-ms-input-placeholder {
-    color: $variant-1;
+    color: $dull;
 }
 
 p {
@@ -518,7 +518,7 @@ label {
     color: $success !important;
 }
 .text-variant-1 {
-    color: $variant-1;
+    color: $dull;
 }
 .text-variant-2 {
     color: $body;
@@ -560,7 +560,7 @@ label {
 }
 // radius
 .round-8 {
-    $border-radius;
+    border-radius: 10px;
 }
 .round-12 {
     border-radius: 12px;

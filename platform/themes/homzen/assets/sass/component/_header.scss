@@ -453,7 +453,7 @@
     line-height: 26px;
     font-weight: 600;
     font-size: 16px;
-    color: $variant-1;
+    color: $dull;
     transition: all 500ms ease;
     -moz-transition: all 500ms ease;
     -webkit-transition: all 500ms ease;
@@ -628,7 +628,7 @@
     line-height: 24px;
     font-weight: 600;
     font-size: 16px;
-    color: $variant-1;
+    color: $dull;
     transition: all 500ms ease;
     -moz-transition: all 500ms ease;
     -webkit-transition: all 500ms ease;
@@ -912,7 +912,7 @@
     display: none;
     background: rgba(237, 32, 39, 0.1);
     padding: 15px 20px;
-    $border-radius;
+    border-radius :$border-radius;
 }
 
 .mobile-menu .navigation li > ul > li,
@@ -1070,7 +1070,7 @@
             .content {
                 color: $body;
                 h5 {
-                    color: $variant-1;
+                    color: $dull;
                 }
             }
         }
@@ -1129,7 +1129,7 @@
         padding: 10px 6px;
         padding-left: 0px;
         border: 1px solid $outline;
-        $border-radius;
+        border-radius :$border-radius;
         display: flex;
         align-items: center;
         .form-box {
@@ -1176,7 +1176,7 @@
         background-color: $primary;
         @include flex(center, center);
         border: 0;
-        $border-radius;
+        border-radius :$border-radius;
         @include transition3;
         &:hover {
             background-color: $primary-hover;
@@ -1234,13 +1234,13 @@
         .sub-nav-menu {
             background: rgba(237, 32, 39, 0.1);
             padding: 15px 20px;
-            $border-radius;
+            border-radius :$border-radius;
             .sub-nav-link {
                 padding: 7px 0px;
                 display: block;
                 font-family: $font-1;
                 font-weight: 500;
-                color: $variant-1;
+                color: $dull;
                 &.current,
                 &:hover {
                     color: $primary;

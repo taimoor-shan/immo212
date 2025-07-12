@@ -24,7 +24,7 @@
         align-items: center;
         border: 1px solid $outline;
         background-color: $white;
-        $border-radius;
+        border-radius :$border-radius;
         @include transition3;
         .icon {
             color: $on-surface;

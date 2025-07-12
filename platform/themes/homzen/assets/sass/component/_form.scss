@@ -7,7 +7,7 @@
     box-shadow: none;
     font-size: 16px;
     line-height: 26px;
-    $border-radius;
+    border-radius :$border-radius;
     padding: 14px 16px;
     width: 100%;
     background: $white;
@@ -18,7 +18,7 @@
         border-color: $primary !important;
     }
     &::placeholder {
-        color: $variant-1;
+        color: $dull;
     }
     &.style-1 {
         padding: 10px 16px;
@@ -74,7 +74,7 @@
         }
     }
     &.style-2 {
-        border-color: $variant-1;
+        border-color: $dull;
     }
     &:checked {
         border-color: $on-surface;
@@ -132,7 +132,7 @@
 
     .search-field {
         padding: 14px 45px 14px 16px;
-        $border-radius;
+        border-radius :$border-radius;
         font-size: 16px;
         font-weight: 400;
         line-height: 26px;
@@ -154,11 +154,11 @@
         overflow: hidden;
         display: inline-flex;
         background-color: $primary;
-        $border-radius;
+        border-radius :$border-radius;
         width: 48px;
         cursor: pointer;
         &::before {
-            $border-radius;
+            border-radius :$border-radius;
             position: absolute;
             width: 100%;
             height: 100%;
@@ -204,7 +204,7 @@
     }
 
     .sub-ip {
-        color: $variant-1;
+        color: $dull;
         margin-bottom: 8px;
     }
 }
@@ -212,7 +212,7 @@
 // widget form find select
 .wd-find-select {
         display: flex;
-        $border-radius;
+        border-radius :$border-radius;
         border-top-left-radius: 0;
         border-bottom-right-radius: 0;
         background-color: #ffffff;
@@ -223,7 +223,7 @@
     .tf-btn {
         @include flex(center, center);
         padding: 10px 24px;
-        $border-radius;
+        border-radius :$border-radius;
         border: none;
     }
     .inner-group {
@@ -264,7 +264,7 @@
             label {
                 font-size: 14px;
                 line-height: 24px;
-                color: $variant-1;
+                color: $dull;
             }
         }
         .group-ip {
@@ -329,7 +329,7 @@
     .group-select {
         .nice-select {
             padding: 14px 17px;
-            $border-radius;
+            border-radius :$border-radius;
         }
     }
     &.style-2 {
@@ -425,7 +425,7 @@
     width: 100%;
     background: rgba(255, 255, 255, 1); /* optional overlay */
     border: 1px solid $outline;
-    $border-radius;
+    border-radius :$border-radius;
     padding: 28px 20px;
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
@@ -481,7 +481,7 @@
             align-items: center;
             gap: 6px;
             .text-cb-amenities {
-                color: $variant-1;
+                color: $dull;
                 cursor: pointer;
             }
             .tf-checkbox:checked ~ .text-cb-amenities {
@@ -603,7 +603,7 @@
             }
             &::-webkit-scrollbar-thumb {
                 background: $primary;
-                $border-radius;
+                border-radius :$border-radius;
             }
         }
     }
@@ -623,7 +623,7 @@
                 font-size: 16px;
                 line-height: 26px;
                 font-weight: 400;
-                color: $variant-1;
+                color: $dull;
             }
             .form-control,
             .nice-select {
@@ -650,7 +650,7 @@
                     .text-cb-amenities {
                         font-size: 16px;
                         line-height: 26px;
-                        color: $variant-1;
+                        color: $dull;
                         font-weight: 400;
                         text-transform: unset;
                         letter-spacing: unset;
@@ -665,7 +665,7 @@
                 margin-bottom: 18px;
             }
             .title-price {
-                color: $variant-1;
+                color: $dull;
             }
             &.wd-price-2 {
                 margin: 22px 0px;
@@ -673,7 +673,7 @@
         }
     }
     .nav-tab-form {
-        $border-radius;
+        border-radius :$border-radius;
         gap: 0;
         overflow: hidden;
         .nav-tab-item {

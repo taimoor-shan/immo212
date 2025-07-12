@@ -111,7 +111,7 @@
     margin-bottom: 0; // Remove default margin in carousel
     display: block;
     height: 100%; // Ensure consistent card heights
-    border-radius: 10px;
+    $border-radius;
     overflow: hidden;
     background: $white;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
@@ -152,7 +152,7 @@
         line-height: 19px;
         letter-spacing: 0.8px;
         font-weight: 600;
-        border-radius: 10px;
+        $border-radius;
     }
 
     .content-box {
@@ -389,7 +389,7 @@
             border-bottom: 1px solid $outline;
 
             .img-style {
-                border-radius: 10px;
+                $border-radius;
                 width: 110px;
                 height: 110px;
                 flex-shrink: 0;
@@ -670,7 +670,7 @@
         width: 48px;
         height: 50px;
         line-height: 50px;
-        border-radius: 10px;
+        $border-radius;
         object-fit: cover;
         position: relative;
         -webkit-transition: all 0.3s ease;
@@ -865,7 +865,7 @@
             gap: 16px;
 
             .nav-link-item {
-                border-radius: 10px;
+                $border-radius;
                 background-color: $surface;
                 color: $on-surface;
             }
@@ -885,7 +885,7 @@
 
             .tf-btn {
                 padding: 11px 20px;
-                border-radius: 10px;
+                $border-radius;
             }
         }
 
@@ -899,7 +899,7 @@
 // widget home box
 .homeya-box {
     display: block;
-    border-radius: 10px;
+    $border-radius;
     overflow: hidden;
     border: 1px solid $outline;
     @include transition3;
@@ -1281,7 +1281,7 @@
             .archive-top {
                 padding-bottom: 20px;
                 margin-bottom: 20px;
-                border-bottom: 1px solid $outline;
+                border-bottom: none;
             }
         }
     }
@@ -1584,7 +1584,7 @@
     display: flex;
     align-items: center;
     gap: 24px;
-    border-radius: 10px;
+    $border-radius;
     overflow: hidden;
     background-color: $surface;
     box-shadow: 0px 2px 2px 0px #1c24331a;
@@ -1688,7 +1688,7 @@
 .box-location-v5 {
     position: relative;
     display: block;
-    border-radius: 10px;
+    $border-radius;
     overflow: hidden;
     @include transition6;
 
@@ -1713,7 +1713,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 10px;
+            $border-radius;
             @include transition5;
          
         }
@@ -1726,7 +1726,7 @@
         right: 0;
         bottom: 0;
         background: $garden-5;
-        border-radius: 10px;
+        $border-radius;
         @include transition3;
     }
 
@@ -2583,7 +2583,7 @@
             bottom: 0px;
             background-color: $white;
             padding: 12px 0px;
-            border-radius: 10px;
+            $border-radius;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             left: 37px;
@@ -2771,7 +2771,7 @@
 .homeya-categories {
     padding: 30px 24px 24px 24px;
     background-color: $surface;
-    border-radius: 10px;
+    $border-radius;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2839,7 +2839,7 @@
         transition: transform 400ms ease;
         transform-origin: bottom center;
         z-index: -1;
-        border-radius: 10px;
+        $border-radius;
     }
 
     &.style-1 {
@@ -2972,7 +2972,7 @@
         width: 40px;
         height: 40px;
         z-index: 123;
-        border-radius: 10px;
+        $border-radius;
 
         .icon {
             font-size: 16px;
@@ -3102,7 +3102,7 @@
     height: 24px;
     line-height: 24px;
     font-size: 12px;
-    border-radius: 10px;
+    $border-radius;
     z-index: 9;
     text-align: center;
     cursor: pointer;
@@ -3229,7 +3229,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 10px;
+    $border-radius;
     overflow: hidden;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 
@@ -3425,7 +3425,7 @@
         height: 50px;
         @include flex(center, center);
         font-weight: 600;
-        border-radius: 10px;
+        $border-radius;
 
         &:hover,
         &.active {
@@ -3465,7 +3465,7 @@
     .images-style {
         position: relative;
         overflow: hidden;
-        border-radius: 10px;
+        $border-radius;
         width: 110px;
         height: 110px;
 
@@ -3551,7 +3551,7 @@
         z-index: 12;
 
         .item {
-            border-radius: 10px;
+            $border-radius;
             width: 52px;
             height: 52px;
             @include transition5;
@@ -3732,7 +3732,7 @@
             }
 
             .box-icon {
-                border-radius: 10px;
+                $border-radius;
                 background-color: $surface;
                 min-width: 52px;
 
@@ -3956,7 +3956,7 @@
         gap: 12px;
 
         .box-icon {
-            border-radius: 10px;
+            $border-radius;
             background-color: $surface;
         }
 
@@ -4324,7 +4324,7 @@
             .box-icon {
                 width: 48px;
                 height: 48px;
-                border-radius: 10px;
+                $border-radius;
                 background-color: $white;
                 font-size: 28px;
             }
@@ -4348,7 +4348,7 @@
     // }
 
     .box-img {
-        border-radius: 10px;
+        $border-radius;
         overflow: hidden;
 
         img {
@@ -4386,7 +4386,7 @@
     }
 
     .img-thumb-pagi {
-        border-radius: 10px;
+        $border-radius;
         overflow: hidden;
     }
 }
@@ -4839,7 +4839,7 @@
             .item {
                 width: 44px;
                 height: 44px;
-                border-radius: 10px;
+                $border-radius;
                 border: 1px solid $outline;
                 background-color: $white;
                 @include flex(center, center);
@@ -4935,7 +4935,7 @@
         font-weight: 600;
         height: 48px;
         border: 1px solid $outline;
-        border-radius: 10px;
+        $border-radius;
         background-color: $white;
 
         img {
@@ -5328,7 +5328,7 @@
         // Content areas (cta1, cta2, cta3)
         &.content-area {
             padding: 24px;
-            border-radius: 10px;
+            $border-radius;
 
             .icon-box {
                 margin-bottom: 16px;

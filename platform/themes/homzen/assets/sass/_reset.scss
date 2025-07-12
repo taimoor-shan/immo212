@@ -218,7 +218,7 @@ input[type='color'] {
     box-shadow: none;
     font-size: 16px;
     line-height: 26px;
-    border-radius: 10px;
+    $border-radius;
     padding: 14px 16px;
     width: 100%;
     background: $white;
@@ -560,7 +560,7 @@ label {
 }
 // radius
 .round-8 {
-    border-radius: 10px;
+    $border-radius;
 }
 .round-12 {
     border-radius: 12px;

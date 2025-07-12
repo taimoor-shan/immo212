@@ -3,7 +3,8 @@
 $font-1: var(--primary-font);
 $font-2: var(--heading-font);
 $fontIcon: 'icomoon';
-
+// Border Radius
+$border-radius: 10px;
 // color
 $primary: var(--primary-color);
 $primary-hover: var(--hover-color);
@@ -34,4 +35,42 @@ $rgba-black-hover: rgba(0, 0, 0, 0.5019607843);
 $shadow-1: 0px 10px 25px 0px rgba(54, 95, 104, 0.1);
 $shadow-2: 0px 10px 25px 0px #365f681a;
 $rgba-prime: rgba(5, 75, 160, 0.5);
+
+
+// ───── New Colors ─────
+
+// ───── Core Colors
+$primary: #0052cc;             // Main brand blue
+$primary-hover: #1542c9;       // Slightly darker hover
+$accent: #e2530d;              // Highlight / CTA (used sparingly)
+
+// ───── Functional Colors
+$success: #52bc77;             // For success messages
+$yellow: #f4d118;              // Optional warning tone
+$critical: #c72929;            // For errors/alerts
+
+// ───── Neutral Tones
+$white: #ffffff;
+$black: #000000;
+$body: #63697d;                // Default text
+$outline: #a8beea;             // Borders/inputs
+$on-surface: #082479;          // Dark text (on light)
+$surface: #f3f5fa;             // Section backgrounds / light boxes
+
+// ───── Backdrop & Effects
+$backdrop: rgba(22, 30, 45, 0.3);
+$rgba-white: rgba(255, 255, 255, 0.1);
+$rgba-black: rgba(11, 33, 50, 0.4);
+$rgba-black-hover: rgba(0, 0, 0, 0.5);
+$rgba-prime: rgba(5, 75, 160, 0.5);
+
+// ───── Shadows
+$shadow-1: 0px 10px 25px rgba(54, 95, 104, 0.1);
+$shadow-2: 0px 10px 25px rgba(54, 95, 104, 0.1);
+
+// ───── Gradients (use only 1-2 max in UI)
+$garden-1: linear-gradient(90deg, #0f4e98 0%, #ee6742 100%);
+$garden-2: linear-gradient(180deg, rgba(11, 33, 50, 0) 0%, rgba(11, 33, 50, 0.9) 100%);
+$garden-3: linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
+
 

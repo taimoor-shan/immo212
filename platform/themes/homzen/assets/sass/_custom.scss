@@ -1780,7 +1780,7 @@ a {
     width: 100% !important;
     height: auto;
     line-height: 45px;
-    border-radius: 10px;
+    $border-radius;
 }
 
 .nice-select {
@@ -1791,7 +1791,7 @@ a {
 
 .form-search-location .nice-select .list {
     width: 100% !important;
-    border-radius: 10px;
+    $border-radius;
 }
 
 .nice-select .nice-select-search-wrapper {

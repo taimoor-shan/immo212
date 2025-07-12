@@ -15,9 +15,11 @@
             z-index: 1;
             padding: 190px 0;
             .heading {
-                margin-bottom: 40px;
+                margin-bottom: -58px;
                 h1{
                     font-weight: 700;
+                    text-align: end;
+                    color: $on-surface;
                 }
             }
             .subtitle {

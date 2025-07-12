@@ -34,7 +34,7 @@
             @if (RealEstateHelper::isEnabledWishlist())
             <ul class="iconText">
                 <li>
-                    <button type="button" class="tf-btn sm" data-type="{{ $property instanceof \Botble\RealEstate\Models\Property ? 'property' : 'project' }}"
+                    <button type="button" class="tf-btn secondary sm" data-type="{{ $property instanceof \Botble\RealEstate\Models\Property ? 'property' : 'project' }}"
                             data-bb-toggle="add-to-wishlist"
                             data-id="{{ $property->getKey() }}"
                             data-add-message="{{ __('Added ":name" to wishlist successfully!', ['name' => $property->name]) }}"

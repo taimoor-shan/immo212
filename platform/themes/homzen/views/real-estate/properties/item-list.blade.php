@@ -5,9 +5,9 @@
         </div>
         <div class="top">
             <ul class="d-flex gap-4 flex-column">
-                @if($property->is_featured)
+                <!-- @if($property->is_featured)
                     <span class="flag-tag success">{{ __('Featured') }}</span>
-                @endif
+                @endif -->
                 {!! BaseHelper::clean($property->status->toHtml()) !!}
             </ul>
             @if (RealEstateHelper::isEnabledWishlist())
@@ -24,14 +24,14 @@
                 </div>
             @endif
         </div>
+    </a>
+    <div class="content">
+        <div class="archive-top">
         @if($property->category)
             <div class="bottom">
                 <span class="flag-tag style-2">{{ $property->category->name }}</span>
             </div>
         @endif
-    </a>
-    <div class="content">
-        <div class="archive-top">
             <div class="h7 text-capitalize fw-5">
                 <a href="{{ $property->url }}" class="link line-clamp-1" title="{{ $property->name }}">{!! BaseHelper::clean($property->name) !!}</a>
             </div>

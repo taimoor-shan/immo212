@@ -214,6 +214,7 @@
         display: flex;
         border-radius: 10px;
         border-top-left-radius: 0;
+        border-bottom-right-radius: 0;
         background-color: #ffffff;
         border: none;
         box-shadow: none;
@@ -279,20 +280,27 @@
         }
         .box-filter {
             position: absolute;
-            bottom: -34px;
+            bottom: -36px;
             right: 0;
             width: max-content;
             flex-shrink: 0;
+            border-top: 1px solid $outline;
+
             .filter-advanced {
                 display: flex;
                 align-items: center;
-                color: $primary;
+                // color: $primary;
                 font-family: $font-1;
                 font-weight: 400;
                 font-size: 16px;
                 line-height: 24px;
                 @include transition2;
                 gap:10px;
+                background: #ffffff;
+                padding: 6px 10px 6px;
+                border-radius: 8px;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
 
                 .filter-text {
                     
@@ -415,9 +423,7 @@
     position: absolute;
     z-index: 10;
     width: 100%;
-    background: rgba(255, 255, 255, 0.7); /* optional overlay */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* for Safari */
+    background: rgba(255, 255, 255, 1); /* optional overlay */
     border: 1px solid $outline;
     border-radius: 10px;
     padding: 28px 20px;
@@ -434,7 +440,7 @@
         display: unset;
         opacity: 1;
         visibility: visible;
-        margin-top: 40px;
+        margin-top: 44px;
     }
     .group-box {
         gap: 80px;

@@ -14,13 +14,13 @@
                     <div class="bento-service-item content-area cta1">
                         <div class="content">
                             <h6 class="title">{!! BaseHelper::clean($service['title']) !!}</h6>
-                            @if($service['description'])
+                            <!-- @if($service['description'])
                                 <p class="description">{!! BaseHelper::clean(nl2br($service['description'])) !!}</p>
-                            @endif
+                            @endif -->
                             @if ($service['button_url'] && $service['button_label'])
-                                <a href="{{ $service['button_url'] }}" class="btn-view">
+                                <a href="{{ $service['button_url'] }}" class="tf-btn primary size-3">
                                     <span class="text">{{ $service['button_label'] }}</span>
-                                    <x-core::icon name="ti ti-arrow-right" style="stroke-width: 2" class="icon" />
+                                    
                                 </a>
                             @endif
                         </div>
@@ -51,13 +51,13 @@
                     <div class="bento-service-item content-area cta3">
                         <div class="content">
                             <h6 class="title">{!! BaseHelper::clean($service['title']) !!}</h6>
-                            @if($service['description'])
+                            <!-- @if($service['description'])
                                 <p class="description">{!! BaseHelper::clean(nl2br($service['description'])) !!}</p>
-                            @endif
+                            @endif -->
                             @if ($service['button_url'] && $service['button_label'])
-                                <a href="{{ $service['button_url'] }}" class="btn-view">
+                                <a href="{{ $service['button_url'] }}" class="tf-btn primary size-3">
                                     <span class="text">{{ $service['button_label'] }}</span>
-                                    <x-core::icon name="ti ti-arrow-right" style="stroke-width: 2" class="icon" />
+                                    
                                 </a>
                             @endif
                         </div>
@@ -71,13 +71,13 @@
                        
                         <div class="content">
                             <h6 class="title">{!! BaseHelper::clean($service['title']) !!}</h6>
-                            @if($service['description'])
+                            <!-- @if($service['description'])
                                 <p class="description">{!! BaseHelper::clean(nl2br($service['description'])) !!}</p>
-                            @endif
+                            @endif -->
                             @if ($service['button_url'] && $service['button_label'])
-                                <a href="{{ $service['button_url'] }}" class="btn-view">
+                                <a href="{{ $service['button_url'] }}" class="tf-btn primary size-3">
                                     <span class="text">{{ $service['button_label'] }}</span>
-                                    <x-core::icon name="ti ti-arrow-right" style="stroke-width: 2" class="icon" />
+                                    
                                 </a>
                             @endif
                         </div>

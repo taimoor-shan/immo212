@@ -1359,6 +1359,62 @@ $(() => {
         }
     }
 
+    const initLocationV5 = () => {
+        if ($('.tf-sw-location-v5').length > 0) {
+            const $element = $('.tf-sw-location-v5')
+            const spacing = $element.data('space') || 20
+            const autoplay = $element.data('autoplay') === 'true'
+            const autoplaySpeed = $element.data('autoplay-speed') || 5000
+            const loop = $element.data('loop') === 'true'
+
+            // Only initialize Swiper on screens smaller than lg (992px)
+            const initSwiper = () => {
+                if (window.innerWidth < 992) {
+                    if (!$element.hasClass('swiper-initialized')) {
+                        const swiper = new Swiper('.tf-sw-location-v5', {
+                            rtl: Theme.isRtl(),
+                            autoplay: autoplay ? {
+                                delay: autoplaySpeed,
+                                disableOnInteraction: false,
+                            } : false,
+                            speed: 750,
+                            slidesPerView: 2.5, // Show 2.5 slides (columns) with partial overflow
+                            spaceBetween: spacing,
+                            loop: loop,
+                            watchSlidesProgress: true,
+                            freeMode: false, // Snap to positions
+                            breakpoints: {
+                                480: {
+                                    slidesPerView: 1.5, // Show 1.5 slides on mobile
+                                    spaceBetween: 15,
+                                },
+                                768: {
+                                    slidesPerView: 2.2, // Show 2.2 slides on tablets
+                                    spaceBetween: 20,
+                                },
+                            },
+                        })
+                    }
+                } else {
+                    // Destroy Swiper on larger screens to use grid layout
+                    if ($element.hasClass('swiper-initialized')) {
+                        $element[0].swiper.destroy(true, true)
+                    }
+                }
+            }
+
+            // Initialize on load
+            initSwiper()
+
+            // Re-initialize on window resize
+            let resizeTimer
+            $(window).on('resize', () => {
+                clearTimeout(resizeTimer)
+                resizeTimer = setTimeout(initSwiper, 250)
+            })
+        }
+    }
+
     const initPropertiesTab = () => {
         $(document)
             .off('click', '[data-bb-toggle="properties-tab"] [data-bs-toggle="tab"]')
@@ -2044,6 +2100,11 @@ $(() => {
 
             case 'location':
                 initLocation()
+
+                // Initialize location v5 carousel for style 5
+                if (attributes.style === '5') {
+                    initLocationV5()
+                }
 
                 break
 

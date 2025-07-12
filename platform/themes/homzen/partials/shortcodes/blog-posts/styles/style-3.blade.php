@@ -1,5 +1,5 @@
 <section
-    class="flat-section flat-blog-v8 wow fadeInUpSmall"
+    class="flat-section-v4 flat-blog-v8 wow fadeInUpSmall"
     data-wow-delay=".2s"
     data-wow-duration="2000ms"
     @style(["background-color: $shortcode->background_color" => $shortcode->background_color])
@@ -33,7 +33,7 @@
                                     <!-- @if($post->description)
                                         <p class="description">{!! BaseHelper::clean(Str::limit($post->description, 100)) !!}</p>
                                     @endif -->
-                                    <span class="tf-btn secWhite">Learn More</span>
+                                    <span class="tf-btn secWhite ">Learn More</span>
                                 </div>
 </a>
                         </div>

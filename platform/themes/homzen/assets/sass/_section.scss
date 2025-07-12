@@ -156,7 +156,7 @@
     }
 
     .content-box {
-        padding: 16px;
+        padding: 16px 16px 24px;
         height: calc(100% - 200px); // Adjust based on image height
         display: flex;
         flex-direction: column;
@@ -1299,7 +1299,7 @@
 
 // box title
 .box-title {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 
     &.style-1 {
         @include flex(center, flex-start);
@@ -1637,22 +1637,51 @@
     }
 }
 
-// Location Style 5 - 2x6 Grid Layout
+// Location Style 5 - Responsive Grid/Carousel Layout
 .grid-location-v5 {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 20px;
+    // Grid layout for lg+ screens (Bootstrap lg = 992px+)
+    @media (min-width: 992px) {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: 1fr;
+        gap: 16px;
 
-    @media (max-width: 1199px) {
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: repeat(3, 1fr);
+        .swiper-wrapper {
+            display: contents; // Make swiper-wrapper transparent for grid
+        }
+
+        .swiper-slide {
+            display: block; // Reset swiper slide display
+
+            .slide-column {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
     }
 
+    // 2-row horizontal carousel for smaller screens
+    @media (max-width: 991px) {
+        .swiper-slide {
+            width: auto; // Let Swiper handle the width
+
+            .slide-column {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                height: 100%;
+            }
+        }
+    }
+
+    // Mobile adjustments for better spacing
     @media (max-width: 767px) {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(6, 1fr);
-        gap: 15px;
+        .swiper-slide {
+            .slide-column {
+                gap: 15px;
+            }
+        }
     }
 }
 
@@ -1671,7 +1700,7 @@
         border:1px solid #eeeeee;
 
         @media (max-width: 767px) {
-            height: 150px;
+            height: 130px;
         }
     }
 
@@ -1729,8 +1758,6 @@
     }
 
     &:hover {
-       
-
         .image img {
             transform: scale(1.05);
         }
@@ -1740,6 +1767,8 @@
         }
     }
 }
+
+
 
 // widget service
 .box-service {
@@ -5291,22 +5320,14 @@
 
     .bento-service-item {
         overflow: hidden;
-        background: $white;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        background: $surface;
         transition: all 0.3s ease;
         position: relative;
-
-        &:hover {
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-            transform: translateY(-2px);
-        }
+        border:1px solid #ebebeb;
 
         // Content areas (cta1, cta2, cta3)
         &.content-area {
             padding: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
             border-radius: 10px;
 
             .icon-box {
@@ -5320,11 +5341,17 @@
             }
 
             .content {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                gap: 24px;
+                height: 100%;
+                align-items: flex-start;
                 .title {
                     color: $on-surface;
                     font-weight: 600;
-                    font-size: 18px;
-                    line-height: 24px;
+                    font-size: 24px;
+                    line-height: 30px;
                     margin-bottom: 12px;
                 }
 
@@ -5359,6 +5386,9 @@
                         transform: translateX(4px);
                     }
                 }
+            }
+            &:hover {
+                border:1px solid $outline;
             }
         }
 

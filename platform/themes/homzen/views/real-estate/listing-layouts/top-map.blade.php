@@ -43,14 +43,14 @@
             {!! apply_filters('ads_render', null, 'listing_page_before') !!}
 
             <div class="position-relative" data-bb-toggle="data-listing">
-                @include($itemsViewPath, ['itemLayout' => $itemLayout, 'itemsPerRow' => $itemLayout === 'grid' ? 2 : 1])
+                @include($itemsViewPath, compact('itemLayout'))
             </div>
 
             {!! apply_filters('ads_render', null, 'listing_page_after') !!}
         </div>
         <div class="col-lg-4">
             <div class="widget-sidebar">
-                @include(Theme::getThemeNamespace('views.real-estate.partials.agencies-sidebar'))
+                @include(Theme::getThemeNamespace('views.real-estate.partials.agencies-sidebar '))
             </div>
         </div>
         </div>

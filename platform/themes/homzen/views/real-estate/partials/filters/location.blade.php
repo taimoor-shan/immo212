@@ -1,11 +1,11 @@
 @if (is_plugin_active('location'))
     @if (theme_option('real_estate_use_location_in_search_box_as_dropdown', 'no') === 'yes')
         <div class="form-group-2 form-style form-search-location">
-            <label for="location">{{ __('City') }}</label>
+            <label for="location">{{ __('Cities') }}</label>
             <div class="position-relative">
                 <div class="group-select">
                     <select name="city_id" id="location" class="select_js">
-                        <option value="">{{ __('All Cities') }}</option>
+                        <option value="">{{ __('All') }}</option>
                         @if (request()->query('city_id'))
                             @php
                                 $selectedCity = \Botble\Location\Models\City::query()

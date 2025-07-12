@@ -1780,7 +1780,7 @@ a {
     width: 100% !important;
     height: auto;
     line-height: 45px;
-    border-radius :$border-radius;
+    border-radius: 10px;
 }
 
 .nice-select {
@@ -1791,7 +1791,7 @@ a {
 
 .form-search-location .nice-select .list {
     width: 100% !important;
-    border-radius :$border-radius;
+    border-radius: 10px;
 }
 
 .nice-select .nice-select-search-wrapper {
@@ -1893,150 +1893,4 @@ a {
     //         color: var(--primary-color-hover);
     //     }
     // }
-}
-
-// Agency Sidebar Styles
-.agencies-sidebar-list {
-    .agency-card-sidebar {
-        border-radius: 12px;
-        background-color: $white;
-        border: 1px solid #e4e4e4;
-        padding: 16px;
-        @include transition3;
-
-        &:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-color: $primary;
-        }
-
-        .box-agent.style-sidebar {
-            gap: 0;
-
-            .agency-card-content {
-                display: flex;
-                align-items: flex-start;
-                gap: 12px;
-                width: 100%;
-
-                .agency-avatar-small {
-                    flex-shrink: 0;
-                    width: 60px;
-                    height: 60px;
-                    border-radius: 50%;
-                    overflow: hidden;
-
-                    img {
-                        width: 100%;
-                        height: 100%;
-                        object-fit: cover;
-                    }
-
-                    a {
-                        display: block;
-                        width: 100%;
-                        height: 100%;
-                    }
-                }
-
-                .agency-info-small {
-                    flex: 1;
-                    min-width: 0; // Prevent flex item from overflowing
-
-                    .agency-name {
-                        h6 {
-                            font-size: 16px;
-                            font-weight: 600;
-                            line-height: 1.2;
-                            margin-bottom: 4px;
-                            @include transition3;
-
-                            &.link:hover {
-                                color: $primary;
-                            }
-                        }
-                    }
-
-                    .agency-company {
-                        font-size: 14px;
-                        line-height: 1.2;
-                        color: $dull;
-                        margin-bottom: 6px;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    }
-
-                    .agency-meta-small {
-                        .properties-count {
-                            display: flex;
-                            align-items: center;
-                            gap: 4px;
-                            font-size: 13px;
-                            color: $dull;
-                            margin-bottom: 6px;
-
-                            .icon-small {
-                                width: 14px;
-                                height: 14px;
-                                flex-shrink: 0;
-                            }
-                        }
-                    }
-
-                    .agency-contact-small {
-                        .contact-link {
-                            display: flex;
-                            align-items: center;
-                            gap: 4px;
-                            font-size: 13px;
-                            color: $dull;
-                            text-decoration: none;
-                            @include transition3;
-
-                            &:hover {
-                                color: $primary;
-                            }
-
-                            .icon-small {
-                                width: 14px;
-                                height: 14px;
-                                flex-shrink: 0;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-// Responsive adjustments for agency sidebar
-@media (max-width: 991px) {
-    .agencies-sidebar-list {
-        .agency-card-sidebar {
-            .box-agent.style-sidebar {
-                .agency-card-content {
-                    .agency-avatar-small {
-                        width: 50px;
-                        height: 50px;
-                    }
-
-                    .agency-info-small {
-                        .agency-name h6 {
-                            font-size: 15px;
-                        }
-
-                        .agency-company {
-                            font-size: 13px;
-                        }
-
-                        .agency-meta-small .properties-count,
-                        .agency-contact-small .contact-link {
-                            font-size: 12px;
-                        }
-                    }
-                }
-            }
-        }
-    }
 }

@@ -8,13 +8,13 @@
         
 
 <div class="row">
-            <div class="col-lg-8 col-xl-9">
+            <div class="col-lg-8 col-xl-8">
             @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.gallery-grid'))
                 {!! apply_filters('before_single_content_detail', null, $property) !!}
 
                 @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.description'), ['class' => 'single-property-element'])
 
-                @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.video'), ['class' => 'single-property-element'])
+                <!-- @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.video'), ['class' => 'single-property-element']) -->
 
                 @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.features'), ['class' => 'single-property-element'])
 
@@ -28,19 +28,19 @@
 
                 {!! apply_filters('after_single_content_detail', null, $property) !!}
 
-                <div class="wrapper-onepage">
+                <!-- <div class="wrapper-onepage">
                     @include(Theme::getThemeNamespace('views.real-estate.partials.social-sharing'), ['model' => $property])
-                </div>
+                </div> -->
 
-                {!! apply_filters(
+                <!-- {!! apply_filters(
                     BASE_FILTER_PUBLIC_COMMENT_AREA,
                     null,
                     $property
                 ) !!}
 
-                @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.reviews'), ['model' => $property, 'class' => 'single-property-element'])
+                @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.reviews'), ['model' => $property, 'class' => 'single-property-element']) -->
             </div>
-            <div class="col-lg-4 col-xl-3">
+            <div class="col-lg-4 col-xl-4">
                 <div class="widget-sidebar wrapper-sidebar-right">
                     {!! apply_filters('ads_render', null, 'detail_page_sidebar_before') !!}
 

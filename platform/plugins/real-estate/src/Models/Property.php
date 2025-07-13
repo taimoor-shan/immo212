@@ -5,6 +5,7 @@ namespace Botble\RealEstate\Models;
 use Botble\Base\Casts\SafeContent;
 use Botble\Base\Models\BaseModel;
 use Botble\Media\Facades\RvMedia;
+use Botble\RealEstate\Database\Factories\PropertyFactory;
 use Botble\RealEstate\Enums\ModerationStatusEnum;
 use Botble\RealEstate\Enums\PropertyPeriodEnum;
 use Botble\RealEstate\Enums\PropertyStatusEnum;
@@ -12,8 +13,10 @@ use Botble\RealEstate\Enums\PropertyTypeEnum;
 use Botble\RealEstate\Models\Traits\UniqueId;
 use Botble\RealEstate\QueryBuilders\PropertyBuilder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Arr;
@@ -24,7 +27,7 @@ use Illuminate\Support\Str;
  */
 class Property extends BaseModel
 {
-    use UniqueId;
+    use HasFactory, UniqueId;
 
     protected $table = 're_properties';
 
@@ -59,6 +62,16 @@ class Property extends BaseModel
         'private_notes',
         'floor_plans',
         'reject_reason',
+        // Vacation rental specific fields
+        'check_in_time',
+        'check_out_time',
+        'minimum_stay',
+        'maximum_stay',
+        'maximum_guests',
+        'cleaning_fee',
+        'security_deposit',
+        'house_rules',
+        'cancellation_policy',
     ];
 
     protected $casts = [
@@ -71,6 +84,7 @@ class Property extends BaseModel
         'content' => SafeContent::class,
         'location' => SafeContent::class,
         'private_notes' => SafeContent::class,
+        'house_rules' => SafeContent::class,
         'expire_date' => 'datetime',
         'images' => 'json',
         'price' => 'float',
@@ -80,7 +94,18 @@ class Property extends BaseModel
         'number_floor' => 'int',
         'featured_priority' => 'int',
         'floor_plans' => 'array',
+        // Vacation rental specific casts
+        'minimum_stay' => 'int',
+        'maximum_stay' => 'int',
+        'maximum_guests' => 'int',
+        'cleaning_fee' => 'float',
+        'security_deposit' => 'float',
     ];
+
+    protected static function newFactory(): PropertyFactory
+    {
+        return PropertyFactory::new();
+    }
 
     protected static function booted(): void
     {
@@ -244,6 +269,27 @@ class Property extends BaseModel
     public function reviews(): MorphMany
     {
         return $this->morphMany(Review::class, 'reviewable');
+    }
+
+    // Vacation rental availability relationships
+    public function availability(): HasMany
+    {
+        return $this->hasMany(PropertyAvailability::class);
+    }
+
+    public function availabilityRules(): HasMany
+    {
+        return $this->hasMany(PropertyAvailabilityRule::class);
+    }
+
+    public function vacationRentalBookings(): HasMany
+    {
+        return $this->hasMany(VacationRentalBooking::class);
+    }
+
+    public function calendarEvents(): HasMany
+    {
+        return $this->hasMany(PropertyCalendarEvent::class);
     }
 
     public function newEloquentBuilder($query): PropertyBuilder

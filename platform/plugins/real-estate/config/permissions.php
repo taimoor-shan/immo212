@@ -240,6 +240,42 @@ return [
         'flag' => 'real-estate.custom-fields.index',
         'parent_flag' => 'plugins.real-estate',
     ],
+
+    [
+        'name' => 'Vacation Rentals',
+        'flag' => 'vacation-rental.index',
+        'parent_flag' => 'plugins.real-estate',
+    ],
+    [
+        'name' => 'Dashboard',
+        'flag' => 'vacation-rental.dashboard',
+        'parent_flag' => 'vacation-rental.index',
+    ],
+    [
+        'name' => 'Bookings',
+        'flag' => 'vacation-rental.bookings',
+        'parent_flag' => 'vacation-rental.index',
+    ],
+    [
+        'name' => 'Availability',
+        'flag' => 'vacation-rental.availability',
+        'parent_flag' => 'vacation-rental.index',
+    ],
+    [
+        'name' => 'Calendar',
+        'flag' => 'vacation-rental.calendar',
+        'parent_flag' => 'vacation-rental.index',
+    ],
+    [
+        'name' => 'Edit Booking',
+        'flag' => 'vacation-rental.booking.edit',
+        'parent_flag' => 'vacation-rental.bookings',
+    ],
+    [
+        'name' => 'Delete Booking',
+        'flag' => 'vacation-rental.booking.destroy',
+        'parent_flag' => 'vacation-rental.bookings',
+    ],
     [
         'name' => 'Create',
         'flag' => 'real-estate.custom-fields.create',

@@ -1,0 +1,328 @@
+/**
+ * Admin Calendar Styles for Vacation Rental management
+ * Beautiful, minimal styling for Flatpickr calendar
+ */
+
+.vacation-rental-calendar {
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+
+        .calendar-controls {
+            display: flex;
+            gap: 10px;
+
+            .btn {
+                transition: all 0.3s ease;
+                border-radius: 6px;
+                font-weight: 500;
+
+                &.active {
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                }
+
+                i {
+                    margin-right: 5px;
+                }
+            }
+        }
+
+        .calendar-legend {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+
+            .legend-item {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+
+                .color-box {
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 2px;
+                    border: 1px solid #ddd;
+                }
+            }
+
+            .available .color-box {
+                background-color: #d4edda;
+                border-color: #28a745;
+            }
+
+            .booked .color-box {
+                background-color: #f8d7da;
+                border-color: #dc3545;
+            }
+
+            .blocked .color-box {
+                background-color: #fff3cd;
+                border-color: #ffc107;
+            }
+
+            .maintenance .color-box {
+                background-color: #e2e3e5;
+                border-color: #6c757d;
+            }
+        }
+    }
+
+    .calendar-container {
+        .flatpickr-calendar {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            font-family: inherit;
+
+            .flatpickr-months {
+                background: #fff;
+                border-radius: 12px 12px 0 0;
+                padding: 15px;
+
+                .flatpickr-month {
+                    color: #495057;
+                    font-weight: 600;
+                }
+
+                .flatpickr-prev-month,
+                .flatpickr-next-month {
+                    color: #6c757d;
+                    transition: color 0.3s ease;
+
+                    &:hover {
+                        color: #007bff;
+                    }
+                }
+            }
+
+            .flatpickr-weekdays {
+                background: #f8f9fa;
+                
+                .flatpickr-weekday {
+                    color: #6c757d;
+                    font-weight: 600;
+                    font-size: 11px;
+                    text-transform: uppercase;
+                }
+            }
+
+            .flatpickr-days {
+                .flatpickr-day {
+                    border-radius: 6px;
+                    margin: 1px;
+                    transition: all 0.2s ease;
+                    font-weight: 500;
+
+                    &:hover {
+                        background: #e9ecef;
+                        transform: scale(1.05);
+                    }
+
+                    &.selected {
+                        background: #007bff;
+                        border-color: #007bff;
+                        color: white;
+                        font-weight: 600;
+                    }
+
+                    &.today {
+                        border: 2px solid #007bff;
+                        font-weight: 600;
+                    }
+
+                    // Availability status styles
+                    &.calendar-available {
+                        background-color: #d4edda;
+                        color: #155724;
+                        border: 1px solid #c3e6cb;
+
+                        &:hover {
+                            background-color: #c3e6cb;
+                        }
+
+                        &.selected {
+                            background-color: #28a745;
+                            border-color: #28a745;
+                            color: white;
+                        }
+                    }
+
+                    &.calendar-booked {
+                        background-color: #f8d7da;
+                        color: #721c24;
+                        border: 1px solid #f5c6cb;
+                        cursor: not-allowed;
+
+                        &:hover {
+                            background-color: #f5c6cb;
+                            transform: none;
+                        }
+                    }
+
+                    &.calendar-blocked {
+                        background-color: #fff3cd;
+                        color: #856404;
+                        border: 1px solid #ffeaa7;
+
+                        &:hover {
+                            background-color: #ffeaa7;
+                        }
+
+                        &.selected {
+                            background-color: #ffc107;
+                            border-color: #ffc107;
+                            color: #212529;
+                        }
+                    }
+
+                    &.calendar-maintenance {
+                        background-color: #e2e3e5;
+                        color: #383d41;
+                        border: 1px solid #d6d8db;
+
+                        &:hover {
+                            background-color: #d6d8db;
+                        }
+
+                        &.selected {
+                            background-color: #6c757d;
+                            border-color: #6c757d;
+                            color: white;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .selected-dates-info {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+
+        h6 {
+            margin-bottom: 10px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        #selected-dates-list {
+            margin-bottom: 15px;
+
+            .badge {
+                margin-right: 5px;
+                margin-bottom: 5px;
+                padding: 6px 10px;
+                font-size: 11px;
+                border-radius: 4px;
+            }
+        }
+
+        #block-reason {
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+            &:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+            }
+        }
+
+        .btn {
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+
+            &:hover {
+                transform: translateY(-1px);
+            }
+        }
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .vacation-rental-calendar {
+        .calendar-header {
+            flex-direction: column;
+            gap: 15px;
+
+            .calendar-controls {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .calendar-legend {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        .calendar-container .flatpickr-calendar {
+            .flatpickr-months {
+                padding: 10px;
+            }
+        }
+    }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+    .vacation-rental-calendar {
+        .calendar-header {
+            background: #343a40;
+            border-color: #495057;
+            color: #fff;
+        }
+
+        .calendar-container .flatpickr-calendar {
+            background: #343a40;
+            border-color: #495057;
+            color: #fff;
+
+            .flatpickr-months {
+                background: #343a40;
+                
+                .flatpickr-month {
+                    color: #fff;
+                }
+            }
+
+            .flatpickr-weekdays {
+                background: #495057;
+                
+                .flatpickr-weekday {
+                    color: #adb5bd;
+                }
+            }
+
+            .flatpickr-days .flatpickr-day {
+                color: #fff;
+
+                &:hover {
+                    background: #495057;
+                }
+            }
+        }
+
+        .selected-dates-info {
+            background: #343a40;
+            border-color: #495057;
+            color: #fff;
+
+            h6 {
+                color: #fff;
+            }
+        }
+    }
+}

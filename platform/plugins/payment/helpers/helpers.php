@@ -49,3 +49,38 @@ if (! function_exists('get_payment_is_support_refund_online')) {
         }
     }
 }
+
+if (! function_exists('get_payment_methods')) {
+    function get_payment_methods(): array
+    {
+        $methods = [];
+
+        // Get all available payment method enums
+        $availableMethods = \Botble\Payment\Enums\PaymentMethodEnum::values();
+
+        foreach ($availableMethods as $method) {
+            $methodValue = $method->getValue();
+            $status = get_payment_setting('status', $methodValue, 0);
+            $name = get_payment_setting('name', $methodValue) ?: $method->displayName();
+            $description = get_payment_setting('description', $methodValue, '');
+
+            // Enable test payment method in development mode
+            if ($methodValue === 'test' && (app()->environment('local', 'development') || config('app.debug'))) {
+                $status = 1;
+                $name = $name ?: 'Test Payment (Development)';
+                $description = $description ?: 'Test payment method for development purposes. No actual payment will be processed.';
+            }
+
+            $methods[$methodValue] = [
+                'name' => $name,
+                'description' => $description,
+                'status' => (int) $status,
+            ];
+        }
+
+        // Add methods from other payment plugins via filters
+        $methods = apply_filters(PAYMENT_FILTER_ADDITIONAL_PAYMENT_METHODS_DATA, $methods);
+
+        return $methods;
+    }
+}

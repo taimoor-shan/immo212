@@ -21,6 +21,7 @@ use Botble\RealEstate\Models\Account;
 use Botble\RealEstate\Models\AccountActivityLog;
 use Botble\RealEstate\Models\Property;
 use Botble\RealEstate\Services\SaveFacilitiesService;
+use Botble\RealEstate\Services\SavePropertyAvailabilityService;
 use Botble\RealEstate\Services\SavePropertyCustomFieldService;
 use Botble\RealEstate\Services\StorePropertyCategoryService;
 use Botble\RealEstate\Tables\AccountPropertyTable;
@@ -60,7 +61,8 @@ class AccountPropertyController extends BaseController
         AccountPropertyRequest $request,
         StorePropertyCategoryService $propertyCategoryService,
         SaveFacilitiesService $saveFacilitiesService,
-        SavePropertyCustomFieldService $savePropertyCustomFieldService
+        SavePropertyCustomFieldService $savePropertyCustomFieldService,
+        SavePropertyAvailabilityService $savePropertyAvailabilityService
     ) {
         if (! auth('account')->user()->canPost()) {
             return redirect()->back()->with(['error_msg' => trans('plugins/real-estate::package.add_credit_alert')]);
@@ -73,7 +75,8 @@ class AccountPropertyController extends BaseController
         $propertyForm->saving(function (AccountPropertyForm $form) use (
             $propertyCategoryService,
             $saveFacilitiesService,
-            $savePropertyCustomFieldService
+            $savePropertyCustomFieldService,
+            $savePropertyAvailabilityService
         ): void {
             $request = $form->getRequest();
 
@@ -104,6 +107,8 @@ class AccountPropertyController extends BaseController
             $property->features()->sync($request->input('features', []));
 
             $saveFacilitiesService->execute($property, $request->input('facilities', []));
+
+            $savePropertyAvailabilityService->execute($property, $request->input('availability_data', []));
 
             $propertyCategoryService->execute($request, $property);
 
@@ -172,7 +177,8 @@ class AccountPropertyController extends BaseController
         AccountPropertyRequest $request,
         StorePropertyCategoryService $propertyCategoryService,
         SaveFacilitiesService $saveFacilitiesService,
-        SavePropertyCustomFieldService $savePropertyCustomFieldService
+        SavePropertyCustomFieldService $savePropertyCustomFieldService,
+        SavePropertyAvailabilityService $savePropertyAvailabilityService
     ) {
         $property = Property::query()
             ->where([
@@ -189,7 +195,8 @@ class AccountPropertyController extends BaseController
         $propertyForm->saving(function (AccountPropertyForm $form) use (
             $propertyCategoryService,
             $saveFacilitiesService,
-            $savePropertyCustomFieldService
+            $savePropertyCustomFieldService,
+            $savePropertyAvailabilityService
         ): void {
             $request = $form->getRequest();
 
@@ -217,6 +224,8 @@ class AccountPropertyController extends BaseController
             $property->features()->sync($request->input('features', []));
 
             $saveFacilitiesService->execute($property, $request->input('facilities', []));
+
+            $savePropertyAvailabilityService->execute($property, $request->input('availability_data', []));
 
             $propertyCategoryService->execute($request, $property);
 

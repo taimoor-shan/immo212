@@ -125,6 +125,9 @@ class RealEstateServiceProvider extends ServiceProvider
             return new ConsultRepository(new Consult());
         });
 
+        // Register vacation rental services
+        $this->app->singleton(\Botble\RealEstate\Services\AvailabilityService::class);
+
         $this->app->bind(CategoryInterface::class, function () {
             return new CategoryRepository(new Category());
         });
@@ -409,7 +412,43 @@ class RealEstateServiceProvider extends ServiceProvider
                             'url' => fn () => route('review.index'),
                             'permissions' => ['review.index'],
                         ]);
-                });
+                })
+                ->registerItem([
+                    'id' => 'cms-plugins-vacation-rental',
+                    'priority' => 6,
+                    'parent_id' => 'cms-plugins-real-estate',
+                    'name' => 'plugins/real-estate::vacation-rental.name',
+                    'icon' => null,
+                    'url' => fn () => route('vacation-rental.overview'),
+                    'permissions' => ['vacation-rental.index'],
+                ])
+                ->registerItem([
+                    'id' => 'cms-plugins-vacation-rental-overview',
+                    'priority' => 0,
+                    'parent_id' => 'cms-plugins-vacation-rental',
+                    'name' => 'plugins/real-estate::vacation-rental.overview',
+                    'icon' => null,
+                    'url' => fn () => route('vacation-rental.overview'),
+                    'permissions' => ['vacation-rental.dashboard'],
+                ])
+                ->registerItem([
+                    'id' => 'cms-plugins-vacation-rental-properties',
+                    'priority' => 1,
+                    'parent_id' => 'cms-plugins-vacation-rental',
+                    'name' => 'plugins/real-estate::vacation-rental.properties',
+                    'icon' => null,
+                    'url' => fn () => route('vacation-rental.properties'),
+                    'permissions' => ['vacation-rental.index'],
+                ])
+                ->registerItem([
+                    'id' => 'cms-plugins-vacation-rental-bookings',
+                    'priority' => 2,
+                    'parent_id' => 'cms-plugins-vacation-rental',
+                    'name' => 'plugins/real-estate::vacation-rental.bookings',
+                    'icon' => null,
+                    'url' => fn () => route('vacation-rental.bookings'),
+                    'permissions' => ['vacation-rental.bookings'],
+                ]);
         });
 
         DashboardMenu::for('account')->beforeRetrieving(function (DashboardMenuSupport $dashboardMenu): void {
@@ -448,6 +487,34 @@ class RealEstateServiceProvider extends ServiceProvider
                             'icon' => 'ti ti-receipt',
                         ]);
                 })
+                ->registerItem([
+                    'id' => 'cms-account-vacation-rentals',
+                    'priority' => 2.5,
+                    'name' => 'Vacation Rentals',
+                    'url' => fn () => route('public.account.vacation-rentals.dashboard'),
+                    'icon' => 'ti ti-calendar-event',
+                ])
+                ->registerItem([
+                    'id' => 'cms-account-vacation-rental-bookings',
+                    'priority' => 2.6,
+                    'name' => 'Bookings',
+                    'url' => fn () => route('public.account.vacation-rentals.bookings'),
+                    'icon' => 'ti ti-calendar-check',
+                ])
+                ->registerItem([
+                    'id' => 'cms-account-vacation-rental-availability',
+                    'priority' => 2.7,
+                    'name' => 'Availability',
+                    'url' => fn () => route('public.account.vacation-rentals.availability'),
+                    'icon' => 'ti ti-calendar-time',
+                ])
+                ->registerItem([
+                    'id' => 'cms-account-vacation-rental-calendar',
+                    'priority' => 2.8,
+                    'name' => 'Calendar',
+                    'url' => fn () => route('public.account.vacation-rentals.calendar'),
+                    'icon' => 'ti ti-calendar',
+                ])
                 ->registerItem([
                     'id' => 'cms-account-settings',
                     'priority' => 5,

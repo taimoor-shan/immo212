@@ -13,6 +13,8 @@ use Botble\RealEstate\Http\Controllers\Fronts\PublicAccountController;
 use Botble\RealEstate\Http\Controllers\Fronts\RegisterController;
 use Botble\RealEstate\Http\Controllers\Fronts\ResetPasswordController;
 use Botble\RealEstate\Http\Controllers\Fronts\ReviewController;
+use Botble\RealEstate\Http\Controllers\Fronts\VacationRentalController;
+use Botble\RealEstate\Http\Controllers\Fronts\VacationRentalBookingController;
 use Botble\RealEstate\Http\Middleware\EnsureAccountIsApproved;
 use Botble\RealEstate\Http\Middleware\LocaleMiddleware;
 use Botble\RealEstate\Models\Account;
@@ -57,6 +59,9 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
             Route::post('send-consult', 'PublicController@postSendConsult')
                 ->name('public.send.consult');
 
+            Route::post('vacation-rental/booking-inquiry', 'PublicController@sendVacationRentalBookingInquiry')
+                ->name('public.vacation-rental.booking-inquiry');
+
             Route::get('currency/switch/{code?}', [
                 'as' => 'public.change-currency',
                 'uses' => 'PublicController@changeCurrency',
@@ -90,6 +95,31 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
             Route::get('ajax/review/{slug}', [ReviewController::class, 'index'])
                 ->middleware(RequiresJsonRequestMiddleware::class)
                 ->name('public.ajax.review.index');
+
+            // Vacation rental public API endpoints
+            Route::prefix('ajax/vacation-rentals')->name('public.ajax.vacation-rentals.')->group(function (): void {
+                Route::get('availability', [VacationRentalController::class, 'getAvailabilityData'])
+                    ->middleware(RequiresJsonRequestMiddleware::class)
+                    ->name('availability');
+                Route::post('calculate-price', [VacationRentalController::class, 'calculatePrice'])
+                    ->middleware(RequiresJsonRequestMiddleware::class)
+                    ->name('calculate-price');
+            });
+
+            // Frontend calendar API endpoints
+            Route::prefix('vacation-rental')->name('public.vacation-rental.')->group(function (): void {
+                Route::get('availability', [VacationRentalBookingController::class, 'getAvailability'])->name('availability');
+                Route::post('pricing', [VacationRentalBookingController::class, 'calculatePricing'])->name('pricing');
+            });
+        });
+
+        // Vacation rental booking routes (public, no auth required)
+        Route::prefix('vacation-rental')->name('public.vacation-rental.')->group(function (): void {
+            Route::get('book/{slug}', [VacationRentalBookingController::class, 'showBookingForm'])->name('booking.form');
+            Route::post('book', [VacationRentalBookingController::class, 'processBooking'])->name('booking.process');
+            Route::get('booking/callback', [VacationRentalBookingController::class, 'paymentCallback'])->name('booking.callback');
+            Route::get('booking/{bookingNumber}/success', [VacationRentalBookingController::class, 'bookingSuccess'])->name('booking.success');
+            Route::get('booking/{bookingNumber}', [VacationRentalBookingController::class, 'bookingDetails'])->name('booking.details');
         });
 
         Route::group(['middleware' => ['web', 'core', 'account', EnsureAccountIsApproved::class, LocaleMiddleware::class]], function (): void {
@@ -111,6 +141,19 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
                 });
                 Route::match(['GET', 'POST'], 'consults', [ConsultController::class, 'index'])->name('consults.index');
                 Route::get('consults/{id}', [ConsultController::class, 'show'])->name('consults.show')->wherePrimaryKey();
+
+                // Vacation rental management routes
+                Route::prefix('vacation-rentals')->name('vacation-rentals.')->group(function (): void {
+                    Route::get('dashboard', [VacationRentalController::class, 'dashboard'])->name('dashboard');
+                    Route::get('bookings', [VacationRentalController::class, 'bookings'])->name('bookings');
+                    Route::get('availability', [VacationRentalController::class, 'availability'])->name('availability');
+                    Route::get('availability-data', [VacationRentalController::class, 'getAvailabilityDataForEdit'])->name('availability-data');
+                    Route::get('calendar', [VacationRentalController::class, 'calendar'])->name('calendar');
+                    Route::post('block-dates', [VacationRentalController::class, 'blockDates'])->name('block-dates');
+                    Route::post('unblock-dates', [VacationRentalController::class, 'unblockDates'])->name('unblock-dates');
+                    Route::post('maintenance-dates', [VacationRentalController::class, 'maintenanceDates'])->name('maintenance-dates');
+                    Route::put('bookings/{booking}/status', [VacationRentalController::class, 'updateBookingStatus'])->name('bookings.update-status');
+                });
 
                 Route::prefix('ajax')->group(function (): void {
                     Route::get('activity-logs', [PublicAccountController::class, 'getActivityLogs'])->name('activity-logs');

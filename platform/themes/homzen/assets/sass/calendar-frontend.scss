@@ -1,0 +1,401 @@
+/**
+ * Frontend Calendar Styles for Vacation Rental booking
+ * Beautiful, minimal styling for property availability calendar
+ */
+
+.property-calendar {
+    .calendar-wrapper {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        border: 1px solid #e9ecef;
+    }
+
+    .calendar-header {
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-align: center;
+
+        h5 {
+            margin: 0 0 15px 0;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .calendar-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 13px;
+
+            .legend-item {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                opacity: 0.9;
+
+                .dot {
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    border: 1px solid rgba(255,255,255,0.3);
+                }
+            }
+
+            .available .dot {
+                background-color: #28a745;
+            }
+
+            .unavailable .dot {
+                background-color: #dc3545;
+            }
+
+            .selected .dot {
+                background-color: #ffc107;
+            }
+        }
+    }
+
+    .calendar-container {
+        padding: 0;
+
+        .flatpickr-calendar.frontend-calendar {
+            width: 100%;
+            box-shadow: none;
+            border: none;
+            border-radius: 0;
+            font-family: inherit;
+
+            .flatpickr-months {
+                background: #f8f9fa;
+                padding: 20px;
+                border-bottom: 1px solid #e9ecef;
+
+                .flatpickr-month {
+                    color: #495057;
+                    font-weight: 600;
+                    font-size: 16px;
+                }
+
+                .flatpickr-prev-month,
+                .flatpickr-next-month {
+                    color: #6c757d;
+                    transition: all 0.3s ease;
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    &:hover {
+                        color: #007bff;
+                        background: rgba(0,123,255,0.1);
+                    }
+
+                    svg {
+                        width: 14px;
+                        height: 14px;
+                    }
+                }
+            }
+
+            .flatpickr-weekdays {
+                background: #fff;
+                padding: 10px 0;
+                
+                .flatpickr-weekday {
+                    color: #6c757d;
+                    font-weight: 600;
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+            }
+
+            .flatpickr-days {
+                padding: 0 20px 20px;
+
+                .flatpickr-day {
+                    border-radius: 8px;
+                    margin: 2px;
+                    transition: all 0.3s ease;
+                    font-weight: 500;
+                    position: relative;
+                    height: 40px;
+                    line-height: 40px;
+
+                    &:hover {
+                        transform: scale(1.05);
+                        z-index: 2;
+                    }
+
+                    &.today {
+                        border: 2px solid #007bff;
+                        font-weight: 600;
+                        color: #007bff;
+                    }
+
+                    &.available {
+                        background-color: #d4edda;
+                        color: #155724;
+                        border: 1px solid #c3e6cb;
+
+                        &:hover {
+                            background-color: #c3e6cb;
+                            box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+                        }
+                    }
+
+                    &.unavailable {
+                        background-color: #f8d7da;
+                        color: #721c24;
+                        border: 1px solid #f5c6cb;
+                        cursor: not-allowed;
+                        opacity: 0.6;
+
+                        &:hover {
+                            transform: none;
+                            background-color: #f8d7da;
+                        }
+                    }
+
+                    &.selected,
+                    &.startRange,
+                    &.endRange,
+                    &.inRange {
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        font-weight: 600;
+                        border: none;
+
+                        &:hover {
+                            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+                        }
+                    }
+
+                    &.inRange {
+                        opacity: 0.7;
+                    }
+
+                    &.startRange {
+                        border-radius: 8px 4px 4px 8px;
+                    }
+
+                    &.endRange {
+                        border-radius: 4px 8px 8px 4px;
+                    }
+
+                    // Price display
+                    &[data-price]:after {
+                        content: '$' attr(data-price);
+                        position: absolute;
+                        bottom: 2px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        font-size: 9px;
+                        font-weight: 600;
+                        opacity: 0.8;
+                    }
+
+                    &.selected[data-price]:after,
+                    &.startRange[data-price]:after,
+                    &.endRange[data-price]:after,
+                    &.inRange[data-price]:after {
+                        color: rgba(255,255,255,0.9);
+                    }
+                }
+            }
+        }
+    }
+
+    .booking-summary {
+        padding: 25px;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+
+        .summary-content {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .date-range {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+
+            .date-item {
+                text-align: center;
+                padding: 12px;
+                background: white;
+                border-radius: 8px;
+                border: 1px solid #e9ecef;
+
+                label {
+                    display: block;
+                    font-size: 12px;
+                    color: #6c757d;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    margin-bottom: 5px;
+                }
+
+                span {
+                    font-weight: 600;
+                    color: #495057;
+                    font-size: 14px;
+                }
+            }
+        }
+
+        .pricing-breakdown {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
+
+            .price-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                font-size: 14px;
+
+                &:not(:last-child) {
+                    border-bottom: 1px solid #f8f9fa;
+                }
+
+                span:first-child {
+                    color: #6c757d;
+                }
+
+                span:last-child {
+                    font-weight: 600;
+                    color: #495057;
+                }
+            }
+        }
+
+        .total-price {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid #007bff;
+
+            strong {
+                font-size: 18px;
+                color: #007bff;
+            }
+        }
+
+        .btn-book {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+            }
+
+            &:active {
+                transform: translateY(0);
+            }
+        }
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .property-calendar {
+        .calendar-header {
+            padding: 15px;
+
+            h5 {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            .calendar-legend {
+                gap: 15px;
+                font-size: 12px;
+            }
+        }
+
+        .calendar-container .flatpickr-calendar.frontend-calendar {
+            .flatpickr-months {
+                padding: 15px;
+            }
+
+            .flatpickr-days {
+                padding: 0 15px 15px;
+
+                .flatpickr-day {
+                    height: 36px;
+                    line-height: 36px;
+                    font-size: 13px;
+
+                    &[data-price]:after {
+                        font-size: 8px;
+                    }
+                }
+            }
+        }
+
+        .booking-summary {
+            padding: 20px;
+
+            .date-range {
+                grid-template-columns: 1fr;
+                gap: 10px;
+
+                .date-item {
+                    padding: 10px;
+                }
+            }
+
+            .pricing-breakdown {
+                padding: 12px;
+
+                .price-item {
+                    font-size: 13px;
+                }
+            }
+
+            .btn-book {
+                padding: 12px;
+                font-size: 15px;
+            }
+        }
+    }
+}
+
+// Error notification styles
+.calendar-error-notification {
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

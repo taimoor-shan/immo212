@@ -7,6 +7,7 @@ use Botble\Base\Models\BaseModel;
 use Botble\Base\Supports\Avatar;
 use Botble\Media\Facades\RvMedia;
 use Botble\Media\Models\MediaFile;
+use Botble\RealEstate\Database\Factories\AccountFactory;
 use Botble\RealEstate\Enums\ReviewStatusEnum;
 use Botble\RealEstate\Facades\RealEstateHelper;
 use Botble\RealEstate\Notifications\ConfirmEmailNotification;
@@ -18,6 +19,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -38,6 +40,7 @@ class Account extends BaseModel implements
     use Authenticatable;
     use Authorizable;
     use CanResetPassword;
+    use HasFactory;
     use MustVerifyEmail;
     use HasApiTokens;
     use Notifiable;
@@ -83,6 +86,11 @@ class Account extends BaseModel implements
         'password' => 'hashed',
         'approved_at' => 'datetime',
     ];
+
+    protected static function newFactory(): AccountFactory
+    {
+        return AccountFactory::new();
+    }
 
     public function activityLogs(): HasMany
     {

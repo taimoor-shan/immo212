@@ -6,6 +6,7 @@ use Botble\Base\Http\Controllers\BaseController;
 use Botble\Payment\Enums\PaymentMethodEnum;
 use Botble\Payment\Services\Gateways\BankTransferPaymentService;
 use Botble\Payment\Services\Gateways\CodPaymentService;
+use Botble\Payment\Services\Gateways\TestPaymentService;
 use Botble\RealEstate\Http\Requests\CheckoutRequest;
 use Illuminate\Support\Arr;
 
@@ -44,6 +45,14 @@ class CheckoutController extends BaseController
                 $bankTransferPaymentService = app(BankTransferPaymentService::class);
                 $data['charge_id'] = $bankTransferPaymentService->execute($paymentData);
                 $data['message'] = trans('plugins/payment::payment.payment_pending');
+                $data['checkoutUrl'] = $request->input('callback_url') . '?charge_id=' . $data['charge_id'];
+
+                break;
+
+            case PaymentMethodEnum::TEST:
+                $testPaymentService = app(TestPaymentService::class);
+                $data['charge_id'] = $testPaymentService->execute($paymentData);
+                $data['message'] = trans('plugins/payment::payment.checkout_success');
                 $data['checkoutUrl'] = $request->input('callback_url') . '?charge_id=' . $data['charge_id'];
 
                 break;

@@ -1,5 +1,7 @@
 {!! SeoHelper::render() !!}
 
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 @if ($favicon = theme_option('favicon'))
     {{ Html::favicon(
         RvMedia::getImageUrl($favicon),

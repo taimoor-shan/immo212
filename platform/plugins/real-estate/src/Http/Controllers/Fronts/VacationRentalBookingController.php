@@ -1,0 +1,362 @@
+<?php
+
+namespace Botble\RealEstate\Http\Controllers\Fronts;
+
+use Botble\Base\Http\Controllers\BaseController;
+use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRentalBooking;
+use Botble\RealEstate\Services\AvailabilityService;
+use Botble\RealEstate\Enums\PropertyTypeEnum;
+use Botble\RealEstate\Http\Requests\VacationRentalBookingRequest;
+use Botble\Theme\Facades\Theme;
+use Botble\Slug\Facades\SlugHelper;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\ViewErrorBag;
+use Illuminate\Support\Str;
+
+class VacationRentalBookingController extends BaseController
+{
+    protected AvailabilityService $availabilityService;
+
+    public function __construct(AvailabilityService $availabilityService)
+    {
+        $this->availabilityService = $availabilityService;
+    }
+
+    protected function getViewFileName(string $view): string
+    {
+        if (view()->exists($themeView = Theme::getThemeNamespace('views.real-estate.' . $view))) {
+            return $themeView;
+        }
+
+        return 'plugins/real-estate::themes.' . $view;
+    }
+
+    public function showBookingForm(Request $request, $propertySlug)
+    {
+        $slug = SlugHelper::getSlug($propertySlug, SlugHelper::getPrefix(Property::class));
+
+        if (!$slug) {
+            abort(404);
+        }
+
+        $property = Property::where('id', $slug->reference_id)
+            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
+            ->where('moderation_status', 'approved')
+            ->firstOrFail();
+
+        // Validate query parameters
+        $checkIn = $request->get('check_in');
+        $checkOut = $request->get('check_out');
+        $guests = $request->get('guests', 1);
+
+        if (!$checkIn || !$checkOut) {
+            return redirect($property->url)->with('error', __('Please select check-in and check-out dates.'));
+        }
+
+        $checkInDate = Carbon::parse($checkIn);
+        $checkOutDate = Carbon::parse($checkOut);
+
+        // Validate dates
+        if ($checkInDate->isPast() || $checkOutDate->isPast() || $checkOutDate <= $checkInDate) {
+            return redirect($property->url)->with('error', __('Invalid dates selected.'));
+        }
+
+        // Check availability
+        if (!$this->availabilityService->checkAvailability($property->id, $checkInDate, $checkOutDate)) {
+            return redirect($property->url)->with('error', __('Selected dates are not available.'));
+        }
+
+        // Validate minimum stay
+        if (!$this->availabilityService->validateMinimumStay($property->id, $checkInDate, $checkOutDate)) {
+            $effectiveMinimumStay = $this->availabilityService->getEffectiveMinimumStay($property->id, $checkInDate);
+            return redirect($property->url)->with('error', __('Minimum stay is :nights nights.', ['nights' => $effectiveMinimumStay]));
+        }
+
+        // Check maximum guests
+        if ($property->maximum_guests && $guests > $property->maximum_guests) {
+            return redirect($property->url)->with('error', __('Maximum :guests guests allowed.', ['guests' => $property->maximum_guests]));
+        }
+
+        try {
+            $pricing = $this->availabilityService->calculateBookingPrice($property->id, $checkInDate, $checkOutDate, $guests);
+        } catch (\Exception $e) {
+            return redirect($property->url)->with('error', $e->getMessage());
+        }
+
+        $this->pageTitle(__('Book :property', ['property' => $property->name]));
+
+        return view($this->getViewFileName('booking.form'), compact(
+            'property',
+            'checkInDate',
+            'checkOutDate',
+            'guests',
+            'pricing'
+        ))->with('errors', session()->get('errors', new ViewErrorBag()));
+    }
+
+    public function processBooking(VacationRentalBookingRequest $request)
+    {
+        // Debug logging
+        Log::info('Vacation rental booking process started', [
+            'request_data' => $request->all(),
+            'user_agent' => $request->userAgent(),
+            'ip' => $request->ip()
+        ]);
+
+        $property = Property::where('id', $request->property_id)
+            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
+            ->where('moderation_status', 'approved')
+            ->firstOrFail();
+
+        $checkInDate = Carbon::parse($request->check_in_date);
+        $checkOutDate = Carbon::parse($request->check_out_date);
+
+        // Re-validate availability (in case it changed)
+        if (!$this->availabilityService->checkAvailability($property->id, $checkInDate, $checkOutDate)) {
+            return $this->httpResponse()
+                ->setError()
+                ->setMessage(__('Selected dates are no longer available.'));
+        }
+
+        try {
+            $pricing = $this->availabilityService->calculateBookingPrice(
+                $property->id, 
+                $checkInDate, 
+                $checkOutDate, 
+                $request->guests_count
+            );
+
+            DB::beginTransaction();
+
+            // Create booking
+            $booking = VacationRentalBooking::create([
+                'booking_number' => $this->generateBookingNumber(),
+                'property_id' => $property->id,
+                'guest_name' => $request->guest_name,
+                'guest_email' => $request->guest_email,
+                'guest_phone' => $request->guest_phone,
+                'check_in_date' => $checkInDate,
+                'check_out_date' => $checkOutDate,
+                'nights_count' => $pricing['nights'],
+                'guests_count' => $request->guests_count,
+                'adults_count' => $request->adults_count,
+                'children_count' => $request->children_count,
+                'base_price_per_night' => $pricing['base_price_per_night'],
+                'total_nights_cost' => $pricing['total_nights_cost'],
+                'cleaning_fee' => $pricing['cleaning_fee'],
+                'service_fee' => $pricing['service_fee'],
+                'taxes' => $pricing['taxes'],
+                'security_deposit' => $pricing['security_deposit'],
+                'total_amount' => $pricing['total_amount'],
+                'special_requests' => $request->special_requests,
+                'status' => VacationRentalBooking::STATUS_PENDING,
+                'payment_status' => VacationRentalBooking::PAYMENT_PENDING,
+            ]);
+
+            // Block the dates temporarily (will be confirmed after payment)
+            $this->availabilityService->blockDates(
+                $property->id,
+                $checkInDate,
+                $checkOutDate,
+                'Booking #' . $booking->booking_number . ' (Pending Payment)'
+            );
+
+            DB::commit();
+
+            // Redirect to payment
+            return $this->redirectToPayment($booking, $request);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Booking creation failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            if ($request->expectsJson()) {
+                return $this->httpResponse()
+                    ->setError()
+                    ->setMessage(__('Booking failed: :error', ['error' => $e->getMessage()]));
+            }
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', __('Booking failed: :error', ['error' => $e->getMessage()]));
+        }
+    }
+
+    protected function redirectToPayment(VacationRentalBooking $booking, Request $request)
+    {
+        Log::info('Redirecting to payment', [
+            'booking_id' => $booking->id,
+            'booking_number' => $booking->booking_number,
+            'payment_method' => $request->payment_method,
+            'total_amount' => $booking->total_amount
+        ]);
+
+        $paymentData = [
+            'amount' => $booking->total_amount,
+            'currency' => config('plugins.payment.payment.currency', 'USD'),
+            'order_id' => [$booking->id],
+            'customer_id' => null, // Guest booking
+            'customer_type' => null,
+            'return_url' => route('public.vacation-rental.booking.success', $booking->booking_number),
+            'callback_url' => route('public.vacation-rental.booking.callback'),
+            'payment_method' => $request->payment_method,
+            'description' => __('Vacation Rental Booking #:number', ['number' => $booking->booking_number]),
+        ];
+
+        // Store booking data in session for payment callback
+        session([
+            'vacation_rental_booking_id' => $booking->id,
+            'vacation_rental_payment_data' => $paymentData,
+        ]);
+
+        try {
+            // Create a new request with payment data
+            $checkoutRequest = request()->create(
+                route('public.checkout.process'),
+                'POST',
+                $paymentData,
+                request()->cookies->all(),
+                [],
+                request()->server->all()
+            );
+
+            // Resolve the CheckoutRequest through the container with validation
+            $checkoutRequestInstance = app(\Botble\RealEstate\Http\Requests\CheckoutRequest::class);
+            $checkoutRequestInstance->setContainer(app());
+            $checkoutRequestInstance->setRedirector(app('redirect'));
+            $checkoutRequestInstance->replace($paymentData);
+
+            $checkoutController = app(\Botble\RealEstate\Http\Controllers\Fronts\CheckoutController::class);
+
+            $response = $checkoutController->postCheckout($checkoutRequestInstance);
+
+            // Handle different response types
+            if ($response instanceof \Illuminate\Http\RedirectResponse) {
+                if ($request->expectsJson()) {
+                    return $this->httpResponse()
+                        ->setData(['checkoutUrl' => $response->getTargetUrl()])
+                        ->setMessage(__('Redirecting to payment...'));
+                }
+                return $response;
+            }
+
+            // If it's a JSON response with checkout URL, handle appropriately
+            if ($response instanceof \Illuminate\Http\JsonResponse) {
+                $data = $response->getData(true);
+                if (isset($data['checkoutUrl'])) {
+                    if ($request->expectsJson()) {
+                        return $this->httpResponse()
+                            ->setData(['checkoutUrl' => $data['checkoutUrl']])
+                            ->setMessage(__('Redirecting to payment...'));
+                    }
+                    return redirect($data['checkoutUrl']);
+                }
+            }
+
+            // Fallback: redirect to success page for test payments
+            if ($request->payment_method === 'test') {
+                $successUrl = route('public.vacation-rental.booking.success', $booking->booking_number);
+                if ($request->expectsJson()) {
+                    return $this->httpResponse()
+                        ->setData(['checkoutUrl' => $successUrl])
+                        ->setMessage(__('Booking successful!'));
+                }
+                return redirect($successUrl);
+            }
+
+            return $response;
+
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Payment processing failed: ' . $e->getMessage(), [
+                'booking_id' => $booking->id,
+                'payment_method' => $request->payment_method,
+                'error' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()->with('error', __('Payment processing failed. Please try again.'));
+        }
+    }
+
+    public function paymentCallback(Request $request)
+    {
+        $chargeId = $request->get('charge_id');
+        $bookingId = session('vacation_rental_booking_id');
+
+        if (!$chargeId || !$bookingId) {
+            return redirect()->route('public.properties')->with('error', __('Invalid payment callback.'));
+        }
+
+        $booking = VacationRentalBooking::find($bookingId);
+        
+        if (!$booking) {
+            return redirect()->route('public.properties')->with('error', __('Booking not found.'));
+        }
+
+        // Update booking with payment information
+        $booking->update([
+            'payment_reference' => $chargeId,
+            'status' => VacationRentalBooking::STATUS_CONFIRMED,
+            'payment_status' => VacationRentalBooking::PAYMENT_PAID,
+        ]);
+
+        // Update availability to confirmed booking
+        $this->availabilityService->unblockDates(
+            $booking->property_id,
+            $booking->check_in_date,
+            $booking->check_out_date
+        );
+
+        // Create confirmed booking availability records
+        $this->availabilityService->blockDates(
+            $booking->property_id,
+            $booking->check_in_date,
+            $booking->check_out_date,
+            'Booking #' . $booking->booking_number . ' (Confirmed)'
+        );
+
+        // Clear session
+        session()->forget(['vacation_rental_booking_id', 'vacation_rental_payment_data']);
+
+        return redirect()->route('public.vacation-rental.booking.success', $booking->booking_number);
+    }
+
+    public function bookingSuccess($bookingNumber)
+    {
+        $booking = VacationRentalBooking::where('booking_number', $bookingNumber)
+            ->with('property')
+            ->firstOrFail();
+
+        $this->pageTitle(__('Booking Confirmed'));
+
+        return view($this->getViewFileName('booking.success'), compact('booking'));
+    }
+
+    public function bookingDetails($bookingNumber)
+    {
+        $booking = VacationRentalBooking::where('booking_number', $bookingNumber)
+            ->with('property')
+            ->firstOrFail();
+
+        $this->pageTitle(__('Booking Details'));
+
+        return view($this->getViewFileName('booking.details'), compact('booking'));
+    }
+
+    protected function generateBookingNumber(): string
+    {
+        do {
+            $number = 'VR' . date('Y') . strtoupper(Str::random(6));
+        } while (VacationRentalBooking::where('booking_number', $number)->exists());
+
+        return $number;
+    }
+}

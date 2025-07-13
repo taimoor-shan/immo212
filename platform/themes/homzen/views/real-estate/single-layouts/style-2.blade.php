@@ -70,6 +70,10 @@
                 </div>
                 {!! apply_filters('before_single_content_detail', null, $property) !!}
 
+                <div class="wrapper-onepage" id="vacation-rental-info">
+                    @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-info'), ['class' => 'widget-box-single'])
+                </div>
+
                 <div class="wrapper-onepage" id="video">
                     @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.video'), ['class' => 'widget-box-single'])
                 </div>
@@ -111,6 +115,8 @@
             <div class="col-lg-4">
                 <div class="widget-sidebar wrapper-sidebar-right">
                     {!! apply_filters('ads_render', null, 'detail_page_sidebar_before') !!}
+
+                    @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.availability-calendar'), ['class' => 'bg-white mb-4'])
 
                     @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.contact'), ['class' => 'bg-white'])
 

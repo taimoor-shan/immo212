@@ -197,6 +197,8 @@ class Property extends BaseModel
 
             if ($this->type == PropertyTypeEnum::RENT) {
                 $price .= ' / ' . Str::lower($this->period->shortLabel());
+            } elseif ($this->type == PropertyTypeEnum::VACATION_RENTAL) {
+                $price .= ' / ' . __('night');
             }
 
             return $price;

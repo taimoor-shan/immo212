@@ -47,6 +47,7 @@ return [
     'types' => [
         'sale' => 'Sale',
         'rent' => 'Rent',
+        'vacation_rental' => 'Vacation Rental',
     ],
     'periods' => [
         'day' => 'Daily',

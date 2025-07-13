@@ -1885,6 +1885,163 @@ a {
     margin-top: 4px;
 }
 
+// Agents Sidebar Sponsored
+
+.agencies-sidebar-list{
+    .agency-card-sidebar{
+    position: relative;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    background: $surface;
+    padding: 1.25rem;
+    border-radius: 4px;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: stretch;
+    -webkit-align-items: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    border: 1px solid $surface;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    .agency-info{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+ align-items: start;
+ justify-content: space-between;
+    }
+    .agency-rightSec{
+        display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    .agency-avatar{
+        min-height: 110px;
+    min-width: 110px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: end;
+    -webkit-justify-content: flex-end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    margin: 0 0 0 1.25rem;
+    img{
+        display: block;
+        max-width: 110px;
+        max-height: 110px;
+        border-radius: 4px;
+    }
+    }
+    }
+  
+    }
+}
+
+/* Sponsored Button Tooltip - CSS Only */
+.sponsored-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0;
+    background-color: transparent;
+    border: 1px solid #e4e4e4;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    justify-content: flex-end;
+    margin-bottom: 14px;
+
+    svg {
+        width: 16px;
+        height: 16px;
+        color: var(--primary-color);
+    }
+
+    // Tooltip content
+    &::after {
+        content: "Why am I seeing this ad?\A\AYou are seeing this ad based on your navigation on our website and the search criterias that you have used.\A\AThis ad is paid by " var(--agency-name) ".";
+        position: absolute;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: #fff;
+        padding: 12px 16px;
+        border-radius: 6px;
+        white-space: pre-line;
+        font-size: 13px;
+        line-height: 1.4;
+        width: 280px;
+        text-align: left;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s, visibility 0.2s;
+        pointer-events: none;
+    }
+
+    // Tooltip arrow
+    &::before {
+        content: '';
+        position: absolute;
+        bottom: 115%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid #333;
+        z-index: 1001;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s, visibility 0.2s;
+    }
+
+    // Show tooltip on hover
+    &:hover::after,
+    &:hover::before {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .sponsored-button {
+        &::after {
+            width: 260px;
+            font-size: 12px;
+            padding: 10px 14px;
+        }
+    }
+}
+
 .ck-content {
     // a {
     //     color: var(--primary-color);

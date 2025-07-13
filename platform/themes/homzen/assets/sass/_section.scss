@@ -3222,6 +3222,45 @@
 
     .wrap-filter-search {
         margin-top: -3.25rem;
+        .wd-find-select {
+            border: 1px solid #a8beea;
+            border-radius: .5rem;
+            list-style-type: none;
+            background: #fff;
+            -webkit-box-shadow: 0 2px 10px rgba(79, 127, 182, .25);
+            box-shadow: 0 2px 10px rgba(79, 127, 182, .25);
+            .inner-group .box-filter {
+                position: relative;
+                bottom: unset;
+                right: unset;
+                width: -moz-max-content;
+                width: max-content;
+                flex-shrink: 0;
+                border: none;
+               .filter-advanced {
+                    display: flex;
+                    align-items: center;
+                    font-family: var(--primary-font);
+                    font-weight: 400;
+                    font-size: 16px;
+                    line-height: 24px;
+                    transition: all 0.2s ease;
+                    gap: 10px;
+                    background: #ffffff;
+                    padding: 6px 10px 6px;
+                    border-radius: 8px;
+                    border-top-left-radius: 0;
+                    border-top-right-radius: 0;
+                    border: none;
+                    border-radius: .5rem;
+                    list-style-type: none;
+                    -webkit-box-shadow:none;
+                    box-shadow:none; 
+                }
+            }
+
+        }
+    
     }
 }
 

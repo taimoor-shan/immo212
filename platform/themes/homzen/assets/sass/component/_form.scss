@@ -218,7 +218,7 @@
         background-color: #ffffff;
         border: none;
         box-shadow: none;
-        padding: 14px 14px 16px 16px;
+        padding: 14px;
 
     .tf-btn {
         @include flex(center, center);
@@ -262,10 +262,14 @@
                 }
             }
             label {
-                font-size: 16px;
+                font-size: 15px;
                 line-height: 24px;
                 color: $primary;
+                font-weight: 500;
             }
+        }
+        .form-search-category {
+            width: 600px;
         }
         .group-ip {
             position: relative;

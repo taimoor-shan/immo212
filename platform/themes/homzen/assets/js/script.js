@@ -969,6 +969,8 @@ $(() => {
         flatSlider()
     }
 
+
+
     rangeSlider()
     headerFixed()
     alertBox()

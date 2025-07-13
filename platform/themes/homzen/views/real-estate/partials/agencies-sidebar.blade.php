@@ -17,31 +17,19 @@
 @endphp
 
 @if($agencies->isNotEmpty())
-    <div class="widget-box bg-surface">
-        <div class="h7 title fw-6 text-black mb-3">{{ __('Our Agencies') }}</div>
+    <div class="widget-boxy">
         
         <div class="agencies-sidebar-list">
             @foreach($agencies as $agency)
-                <div class="agency-card-sidebar mb-3">
-                    <div class="box-agent style-sidebar hover-img">
-                        <div class="agency-card-content">
-                            <div class="agency-avatar-small">
-                                @if (\Botble\RealEstate\Facades\RealEstateHelper::isDisabledPublicProfile())
-                                    {{ RvMedia::image($agency->avatar_url, $agency->name, 'thumb') }}
-                                @else
-                                    <a href="{{ $agency->url }}">
-                                        {{ RvMedia::image($agency->avatar_url, $agency->name, 'thumb') }}
-                                    </a>
-                                @endif
-                            </div>
+                <div class="agency-card-sidebar">
                             
-                            <div class="agency-info-small">
+                            <div class="agency-info leftSec">
                                 <div class="agency-name">
                                     @if (\Botble\RealEstate\Facades\RealEstateHelper::isDisabledPublicProfile())
-                                        <h6 class="mb-1">{{ $agency->name }}</h6>
+                                        <h6 class="mb-1 textMuted">{{ $agency->name }}</h6>
                                     @else
                                         <a href="{{ $agency->url }}">
-                                            <h6 class="link mb-1">{{ $agency->name }}</h6>
+                         a                   <h6 class="link mb-1 textMuted">{{ $agency->name }}</h6>
                                         </a>
                                     @endif
                                 </div>
@@ -50,30 +38,48 @@
                                     <p class="agency-company text-variant-1 mb-1">{{ $agency->company }}</p>
                                 @endif
                                 
-                                <div class="agency-meta-small">
-                                    @if ($agency->properties_count)
-                                        <span class="properties-count text-variant-1">
-                                            <x-core::icon name="ti ti-home" class="icon-small" />
-                                            @if ($agency->properties_count === 1)
-                                                {{ __('1 Property') }}
-                                            @else
-                                                {{ __(':count Properties', ['count' => $agency->properties_count]) }}
-                                            @endif
-                                        </span>
+                                <div class="something">
+                                    <div class="agency-meta-small">
+                                        @if ($agency->properties_count)
+                                            <span class="properties-count text-variant-1">
+                                                <x-core::icon name="ti ti-home" class="icon-small" />
+                                                @if ($agency->properties_count === 1)
+                                                    {{ __('1 Property') }}
+                                                @else
+                                                    {{ __(':count Properties', ['count' => $agency->properties_count]) }}
+                                                @endif
+                                            </span>
+                                        @endif
+                                    </div>
+                                    
+                                    @if ($agency->phone && ! setting('real_estate_hide_agency_phone', 0))
+                                        <div class="agency-contact-small mt-1">
+                                            <a href="tel:{{ $agency->phone }}" class="contact-link">
+                                                <x-core::icon name="ti ti-phone" class="icon-small" />
+                                                {{ $agency->phone }}
+                                            </a>
+                                        </div>
                                     @endif
                                 </div>
-                                
-                                @if ($agency->phone && ! setting('real_estate_hide_agency_phone', 0))
-                                    <div class="agency-contact-small mt-1">
-                                        <a href="tel:{{ $agency->phone }}" class="contact-link">
-                                            <x-core::icon name="ti ti-phone" class="icon-small" />
-                                            {{ $agency->phone }}
-                                        </a>
-                                    </div>
-                                @endif
                             </div>
-                        </div>
-                    </div>
+                            <div class="agency-rightSec">
+                                <button class="sponsored-button" style="--agency-name: '{{ addslashes($agency->name) }}';">
+                                <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 5v2h2V7h-2zm2 9c0 .55-.45 1-1 1s-1-.45-1-1v-4c0-.55.45-1 1-1s1 .45 1 1v4zm-9-4c0 4.41 3.59 8 8 8s8-3.59 8-8-3.59-8-8-8-8 3.59-8 8z"></path></svg>
+                                 <span>Sponsored</span>
+                                </button>
+                                <div class="agency-avatar">
+                                @if (\Botble\RealEstate\Facades\RealEstateHelper::isDisabledPublicProfile())
+                                    {{ RvMedia::image($agency->avatar_url, $agency->name, 'thumb') }}
+                                @else
+                                    <a href="{{ $agency->url }}">
+                                        {{ RvMedia::image($agency->avatar_url, $agency->name, 'thumb') }}
+                                    </a>
+                                @endif
+                                </div>
+                            </div>
+                    
+                
+                        
                 </div>
             @endforeach
         </div>

@@ -29,7 +29,7 @@
         <div class="archive-top">
         @if($property->category)
             <div class="bottom">
-                <span class="flag-tag style-2">{{ $property->category->name }}</span>
+                <span class="textMuted">{{ $property->category->name }}</span>
             </div>
         @endif
             <div class="h7 text-capitalize fw-5">

@@ -15,9 +15,11 @@ mix
         }
     })
     .js(`${source}/assets/js/script.js`, `${dist}/js`)
+    .js(`${source}/assets/js/calendar-frontend.js`, `${dist}/js`)
 
 if (mix.inProduction()) {
     mix
         .copy(`${dist}/css/style.css`, `${source}/public/css`)
         .copy(`${dist}/js/script.js`, `${source}/public/js`)
+        .copy(`${dist}/js/calendar-frontend.js`, `${source}/public/js`)
 }

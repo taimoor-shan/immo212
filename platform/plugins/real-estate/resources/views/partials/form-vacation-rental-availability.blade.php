@@ -93,6 +93,22 @@
     </div>
 </div>
 
+<!-- Data script - placed outside Vue template to avoid warnings -->
+<script>
+    // Pass existing availability data to JavaScript
+    @if(isset($property) && $property->id)
+        @php
+            $availabilityService = app(\Botble\RealEstate\Services\SavePropertyAvailabilityService::class);
+            $existingData = $availabilityService->getPropertyAvailabilityForForm($property);
+        @endphp
+        window.propertyAvailabilityData = @json($existingData);
+        console.log('Property availability data loaded:', window.propertyAvailabilityData);
+    @else
+        window.propertyAvailabilityData = {};
+        console.log('No property data - new property');
+    @endif
+</script>
+
     <!-- Include Flatpickr CSS and Vacation Rental Styles -->
     @push('header')
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -102,21 +118,4 @@
     <!-- Include JavaScript -->
     @push('footer')
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-        <script>
-            // Calendar initialization is now handled by vacation-rental-form.js
-
-
-        </script>
-        <script>
-            // Pass existing availability data to JavaScript
-            @if(isset($property) && $property->id)
-                @php
-                    $availabilityService = app(\Botble\RealEstate\Services\SavePropertyAvailabilityService::class);
-                    $existingData = $availabilityService->getPropertyAvailabilityForForm($property);
-                @endphp
-                window.propertyAvailabilityData = @json($existingData);
-            @else
-                window.propertyAvailabilityData = {};
-            @endif
-        </script>
     @endpush

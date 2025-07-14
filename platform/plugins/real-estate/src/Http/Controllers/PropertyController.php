@@ -12,6 +12,7 @@ use Botble\RealEstate\Http\Requests\PropertyRequest;
 use Botble\RealEstate\Models\Account;
 use Botble\RealEstate\Models\Property;
 use Botble\RealEstate\Services\SaveFacilitiesService;
+use Botble\RealEstate\Services\SavePropertyAvailabilityService;
 use Botble\RealEstate\Services\SavePropertyCustomFieldService;
 use Botble\RealEstate\Services\StorePropertyCategoryService;
 use Botble\RealEstate\Tables\PropertyTable;
@@ -47,7 +48,8 @@ class PropertyController extends BaseController
         PropertyRequest $request,
         StorePropertyCategoryService $propertyCategoryService,
         SaveFacilitiesService $saveFacilitiesService,
-        SavePropertyCustomFieldService $savePropertyCustomFieldService
+        SavePropertyCustomFieldService $savePropertyCustomFieldService,
+        SavePropertyAvailabilityService $savePropertyAvailabilityService
     ) {
         $request->merge([
             'expire_date' => Carbon::now()->addDays(RealEstateHelper::propertyExpiredDays()),
@@ -57,7 +59,7 @@ class PropertyController extends BaseController
 
         $propertyForm = PropertyForm::create()->setRequest($request);
 
-        $propertyForm->saving(function (PropertyForm $form) use ($propertyCategoryService, $saveFacilitiesService, $savePropertyCustomFieldService): void {
+        $propertyForm->saving(function (PropertyForm $form) use ($propertyCategoryService, $saveFacilitiesService, $savePropertyCustomFieldService, $savePropertyAvailabilityService): void {
             $request = $form->getRequest();
 
             /**
@@ -78,6 +80,7 @@ class PropertyController extends BaseController
             $property->features()->sync($request->input('features', []));
 
             $saveFacilitiesService->execute($property, $request->input('facilities', []));
+            $savePropertyAvailabilityService->execute($property, $request->input('availability_data', []));
             $propertyCategoryService->execute($request, $property);
         });
 
@@ -88,8 +91,45 @@ class PropertyController extends BaseController
             ->withCreatedSuccessMessage();
     }
 
-    public function edit(int|string $id)
+    public function edit(int|string $id, Request $request = null)
     {
+        \Log::info('=== PROPERTY CONTROLLER EDIT CALLED ===', [
+            'property_id' => $id,
+            'request_method' => $request ? $request->method() : 'GET',
+            'request_url' => $request ? $request->url() : 'N/A',
+            'request_full_url' => $request ? $request->fullUrl() : 'N/A',
+            'is_post' => $request ? $request->isMethod('POST') : false,
+            'has_availability_data' => $request ? $request->has('availability_data') : false,
+            'availability_data_keys' => $request && $request->has('availability_data') ? array_keys($request->input('availability_data', [])) : [],
+            'availability_data_content' => $request ? $request->input('availability_data', []) : [],
+            'all_input_keys' => $request ? array_keys($request->all()) : [],
+            'content_type' => $request ? $request->header('Content-Type') : 'N/A',
+            'user_agent' => $request ? $request->header('User-Agent') : 'N/A'
+        ]);
+
+        // If this is a POST request, it's a form submission - call the update method
+        if ($request && $request->isMethod('POST')) {
+            \Log::info('=== POST REQUEST TO EDIT - CALLING UPDATE METHOD ===', [
+                'property_id' => $id,
+                'form_data_present' => $request->has('name') || $request->has('description'),
+                'availability_data_present' => $request->has('availability_data')
+            ]);
+
+            // Convert the request to PropertyRequest and call update
+            $propertyRequest = app(PropertyRequest::class);
+            $propertyRequest->replace($request->all());
+            $propertyRequest->setMethod('POST');
+
+            return $this->update(
+                $id,
+                $propertyRequest,
+                app(StorePropertyCategoryService::class),
+                app(SaveFacilitiesService::class),
+                app(SavePropertyCustomFieldService::class),
+                app(SavePropertyAvailabilityService::class)
+            );
+        }
+
         /**
          * @var Property $property
          */
@@ -107,13 +147,56 @@ class PropertyController extends BaseController
         PropertyRequest $request,
         StorePropertyCategoryService $propertyCategoryService,
         SaveFacilitiesService $saveFacilitiesService,
-        SavePropertyCustomFieldService $savePropertyCustomFieldService
+        SavePropertyCustomFieldService $savePropertyCustomFieldService,
+        SavePropertyAvailabilityService $savePropertyAvailabilityService
     ) {
+        \Log::info('=== PROPERTY CONTROLLER UPDATE CALLED ===', [
+            'property_id' => $id,
+            'request_method' => $request->method(),
+            'request_url' => $request->url(),
+            'request_full_url' => $request->fullUrl(),
+            'content_type' => $request->header('Content-Type'),
+            'content_length' => $request->header('Content-Length'),
+            'has_availability_data' => $request->has('availability_data'),
+            'availability_data_keys' => $request->has('availability_data') ? array_keys($request->input('availability_data', [])) : [],
+            'availability_data_raw' => $request->input('availability_data', []),
+            'all_input_keys' => array_keys($request->all()),
+            'form_fields_present' => [
+                'name' => $request->has('name'),
+                'description' => $request->has('description'),
+                'type' => $request->has('type'),
+                'features' => $request->has('features'),
+                'facilities' => $request->has('facilities'),
+                'availability_data' => $request->has('availability_data')
+            ]
+        ]);
+
+        // Detailed availability data logging
+        if ($request->has('availability_data')) {
+            $availabilityData = $request->input('availability_data', []);
+            \Log::info('=== AVAILABILITY DATA DETAILED ANALYSIS ===', [
+                'blocked_dates_present' => isset($availabilityData['blocked_dates']),
+                'blocked_dates_content' => $availabilityData['blocked_dates'] ?? null,
+                'blocked_dates_type' => isset($availabilityData['blocked_dates']) ? gettype($availabilityData['blocked_dates']) : 'not_set',
+                'maintenance_dates_present' => isset($availabilityData['maintenance_dates']),
+                'maintenance_dates_content' => $availabilityData['maintenance_dates'] ?? null,
+                'unblocked_dates_present' => isset($availabilityData['unblocked_dates']),
+                'unblocked_dates_content' => $availabilityData['unblocked_dates'] ?? null,
+                'raw_availability_data' => $availabilityData
+            ]);
+        } else {
+            \Log::warning('=== NO AVAILABILITY DATA IN REQUEST ===', [
+                'property_id' => $id,
+                'all_keys' => array_keys($request->all()),
+                'request_size' => strlen(serialize($request->all()))
+            ]);
+        }
+
         $property = Property::query()->findOrFail($id);
 
         PropertyForm::createFromModel($property)
             ->setRequest($request)
-            ->saving(function (PropertyForm $form) use ($propertyCategoryService, $saveFacilitiesService, $savePropertyCustomFieldService): void {
+            ->saving(function (PropertyForm $form) use ($propertyCategoryService, $saveFacilitiesService, $savePropertyCustomFieldService, $savePropertyAvailabilityService): void {
                 $request = $form->getRequest();
 
                 /**
@@ -135,6 +218,36 @@ class PropertyController extends BaseController
                 $property->features()->sync($request->input('features', []));
 
                 $saveFacilitiesService->execute($property, $request->input('facilities', []));
+
+                // Enhanced logging before availability service call
+                $availabilityData = $request->input('availability_data', []);
+                \Log::info('=== BEFORE SavePropertyAvailabilityService CALL ===', [
+                    'property_id' => $property->id,
+                    'property_type' => $property->type,
+                    'availability_data_present' => !empty($availabilityData),
+                    'availability_data_keys' => array_keys($availabilityData),
+                    'availability_data_content' => $availabilityData,
+                    'request_method' => $request->method(),
+                    'form_request_class' => get_class($request)
+                ]);
+
+                try {
+                    $result = $savePropertyAvailabilityService->execute($property, $availabilityData);
+                    \Log::info('=== SavePropertyAvailabilityService SUCCESS ===', [
+                        'property_id' => $property->id,
+                        'service_result' => $result,
+                        'availability_data_processed' => $availabilityData
+                    ]);
+                } catch (\Exception $e) {
+                    \Log::error('=== SavePropertyAvailabilityService ERROR ===', [
+                        'property_id' => $property->id,
+                        'error_message' => $e->getMessage(),
+                        'error_trace' => $e->getTraceAsString(),
+                        'availability_data' => $availabilityData
+                    ]);
+                    throw $e;
+                }
+
                 $propertyCategoryService->execute($request, $property);
             });
 

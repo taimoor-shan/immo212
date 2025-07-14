@@ -225,6 +225,11 @@ class AccountPropertyController extends BaseController
 
             $saveFacilitiesService->execute($property, $request->input('facilities', []));
 
+            \Log::info('About to call SavePropertyAvailabilityService', [
+                'property_id' => $property->id,
+                'availability_data' => $request->input('availability_data', [])
+            ]);
+
             $savePropertyAvailabilityService->execute($property, $request->input('availability_data', []));
 
             $propertyCategoryService->execute($request, $property);

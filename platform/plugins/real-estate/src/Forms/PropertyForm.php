@@ -143,10 +143,41 @@ class PropertyForm extends FormAbstract
             });
         }
 
+        // Add logging to debug form action URL generation
+        $model = $this->getModel();
+        if ($model && $model->getKey()) {
+            \Log::info('=== PROPERTY FORM SETUP FOR EDIT ===', [
+                'property_id' => $model->getKey(),
+                'model_exists' => $model->exists,
+                'current_url' => request()->url(),
+                'expected_update_route' => route('property.update', $model->getKey()),
+                'expected_edit_route' => route('property.edit', $model->getKey())
+            ]);
+        } else {
+            \Log::info('=== PROPERTY FORM SETUP FOR CREATE ===', [
+                'model_exists' => false,
+                'expected_store_route' => route('property.store')
+            ]);
+        }
+
         $this
             ->model(Property::class)
             ->setValidatorClass(PropertyRequest::class)
             ->template('plugins/real-estate::partials.forms.property-form')
+            ->when($model && $model->getKey(), function () use ($model) {
+                // For edit forms, the system uses POST to the edit URL (non-standard but that's how it's configured)
+                $editUrl = route('property.edit', $model->getKey());
+                \Log::info('=== SETTING FORM ACTION URL FOR EDIT ===', [
+                    'property_id' => $model->getKey(),
+                    'edit_url' => $editUrl,
+                    'method' => 'POST',
+                    'note' => 'Using POST to edit URL as per route configuration'
+                ]);
+
+                return $this
+                    ->setUrl($editUrl)
+                    ->setMethod('POST');
+            })
             ->add('name', TextField::class, NameFieldOption::make()->required())
             ->add('type', SelectField::class, [
                 'label' => trans('plugins/real-estate::property.form.type'),

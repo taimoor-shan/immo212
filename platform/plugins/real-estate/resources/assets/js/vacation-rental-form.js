@@ -15,10 +15,16 @@ document.addEventListener('DOMContentLoaded', function() {
     function toggleVacationRentalMetabox() {
         const selectedType = typeSelect.value;
 
+        console.log('=== TOGGLE VACATION RENTAL METABOX ===');
+        console.log('Selected type:', selectedType);
+        console.log('Vacation rental metabox found:', !!vacationRentalMetabox);
+
         if (selectedType === 'vacation_rental') {
+            console.log('Showing vacation rental metabox and calendar...');
             vacationRentalMetabox.style.display = 'block';
             showAvailabilityCalendar();
         } else {
+            console.log('Hiding vacation rental metabox and calendar...');
             vacationRentalMetabox.style.display = 'none';
             hideAvailabilityCalendar();
         }
@@ -26,15 +32,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to show availability calendar
     function showAvailabilityCalendar() {
+        console.log('=== SHOW AVAILABILITY CALENDAR CALLED ===');
+
         const calendarSection = document.getElementById('calendar-section');
         const infoMessage = document.getElementById('vacation-rental-info-message');
         const calendarContainer = document.getElementById('property-availability-calendar');
 
+        console.log('Elements found:', {
+            calendarSection: !!calendarSection,
+            infoMessage: !!infoMessage,
+            calendarContainer: !!calendarContainer
+        });
+
         if (calendarSection) {
+            console.log('Showing calendar section...');
             calendarSection.style.display = 'block';
         }
 
         if (infoMessage) {
+            console.log('Hiding info message...');
             infoMessage.style.display = 'none';
         }
 
@@ -156,16 +172,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Initial field toggle
+    // Initial toggles
     toggleVacationRentalFields();
+    toggleVacationRentalMetabox();
 
-    // Listen for type changes for fields
-    typeSelect.addEventListener('change', toggleVacationRentalFields);
+    // Listen for type changes
+    typeSelect.addEventListener('change', function() {
+        toggleVacationRentalFields();
+        toggleVacationRentalMetabox();
+    });
 });
 
 // Property Availability Calendar Class
 class PropertyAvailabilityCalendar {
     constructor(options) {
+        console.log('PropertyAvailabilityCalendar constructor called with options:', options);
+
         this.options = options;
         this.calendar = null;
         this.availabilityData = {};
@@ -179,20 +201,40 @@ class PropertyAvailabilityCalendar {
             unblocked_dates: []
         };
 
+        console.log('Starting calendar initialization...');
         this.init();
+        this.setupFormSubmissionInterceptor();
     }
 
     init() {
-        this.loadExistingAvailabilityData();
-        this.initializeCalendar();
-        this.bindEvents();
+        console.log('Calendar init() called');
+
+        try {
+            console.log('Loading existing availability data...');
+            this.loadExistingAvailabilityData();
+
+            console.log('Initializing calendar...');
+            this.initializeCalendar();
+
+            console.log('Binding events...');
+            this.bindEvents();
+
+            console.log('Calendar initialization complete');
+        } catch (error) {
+            console.error('Error during calendar initialization:', error);
+        }
     }
 
     loadExistingAvailabilityData() {
         // Load existing availability data from the page if available
-        // This would be populated by the server when editing an existing property
         const existingData = window.propertyAvailabilityData || {};
-        this.availabilityData = existingData;
+
+        // Set availability data for calendar display
+        if (existingData.availability_by_date) {
+            this.availabilityData = existingData.availability_by_date;
+        } else {
+            this.availabilityData = {};
+        }
 
         // Load existing pending changes from hidden inputs if they exist
         const blockedInput = document.querySelector('input[name="availability_data[blocked_dates]"]');
@@ -222,11 +264,19 @@ class PropertyAvailabilityCalendar {
                 console.warn('Failed to parse unblocked dates:', e);
             }
         }
+
+        console.log('Loaded availability data:', this.availabilityData);
+        console.log('Loaded pending changes:', this.pendingChanges);
     }
 
     initializeCalendar() {
-        const container = document.querySelector(this.options.container);
-        if (!container || typeof flatpickr === 'undefined') return;
+        const container = document.getElementById('property-availability-calendar');
+        if (!container || typeof flatpickr === 'undefined') {
+            console.error('Calendar container not found or Flatpickr not loaded');
+            return;
+        }
+
+        console.log('Initializing Flatpickr calendar...');
 
         this.calendar = flatpickr(container, {
             mode: 'multiple',
@@ -256,9 +306,18 @@ class PropertyAvailabilityCalendar {
                 }
             },
             onChange: (selectedDates) => {
+                console.log('=== CALENDAR DATE SELECTION ===');
+                console.log('Selected dates count:', selectedDates.length);
+
                 this.selectedDates = selectedDates.map(date => date.toISOString().split('T')[0]);
+
+                console.log('Selected dates (ISO):', this.selectedDates);
+                console.log('Current action:', this.currentAction);
+                console.log('Pending changes before:', JSON.parse(JSON.stringify(this.pendingChanges)));
             }
         });
+
+        console.log('Flatpickr calendar initialized:', this.calendar);
     }
 
     bindEvents() {
@@ -305,28 +364,41 @@ class PropertyAvailabilityCalendar {
             }
         }
 
-        // Sort dates and get start/end range
-        const sortedDates = [...this.selectedDates].sort();
-        const startDate = sortedDates[0];
-        const endDate = sortedDates[sortedDates.length - 1];
-
-        // Add to pending changes instead of making AJAX call
-        const dateRange = {
-            start_date: startDate,
-            end_date: endDate,
-            reason: reason
-        };
-
+        // Add individual dates to pending changes
         switch (this.currentAction) {
             case 'block':
-                this.pendingChanges.blocked_dates.push(dateRange);
+                this.selectedDates.forEach(date => {
+                    if (!this.pendingChanges.blocked_dates.includes(date)) {
+                        this.pendingChanges.blocked_dates.push(date);
+                    }
+                });
                 break;
+
             case 'unblock':
-                this.pendingChanges.unblocked_dates.push(dateRange);
+                this.selectedDates.forEach(date => {
+                    if (!this.pendingChanges.unblocked_dates.includes(date)) {
+                        this.pendingChanges.unblocked_dates.push(date);
+                    }
+                    // Remove from blocked and maintenance if present
+                    const blockedIndex = this.pendingChanges.blocked_dates.indexOf(date);
+                    if (blockedIndex > -1) {
+                        this.pendingChanges.blocked_dates.splice(blockedIndex, 1);
+                    }
+                    const maintenanceIndex = this.pendingChanges.maintenance_dates.indexOf(date);
+                    if (maintenanceIndex > -1) {
+                        this.pendingChanges.maintenance_dates.splice(maintenanceIndex, 1);
+                    }
+                });
                 break;
+
             case 'maintenance':
-                this.pendingChanges.maintenance_dates.push(dateRange);
+                this.selectedDates.forEach(date => {
+                    if (!this.pendingChanges.maintenance_dates.includes(date)) {
+                        this.pendingChanges.maintenance_dates.push(date);
+                    }
+                });
                 break;
+
             default:
                 return;
         }
@@ -348,6 +420,8 @@ class PropertyAvailabilityCalendar {
 
         // Clear selected dates
         this.selectedDates = [];
+
+
 
         alert(`Dates ${actionName} successfully. Changes will be saved when you save the property.`);
     }
@@ -394,10 +468,59 @@ class PropertyAvailabilityCalendar {
     }
 
     updateFormInputs() {
-        // Create or update hidden form inputs with pending changes
-        this.createHiddenInput('availability_data[blocked_dates]', JSON.stringify(this.pendingChanges.blocked_dates));
-        this.createHiddenInput('availability_data[maintenance_dates]', JSON.stringify(this.pendingChanges.maintenance_dates));
-        this.createHiddenInput('availability_data[unblocked_dates]', JSON.stringify(this.pendingChanges.unblocked_dates));
+        // Create hidden inputs with individual dates
+        const inputs = [
+            { name: 'availability_data[blocked_dates]', value: JSON.stringify(this.pendingChanges.blocked_dates) },
+            { name: 'availability_data[maintenance_dates]', value: JSON.stringify(this.pendingChanges.maintenance_dates) },
+            { name: 'availability_data[unblocked_dates]', value: JSON.stringify(this.pendingChanges.unblocked_dates) }
+        ];
+
+        inputs.forEach(inputData => {
+            this.createHiddenInput(inputData.name, inputData.value);
+        });
+    }
+
+
+
+    verifyFormInputs() {
+        const form = this.findPropertyForm();
+        if (!form) {
+            console.error('Cannot verify form inputs - no form found');
+            return;
+        }
+
+        console.log('=== VERIFYING FORM INPUTS ===');
+
+        const expectedInputs = [
+            'availability_data[blocked_dates]',
+            'availability_data[maintenance_dates]',
+            'availability_data[unblocked_dates]'
+        ];
+
+        const verification = {};
+        expectedInputs.forEach(name => {
+            const input = form.querySelector(`input[name="${name}"]`);
+            verification[name] = {
+                exists: !!input,
+                value: input ? input.value : null,
+                type: input ? input.type : null
+            };
+        });
+
+        console.log('Input verification results:', verification);
+
+        // Count total form inputs for context
+        const allInputs = form.querySelectorAll('input');
+        const availabilityInputs = form.querySelectorAll('input[name*="availability_data"]');
+
+        console.log('Form input summary:', {
+            total_inputs: allInputs.length,
+            availability_inputs: availabilityInputs.length,
+            form_action: form.action,
+            form_method: form.method
+        });
+
+        return verification;
     }
 
     createHiddenInput(name, value) {
@@ -413,11 +536,85 @@ class PropertyAvailabilityCalendar {
         input.name = name;
         input.value = value;
 
-        // Add to form
-        const form = document.querySelector('form');
+        // Find form and add input
+        const form = this.findPropertyForm();
         if (form) {
             form.appendChild(input);
         }
+    }
+
+    findPropertyForm() {
+        // Try multiple selectors in order of specificity
+        const selectors = [
+            'form.js-base-form',                    // Botble CMS standard form class
+            'form[action*="properties/edit"]',      // Form with properties/edit in action URL
+            'form[action*="properties"]',           // Form with properties in action URL
+            'form[action*="property"]',             // Form with property in action URL
+            'form.property-form',                   // Custom property form class
+            'form[method="POST"]',                  // Generic POST form
+            'form'                                  // Last resort - any form
+        ];
+
+        for (const selector of selectors) {
+            const form = document.querySelector(selector);
+            if (form) {
+                console.log('Found form using selector:', selector, {
+                    action: form.action || form.getAttribute('action'),
+                    method: form.method || form.getAttribute('method'),
+                    className: form.className,
+                    hasPropertyEdit: (form.action || '').includes('properties/edit')
+                });
+                return form;
+            }
+        }
+
+        console.error('No form found with any selector');
+        return null;
+    }
+
+    setupFormSubmissionInterceptor() {
+        const form = this.findPropertyForm();
+        if (!form) {
+            console.error('Cannot setup form submission interceptor - no form found');
+            return;
+        }
+
+
+
+        // Add event listener for form submission
+        form.addEventListener('submit', (event) => {
+            this.updateFormInputs();
+        }, true);
+
+        // Also intercept button clicks for additional safety
+        const submitButtons = form.querySelectorAll('button[type="submit"], input[type="submit"]');
+        submitButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                this.updateFormInputs();
+                setTimeout(() => this.updateFormInputs(), 10);
+            });
+        });
+    }
+
+
+
+
+
+    /**
+     * Reload availability data and refresh calendar display
+     * Call this after property is saved to sync with database
+     */
+    reloadAvailabilityData() {
+        // Reload data from the global variable (updated by server after save)
+        this.loadExistingAvailabilityData();
+
+        // Refresh calendar display
+        if (this.calendar) {
+            this.calendar.destroy();
+            this.initializeCalendar();
+        }
+
+
     }
 
     destroy() {
@@ -427,3 +624,69 @@ class PropertyAvailabilityCalendar {
         }
     }
 }
+
+// Initialize calendar when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    const calendarContainer = document.getElementById('property-availability-calendar');
+
+    if (calendarContainer) {
+        const options = {
+            propertyId: calendarContainer.dataset.propertyId
+        };
+
+        try {
+            window.propertyAvailabilityCalendar = new PropertyAvailabilityCalendar(options);
+            setupFormSubmissionListener();
+        } catch (error) {
+            console.error('Error initializing calendar:', error);
+        }
+    }
+});
+
+// Set up listener for form submission success
+function setupFormSubmissionListener() {
+    const propertyForm = document.querySelector('form[action*="properties/edit"]') ||
+                        document.querySelector('form[action*="properties"]');
+    if (propertyForm) {
+        // Listen for Botble success notifications (indicates successful save)
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1 && node.classList &&
+                            (node.classList.contains('alert-success') ||
+                             node.querySelector && node.querySelector('.alert-success'))) {
+                            // Success message detected, reload calendar
+                            console.log('Success message detected, reloading calendar in 1 second...');
+                            setTimeout(function() {
+                                console.log('Calling calendar reload...');
+                                window.reloadPropertyAvailabilityCalendar();
+                            }, 1000); // Small delay to ensure data is updated
+                        }
+                    });
+                }
+            });
+        });
+
+        // Start observing the document for success messages
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+}
+
+// Global function to reload calendar after property save
+window.reloadPropertyAvailabilityCalendar = function() {
+    if (window.propertyAvailabilityCalendar) {
+        window.propertyAvailabilityCalendar.reloadAvailabilityData();
+    }
+};
+
+
+
+
+
+
+
+

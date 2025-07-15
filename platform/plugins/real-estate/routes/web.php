@@ -344,3 +344,26 @@ Route::group(['namespace' => 'Botble\RealEstate\Http\Controllers', 'middleware' 
         });
     });
 });
+
+Route::group([
+    'namespace' => 'Botble\RealEstate\Http\Controllers\Fronts',
+    'middleware' => ['web', 'core'],
+    'as' => 'public.vacation-rental.',
+], function () {
+    Route::get('booking/{propertySlug}', 'VacationRentalBookingController@showBookingForm')
+        ->name('booking.form');
+    Route::post('booking', 'VacationRentalBookingController@processBooking')
+        ->name('booking.process');
+    Route::get('booking/success/{bookingNumber}', 'VacationRentalBookingController@bookingSuccess')
+        ->name('booking.success');
+    Route::get('booking/details/{bookingNumber}', 'VacationRentalBookingController@bookingDetails')
+        ->name('booking.details');
+    Route::any('booking/callback', 'VacationRentalBookingController@paymentCallback')
+        ->name('booking.callback');
+
+    // API routes for frontend calendar
+    Route::get('api/v1/properties/{id}/availability', 'VacationRentalBookingController@getAvailability')
+        ->name('api.availability');
+    Route::post('api/v1/properties/{id}/calculate-price', 'VacationRentalBookingController@calculatePrice')
+        ->name('api.calculate-price');
+});

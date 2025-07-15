@@ -19,6 +19,7 @@
         </style>
 
         {!! Theme::header() !!}
+        @stack('header')
     </head>
 
     <body {!! Theme::bodyAttributes() !!}>
@@ -31,5 +32,6 @@
         </div>
 
         {!! Theme::footer() !!}
+        @stack('footer')
     </body>
 </html>

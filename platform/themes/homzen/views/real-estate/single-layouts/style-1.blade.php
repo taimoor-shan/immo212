@@ -44,8 +44,6 @@
                 <div class="widget-sidebar wrapper-sidebar-right">
                     {!! apply_filters('ads_render', null, 'detail_page_sidebar_before') !!}
 
-                    @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.availability-calendar'), ['class' => 'bg-surface mb-4'])
-
                     @if($property->type == \Botble\RealEstate\Enums\PropertyTypeEnum::VACATION_RENTAL)
                         @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-booking'), ['class' => 'bg-surface'])
                     @else

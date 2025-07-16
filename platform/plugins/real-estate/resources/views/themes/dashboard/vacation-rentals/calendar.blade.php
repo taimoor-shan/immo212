@@ -187,7 +187,7 @@
                         <div class="col-md-12">
                             <div class="d-flex flex-wrap gap-3">
                                 <div class="d-flex align-items-center">
-                                    <span class="badge bg-success me-2">A</span>
+                                    <span class="badge bg-success text-success-fg me-2">A</span>
                                     <span>{{ __('Available') }}</span>
                                 </div>
                                 <div class="d-flex align-items-center">

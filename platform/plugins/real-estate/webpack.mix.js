@@ -13,7 +13,7 @@ mix
     .sass(`${source}/resources/sass/currencies.scss`, `${dist}/css`)
     .sass(`${source}/resources/sass/account-admin.scss`, `${dist}/css`)
     .sass(`${source}/resources/sass/front-auth.scss`, `${dist}/css`)
-    .sass(`${source}/resources/sass/vacation-rental-form.scss`, `${dist}/css`)
+    .sass(`${source}/resources/sass/calendar-backend.scss`, `${dist}/css`)
     .js(`${source}/resources/js/components.js`, `${dist}/js`)
     .js(`${source}/resources/js/real-estate.js`, `${dist}/js`)
     .js(`${source}/resources/js/currencies.js`, `${dist}/js`)

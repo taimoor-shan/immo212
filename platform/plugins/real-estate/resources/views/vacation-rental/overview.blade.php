@@ -174,7 +174,7 @@
                                             <div class="fw-bold">{{ $booking->property->name ?? 'N/A' }}</div>
                                             <small class="text-muted">{{ $booking->guest_name }}</small>
                                         </div>
-                                        <span class="badge bg-success rounded-pill">
+                                        <span class="badge bg-success text-success-fg rounded-pill">
                                             {{ $booking->check_in_date->format('M j') }}
                                         </span>
                                     </div>

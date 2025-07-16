@@ -47,7 +47,7 @@
                                     <div class="calendar-legend mb-3">
                                         <div class="row">
                                             <div class="col-auto">
-                                                <span class="badge bg-success me-2">{{ __('Available') }}</span>
+                                                <span class="badge bg-success text-success-fg me-2">{{ __('Available') }}</span>
                                             </div>
                                             <div class="col-auto">
                                                 <span class="badge bg-danger me-2">{{ __('Booked') }}</span>

@@ -64,7 +64,7 @@
                                         
                                         <div class="detail-item">
                                             <strong>{{ __('Status:') }}</strong>
-                                            <span class="badge bg-success">{{ ucfirst($booking->status) }}</span>
+                                            <span class="badge bg-success text-success-fg">{{ ucfirst($booking->status) }}</span>
                                         </div>
                                     </div>
                                 </div>

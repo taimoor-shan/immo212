@@ -1,5 +1,5 @@
 /**
- * Vacation Rental Form Calendar Styles
+ * Calendar Backend Styles
  * Styles for the availability calendar in property edit form
  */
 
@@ -50,7 +50,7 @@
     }
 }
 
-/* Vacation Rental Availability Calendar Styles */
+/* Property Availability Calendar Styles */
 .property-availability-calendar {
     .flatpickr-calendar {
         width: 100% !important;
@@ -204,48 +204,7 @@
     }
 }
 
-/* Calendar Legend Styles */
-.calendar-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 15px;
-    padding: 10px;
-    background: #f8f9fa;
-    border-radius: 6px;
-    border: 1px solid #e9ecef;
 
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 12px;
-        font-weight: 500;
-
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            border: 1px solid rgba(0,0,0,0.1);
-
-            &.available {
-                background-color: #d1e7dd;
-            }
-
-            &.booked {
-                background-color: #cff4fc;
-            }
-
-            &.blocked {
-                background-color: #fff3cd;
-            }
-
-            &.maintenance {
-                background-color: #e9ecef;
-            }
-        }
-    }
-}
 
 /* Quick Actions Card */
 .card {

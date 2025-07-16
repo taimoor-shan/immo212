@@ -112,7 +112,7 @@
     <!-- Include Flatpickr CSS and Vacation Rental Styles -->
     @push('header')
         <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
-        <!-- <link rel="stylesheet" href="{{ asset('vendor/core/plugins/real-estate/css/vacation-rental-form.css') }}?v={{ time() }}"> -->
+        <!-- <link rel="stylesheet" href="{{ asset('vendor/core/plugins/real-estate/css/calendar-backend.css') }}?v={{ time() }}"> -->
     @endpush
 
     <!-- Include JavaScript -->

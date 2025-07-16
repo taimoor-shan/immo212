@@ -76,7 +76,7 @@ class VacationRentalPropertyTable extends TableAbstract
             })
             ->addColumn('availability_status', function (Property $item) {
                 // Simple status based on property status
-                return '<span class="badge bg-success">Available</span>';
+                return '<span class="badge bg-success text-success-fg">Available</span>';
             })
             ->addColumn('operations', function (Property $item) {
                 $operations = '';
@@ -137,7 +137,7 @@ class VacationRentalPropertyTable extends TableAbstract
                 ->orderable(false),
             NameColumn::make()->route('property.edit'),
             Column::make('price')
-                ->title(trans('plugins/real-estate::property.price_per_night')),
+                ->title(trans('plugins/real-estate::property.form.price_per_night')),
             Column::make('minimum_stay')
                 ->title(trans('plugins/real-estate::vacation-rental.minimum_stay')),
             Column::make('maximum_guests')

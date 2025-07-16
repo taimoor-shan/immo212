@@ -51,7 +51,7 @@ class PropertyForm extends FormAbstract
             ->addScripts('input-mask')
             ->addStylesDirectly([
                 'vendor/core/plugins/real-estate/css/real-estate.css',
-                'vendor/core/plugins/real-estate/css/vacation-rental-form.css',
+                'vendor/core/plugins/real-estate/css/calendar-backend.css',
             ])
             ->addScriptsDirectly([
                 'vendor/core/plugins/real-estate/js/real-estate.js',

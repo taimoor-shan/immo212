@@ -13,13 +13,12 @@ mix
     .sass(`${source}/resources/sass/currencies.scss`, `${dist}/css`)
     .sass(`${source}/resources/sass/account-admin.scss`, `${dist}/css`)
     .sass(`${source}/resources/sass/front-auth.scss`, `${dist}/css`)
-    .sass(`${source}/resources/sass/calendar-admin.scss`, `${dist}/css`)
     .sass(`${source}/resources/sass/vacation-rental-form.scss`, `${dist}/css`)
     .js(`${source}/resources/js/components.js`, `${dist}/js`)
     .js(`${source}/resources/js/real-estate.js`, `${dist}/js`)
     .js(`${source}/resources/js/currencies.js`, `${dist}/js`)
     .js(`${source}/resources/js/global-custom-fields.js`, `${dist}/js`)
-    .js(`${source}/resources/js/custom-fields.js`, `${dist}/js`)
+.js(`${source}/resources/js/custom-fields.js`, `${dist}/js`)
     .js(`${source}/resources/js/account-admin.js`, `${dist}/js`)
     .js(`${source}/resources/js/coupon.js`, `${dist}/js`)
     .js(`${source}/resources/js/app.js`, `${dist}/js`)
@@ -28,8 +27,7 @@ mix
     .js(`${source}/resources/js/duplicate-property.js`, `${dist}/js`)
     .js(`${source}/resources/js/setting.js`, `${dist}/js`)
     .js(`${source}/resources/js/front-review.js`, `${dist}/js`)
-    .js(`${source}/resources/js/custom-field.js`, `${dist}/js`)
-    .js(`${source}/resources/assets/js/vacation-rental-form.js`, `${dist}/js`)
+    .js(`${source}/resources/js/vacation-rental-form.js`, `${dist}/js`)
 
 if (mix.inProduction()) {
     mix

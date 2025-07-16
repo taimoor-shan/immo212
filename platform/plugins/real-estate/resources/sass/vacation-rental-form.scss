@@ -103,6 +103,7 @@
 
     .flatpickr-days {
         padding: 10px !important;
+        width: 100% !important;
     }
 
     .flatpickr-day {
@@ -119,9 +120,9 @@
 
         /* Available dates - Green */
         &.available {
-            background-color: #d1e7dd !important;
+            background-color: #d4edda !important;
             color: #0f5132 !important;
-            border-color: #a3cfbb !important;
+            border-color: #c3e6cb !important;
 
             &:hover {
                 background-color: #b8dcc8 !important;

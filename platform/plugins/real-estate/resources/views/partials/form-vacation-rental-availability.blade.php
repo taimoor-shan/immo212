@@ -27,7 +27,7 @@
 
             <!-- Calendar Container -->
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-9">
                     <div class="property-availability-calendar">
                         <div id="property-availability-calendar"
                              data-property-id="{{ $propertyId }}">
@@ -36,7 +36,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <!-- Quick Actions -->
                     <div class="card">
                         <div class="card-header">
@@ -44,17 +44,17 @@
                         </div>
                         <div class="card-body">
                             <div class="d-grid gap-2">
-                                <button type="button" class="btn btn-warning" id="block-selected-dates">
+                                <button type="button" class="btn btn-danger" id="block-selected-dates">
                                     <x-core::icon name="ti ti-ban" class="me-2" />
-                                    {{ __('Block Selected Dates') }}
+                                    {{ __('Block Dates') }}
                                 </button>
                                 <button type="button" class="btn btn-success" id="unblock-selected-dates">
                                     <x-core::icon name="ti ti-check" class="me-2" />
-                                    {{ __('Unblock Selected Dates') }}
+                                    {{ __('Unblock Dates') }}
                                 </button>
                                 <button type="button" class="btn btn-secondary" id="set-maintenance-dates">
                                     <x-core::icon name="ti ti-tools" class="me-2" />
-                                    {{ __('Set Maintenance') }}
+                                    {{ __('Maintenance') }}
                                 </button>
                             </div>
 
@@ -112,10 +112,10 @@
     <!-- Include Flatpickr CSS and Vacation Rental Styles -->
     @push('header')
         <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
-        <link rel="stylesheet" href="{{ asset('vendor/core/plugins/real-estate/css/vacation-rental-form.css') }}?v={{ time() }}">
+        <!-- <link rel="stylesheet" href="{{ asset('vendor/core/plugins/real-estate/css/vacation-rental-form.css') }}?v={{ time() }}"> -->
     @endpush
 
     <!-- Include JavaScript -->
     @push('footer')
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> -->
     @endpush

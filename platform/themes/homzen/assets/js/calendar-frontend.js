@@ -152,7 +152,7 @@ class VacationRentalFrontendCalendar {
             inline: true,
             dateFormat: 'Y-m-d',
             minDate: 'today',
-            showMonths: window.innerWidth > 768 ? 2 : 1,
+            showMonths: 1,
             onDayCreate: (dObj, dStr, fp, dayElem) => {
                 const date = dayElem.dateObj.toISOString().split('T')[0];
                 const availability = this.availabilityData[date];
@@ -422,11 +422,11 @@ class VacationRentalFrontendCalendar {
         });
 
         // Handle window resize for responsive calendar
-        window.addEventListener('resize', () => {
-            if (this.calendar) {
-                this.calendar.set('showMonths', window.innerWidth > 768 ? 2 : 1);
-            }
-        });
+        // window.addEventListener('resize', () => {
+        //     if (this.calendar) {
+        //         this.calendar.set('showMonths', window.innerWidth > 768 ? 2 : 1);
+        //     }
+        // });
     }
 
     async proceedToBooking() {

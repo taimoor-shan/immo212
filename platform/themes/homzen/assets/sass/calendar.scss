@@ -10,12 +10,15 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 15px;
+       margin-bottom: 15px;
+       flex-direction: column;
 
         h5 {
             margin: 0;
             font-size: 18px;
             font-weight: 600;
+            margin-bottom: 1em
+            ;
         }
 
         .calendar-legend {
@@ -34,6 +37,9 @@
                     height: 12px;
                     border-radius: 2px;
                     border: 1px solid #ddd;
+                    span{
+                        line-height: 12px;
+                    }
                 }
 
                 &.available .color-box {

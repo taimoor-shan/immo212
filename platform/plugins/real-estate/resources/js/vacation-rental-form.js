@@ -283,7 +283,7 @@ class PropertyAvailabilityCalendar {
             inline: true,
             dateFormat: 'Y-m-d',
             minDate: 'today',
-            showMonths: 1,
+            showMonths: 2,
             onDayCreate: (dObj, dStr, fp, dayElem) => {
                 const date = dayElem.dateObj.toISOString().split('T')[0];
                 const availability = this.availabilityData[date];
@@ -479,9 +479,6 @@ class PropertyAvailabilityCalendar {
             this.createHiddenInput(inputData.name, inputData.value);
         });
     }
-
-
-
     verifyFormInputs() {
         const form = this.findPropertyForm();
         if (!form) {

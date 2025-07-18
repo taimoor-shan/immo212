@@ -89,13 +89,13 @@ class VacationRentalBookingController extends BaseController
 
         $this->pageTitle(__('Book :property', ['property' => $property->name]));
 
-        return view($this->getViewFileName('booking.form'), compact(
+        return Theme::scope('real-estate.booking.form', compact(
             'property',
             'checkInDate',
             'checkOutDate',
             'guests',
             'pricing'
-        ))->with('errors', session()->get('errors', new ViewErrorBag()));
+        ))->render();
     }
 
     public function processBooking(VacationRentalBookingRequest $request)
@@ -353,7 +353,7 @@ class VacationRentalBookingController extends BaseController
 
         $this->pageTitle(__('Booking Confirmed'));
 
-        return view($this->getViewFileName('booking.success'), compact('booking'));
+        return Theme::scope('real-estate.booking.success', compact('booking'))->render();
     }
 
     public function bookingDetails($bookingNumber)
@@ -364,7 +364,7 @@ class VacationRentalBookingController extends BaseController
 
         $this->pageTitle(__('Booking Details'));
 
-        return view($this->getViewFileName('booking.details'), compact('booking'));
+        return Theme::scope('real-estate.booking.details', compact('booking'))->render();
     }
 
     protected function generateBookingNumber(): string
@@ -380,6 +380,7 @@ class VacationRentalBookingController extends BaseController
     {
         $startDate = Carbon::parse($request->query('start'));
         $endDate = Carbon::parse($request->query('end'));
+        $exceptionsOnly = $request->query('exceptions_only', false);
 
         if (!$startDate || !$endDate) {
             return $this->httpResponse()
@@ -389,7 +390,14 @@ class VacationRentalBookingController extends BaseController
         }
 
         try {
-            $availability = $this->availabilityService->getAvailabilityDetails($propertyId, $startDate, $endDate);
+            if ($exceptionsOnly) {
+                // Return only non-available dates for performance optimization
+                $availability = $this->availabilityService->getAvailabilityExceptions($propertyId, $startDate, $endDate);
+            } else {
+                // Return full availability data (backward compatibility)
+                $availability = $this->availabilityService->getAvailabilityDetails($propertyId, $startDate, $endDate);
+            }
+
             return $this->httpResponse()->setData($availability);
         } catch (\Exception $e) {
             return $this->httpResponse()

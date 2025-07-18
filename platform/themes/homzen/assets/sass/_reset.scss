@@ -195,6 +195,11 @@ li {
     margin-inline-start: auto;
 }
 
+.form-control{
+     padding: 10px 14px;
+     margin-bottom: 1rem;
+}
+
 // form //
 textarea,
 input[type='text'],
@@ -219,7 +224,7 @@ input[type='color'] {
     font-size: 16px;
     line-height: 26px;
     border-radius: 10px;
-    padding: 14px 16px;
+    padding: 10px 14px;
     width: 100%;
     background: $white;
     color: $on-surface;

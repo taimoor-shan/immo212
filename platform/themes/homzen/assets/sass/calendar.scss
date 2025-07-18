@@ -10,15 +10,14 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-       margin-bottom: 15px;
-       flex-direction: column;
+        margin-bottom: 15px;
+        flex-direction: column;
 
         h5 {
             margin: 0;
             font-size: 18px;
             font-weight: 600;
-            margin-bottom: 1em
-            ;
+            margin-bottom: 1em;
         }
 
         .calendar-legend {
@@ -37,7 +36,8 @@
                     height: 12px;
                     border-radius: 2px;
                     border: 1px solid #ddd;
-                    span{
+
+                    span {
                         line-height: 12px;
                     }
                 }
@@ -72,7 +72,7 @@
 
     .flatpickr-calendar.frontend-calendar {
         width: 100%;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         border: 1px solid #e9ecef;
         border-radius: 8px;
         font-family: inherit;
@@ -81,8 +81,16 @@
             background: #f8f9fa;
             border-bottom: 1px solid #e9ecef;
             border-radius: 8px 8px 0 0;
-            padding: 15px;
+            padding: 8px 15px 15px;
+
+            .flatpickr-prev-month,
+            .flatpickr-next-month {
+
+                top: 15px;
+
+            }
         }
+
 
         .flatpickr-month {
             color: #495057;
@@ -118,6 +126,7 @@
                     background-color: #d4edda;
                     color: #155724;
                     border: 1px solid #c3e6cb;
+                    box-shadow: none !important;
 
                     &:hover {
                         background-color: #c3e6cb;
@@ -127,6 +136,13 @@
                         background-color: #28a745;
                         border-color: #28a745;
                         color: white;
+                    }
+
+                    &.inRange {
+                        background-color: #28a745;
+                        border-color: #28a745;
+                        color: white;
+
                     }
                 }
 
@@ -176,32 +192,112 @@
         }
     }
 
+    // Calendar tooltips for blocked/maintenance dates
+    .calendar-tooltip {
+        position: absolute !important;
+        background: #2c3e50 !important;
+        color: white !important;
+        padding: 8px 12px !important;
+        border-radius: 6px !important;
+        font-size: 12px !important;
+        line-height: 1.4 !important;
+        max-width: 200px !important;
+        word-wrap: break-word !important;
+        z-index: 9999 !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+        transform: translateY(-5px) !important;
+        transition: opacity 0.2s ease, transform 0.2s ease !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        display: block !important;
+        visibility: visible !important;
+        font-family: inherit !important;
+        font-weight: normal !important;
+        text-align: left !important;
+        white-space: normal !important;
+
+        &.show {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        // Arrow pointing down to the date
+        &::after {
+            content: '' !important;
+            position: absolute !important;
+            top: 100% !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            border: 5px solid transparent !important;
+            border-top-color: #2c3e50 !important;
+        }
+
+        // Different colors for different status types
+        &.blocked {
+            background: #f39c12 !important;
+
+            &::after {
+                border-top-color: #f39c12 !important;
+            }
+        }
+
+        &.maintenance {
+            background: #95a5a6 !important;
+
+            &::after {
+                border-top-color: #95a5a6 !important;
+            }
+        }
+
+        &.booked {
+            background: #e74c3c !important;
+
+            &::after {
+                border-top-color: #e74c3c !important;
+            }
+        }
+    }
+
     .booking-summary {
         margin-top: 20px;
-        border-top: 1px solid #e0e0e0;
-        padding-top: 20px;
+        border-top: 1px solid #bbbbbb;
+        padding-top: 15px;
 
         .summary-content {
             .date-range {
                 display: flex;
                 justify-content: space-between;
                 margin-bottom: 15px;
+                padding-bottom: 15px;
+                border-bottom: 1px solid #bbbbbb;
 
                 .date-item {
                     text-align: center;
+
                     label {
                         display: block;
                         font-size: 12px;
-                        color: #6c757d;
+                        display: block;
+                        font-size: 12px;
+                        color: #0053cc;
+                        background: #e4eaf5;
+                        padding: 4px 10px;
+                        line-height: 1.5;
+                        margin-bottom: 8px;
+                        border-radius: 4px;
                     }
+
                     span {
-                        font-weight: 600;
+                        font-weight: 400;
+                        font-size: 15px;
+                        color: #000000;
                     }
                 }
             }
 
             .pricing-breakdown {
                 margin-bottom: 15px;
+
                 .price-item {
                     display: flex;
                     justify-content: space-between;
@@ -217,8 +313,12 @@
             .total-price {
                 text-align: right;
                 font-size: 18px;
-                font-weight: 700;
+                font-weight: 500;
                 margin-bottom: 20px;
+                color: var(--primary);
+            }
+            .terms-and-conditions{
+                margin-bottom: 15px;
             }
         }
     }

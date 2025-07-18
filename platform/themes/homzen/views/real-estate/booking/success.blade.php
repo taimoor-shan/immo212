@@ -1,7 +1,11 @@
-@extends(Theme::getThemeNamespace('layouts.base'))
+@php
+    Theme::layout('default');
+    Theme::set('pageTitle', __('Booking Confirmed'));
+    Theme::set('breadcrumbEnabled', 'no');
+@endphp
 
-@section('content')
-    <div class="container mt-5 mb-5">
+
+<div class="container mt-5 mb-5">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="card">
@@ -237,4 +241,3 @@
             }
         }
     </style>
-@endsection

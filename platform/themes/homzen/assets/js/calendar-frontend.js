@@ -23,23 +23,30 @@ class VacationRentalFrontendCalendar {
         this.selectedDates = [];
         this.checkInDate = null;
         this.checkOutDate = null;
-        
+        this.tooltip = null;
+
         this.init();
     }
 
-    init() {
-        this.loadAvailabilityData();
+    async init() {
+        // Initialize calendar immediately with default available state
         this.initializeCalendar();
         this.bindEvents();
+
+        // Load availability exceptions in the background and update calendar
+        this.loadAvailabilityDataProgressively();
     }
 
-    async loadAvailabilityData() {
-        if (!this.options.propertyId || !this.options.availabilityEndpoint) return;
+    async loadAvailabilityDataProgressively() {
+        if (!this.options.propertyId || !this.options.availabilityEndpoint) {
+            console.warn('Missing propertyId or availabilityEndpoint');
+            return;
+        }
 
         try {
             const startDate = this.getApiDate(new Date());
             const endDate = this.getApiDate(new Date(), 12);
-            const response = await fetch(`${this.options.availabilityEndpoint}?start=${startDate}&end=${endDate}`, {
+            const response = await fetch(`${this.options.availabilityEndpoint}?start=${startDate}&end=${endDate}&exceptions_only=true`, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -51,12 +58,168 @@ class VacationRentalFrontendCalendar {
             }
 
             const data = await response.json();
-            console.log('Availability data loaded:', data);
+            console.log('Availability exceptions loaded:', data);
             this.availabilityData = data.data || {};
+
+            // Update calendar with exception data
+            this.updateCalendarWithExceptions();
         } catch (error) {
-            console.error('Failed to load availability data:', error);
-            this.availabilityData = {};
+            console.error('Failed to load availability exceptions:', error);
+            // Calendar remains functional with default available state
+            this.showApiFailureNotification();
         }
+    }
+
+    showApiFailureNotification() {
+        // Show a subtle notification that API failed but calendar is still functional
+        const notification = document.createElement('div');
+        notification.className = 'calendar-api-warning';
+        notification.innerHTML = `
+            <div class="alert alert-info alert-dismissible fade show" role="alert" style="margin-bottom: 10px; font-size: 0.875rem;">
+                <i class="fas fa-info-circle"></i>
+                Calendar is showing default availability. Some dates may have different status.
+                <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+
+        const container = document.querySelector(this.options.container);
+        if (container) {
+            container.insertBefore(notification, container.firstChild);
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+    }
+
+    updateCalendarWithExceptions() {
+        if (!this.calendar) return;
+
+        // Hide any existing tooltip before redrawing
+        this.hideTooltip();
+
+        // Redraw the calendar to apply the new availability data
+        this.calendar.redraw();
+    }
+
+    cleanupTooltip() {
+        if (this.tooltip) {
+            this.tooltip.remove();
+            this.tooltip = null;
+        }
+    }
+
+    createTooltip() {
+        if (this.tooltip) return;
+
+        console.log('Creating tooltip element');
+        this.tooltip = document.createElement('div');
+        this.tooltip.className = 'calendar-tooltip';
+        this.tooltip.style.position = 'absolute';
+        this.tooltip.style.zIndex = '9999';
+        document.body.appendChild(this.tooltip);
+        console.log('Tooltip element created and appended to body');
+    }
+
+    showTooltip(element, content, status) {
+        if (!content) {
+            console.log('No tooltip content provided');
+            return;
+        }
+
+        console.log('Showing tooltip:', content, status);
+        this.createTooltip();
+
+        // Set tooltip content and status class
+        this.tooltip.textContent = content;
+        this.tooltip.className = `calendar-tooltip ${status}`;
+
+        // Make tooltip visible temporarily to get dimensions
+        this.tooltip.style.visibility = 'hidden';
+        this.tooltip.style.display = 'block';
+
+        // Position tooltip above the element
+        const rect = element.getBoundingClientRect();
+        const tooltipRect = this.tooltip.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+        let left = rect.left + scrollLeft + (rect.width / 2) - (tooltipRect.width / 2);
+        let top = rect.top + scrollTop - tooltipRect.height - 10; // 10px gap
+
+        // Ensure tooltip stays within viewport
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        if (left < 10) left = 10;
+        if (left + tooltipRect.width > viewportWidth - 10) {
+            left = viewportWidth - tooltipRect.width - 10;
+        }
+        if (top < 10) {
+            // If no space above, show below the element
+            top = rect.bottom + scrollTop + 10;
+        }
+
+        this.tooltip.style.left = left + 'px';
+        this.tooltip.style.top = top + 'px';
+        this.tooltip.style.visibility = 'visible';
+
+        // Show tooltip with animation
+        this.tooltip.classList.add('show');
+        console.log('Tooltip positioned at:', left, top);
+    }
+
+    hideTooltip() {
+        if (this.tooltip) {
+            this.tooltip.classList.remove('show');
+        }
+    }
+
+    getTooltipContent(availability) {
+        if (!availability || !availability.notes) {
+            // Default messages for different statuses
+            switch (availability?.status) {
+                case 'blocked':
+                    return 'Blocked by owner';
+                case 'maintenance':
+                    return 'Maintenance scheduled';
+                case 'booked':
+                    return 'Already booked';
+                default:
+                    return null;
+            }
+        }
+
+        return availability.notes;
+    }
+
+    addTooltipToDate(dayElem, availability, status) {
+        const tooltipContent = this.getTooltipContent(availability);
+
+        console.log('Adding tooltip to date:', dayElem, 'content:', tooltipContent, 'status:', status);
+
+        if (!tooltipContent) {
+            console.log('No tooltip content, skipping');
+            return;
+        }
+
+        // Add hover event listeners for tooltip
+        dayElem.addEventListener('mouseenter', (e) => {
+            console.log('Mouse enter on date element');
+            this.showTooltip(e.target, tooltipContent, status);
+        });
+
+        dayElem.addEventListener('mouseleave', () => {
+            console.log('Mouse leave on date element');
+            this.hideTooltip();
+        });
+
+        // Remove default title attribute to avoid conflicts
+        dayElem.removeAttribute('title');
+        console.log('Tooltip events added to date element');
     }
 
     initializeCalendar() {
@@ -153,19 +316,22 @@ class VacationRentalFrontendCalendar {
             dateFormat: 'Y-m-d',
             minDate: 'today',
             showMonths: 1,
-            onDayCreate: (dObj, dStr, fp, dayElem) => {
+            onDayCreate: (_, __, ___, dayElem) => {
                 const date = dayElem.dateObj.toISOString().split('T')[0];
                 const availability = this.availabilityData[date];
 
                 // Remove any existing availability classes
                 dayElem.classList.remove('calendar-available', 'calendar-booked', 'calendar-blocked', 'calendar-maintenance', 'unavailable', 'available');
 
+                // Default to available state for all future dates
                 if (!availability) {
-                    // No availability data - assume unavailable
-                    dayElem.classList.add('calendar-blocked', 'unavailable');
-                    dayElem.setAttribute('disabled', 'disabled');
-                    dayElem.style.cursor = 'not-allowed';
+                    // Default available state - no exception data loaded yet
+                    dayElem.classList.add('calendar-available', 'available');
+                    dayElem.removeAttribute('disabled');
+                    dayElem.style.cursor = 'pointer';
+                    dayElem.setAttribute('title', 'Available');
                 } else {
+                    // Apply exception data if available
                     switch (availability.status) {
                         case 'available':
                             dayElem.classList.add('calendar-available', 'available');
@@ -183,19 +349,19 @@ class VacationRentalFrontendCalendar {
                             dayElem.classList.add('calendar-booked', 'unavailable');
                             dayElem.setAttribute('disabled', 'disabled');
                             dayElem.style.cursor = 'not-allowed';
-                            dayElem.setAttribute('title', 'Already booked');
+                            this.addTooltipToDate(dayElem, availability, 'booked');
                             break;
                         case 'blocked':
                             dayElem.classList.add('calendar-blocked', 'unavailable');
                             dayElem.setAttribute('disabled', 'disabled');
                             dayElem.style.cursor = 'not-allowed';
-                            dayElem.setAttribute('title', 'Blocked by owner');
+                            this.addTooltipToDate(dayElem, availability, 'blocked');
                             break;
                         case 'maintenance':
                             dayElem.classList.add('calendar-maintenance', 'unavailable');
                             dayElem.setAttribute('disabled', 'disabled');
                             dayElem.style.cursor = 'not-allowed';
-                            dayElem.setAttribute('title', 'Maintenance day');
+                            this.addTooltipToDate(dayElem, availability, 'maintenance');
                             break;
                         default:
                             dayElem.classList.add('calendar-blocked', 'unavailable');
@@ -205,7 +371,7 @@ class VacationRentalFrontendCalendar {
                     }
                 }
 
-                console.log(`Date ${date}: status=${availability?.status || 'no data'}, classes=${dayElem.className}`);
+                console.log(`Date ${date}: status=${availability?.status || 'default available'}, classes=${dayElem.className}`);
             },
             onChange: (selectedDates) => {
                 if (this.validateDateSelection(selectedDates)) {
@@ -231,7 +397,14 @@ class VacationRentalFrontendCalendar {
             // Single date selection - check if it's available
             const date = selectedDates[0].toISOString().split('T')[0];
             const availability = this.availabilityData[date];
-            return availability && availability.status === 'available';
+
+            // With exceptions-only loading: no data = available, data = check if it's an exception
+            if (!availability) {
+                return true; // No exception data means it's available
+            }
+
+            // If we have data, it should be an exception (unavailable)
+            return availability.status === 'available';
         }
 
         if (selectedDates.length === 2) {
@@ -258,10 +431,12 @@ class VacationRentalFrontendCalendar {
                 const dateStr = currentDate.toISOString().split('T')[0];
                 const availability = this.availabilityData[dateStr];
 
-                if (!availability || availability.status !== 'available') {
+                // With exceptions-only loading: no data = available, data = check if it's an exception
+                if (availability && availability.status !== 'available') {
                     console.log(`Date ${dateStr} is not available:`, availability);
                     return false;
                 }
+                // If no availability data exists, the date is available (default state)
 
                 currentDate.setDate(currentDate.getDate() + 1);
             }
@@ -607,6 +782,14 @@ class VacationRentalFrontendCalendar {
             notification.remove();
         }, 3000);
     }
+
+    destroy() {
+        this.cleanupTooltip();
+        if (this.calendar) {
+            this.calendar.destroy();
+            this.calendar = null;
+        }
+    }
 }
 
 // Auto-initialize when DOM is ready
@@ -632,5 +815,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 loginUrl: calendarContainer.dataset.loginUrl,
             });
         }
+    }
+});
+
+// Cleanup tooltips when page unloads
+window.addEventListener('beforeunload', function() {
+    if (window.vacationRentalFrontendCalendar) {
+        window.vacationRentalFrontendCalendar.destroy();
     }
 });

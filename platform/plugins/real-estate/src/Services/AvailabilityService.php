@@ -91,6 +91,83 @@ class AvailabilityService
     }
 
     /**
+     * Get only non-available dates (exceptions) for performance optimization
+     */
+    public function getAvailabilityExceptions(int $propertyId, Carbon $startDate, Carbon $endDate): array
+    {
+        $property = Property::findOrFail($propertyId);
+
+        // Get only non-available dates from the database
+        $exceptions = PropertyAvailability::forProperty($propertyId)
+            ->inDateRange($startDate, $endDate)
+            ->whereIn('status', [
+                PropertyAvailability::STATUS_BOOKED,
+                PropertyAvailability::STATUS_BLOCKED,
+                PropertyAvailability::STATUS_MAINTENANCE
+            ])
+            ->orderBy('date')
+            ->get();
+
+        $result = [];
+
+        foreach ($exceptions as $exception) {
+            $carbonDate = Carbon::parse($exception->date);
+            $dateKey = $carbonDate->format('Y-m-d');
+
+            // Apply pricing rules
+            $basePrice = $property->price ?? 0;
+            $effectivePrice = PropertyAvailabilityRule::calculateEffectivePrice($propertyId, $carbonDate, $basePrice);
+
+            // Apply minimum stay rules
+            $defaultMinStay = $property->minimum_stay ?? 1;
+            $effectiveMinStay = PropertyAvailabilityRule::getEffectiveMinimumStay($propertyId, $carbonDate, $defaultMinStay);
+
+            $result[$dateKey] = [
+                'date' => $dateKey,
+                'status' => $exception->status,
+                'price' => $exception->getEffectivePrice() ?: $effectivePrice,
+                'minimum_stay' => $exception->getEffectiveMinimumStay() ?: $effectiveMinStay,
+                'color' => $exception->getStatusColor(),
+                'notes' => $exception->notes,
+                'base_price' => $basePrice,
+                'price_modifier' => $basePrice > 0 ? (($exception->getEffectivePrice() ?: $effectivePrice) / $basePrice) : 1,
+            ];
+        }
+
+        // Also check for dates blocked by rules that don't have explicit availability records
+        $period = CarbonPeriod::create($startDate, $endDate);
+        foreach ($period as $date) {
+            $dateKey = $date->format('Y-m-d');
+
+            // Skip if we already have an exception for this date
+            if (isset($result[$dateKey])) {
+                continue;
+            }
+
+            // Check if date is blocked by rules
+            if (PropertyAvailabilityRule::isDateBlocked($propertyId, $date)) {
+                $basePrice = $property->price ?? 0;
+                $effectivePrice = PropertyAvailabilityRule::calculateEffectivePrice($propertyId, $date, $basePrice);
+                $defaultMinStay = $property->minimum_stay ?? 1;
+                $effectiveMinStay = PropertyAvailabilityRule::getEffectiveMinimumStay($propertyId, $date, $defaultMinStay);
+
+                $result[$dateKey] = [
+                    'date' => $dateKey,
+                    'status' => PropertyAvailability::STATUS_BLOCKED,
+                    'price' => $effectivePrice,
+                    'minimum_stay' => $effectiveMinStay,
+                    'color' => '#dc3545',
+                    'notes' => 'Blocked by rule',
+                    'base_price' => $basePrice,
+                    'price_modifier' => $basePrice > 0 ? ($effectivePrice / $basePrice) : 1,
+                ];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Calculate pricing for a booking
      */
     public function calculateBookingPrice(int $propertyId, Carbon $checkIn, Carbon $checkOut, int $guests = 1): array

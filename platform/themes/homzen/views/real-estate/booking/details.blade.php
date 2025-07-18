@@ -1,7 +1,24 @@
-@extends(Theme::getThemeNamespace('layouts.base'))
+@php
+    Theme::layout('default');
+    Theme::set('pageTitle', __('Booking Details'));
+    Theme::set('breadcrumbEnabled', 'no');
+@endphp
 
-@section('content')
-    <div class="container mt-5 mb-5">
+<!-- Breadcrumb -->
+<div class="flat-title-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="title-page">
+                    <h2 class="text-center">{{ __('Booking Details') }}</h2>
+                    <p class="text-center text-muted">{{ __('Booking #:number', ['number' => $booking->booking_number]) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5 mb-5">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card">
@@ -300,4 +317,3 @@
             }
         }
     </style>
-@endsection

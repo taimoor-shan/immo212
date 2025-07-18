@@ -8,12 +8,18 @@ use Botble\RealEstate\Models\Property;
 use Botble\RealEstate\Models\VacationRentalBooking;
 use Botble\RealEstate\Enums\PropertyTypeEnum;
 use Botble\RealEstate\Http\Requests\VacationRentalBookingRequest;
+use Botble\RealEstate\Http\Requests\VacationRentalInquiryRequest;
+use Botble\RealEstate\Notifications\VacationRentalBookingConfirmationNotification;
+use Botble\RealEstate\Notifications\VacationRentalBookingOwnerNotification;
+use Botble\RealEstate\Notifications\VacationRentalBookingProcessingNotification;
+use Botble\Base\Facades\EmailHandler;
 use Botble\Slug\Facades\SlugHelper;
 use Botble\Theme\Facades\Theme;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Illuminate\Support\ViewErrorBag;
 
@@ -156,6 +162,17 @@ class VacationRentalBookingController extends BaseController
                 'status' => VacationRentalBooking::STATUS_PENDING,
                 'payment_status' => VacationRentalBooking::PAYMENT_PENDING,
             ]);
+
+            // Send booking processing email to customer
+            try {
+                Notification::route('mail', $booking->guest_email)
+                    ->notify(new VacationRentalBookingProcessingNotification($booking));
+            } catch (\Exception $e) {
+                Log::error('Failed to send booking processing email: ' . $e->getMessage(), [
+                    'booking_id' => $booking->id,
+                    'customer_email' => $booking->guest_email,
+                ]);
+            }
 
             // Block the dates temporarily (will be confirmed after payment)
             $this->availabilityService->blockDates(
@@ -324,6 +341,70 @@ class VacationRentalBookingController extends BaseController
             'payment_status' => VacationRentalBooking::PAYMENT_PAID,
         ]);
 
+        // Send booking confirmation email to customer
+        try {
+            Notification::route('mail', $booking->guest_email)
+                ->notify(new VacationRentalBookingConfirmationNotification($booking));
+        } catch (\Exception $e) {
+            Log::error('Failed to send booking confirmation email: ' . $e->getMessage(), [
+                'booking_id' => $booking->id,
+                'booking_number' => $booking->booking_number,
+                'customer_email' => $booking->guest_email,
+            ]);
+        }
+
+        // Send booking notification email to property owner (following consultation pattern)
+        $property = $booking->property;
+        $sendTo = null;
+
+        if ($property->author?->email) {
+            $sendTo = $property->author->email;
+            Log::info('Booking notification will be sent to property owner', [
+                'booking_id' => $booking->id,
+                'booking_number' => $booking->booking_number,
+                'owner_email' => $sendTo,
+            ]);
+        } else {
+            Log::warning('No property owner email found for booking notification, will use admin fallback', [
+                'booking_id' => $booking->id,
+                'booking_number' => $booking->booking_number,
+                'property_id' => $property->id,
+            ]);
+        }
+
+        try {
+            // Use EmailHandler following consultation form pattern
+            EmailHandler::setModule(REAL_ESTATE_MODULE_SCREEN_NAME)
+                ->setVariableValues([
+                    'booking_number' => $booking->booking_number,
+                    'property_name' => $property->name,
+                    'property_link' => $property->url,
+                    'guest_name' => $booking->guest_name,
+                    'guest_email' => $booking->guest_email,
+                    'guest_phone' => $booking->guest_phone ?: 'Not provided',
+                    'check_in_date' => $booking->check_in_date->format('M d, Y'),
+                    'check_out_date' => $booking->check_out_date->format('M d, Y'),
+                    'guests_count' => $booking->guests_count,
+                    'total_amount' => format_price($booking->total_amount),
+                    'payment_status' => ucfirst($booking->payment_status),
+                    'special_requests' => $booking->special_requests ?: 'None',
+                    'booking_link' => route('public.vacation-rental.booking.details', $booking->booking_number),
+                ])
+                ->sendUsingTemplate('vacation_rental_booking_confirmed', $sendTo);
+
+            Log::info('Booking notification sent successfully', [
+                'booking_id' => $booking->id,
+                'booking_number' => $booking->booking_number,
+                'sent_to' => $sendTo ?: 'admin fallback',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to send booking notification: ' . $e->getMessage(), [
+                'booking_id' => $booking->id,
+                'booking_number' => $booking->booking_number,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
         // Update availability to confirmed booking
         $this->availabilityService->unblockDates(
             $booking->property_id,
@@ -365,6 +446,83 @@ class VacationRentalBookingController extends BaseController
         $this->pageTitle(__('Booking Details'));
 
         return Theme::scope('real-estate.booking.details', compact('booking'))->render();
+    }
+
+    public function sendInquiry(VacationRentalInquiryRequest $request)
+    {
+        Log::info('Vacation rental inquiry started', [
+            'request_data' => $request->all(),
+            'user_agent' => $request->userAgent(),
+            'ip' => $request->ip(),
+            'content_type' => $request->header('Content-Type'),
+            'is_json' => $request->isJson(),
+            'expects_json' => $request->expectsJson(),
+        ]);
+
+        try {
+            $property = Property::where('id', $request->property_id)
+                ->where('type', PropertyTypeEnum::VACATION_RENTAL)
+                ->where('moderation_status', 'approved')
+                ->with('author')
+                ->firstOrFail();
+
+            // Follow the same pattern as consultation form
+            $sendTo = null;
+            if ($property->author?->email) {
+                $sendTo = $property->author->email;
+                Log::info('Inquiry will be sent to property owner', [
+                    'property_id' => $property->id,
+                    'owner_email' => $sendTo,
+                ]);
+            } else {
+                Log::warning('No property owner email found, will use admin fallback', [
+                    'property_id' => $property->id,
+                ]);
+            }
+
+            // Use EmailHandler following consultation form pattern
+            EmailHandler::setModule(REAL_ESTATE_MODULE_SCREEN_NAME)
+                ->setVariableValues([
+                    'consult_name' => $request->name,
+                    'consult_email' => $request->email,
+                    'consult_phone' => $request->phone ?: 'Not provided',
+                    'consult_content' => $request->message ?: 'Vacation rental inquiry',
+                    'consult_link' => $property->url,
+                    'consult_subject' => 'Vacation Rental Inquiry - ' . $property->name,
+                    'consult_ip_address' => $request->ip(),
+                    'property_name' => $property->name,
+                    'check_in_date' => $request->check_in_date,
+                    'check_out_date' => $request->check_out_date,
+                    'guests_count' => $request->guests_count,
+                ])
+                ->sendUsingTemplate('vacation_rental_booking_inquiry', $sendTo);
+
+            Log::info('Inquiry email sent successfully', [
+                'property_id' => $property->id,
+                'customer_email' => $request->email,
+                'sent_to' => $sendTo ?: 'admin fallback',
+            ]);
+
+            Log::info('Preparing success response', [
+                'property_id' => $property->id,
+                'customer_email' => $request->email,
+            ]);
+
+            return $this->httpResponse()
+                ->setMessage(__('Your inquiry has been sent successfully! The property owner will contact you soon.'));
+
+        } catch (\Exception $e) {
+            Log::error('Failed to send vacation rental inquiry: ' . $e->getMessage(), [
+                'property_id' => $request->property_id,
+                'customer_email' => $request->email,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return $this->httpResponse()
+                ->setError()
+                ->setMessage(__('Sorry, there was an error sending your inquiry. Please try again.'));
+        }
     }
 
     protected function generateBookingNumber(): string

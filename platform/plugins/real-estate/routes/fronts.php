@@ -117,6 +117,7 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
         Route::prefix('vacation-rental')->name('public.vacation-rental.')->group(function (): void {
             Route::get('book/{slug}', [VacationRentalBookingController::class, 'showBookingForm'])->name('booking.form');
             Route::post('book', [VacationRentalBookingController::class, 'processBooking'])->name('booking.process');
+            Route::post('inquiry', [VacationRentalBookingController::class, 'sendInquiry'])->name('inquiry');
             Route::get('booking/callback', [VacationRentalBookingController::class, 'paymentCallback'])->name('booking.callback');
             Route::get('booking/{bookingNumber}/success', [VacationRentalBookingController::class, 'bookingSuccess'])->name('booking.success');
             Route::get('booking/{bookingNumber}', [VacationRentalBookingController::class, 'bookingDetails'])->name('booking.details');

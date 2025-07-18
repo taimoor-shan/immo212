@@ -301,9 +301,14 @@ class VacationRentalFrontendCalendar {
                             <input type="checkbox" id="terms_accepted" required>
                             <label for="terms_accepted">I agree to the <a href="/terms-and-conditions" target="_blank">terms and conditions</a></label>
                         </div>
-                        <button type="button" class="btn btn-primary btn-book" id="proceed-booking">
-                            Book Now
-                        </button>
+                        <div class="booking-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-outline-primary btn-inquiry" id="send-inquiry" style="flex: 1; min-width: 140px;">
+                                📧 Send Inquiry
+                            </button>
+                            <button type="button" class="btn btn-primary btn-book" id="proceed-booking" style="flex: 1; min-width: 140px;">
+                                🏠 Book Now
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -596,6 +601,11 @@ class VacationRentalFrontendCalendar {
             this.proceedToBooking();
         });
 
+        // Send inquiry
+        document.getElementById('send-inquiry')?.addEventListener('click', () => {
+            this.sendInquiry();
+        });
+
         // Handle window resize for responsive calendar
         // window.addEventListener('resize', () => {
         //     if (this.calendar) {
@@ -727,6 +737,93 @@ class VacationRentalFrontendCalendar {
         }
     }
 
+    async sendInquiry() {
+        if (!this.checkInDate || !this.checkOutDate) {
+            this.showError('Please select check-in and check-out dates');
+            return;
+        }
+
+        // Get form data
+        const guestName = document.getElementById('guest_name')?.value?.trim();
+        const guestEmail = document.getElementById('guest_email')?.value?.trim();
+        const guestPhone = document.getElementById('guest_phone')?.value?.trim();
+        const guestsCount = parseInt(document.getElementById('guests_count')?.value) || 1;
+        const inquiryMessage = prompt('Please enter your message or questions about this property:') || '';
+
+        // Validate required fields
+        if (!guestName || !guestEmail) {
+            this.showError('Please fill in your name and email address');
+            return;
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(guestEmail)) {
+            this.showError('Please enter a valid email address');
+            return;
+        }
+
+        try {
+            const checkInDateFormatted = this.checkInDate.toISOString().split('T')[0];
+            const checkOutDateFormatted = this.checkOutDate.toISOString().split('T')[0];
+
+            // Get CSRF token
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            console.log('CSRF token found:', csrfToken ? 'Yes' : 'No');
+
+            const response = await fetch('/vacation-rental/inquiry', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken || ''
+                },
+                body: JSON.stringify({
+                    property_id: this.options.propertyId,
+                    name: guestName,
+                    email: guestEmail,
+                    phone: guestPhone,
+                    check_in_date: checkInDateFormatted,
+                    check_out_date: checkOutDateFormatted,
+                    guests_count: guestsCount,
+                    message: inquiryMessage
+                })
+            });
+
+            // Check if response is JSON
+            const contentType = response.headers.get('content-type');
+            console.log('Response status:', response.status);
+            console.log('Response content-type:', contentType);
+
+            if (!response.ok) {
+                console.error('HTTP error:', response.status, response.statusText);
+                this.showError(`Server error: ${response.status} ${response.statusText}`);
+                return;
+            }
+
+            let data;
+            if (contentType && contentType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                const text = await response.text();
+                console.error('Expected JSON but got:', text.substring(0, 500));
+                this.showError('Server returned an unexpected response. Please check the console for details.');
+                return;
+            }
+
+            if (data.error === false) {
+                this.showSuccess(data.message || 'Your inquiry has been sent successfully! The property owner will contact you soon.');
+                // Reset form
+                this.resetBookingForm();
+            } else {
+                this.showError(data.message || 'Failed to send inquiry');
+            }
+        } catch (error) {
+            console.error('Inquiry failed:', error);
+            this.showError('An unexpected error occurred. Please try again.');
+        }
+    }
+
     addCustomStyles() {
         // Add custom CSS classes for better styling
         const calendarElement = document.querySelector('.flatpickr-calendar');
@@ -781,6 +878,64 @@ class VacationRentalFrontendCalendar {
         setTimeout(() => {
             notification.remove();
         }, 3000);
+    }
+
+    showSuccess(message) {
+        // Create a simple success notification
+        const notification = document.createElement('div');
+        notification.className = 'calendar-success-notification';
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            z-index: 9999;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 400px;
+        `;
+
+        document.body.appendChild(notification);
+
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
+    }
+
+    resetBookingForm() {
+        // Clear selected dates
+        this.checkInDate = null;
+        this.checkOutDate = null;
+        this.selectedDates = [];
+
+        // Reset calendar
+        if (this.calendar) {
+            this.calendar.clear();
+        }
+
+        // Hide booking summary
+        const summaryDiv = document.getElementById('booking-summary');
+        if (summaryDiv) {
+            summaryDiv.style.display = 'none';
+        }
+
+        // Reset form fields
+        const guestNameField = document.getElementById('guest_name');
+        const guestEmailField = document.getElementById('guest_email');
+        const guestPhoneField = document.getElementById('guest_phone');
+        const guestsCountField = document.getElementById('guests_count');
+        const termsCheckbox = document.getElementById('terms_accepted');
+
+        if (guestNameField) guestNameField.value = '';
+        if (guestEmailField) guestEmailField.value = '';
+        if (guestPhoneField) guestPhoneField.value = '';
+        if (guestsCountField) guestsCountField.value = '1';
+        if (termsCheckbox) termsCheckbox.checked = false;
     }
 
     destroy() {

@@ -8,24 +8,24 @@
         background-attachment: unset;
         .overlay {
             background: $on-surface;
-            opacity: 0;
+            opacity: 0.1;
         }
         .slider-content {
             position: relative;
             z-index: 1;
             padding: 190px 0;
             .heading {
-                margin-bottom: -58px;
+                margin-bottom: 34px;
                 h1{
-                    font-weight: 700;
-                    text-align: end;
-                    color: $on-surface;
+                    font-weight: 600;
+                    text-align: start;
+                    color: $white;
                 }
             }
             .subtitle {
                 margin-top: 0;
-                padding: 0 140px;
-                color: $on-surface;
+                padding:0;
+                color: $white;
             }
             // new style
             .wd-search-form.show {

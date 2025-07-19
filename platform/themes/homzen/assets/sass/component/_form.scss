@@ -7,7 +7,7 @@
     box-shadow: none;
     font-size: 16px;
     line-height: 26px;
-    border-radius :$border-radius;
+    border-radius :$radius;
     padding: 14px 16px;
     width: 100%;
     background: $white;
@@ -132,7 +132,7 @@
 
     .search-field {
         padding: 14px 45px 14px 16px;
-        border-radius :$border-radius;
+        border-radius :$radius;
         font-size: 16px;
         font-weight: 400;
         line-height: 26px;
@@ -154,11 +154,11 @@
         overflow: hidden;
         display: inline-flex;
         background-color: $primary;
-        border-radius :$border-radius;
+        border-radius :$radius;
         width: 48px;
         cursor: pointer;
         &::before {
-            border-radius :$border-radius;
+            border-radius :$radius;
             position: absolute;
             width: 100%;
             height: 100%;
@@ -212,7 +212,7 @@
 // widget form find select
 .wd-find-select {
         display: flex;
-        border-radius :$border-radius;
+        border-radius :$radius;
         border-top-left-radius: 0;
         border-bottom-right-radius: 0;
         background-color: #ffffff;
@@ -223,7 +223,7 @@
     .tf-btn {
         @include flex(center, center);
         padding: 10px 24px;
-        border-radius :$border-radius;
+        border-radius :$radius;
         border: none;
     }
     .inner-group {
@@ -303,7 +303,7 @@
                 gap:10px;
                 background: #ffffff;
                 padding: 6px 10px 6px;
-                border-radius: 8px;
+                border-radius: $radius;
                 border-top-left-radius: 0;
                 border-top-right-radius: 0;
 
@@ -334,7 +334,7 @@
     .group-select {
         .nice-select {
             padding: 14px 17px;
-            border-radius :$border-radius;
+            border-radius :$radius;
         }
     }
     &.style-2 {
@@ -430,7 +430,7 @@
     width: 100%;
     background: rgba(255, 255, 255, 1); /* optional overlay */
     border: 1px solid $outline;
-    border-radius :$border-radius;
+    border-radius :$radius;
     padding: 28px 20px;
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
@@ -608,7 +608,7 @@
             }
             &::-webkit-scrollbar-thumb {
                 background: $primary;
-                border-radius :$border-radius;
+                border-radius :$radius;
             }
         }
     }
@@ -678,7 +678,7 @@
         }
     }
     .nav-tab-form {
-        border-radius :$border-radius;
+        border-radius :$radius;
         gap: 0;
         overflow: hidden;
         .nav-tab-item {
@@ -820,7 +820,7 @@
 .vacation-rental-fields {
     background: linear-gradient(135deg, rgba(255, 107, 53, 0.02) 0%, rgba(255, 107, 53, 0.05) 100%);
     border: 1px solid rgba(255, 107, 53, 0.1);
-    border-radius: $border-radius;
+    border-radius :$radius;
     padding: 24px;
     margin: 20px 0;
     position: relative;
@@ -833,7 +833,7 @@
         right: 0;
         height: 3px;
         background: linear-gradient(90deg, $primary 0%, rgba(255, 107, 53, 0.8) 100%);
-        border-radius: $border-radius $border-radius 0 0;
+        border-radius :$radius;
     }
 
     &::after {
@@ -973,7 +973,7 @@
     // Field group styling for better visual hierarchy
     .field-group {
         background: rgba(255, 255, 255, 0.5);
-        border-radius: 8px;
+        border-radius: $radius;
         padding: 16px;
         margin-bottom: 16px;
         border: 1px solid rgba(255, 107, 53, 0.08);

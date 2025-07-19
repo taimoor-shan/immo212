@@ -166,7 +166,7 @@
     <style>
         .vacation-rental-details .info-card {
             border: 1px solid #e9ecef;
-            border-radius: 8px;
+            border-radius: 6px;
             padding: 1rem;
             background-color: #f8f9fa;
             height: 100%;
@@ -200,7 +200,7 @@
         
         .vacation-rental-details .house-rules {
             border: 1px solid #e9ecef;
-            border-radius: 8px;
+            border-radius: 6px;
             padding: 1rem;
             background-color: #fff5f5;
         }
@@ -212,7 +212,7 @@
         
         .vacation-rental-details .booking-summary {
             border: 1px solid #e9ecef;
-            border-radius: 8px;
+            border-radius: 6px;
             padding: 1rem;
             background-color: #f0f9ff;
         }

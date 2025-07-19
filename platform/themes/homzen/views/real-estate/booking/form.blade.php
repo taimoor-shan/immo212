@@ -308,7 +308,7 @@
         .booking-details-card,
         .price-breakdown-card {
             background: #ffffff;
-            border-radius: 10px;
+            border-radius: 6px;
             box-shadow: 0px 10px 25px rgba(54, 95, 104, 0.1);
             margin-bottom: 2rem;
             overflow: hidden;
@@ -398,7 +398,7 @@
         /* Form Sections */
         .booking-form-section {
             background: #ffffff;
-            border-radius: 10px;
+            border-radius: 6px;
             box-shadow: 0px 10px 25px rgba(54, 95, 104, 0.1);
             overflow: hidden;
         }
@@ -460,7 +460,7 @@
             display: block;
             padding: 1rem 1.25rem;
             border: 2px solid #e9ecef;
-            border-radius: 10px;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             background: #ffffff;
@@ -505,7 +505,7 @@
         .house-rules-content {
             background: #f3f5fa;
             padding: 1.25rem;
-            border-radius: 8px;
+            border-radius: 6px;
             border-left: 4px solid var(--primary-color);
             color: #63697d;
             line-height: 1.6;

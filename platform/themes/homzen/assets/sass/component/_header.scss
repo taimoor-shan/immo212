@@ -912,7 +912,7 @@
     display: none;
     background: rgba(237, 32, 39, 0.1);
     padding: 15px 20px;
-    border-radius :$border-radius;
+    border-radius :$radius;
 }
 
 .mobile-menu .navigation li > ul > li,
@@ -1129,7 +1129,7 @@
         padding: 10px 6px;
         padding-left: 0px;
         border: 1px solid $outline;
-        border-radius :$border-radius;
+        border-radius :$radius;
         display: flex;
         align-items: center;
         .form-box {
@@ -1176,7 +1176,7 @@
         background-color: $primary;
         @include flex(center, center);
         border: 0;
-        border-radius :$border-radius;
+        border-radius :$radius;
         @include transition3;
         &:hover {
             background-color: $primary-hover;
@@ -1234,7 +1234,7 @@
         .sub-nav-menu {
             background: rgba(237, 32, 39, 0.1);
             padding: 15px 20px;
-            border-radius :$border-radius;
+            border-radius :$radius;
             .sub-nav-link {
                 padding: 7px 0px;
                 display: block;

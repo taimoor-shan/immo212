@@ -18,7 +18,6 @@ return [
             $theme->asset()->usePath()->add('animate', 'css/animate.min.css');
             $theme->asset()->usePath()->add('swiper', 'plugins/swiper/swiper-bundle.min.css');
             $theme->asset()->usePath()->add('flatpickr', 'css/plugins/flatpickr.min.css');
-            $theme->asset()->usePath()->add('calendar', 'css/calendar.css', version: $version);
             $theme->asset()->usePath()->add('style', 'css/style.css', version: $version);
 
             $theme->asset()->container('footer')->usePath()->add('popper', 'js/popper.min.js');

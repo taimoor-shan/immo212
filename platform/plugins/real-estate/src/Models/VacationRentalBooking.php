@@ -28,8 +28,7 @@ class VacationRentalBooking extends BaseModel
         'check_out_date',
         'nights_count',
         'guests_count',
-        'adults_count',
-        'children_count',
+
         'base_price_per_night',
         'total_nights_cost',
         'cleaning_fee',
@@ -52,8 +51,7 @@ class VacationRentalBooking extends BaseModel
         'check_out_date' => 'date',
         'nights_count' => 'int',
         'guests_count' => 'int',
-        'adults_count' => 'int',
-        'children_count' => 'int',
+
         'base_price_per_night' => 'float',
         'total_nights_cost' => 'float',
         'cleaning_fee' => 'float',
@@ -224,8 +222,8 @@ class VacationRentalBooking extends BaseModel
         $query = self::forProperty($propertyId)
             ->active()
             ->where(function ($q) use ($checkIn, $checkOut) {
-                $q->whereBetween('check_in_date', [$checkIn, $checkOut->subDay()])
-                  ->orWhereBetween('check_out_date', [$checkIn->addDay(), $checkOut])
+                $q->whereBetween('check_in_date', [$checkIn, $checkOut->copy()->subDay()])
+                  ->orWhereBetween('check_out_date', [$checkIn->copy()->addDay(), $checkOut])
                   ->orWhere(function ($q2) use ($checkIn, $checkOut) {
                       $q2->where('check_in_date', '<=', $checkIn)
                          ->where('check_out_date', '>=', $checkOut);
@@ -261,7 +259,7 @@ class VacationRentalBooking extends BaseModel
                 'title' => "Booking: {$booking->guest_name}",
                 'description' => "Guests: {$booking->guests_count}",
                 'start_date' => $booking->check_in_date,
-                'end_date' => $booking->check_out_date->subDay(), // End date is exclusive
+                'end_date' => $booking->check_out_date->copy()->subDay(), // End date is exclusive
                 'event_type' => 'booking',
                 'color' => '#28a745',
             ]);

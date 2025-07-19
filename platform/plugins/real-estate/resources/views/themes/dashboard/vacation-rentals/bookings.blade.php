@@ -99,11 +99,7 @@
                                     </td>
                                     <td>
                                         <div>{{ $booking->guests_count }} {{ __('total') }}</div>
-                                        @if($booking->adults_count || $booking->children_count)
-                                            <div class="text-muted small">
-                                                {{ $booking->adults_count }} {{ __('adults') }}, {{ $booking->children_count }} {{ __('children') }}
-                                            </div>
-                                        @endif
+
                                     </td>
                                     <td>
                                         <span class="badge bg-{{ $booking->status === 'confirmed' ? 'success' : ($booking->status === 'pending' ? 'warning' : ($booking->status === 'cancelled' ? 'danger' : 'secondary')) }}">

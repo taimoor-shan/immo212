@@ -122,8 +122,7 @@ class VacationRentalBookingTest extends TestCase
             'check_in_date' => Carbon::tomorrow()->format('Y-m-d'),
             'check_out_date' => Carbon::tomorrow()->addDays(3)->format('Y-m-d'),
             'guests_count' => 4,
-            'adults_count' => 2,
-            'children_count' => 2,
+
             'guest_name' => 'John Doe',
             'guest_email' => 'john@example.com',
             'guest_phone' => '+1234567890',

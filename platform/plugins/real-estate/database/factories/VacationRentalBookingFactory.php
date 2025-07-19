@@ -30,8 +30,7 @@ class VacationRentalBookingFactory extends Factory
             'check_out_date' => $checkOutDate,
             'nights_count' => $nights,
             'guests_count' => $guestsCount,
-            'adults_count' => $this->faker->numberBetween(1, $guestsCount),
-            'children_count' => $this->faker->numberBetween(0, max(0, $guestsCount - 1)),
+
             'base_price_per_night' => $pricePerNight,
             'total_nights_cost' => $pricePerNight * $nights,
             'cleaning_fee' => $this->faker->randomFloat(2, 0, 100),

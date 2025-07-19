@@ -5,7 +5,7 @@
 @endphp
 
 <!-- Breadcrumb -->
-<div class="flat-title-page">
+<!-- <div class="flat-title-page">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
@@ -16,7 +16,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <div class="container mt-5 mb-5">
         <div class="row justify-content-center">
@@ -102,7 +102,7 @@
                             </div>
                         </div>
                         
-                        <hr>
+                  
                         
                         <div class="row">
                             <!-- Guest Information -->
@@ -160,7 +160,7 @@
                                                     <span>${{ number_format($booking->taxes, 2) }}</span>
                                                 </div>
                                             @endif
-                                            <hr>
+                                         
                                             <div class="price-row total">
                                                 <strong>{{ __('Total Amount') }}</strong>
                                                 <strong>${{ number_format($booking->total_amount, 2) }}</strong>

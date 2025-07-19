@@ -160,8 +160,7 @@ class VacationRentalTest extends TestCase
             'check_out_date' => Carbon::tomorrow()->addDays(3),
             'nights_count' => 3,
             'guests_count' => 4,
-            'adults_count' => 2,
-            'children_count' => 2,
+
             'base_price_per_night' => 150.00,
             'total_nights_cost' => 450.00,
             'cleaning_fee' => 50.00,

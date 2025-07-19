@@ -221,8 +221,8 @@ input[type='color'] {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
-    font-size: 16px;
-    line-height: 26px;
+    font-size: 15px;
+    line-height: 24px;
     border-radius: 10px;
     padding: 10px 14px;
     width: 100%;
@@ -616,4 +616,8 @@ label {
 
 .no-line {
     border: 0 !important;
+}
+
+.badge{
+    font-weight: 500 !important;
 }

@@ -1,9 +1,9 @@
 @if($property->type == \Botble\RealEstate\Enums\PropertyTypeEnum::VACATION_RENTAL)
-    <div @class(['widget-box single-property-vacation-rental-booking', $class ?? null])>
+    <div @class(['widget-box single-property-vacation-rental-booking single-property-contact', $class ?? null])>
         <div class="h7 title fw-6">{{ __('Book This Property') }}</div>
         
         @if (! RealEstateHelper::hideAgentInfoInPropertyDetailPage() && ($account = $property->author))
-            <div class="box-avatar">
+            <div class="box-avatar mb-3">
                 <div class="avatar avt-100 round">
                     <a href="{{ $account->url }}" class="d-block">
                         {{ RvMedia::image($account->avatar?->url ?: $account->avatar_url, $account->name) }}

@@ -3,6 +3,7 @@
 namespace Botble\RealEstate\Http\Requests;
 
 use Botble\Support\Http\Requests\Request;
+use Carbon\Carbon;
 
 class VacationRentalBookingRequest extends Request
 {
@@ -13,8 +14,7 @@ class VacationRentalBookingRequest extends Request
             'check_in_date' => 'required|date|after_or_equal:today',
             'check_out_date' => 'required|date|after:check_in_date',
             'guests_count' => 'required|integer|min:1|max:20',
-            'adults_count' => 'nullable|integer|min:0|max:20',
-            'children_count' => 'nullable|integer|min:0|max:20',
+
             'guest_name' => 'required|string|max:255',
             'guest_email' => 'required|email|max:255',
             'guest_phone' => 'nullable|string|max:20',
@@ -39,12 +39,7 @@ class VacationRentalBookingRequest extends Request
             'guests_count.integer' => __('Number of guests must be a number.'),
             'guests_count.min' => __('At least 1 guest is required.'),
             'guests_count.max' => __('Maximum 20 guests allowed.'),
-            'adults_count.integer' => __('Number of adults must be a number.'),
-            'adults_count.min' => __('Number of adults cannot be negative.'),
-            'adults_count.max' => __('Maximum 20 adults allowed.'),
-            'children_count.integer' => __('Number of children must be a number.'),
-            'children_count.min' => __('Number of children cannot be negative.'),
-            'children_count.max' => __('Maximum 20 children allowed.'),
+
             'guest_name.required' => __('Guest name is required.'),
             'guest_name.string' => __('Guest name must be text.'),
             'guest_name.max' => __('Guest name cannot exceed 255 characters.'),
@@ -69,8 +64,7 @@ class VacationRentalBookingRequest extends Request
             'check_in_date' => __('Check-in date'),
             'check_out_date' => __('Check-out date'),
             'guests_count' => __('Number of guests'),
-            'adults_count' => __('Number of adults'),
-            'children_count' => __('Number of children'),
+
             'guest_name' => __('Guest name'),
             'guest_email' => __('Guest email'),
             'guest_phone' => __('Guest phone'),
@@ -78,5 +72,26 @@ class VacationRentalBookingRequest extends Request
             'payment_method' => __('Payment method'),
             'terms_accepted' => __('Terms and conditions'),
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $checkInDate = $this->input('check_in_date');
+            $checkOutDate = $this->input('check_out_date');
+
+            if ($checkInDate && $checkOutDate) {
+                try {
+                    $checkIn = Carbon::parse($checkInDate);
+                    $checkOut = Carbon::parse($checkOutDate);
+
+                    if (!$checkOut->gt($checkIn)) {
+                        $validator->errors()->add('check_out_date', __('Check-out date must be after check-in date.'));
+                    }
+                } catch (\Exception $e) {
+                    // If date parsing fails, let the regular date validation handle it
+                }
+            }
+        });
     }
 }

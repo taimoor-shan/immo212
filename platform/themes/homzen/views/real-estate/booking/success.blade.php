@@ -5,7 +5,7 @@
 @endphp
 
 
-<div class="container mt-5 mb-5">
+<div class="container mt-5 mb-5 booking-success">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="card">
@@ -22,7 +22,7 @@
                         <!-- Booking Details -->
                         <div class="booking-confirmation">
                             <div class="row">
-                                <div class="col-md-6 mx-auto">
+                                <div class="col-md-10 mx-auto">
                                     <div class="confirmation-details">
                                         <h5 class="mb-3">{{ __('Booking Details') }}</h5>
                                         
@@ -76,9 +76,9 @@
                         </div>
                         
                         <!-- Next Steps -->
-                        <div class="next-steps mt-4">
+                        <div class="next-steps mt-5">
                             <h5>{{ __('What\'s Next?') }}</h5>
-                            <div class="row text-start">
+                            <div class="row text-start mt-3">
                                 <div class="col-md-4">
                                     <div class="step-item">
                                         <div class="step-icon">
@@ -86,7 +86,7 @@
                                         </div>
                                         <div class="step-content">
                                             <h6>{{ __('Confirmation Email') }}</h6>
-                                            <p class="small text-muted">{{ __('You\'ll receive a confirmation email with all booking details.') }}</p>
+                                            <p class=" text-muted">{{ __('You\'ll receive a confirmation email with all booking details.') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -97,7 +97,7 @@
                                         </div>
                                         <div class="step-content">
                                             <h6>{{ __('Check-in Instructions') }}</h6>
-                                            <p class="small text-muted">{{ __('You\'ll receive check-in instructions 24 hours before arrival.') }}</p>
+                                            <p class=" text-muted">{{ __('You\'ll receive check-in instructions 24 hours before arrival.') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -108,7 +108,7 @@
                                         </div>
                                         <div class="step-content">
                                             <h6>{{ __('Host Contact') }}</h6>
-                                            <p class="small text-muted">{{ __('The property owner will contact you if needed.') }}</p>
+                                            <p class=" text-muted">{{ __('The property owner will contact you if needed.') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -151,7 +151,7 @@
                         <div class="contact-info mt-4">
                             <p class="text-muted">
                                 {{ __('Questions about your booking?') }}
-                                <a href="mailto:support@example.com">{{ __('Contact us') }}</a>
+                                <a href="/contact">{{ __('Contact us') }}</a>
                             </p>
                         </div>
                     </div>
@@ -160,84 +160,3 @@
         </div>
     </div>
 
-    <style>
-        .confirmation-details {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 1.5rem;
-            text-align: left;
-        }
-        
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        .detail-item:last-child {
-            border-bottom: none;
-        }
-        
-        .detail-item.total {
-            border-top: 2px solid #dee2e6;
-            margin-top: 0.5rem;
-            padding-top: 1rem;
-            font-size: 1.1rem;
-        }
-        
-        .booking-number {
-            font-family: 'Courier New', monospace;
-            background-color: #e9ecef;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-        
-        .step-item {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .step-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        .step-content h6 {
-            margin-bottom: 0.5rem;
-        }
-        
-        .info-box {
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 6px;
-            padding: 1rem;
-            color: #856404;
-        }
-        
-        .info-box .info-item {
-            margin-bottom: 0.5rem;
-        }
-        
-        .info-box .info-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .action-buttons .btn {
-            margin-bottom: 0.5rem;
-        }
-        
-        @media (max-width: 768px) {
-            .action-buttons .btn {
-                display: block;
-                width: 100%;
-                margin-bottom: 0.75rem;
-            }
-            
-            .step-item {
-                margin-bottom: 1.5rem;
-            }
-        }
-    </style>

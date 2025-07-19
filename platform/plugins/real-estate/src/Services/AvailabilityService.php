@@ -38,8 +38,8 @@ class AvailabilityService
             return false;
         }
 
-        // Check availability rules for blocked periods
-        $period = CarbonPeriod::create($checkIn, $checkOut->subDay());
+        // Check availability rules for blocked periods (use copy to avoid mutating original dates)
+        $period = CarbonPeriod::create($checkIn, $checkOut->copy()->subDay());
         foreach ($period as $date) {
             if (PropertyAvailabilityRule::isDateBlocked($propertyId, $date)) {
                 Log::info('Availability check failed: blocked by rule', ['date' => $date->format('Y-m-d')]);
@@ -173,17 +173,23 @@ class AvailabilityService
     public function calculateBookingPrice(int $propertyId, Carbon $checkIn, Carbon $checkOut, int $guests = 1): array
     {
         $property = Property::findOrFail($propertyId);
+
         $nights = $checkIn->diffInDays($checkOut);
-        
+
         if ($nights <= 0) {
             throw new \InvalidArgumentException('Check-out date must be after check-in date');
+        }
+
+        // Validate guest count against property maximum
+        if ($property->maximum_guests && $guests > $property->maximum_guests) {
+            throw new \InvalidArgumentException("Number of guests ({$guests}) exceeds property maximum ({$property->maximum_guests})");
         }
 
         $totalNightsCost = 0;
         $priceBreakdown = [];
         
-        // Calculate nightly rates
-        $period = CarbonPeriod::create($checkIn, $checkOut->subDay());
+        // Calculate nightly rates (use copy to avoid mutating original dates)
+        $period = CarbonPeriod::create($checkIn, $checkOut->copy()->subDay());
         foreach ($period as $date) {
             $basePrice = $property->price ?? 0;
             $nightPrice = PropertyAvailabilityRule::calculateEffectivePrice($propertyId, $date, $basePrice);
@@ -215,6 +221,7 @@ class AvailabilityService
 
         return [
             'nights' => $nights,
+            'guests' => $guests,
             'base_price_per_night' => $property->price ?? 0,
             'total_nights_cost' => $totalNightsCost,
             'cleaning_fee' => $cleaningFee,

@@ -240,18 +240,12 @@ class VacationRentalFrontendCalendar {
                             <div class="color-box"></div>
                             <span>Booked</span>
                         </div>
-                        <div class="legend-item blocked">
-                            <div class="color-box"></div>
-                            <span>Blocked</span>
-                        </div>
+                       
                         <div class="legend-item maintenance">
                             <div class="color-box"></div>
                             <span>Maintenance</span>
                         </div>
-                        <div class="legend-item selected">
-                            <div class="color-box"></div>
-                            <span>Selected</span>
-                        </div>
+                        
                     </div>
                 </div>
                 <div class="calendar-container">
@@ -679,8 +673,7 @@ class VacationRentalFrontendCalendar {
                     check_in_date: checkInDateFormatted,
                     check_out_date: checkOutDateFormatted,
                     guests_count: parseInt(guestsCount),
-                    adults_count: parseInt(guestsCount), // Assume all guests are adults for now
-                    children_count: 0, // Default to 0 children
+
                     guest_name: guestName,
                     guest_email: guestEmail,
                     guest_phone: guestPhone || '', // Ensure it's not null

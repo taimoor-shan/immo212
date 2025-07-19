@@ -29,7 +29,7 @@
             @endif
         </div>
 
-        <div class="box-price d-flex flex-column align-items-end">
+        <div class="box-price d-flex flex-column align-items-start align-items-md-end">
             <h4>{{ $property->price_html }}</h4>
             @if (RealEstateHelper::isEnabledWishlist())
             <ul class="iconText">

@@ -48,10 +48,10 @@
 
                     @if($property->type == \Botble\RealEstate\Enums\PropertyTypeEnum::VACATION_RENTAL)
                         @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-booking'), ['class' => 'bg-surface mb-4'])
-                    @endif
-
+                   
+@else
                     @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.contact'), ['class' => 'bg-surface'])
-
+ @endif
                     {!! apply_filters('ads_render', null, 'detail_page_sidebar_after') !!}
                 </div>
             </div>

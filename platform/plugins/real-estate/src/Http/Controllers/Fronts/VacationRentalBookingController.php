@@ -113,6 +113,11 @@ class VacationRentalBookingController extends BaseController
             'ip' => $request->ip()
         ]);
 
+        Log::info('Booking validation passed, processing dates', [
+            'check_in_date_raw' => $request->check_in_date,
+            'check_out_date_raw' => $request->check_out_date,
+        ]);
+
         $property = Property::where('id', $request->property_id)
             ->where('type', PropertyTypeEnum::VACATION_RENTAL)
             ->where('moderation_status', 'approved')
@@ -120,6 +125,8 @@ class VacationRentalBookingController extends BaseController
 
         $checkInDate = Carbon::parse($request->check_in_date);
         $checkOutDate = Carbon::parse($request->check_out_date);
+
+
 
         // Re-validate availability (in case it changed)
         if (!$this->availabilityService->checkAvailability($property->id, $checkInDate, $checkOutDate)) {
@@ -149,8 +156,7 @@ class VacationRentalBookingController extends BaseController
                 'check_out_date' => $checkOutDate,
                 'nights_count' => $pricing['nights'],
                 'guests_count' => $request->guests_count,
-                'adults_count' => $request->adults_count,
-                'children_count' => $request->children_count,
+
                 'base_price_per_night' => $pricing['base_price_per_night'],
                 'total_nights_cost' => $pricing['total_nights_cost'],
                 'cleaning_fee' => $pricing['cleaning_fee'],
@@ -503,10 +509,7 @@ class VacationRentalBookingController extends BaseController
                 'sent_to' => $sendTo ?: 'admin fallback',
             ]);
 
-            Log::info('Preparing success response', [
-                'property_id' => $property->id,
-                'customer_email' => $request->email,
-            ]);
+
 
             return $this->httpResponse()
                 ->setMessage(__('Your inquiry has been sent successfully! The property owner will contact you soon.'));

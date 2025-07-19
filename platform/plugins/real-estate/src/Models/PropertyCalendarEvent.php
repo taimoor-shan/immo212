@@ -161,7 +161,7 @@ class PropertyCalendarEvent extends BaseModel
             'id' => $this->id,
             'title' => $this->title,
             'start' => $this->start_date->format('Y-m-d'),
-            'end' => $this->end_date->addDay()->format('Y-m-d'), // FullCalendar end is exclusive
+            'end' => $this->end_date->copy()->addDay()->format('Y-m-d'), // FullCalendar end is exclusive
             'color' => $this->getEffectiveColor(),
             'description' => $this->description,
             'allDay' => $this->is_all_day,

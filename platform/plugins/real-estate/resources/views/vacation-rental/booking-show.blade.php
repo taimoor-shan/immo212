@@ -94,9 +94,7 @@
                         </div>
                         <div class="col-sm-9">
                             {{ $booking->guests_count }}
-                            @if($booking->adults_count || $booking->children_count)
-                                ({{ $booking->adults_count }} {{ __('adults') }}, {{ $booking->children_count }} {{ __('children') }})
-                            @endif
+
                         </div>
                     </div>
 

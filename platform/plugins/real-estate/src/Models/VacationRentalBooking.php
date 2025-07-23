@@ -271,18 +271,71 @@ class VacationRentalBooking extends BaseModel
                 ['status' => PropertyAvailability::STATUS_BOOKED]
             );
         });
+
+        static::updated(function ($booking) {
+            // Handle status changes that affect availability and calendar events
+            if ($booking->isDirty('status')) {
+                $oldStatus = $booking->getOriginal('status');
+                $newStatus = $booking->status;
+
+                // Update calendar event color based on status
+                PropertyCalendarEvent::where('booking_id', $booking->id)->update([
+                    'color' => $booking->getStatusColor(),
+                    'title' => "Booking: {$booking->guest_name} ({$booking->getStatuses()[$newStatus]})"
+                ]);
+
+                // Update availability based on status change
+                if (in_array($newStatus, [self::STATUS_CANCELLED, self::STATUS_NO_SHOW])) {
+                    // Cancelled or no-show bookings should free up the dates
+                    PropertyAvailability::bulkUpdateAvailability(
+                        $booking->property_id,
+                        $booking->getDateRange(),
+                        ['status' => PropertyAvailability::STATUS_AVAILABLE, 'notes' => null]
+                    );
+                } elseif ($newStatus === self::STATUS_COMPLETED) {
+                    // Completed bookings should also free up the dates for future bookings
+                    PropertyAvailability::bulkUpdateAvailability(
+                        $booking->property_id,
+                        $booking->getDateRange(),
+                        ['status' => PropertyAvailability::STATUS_AVAILABLE, 'notes' => null]
+                    );
+                } elseif (in_array($newStatus, [self::STATUS_PENDING, self::STATUS_CONFIRMED])) {
+                    // Pending or confirmed bookings should keep dates booked
+                    // Only update if coming from a cancelled/no-show/completed status
+                    if (in_array($oldStatus, [self::STATUS_CANCELLED, self::STATUS_NO_SHOW, self::STATUS_COMPLETED])) {
+                        PropertyAvailability::bulkUpdateAvailability(
+                            $booking->property_id,
+                            $booking->getDateRange(),
+                            ['status' => PropertyAvailability::STATUS_BOOKED]
+                        );
+                    }
+                }
+            }
+        });
+
+        static::deleted(function ($booking) {
+            // Remove calendar event for this booking
+            PropertyCalendarEvent::where('booking_id', $booking->id)->delete();
+
+            // Update property availability back to available
+            PropertyAvailability::bulkUpdateAvailability(
+                $booking->property_id,
+                $booking->getDateRange(),
+                ['status' => PropertyAvailability::STATUS_AVAILABLE, 'notes' => null]
+            );
+        });
     }
 
-    private function getDateRange(): array
+    public function getDateRange(): array
     {
         $dates = [];
         $currentDate = $this->check_in_date->copy();
-        
+
         while ($currentDate->lt($this->check_out_date)) {
             $dates[] = $currentDate->format('Y-m-d');
             $currentDate->addDay();
         }
-        
+
         return $dates;
     }
 }

@@ -180,13 +180,8 @@ class VacationRentalBookingController extends BaseController
                 ]);
             }
 
-            // Block the dates temporarily (will be confirmed after payment)
-            $this->availabilityService->blockDates(
-                $property->id,
-                $checkInDate,
-                $checkOutDate,
-                'Booking #' . $booking->booking_number . ' (Pending Payment)'
-            );
+            // Note: Dates are automatically set to STATUS_BOOKED by the VacationRentalBooking model's created event
+            // No need to manually block dates as they are already marked as booked
 
             DB::commit();
 
@@ -411,20 +406,9 @@ class VacationRentalBookingController extends BaseController
             ]);
         }
 
-        // Update availability to confirmed booking
-        $this->availabilityService->unblockDates(
-            $booking->property_id,
-            $booking->check_in_date,
-            $booking->check_out_date
-        );
-
-        // Create confirmed booking availability records
-        $this->availabilityService->blockDates(
-            $booking->property_id,
-            $booking->check_in_date,
-            $booking->check_out_date,
-            'Booking #' . $booking->booking_number . ' (Confirmed)'
-        );
+        // Note: Availability is already updated to 'booked' status by the VacationRentalBooking model's created event
+        // The booking dates are automatically set to STATUS_BOOKED when the booking is created
+        // No additional availability updates are needed here
 
         // Clear session
         session()->forget(['vacation_rental_booking_id', 'vacation_rental_payment_data']);

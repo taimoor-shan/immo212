@@ -46,7 +46,8 @@ class VacationRentalFrontendCalendar {
         try {
             const startDate = this.getApiDate(new Date());
             const endDate = this.getApiDate(new Date(), 12);
-            const response = await fetch(`${this.options.availabilityEndpoint}?start=${startDate}&end=${endDate}&exceptions_only=true`, {
+            const cacheBuster = Date.now();
+            const response = await fetch(`${this.options.availabilityEndpoint}?start=${startDate}&end=${endDate}&exceptions_only=true&_=${cacheBuster}`, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -60,6 +61,14 @@ class VacationRentalFrontendCalendar {
             const data = await response.json();
             console.log('Availability exceptions loaded:', data);
             this.availabilityData = data.data || {};
+
+            // Debug: Log August dates specifically
+            console.log('August availability data:');
+            Object.keys(this.availabilityData).forEach(date => {
+                if (date.startsWith('2025-08')) {
+                    console.log(`  ${date}: ${this.availabilityData[date].status}`);
+                }
+            });
 
             // Update calendar with exception data
             this.updateCalendarWithExceptions();
@@ -101,8 +110,80 @@ class VacationRentalFrontendCalendar {
         // Hide any existing tooltip before redrawing
         this.hideTooltip();
 
-        // Redraw the calendar to apply the new availability data
-        this.calendar.redraw();
+        // Manually update all day elements with the new availability data
+        const dayElements = this.calendar.calendarContainer.querySelectorAll('.flatpickr-day');
+        dayElements.forEach(dayElem => {
+            // Skip if this day element doesn't have a date
+            if (!dayElem.dateObj) return;
+
+            const date = dayElem.dateObj.toISOString().split('T')[0];
+            const availability = this.availabilityData[date];
+
+            // Remove any existing availability classes
+            dayElem.classList.remove('calendar-available', 'calendar-booked', 'calendar-blocked', 'calendar-maintenance', 'unavailable', 'available');
+
+            // Apply the correct availability state
+            this.applyAvailabilityToDay(dayElem, date, availability);
+        });
+
+        console.log('Calendar updated with availability exceptions');
+    }
+
+    applyAvailabilityToDay(dayElem, date, availability) {
+        // Debug logging for August dates
+        if (date.startsWith('2025-08')) {
+            console.log(`Applying availability to ${date}:`, availability ? availability.status : 'default available');
+        }
+
+        // Default to available state for all future dates
+        if (!availability) {
+            // Default available state - no exception data
+            dayElem.classList.add('calendar-available', 'available');
+            dayElem.removeAttribute('disabled');
+            dayElem.style.cursor = 'pointer';
+            dayElem.setAttribute('title', 'Available');
+        } else {
+            // Apply exception data if available
+            switch (availability.status) {
+                case 'available':
+                    dayElem.classList.add('calendar-available', 'available');
+                    dayElem.removeAttribute('disabled');
+                    dayElem.style.cursor = 'pointer';
+                    // Add price information as a data attribute and tooltip
+                    if (availability.price) {
+                        dayElem.setAttribute('data-price', availability.price);
+                        dayElem.setAttribute('title', `Available - $${availability.price}/night`);
+                    } else {
+                        dayElem.setAttribute('title', 'Available');
+                    }
+                    break;
+                case 'booked':
+                    dayElem.classList.add('calendar-booked', 'unavailable');
+                    dayElem.setAttribute('disabled', 'disabled');
+                    dayElem.style.cursor = 'not-allowed';
+                    this.addTooltipToDate(dayElem, availability, 'booked');
+                    break;
+                case 'blocked':
+                    dayElem.classList.add('calendar-blocked', 'unavailable');
+                    dayElem.setAttribute('disabled', 'disabled');
+                    dayElem.style.cursor = 'not-allowed';
+                    this.addTooltipToDate(dayElem, availability, 'blocked');
+                    break;
+                case 'maintenance':
+                    dayElem.classList.add('calendar-maintenance', 'unavailable');
+                    dayElem.setAttribute('disabled', 'disabled');
+                    dayElem.style.cursor = 'not-allowed';
+                    this.addTooltipToDate(dayElem, availability, 'maintenance');
+                    break;
+                default:
+                    dayElem.classList.add('calendar-blocked', 'unavailable');
+                    dayElem.setAttribute('disabled', 'disabled');
+                    dayElem.style.cursor = 'not-allowed';
+                    dayElem.setAttribute('title', 'Unavailable');
+            }
+        }
+
+        console.log(`Updated date ${date}: status=${availability?.status || 'default available'}, classes=${dayElem.className}`);
     }
 
     cleanupTooltip() {
@@ -316,61 +397,17 @@ class VacationRentalFrontendCalendar {
             minDate: 'today',
             showMonths: 1,
             onDayCreate: (_, __, ___, dayElem) => {
-                const date = dayElem.dateObj.toISOString().split('T')[0];
+                // Fix timezone issue - use local date instead of UTC
+                const date = this.getApiDate(dayElem.dateObj);
                 const availability = this.availabilityData[date];
 
-                // Remove any existing availability classes
-                dayElem.classList.remove('calendar-available', 'calendar-booked', 'calendar-blocked', 'calendar-maintenance', 'unavailable', 'available');
-
-                // Default to available state for all future dates
-                if (!availability) {
-                    // Default available state - no exception data loaded yet
-                    dayElem.classList.add('calendar-available', 'available');
-                    dayElem.removeAttribute('disabled');
-                    dayElem.style.cursor = 'pointer';
-                    dayElem.setAttribute('title', 'Available');
-                } else {
-                    // Apply exception data if available
-                    switch (availability.status) {
-                        case 'available':
-                            dayElem.classList.add('calendar-available', 'available');
-                            dayElem.removeAttribute('disabled');
-                            dayElem.style.cursor = 'pointer';
-                            // Add price information as a data attribute and tooltip
-                            if (availability.price) {
-                                dayElem.setAttribute('data-price', availability.price);
-                                dayElem.setAttribute('title', `Available - $${availability.price}/night`);
-                            } else {
-                                dayElem.setAttribute('title', 'Available');
-                            }
-                            break;
-                        case 'booked':
-                            dayElem.classList.add('calendar-booked', 'unavailable');
-                            dayElem.setAttribute('disabled', 'disabled');
-                            dayElem.style.cursor = 'not-allowed';
-                            this.addTooltipToDate(dayElem, availability, 'booked');
-                            break;
-                        case 'blocked':
-                            dayElem.classList.add('calendar-blocked', 'unavailable');
-                            dayElem.setAttribute('disabled', 'disabled');
-                            dayElem.style.cursor = 'not-allowed';
-                            this.addTooltipToDate(dayElem, availability, 'blocked');
-                            break;
-                        case 'maintenance':
-                            dayElem.classList.add('calendar-maintenance', 'unavailable');
-                            dayElem.setAttribute('disabled', 'disabled');
-                            dayElem.style.cursor = 'not-allowed';
-                            this.addTooltipToDate(dayElem, availability, 'maintenance');
-                            break;
-                        default:
-                            dayElem.classList.add('calendar-blocked', 'unavailable');
-                            dayElem.setAttribute('disabled', 'disabled');
-                            dayElem.style.cursor = 'not-allowed';
-                            dayElem.setAttribute('title', 'Unavailable');
-                    }
+                // Debug logging for August dates
+                if (date.startsWith('2025-08')) {
+                    console.log(`Calendar day create: ${date}, has availability:`, !!availability, availability?.status);
                 }
 
-                console.log(`Date ${date}: status=${availability?.status || 'default available'}, classes=${dayElem.className}`);
+                // Use the centralized method to apply availability
+                this.applyAvailabilityToDay(dayElem, date, availability);
             },
             onChange: (selectedDates) => {
                 if (this.validateDateSelection(selectedDates)) {
@@ -383,6 +420,13 @@ class VacationRentalFrontendCalendar {
             },
             onReady: () => {
                 this.addCustomStyles();
+            },
+            onMonthChange: () => {
+                // When month changes, we need to update the availability for the new month
+                // Add a small delay to ensure Flatpickr has finished rendering
+                setTimeout(() => {
+                    this.updateCalendarWithExceptions();
+                }, 100);
             }
         });
     }
@@ -682,6 +726,9 @@ class VacationRentalFrontendCalendar {
                     terms_accepted: termsAccepted,
                 })
             });
+
+            // Set flag to indicate booking is being processed
+            sessionStorage.setItem('recent_booking_' + this.options.propertyId, Date.now().toString());
 
             console.log('Response status:', response.status);
             console.log('Response headers:', response.headers);

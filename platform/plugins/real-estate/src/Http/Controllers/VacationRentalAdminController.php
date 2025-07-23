@@ -413,15 +413,7 @@ class VacationRentalAdminController extends BaseController
     {
         $booking = VacationRentalBooking::findOrFail($id);
 
-        // Unblock the dates if booking is cancelled
-        if (in_array($booking->status, [VacationRentalBooking::STATUS_CONFIRMED, VacationRentalBooking::STATUS_PENDING])) {
-            $this->availabilityService->unblockDates(
-                $booking->property_id,
-                $booking->check_in_date,
-                $booking->check_out_date
-            );
-        }
-
+        // Note: Availability cleanup is handled automatically by the VacationRentalBooking model's deleted event
         $booking->delete();
 
         return redirect()

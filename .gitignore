@@ -12,6 +12,9 @@ yarn.lock
 bun.lockb
 package-lock.json
 
+# Temporarily exclude composer.lock to allow fresh dependency resolution
+composer.lock
+
 # ===================================
 # ENVIRONMENT & CONFIGURATION
 # ===================================
@@ -90,6 +93,8 @@ Homestead.yaml
 # - public/mix-manifest.json (asset manifest)
 # - All language files (multilingual support)
 # - public/docs (documentation assets)
+# - nixpacks.toml (Nixpacks configuration)
+# - nginx.conf (Custom nginx configuration)
 
 # ===================================
 # STORAGE SYMLINK (EXCLUDED)
@@ -108,7 +113,7 @@ database.sql
 database_export_*.sql
 
 # Deployment scripts (if they contain sensitive info)
-deployment_files/
+# deployment_files/ - Now included for Coolify deployment
 
 # Docker files (if not needed for production)
 docker-compose.yml

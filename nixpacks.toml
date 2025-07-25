@@ -1,0 +1,25 @@
+[variables]
+# Laravel/Botble specific configuration
+NIXPACKS_PHP_ROOT_DIR = "/app/public"
+NIXPACKS_PHP_FALLBACK_PATH = "/index.php"
+
+[phases.setup]
+# Ensure proper PHP extensions are available
+dependsOn = ["..."]
+
+[phases.install]
+# Install composer dependencies without dev packages for production
+cmds = [
+    "composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader"
+]
+
+[phases.build]
+# Build frontend assets if needed
+cmds = [
+    "npm ci --only=production",
+    "npm run production"
+]
+
+[start]
+# Let Nixpacks handle the start command (nginx + php-fpm)
+cmd = "nixpacks-start"

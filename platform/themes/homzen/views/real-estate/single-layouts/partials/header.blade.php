@@ -32,7 +32,7 @@
         <div class="box-price d-flex flex-column align-items-start align-items-md-end">
             <h4>{{ $property->price_html }}</h4>
             @if (RealEstateHelper::isEnabledWishlist())
-            <ul class="iconText">
+            <ul class="iconText d-flex gap-3">
                 <li>
                     <button type="button" class="tf-btn secondary sm" data-type="{{ $property instanceof \Botble\RealEstate\Models\Property ? 'property' : 'project' }}"
                             data-bb-toggle="add-to-wishlist"
@@ -44,8 +44,82 @@
                         <span>Save</span>
                     </button>
                 </li>
+                <li>
+                    <div class="property-share-dropdown" style="position: relative; display: inline-block;">
+                        <button type="button" class="tf-btn secondary sm" id="shareDropdownBtn">
+                            <x-core::icon name="ti ti-share" />
+                            <span>Share</span>
+                        </button>
+                        <div class="share-dropdown-menu" id="shareDropdownMenu" style="display: none; position: absolute; top: 100%; right: 0; background: #ffffff; border: 1px solid #a8beea; border-radius: 6px; padding: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); z-index: 1000; min-width: 200px; margin-top: 5px;">
+                            <ul style="list-style: none; margin: 0; padding: 0;">
+                                <li style="margin-bottom: 8px;">
+                                    <a href="mailto:?subject={{ urlencode($property->name) }}&body={{ urlencode('Check out this property: ' . $property->url) }}"
+                                       style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; text-decoration: none; color: #082479; border-radius: 4px; transition: all 0.3s ease;"
+                                       onmouseover="this.style.backgroundColor='#e4eaf5'"
+                                       onmouseout="this.style.backgroundColor='transparent'">
+                                        <x-core::icon name="ti ti-mail" style="width: 16px; height: 16px;" />
+                                        <span>Share by email</span>
+                                    </a>
+                                </li>
+                                <li style="margin-bottom: 8px;">
+                                    <a href="https://x.com/intent/tweet?url={{ urlencode($property->url) }}&text={{ urlencode($property->name) }}"
+                                       target="_blank"
+                                       style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; text-decoration: none; color: #082479; border-radius: 4px; transition: all 0.3s ease;"
+                                       onmouseover="this.style.backgroundColor='#e4eaf5'"
+                                       onmouseout="this.style.backgroundColor='transparent'">
+                                        <x-core::icon name="ti ti-brand-x" style="width: 16px; height: 16px;" />
+                                        <span>Share on Twitter</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.facebook.com/sharer.php?u={{ urlencode($property->url) }}"
+                                       target="_blank"
+                                       style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; text-decoration: none; color: #082479; border-radius: 4px; transition: all 0.3s ease;"
+                                       onmouseover="this.style.backgroundColor='#e4eaf5'"
+                                       onmouseout="this.style.backgroundColor='transparent'">
+                                        <x-core::icon name="ti ti-brand-facebook" style="width: 16px; height: 16px;" />
+                                        <span>Share on Facebook</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
             </ul>
         @endif
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const shareBtn = document.getElementById('shareDropdownBtn');
+    const shareMenu = document.getElementById('shareDropdownMenu');
+
+    if (shareBtn && shareMenu) {
+        // Toggle dropdown on button click
+        shareBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (shareMenu.style.display === 'none' || shareMenu.style.display === '') {
+                shareMenu.style.display = 'block';
+            } else {
+                shareMenu.style.display = 'none';
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!shareBtn.contains(e.target) && !shareMenu.contains(e.target)) {
+                shareMenu.style.display = 'none';
+            }
+        });
+
+        // Prevent dropdown from closing when clicking inside menu
+        shareMenu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+});
+</script>

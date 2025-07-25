@@ -318,6 +318,92 @@ $(() => {
         }
     }
 
+    /* Price Dropdown
+    -------------------------------------------------------------------------------------*/
+    const priceDropdown = function () {
+        $('.price-dropdown-select').each(function() {
+            const $dropdown = $(this)
+            const $trigger = $dropdown.find('.price-select-trigger')
+            const $menu = $dropdown.find('.price-dropdown-menu')
+            const $minInput = $dropdown.find('input[name="min_price"]')
+            const $maxInput = $dropdown.find('input[name="max_price"]')
+            const $current = $trigger.find('.current')
+            const $clearBtn = $dropdown.find('.btn-clear')
+            const $applyBtn = $dropdown.find('.btn-apply')
+
+            // Toggle dropdown
+            $trigger.on('click', function(e) {
+                e.preventDefault()
+                e.stopPropagation()
+
+                // Close other dropdowns
+                $('.price-dropdown-select').not($dropdown).find('.price-dropdown-menu').removeClass('show')
+                $('.price-dropdown-select').not($dropdown).find('.price-select-trigger').removeClass('open')
+
+                // Toggle current dropdown
+                $menu.toggleClass('show')
+                $trigger.toggleClass('open')
+
+                if ($menu.hasClass('show')) {
+                    $minInput.focus()
+                }
+            })
+
+            // Close dropdown when clicking outside
+            $(document).on('click', function(e) {
+                if (!$dropdown.is(e.target) && $dropdown.has(e.target).length === 0) {
+                    $menu.removeClass('show')
+                    $trigger.removeClass('open')
+                }
+            })
+
+            // Prevent dropdown from closing when clicking inside menu
+            $menu.on('click', function(e) {
+                e.stopPropagation()
+            })
+
+            // Update display text
+            const updateDisplayText = function() {
+                const minVal = $minInput.val()
+                const maxVal = $maxInput.val()
+
+                if (minVal || maxVal) {
+                    const minText = minVal ? new Intl.NumberFormat().format(minVal) : 'Any'
+                    const maxText = maxVal ? new Intl.NumberFormat().format(maxVal) : 'Any'
+                    $current.text(minText + ' - ' + maxText)
+                } else {
+                    $current.text('Select Price Range')
+                }
+            }
+
+            // Clear button
+            $clearBtn.on('click', function(e) {
+                e.preventDefault()
+                $minInput.val('')
+                $maxInput.val('')
+                updateDisplayText()
+                $menu.removeClass('show')
+                $trigger.removeClass('open')
+            })
+
+            // Apply button
+            $applyBtn.on('click', function(e) {
+                e.preventDefault()
+                updateDisplayText()
+                $menu.removeClass('show')
+                $trigger.removeClass('open')
+            })
+
+            // Update display on input change
+            $minInput.add($maxInput).on('input', function() {
+                updateDisplayText()
+            })
+
+            // Initialize display text
+            updateDisplayText()
+        })
+    }
+
     /* One Page
     -------------------------------------------------------------------------------------*/
     const onepageSingle = function () {
@@ -988,6 +1074,7 @@ $(() => {
     goTop()
     showPass()
     datePicker()
+    priceDropdown()
     preloader()
     // cursor();
     animateHeading()

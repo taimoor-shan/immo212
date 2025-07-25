@@ -58,7 +58,7 @@
         &.style-3 {
             .nav-link-item {
                 background-color: $white;
-                color: $body;
+                color: $body-text;
                 &.active,
                 &:hover {
                     background-color: $primary;
@@ -73,7 +73,7 @@
                 background-color: transparent;
                 border-bottom: 2px solid transparent;
 
-                color: $body;
+                color: $body-text;
                 padding: 2px 0px;
                 &.active,
                 &:hover {
@@ -156,7 +156,7 @@
         .icon {
             width: 32px;
             height: 32px;
-            color: $body;
+            color: $body-text;
             @include transition3;
         }
         &.active {

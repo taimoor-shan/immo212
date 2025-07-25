@@ -47,7 +47,7 @@
 
         li {
             &:last-child {
-                color: $body;
+                color: $body-text;
             }
         }
     }
@@ -457,7 +457,7 @@
                 }
 
                 &:last-child {
-                    color: $body;
+                    color: $body-text;
                 }
             }
 
@@ -565,7 +565,7 @@
 
         .subtitle {
             font-weight: 600;
-            color: $body;
+            color: $body-text;
             margin-bottom: 4px;
             font-size: 16px;
             line-height: 26px;
@@ -1001,7 +1001,7 @@
         .property-type-badge{
             font-size: 14px;
             font-weight:600;
-            color:$body;
+            color:$body-text;
         }
 
         .desc {
@@ -1412,7 +1412,7 @@
             background-color: $white;
 
             .sub-title {
-                color: $body;
+                color: $body-text;
             }
 
             .title {
@@ -1426,7 +1426,7 @@
             background-color: $white;
 
             .sub-title {
-                color: $body;
+                color: $body-text;
             }
 
             .title {
@@ -2597,7 +2597,7 @@
             }
 
             .icon {
-                color: $body;
+                color: $body-text;
                 width: 1.25rem;
                 height: 1.25rem;
                 stroke-width: 2;

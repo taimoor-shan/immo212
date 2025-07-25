@@ -12,15 +12,17 @@
         <div class="form-sl">
             <div class="wd-filter-select">
                 <div class="inner-group inner-filter">
-                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.keyword'))
+                    {{-- New filter order: Cities, Property Type, Price Range, Bedrooms --}}
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.location'), ['style' => 3])
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.categories'))
-                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bathroom'), ['class' => 'form-style'])
+                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.price'), ['class' => 'form-style', 'useDropdown' => true])
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bedroom'), ['class' => 'form-style'])
+
+                    {{-- Advanced filters section --}}
+                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bathroom'), ['class' => 'form-style'])
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.floor'), ['class' => 'form-style'])
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.types'), ['class' => 'form-style'])
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.projects'), ['class' => 'form-style'])
-                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.price'), ['class' => 'form-style'])
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.square'), ['class' => 'form-style wd-price-2'])
 
                     <div class="form-style btn-show-advanced">

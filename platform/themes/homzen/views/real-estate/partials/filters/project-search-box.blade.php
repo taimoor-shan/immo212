@@ -12,12 +12,14 @@
         <div class="form-sl">
             <div class="wd-filter-select">
                 <div class="inner-group inner-filter">
-                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.keyword'))
+                    {{-- New filter order for projects: Cities, Property Type, Price Range --}}
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.location'), ['style' => 3])
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.categories'))
+                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.price'), ['class' => 'form-style', 'maxPrice' => get_max_projects_price(), 'useDropdown' => true])
+
+                    {{-- Advanced filters section --}}
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.floor'), ['class' => 'form-style'])
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.block'), ['class' => 'form-style'])
-                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.price'), ['class' => 'form-style', 'maxPrice' => get_max_projects_price()])
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.flat'), ['class' => 'form-style wd-price-2'])
 
                     <div class="form-style mt-5">

@@ -35,8 +35,8 @@
 
     <section class="flat-section-v5 flat-recommended flat-recommended-v2">
         <div class="container">
-        <div class="row">
-        <div class="col-lg-8">
+        <div class="row justify-content-between">
+        <div class="col-lg-7">
             
             @include(Theme::getThemeNamespace('views.real-estate.partials.listing-top'))
 

@@ -1,8 +1,10 @@
 <div @class(['wd-find-select position-relative' =>  in_array($style, [1, 2, 4]), 'wd-filter-select' => $style === 3, 'no-left-round' => $noLeftRound ?? false])>
     <div class="inner-group">
-        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.keyword'))
+        {{-- New filter order: Cities, Property Type, Price Range, Bedrooms --}}
         @include(Theme::getThemeNamespace('views.real-estate.partials.filters.location'))
         @include(Theme::getThemeNamespace('views.real-estate.partials.filters.categories'))
+        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.price'), ['useDropdown' => true])
+        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bedroom'))
 
         @if (theme_option('real_estate_enable_advanced_search', 'yes') == 'yes')
             <div @class(['form-group-4 box-filter', 'form-style' => $style === 3])>

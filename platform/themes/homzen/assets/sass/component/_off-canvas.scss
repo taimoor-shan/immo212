@@ -60,7 +60,7 @@
     width: 30px;
     height: 20px;
     @include flex(center, center);
-    color: $body;
+    color: $body-text;
     cursor: pointer;
 }
 

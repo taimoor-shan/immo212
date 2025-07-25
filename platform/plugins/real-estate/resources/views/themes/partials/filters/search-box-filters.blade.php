@@ -8,20 +8,18 @@
                         {!! Theme::partial('real-estate.filters.by-project') !!}
                     </div>
                 @endif
-                <div @class(['px-md-1', 'col-sm-3' => RealEstateHelper::isEnabledProjects(), 'col-sm-6' => ! RealEstateHelper::isEnabledProjects()])>
+                <div @class(['px-md-1', 'col-sm-6' => RealEstateHelper::isEnabledProjects(), 'col-sm-12' => ! RealEstateHelper::isEnabledProjects()])>
                     {!! Theme::partial('real-estate.filters.categories', compact('categories')) !!}
                 </div>
-                {!! Theme::partial('real-estate.filters.price') !!}
+                {{-- Price filter moved to main display --}}
             </div>
 
             <div class="row">
-                <div class="col-md-4 col-sm-6 px-md-1">
-                    {!! Theme::partial('real-estate.filters.bedroom') !!}
-                </div>
-                <div class="col-md-4 col-sm-6 px-md-1">
+                {{-- Bedroom filter moved to main display, keeping bathroom and floor in advanced --}}
+                <div class="col-md-6 col-sm-6 px-md-1">
                     {!! Theme::partial('real-estate.filters.bathroom') !!}
                 </div>
-                <div class="col-md-4 col-sm-6 px-md-1">
+                <div class="col-md-6 col-sm-6 px-md-1">
                     {!! Theme::partial('real-estate.filters.floor') !!}
                 </div>
             </div>
@@ -32,10 +30,10 @@
         <div class="advanced-search-content project-advanced-search">
             <div class="form-group">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         {!! Theme::partial('real-estate.filters.categories', compact('categories')) !!}
                     </div>
-                    {!! Theme::partial('real-estate.filters.price') !!}
+                    {{-- Price filter moved to main display --}}
                 </div>
             </div>
         </div>

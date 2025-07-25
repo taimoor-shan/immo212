@@ -1068,7 +1068,7 @@
                 margin-bottom: 0px;
             }
             .content {
-                color: $body;
+                color: $body-text;
                 h5 {
                     color: $dull;
                 }
@@ -1161,11 +1161,11 @@
             padding: 0px 16px;
             font-size: 18px;
             line-height: 28px;
-            color: $body;
+            color: $body-text;
             border: 0;
             border-radius: 0;
             &::placeholder {
-                color: $body;
+                color: $body-text;
             }
         }
     }

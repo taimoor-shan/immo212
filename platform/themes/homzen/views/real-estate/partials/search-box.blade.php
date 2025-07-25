@@ -96,13 +96,13 @@
                         @endif
                         <div class="wd-search-form property-search-form" @style(['display: none;' => $projectsSearchEnabled && $defaultSearchType === 'project'])>
                             <div class="grid-2 group-box group-price">
-                                @include(Theme::getThemeNamespace('views.real-estate.partials.filters.price'), ['maxPrice' => $maxPrice])
+                                {{-- Price and bedroom filters moved to main display, keeping square footage --}}
                                 @include(Theme::getThemeNamespace('views.real-estate.partials.filters.square'))
                             </div>
                             <div class="group-box">
                                 <div class="group-select grid-3">
                                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bathroom'))
-                                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bedroom'))
+                                    {{-- Bedroom filter moved to main display --}}
                                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.floor'))
                                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.projects'))
                                 </div>

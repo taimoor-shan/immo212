@@ -119,8 +119,9 @@ body {
     font-size: 16px;
     line-height: 26px;
     font-weight: 400;
-    color: $body;
+    color: $body-text;
     background-color: $white;
+    overflow-x: hidden;
 }
 
 img {
@@ -530,13 +531,13 @@ label {
     color: $dull;
 }
 .text-variant-2 {
-    color: $body;
+    color: $body-text;
 }
 .text-dBlue {
     color: $on-surface;
 }
 .text-body {
-    color: $body;
+    color: $body-text;
 }
 // background color
 .bg-surface {

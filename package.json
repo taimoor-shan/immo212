@@ -14,8 +14,8 @@
         "watch": "mix watch",
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
-        "prod": "npm run production",
-        "production": "mix --production",
+        "prod": "echo 'Using pre-compiled assets from public/themes - skipping build'",
+        "production": "echo 'Using pre-compiled assets from public/themes - skipping build'",
         "format": "npx prettier platform/**/resources/js/**/*.{js,vue} platform/**/resources/sass/*.scss platform/**/resources/views/**/*.blade.php platform/themes/*/{layouts,partials,views,widgets}/**/*.blade.php platform/themes/*/assets/**/*.{js,scss} --write"
     },
     "devDependencies": {

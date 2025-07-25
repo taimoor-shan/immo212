@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d770ee905bc70668f57fcfa6bd2e25b",
+    "content-hash": "1c57ac3f1bfb001a75bf677309cf7ae4",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -438,7 +438,7 @@
         },
         {
             "name": "botble/get-started",
-            "version": "dev-develop",
+            "version": "dev-features/rentals",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/get-started",
@@ -464,7 +464,7 @@
         },
         {
             "name": "botble/installer",
-            "version": "dev-develop",
+            "version": "dev-features/rentals",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/installer",
@@ -493,7 +493,7 @@
         },
         {
             "name": "botble/menu",
-            "version": "dev-develop",
+            "version": "dev-features/rentals",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/menu",
@@ -526,7 +526,7 @@
         },
         {
             "name": "botble/optimize",
-            "version": "dev-develop",
+            "version": "dev-features/rentals",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/optimize",
@@ -558,7 +558,7 @@
         },
         {
             "name": "botble/page",
-            "version": "dev-develop",
+            "version": "dev-features/rentals",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/page",
@@ -588,7 +588,7 @@
         },
         {
             "name": "botble/platform",
-            "version": "dev-develop",
+            "version": "dev-features/rentals",
             "dist": {
                 "type": "path",
                 "url": "./platform/core",
@@ -696,7 +696,7 @@
         },
         {
             "name": "botble/plugin-management",
-            "version": "dev-develop",
+            "version": "dev-features/rentals",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/plugin-management",
@@ -725,7 +725,7 @@
         },
         {
             "name": "botble/revision",
-            "version": "dev-develop",
+            "version": "dev-features/rentals",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/revision",
@@ -754,7 +754,7 @@
         },
         {
             "name": "botble/seo-helper",
-            "version": "dev-develop",
+            "version": "dev-features/rentals",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/seo-helper",
@@ -787,7 +787,7 @@
         },
         {
             "name": "botble/shortcode",
-            "version": "dev-develop",
+            "version": "dev-features/rentals",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/shortcode",
@@ -819,7 +819,7 @@
         },
         {
             "name": "botble/sitemap",
-            "version": "dev-develop",
+            "version": "dev-features/rentals",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/sitemap",
@@ -848,7 +848,7 @@
         },
         {
             "name": "botble/slug",
-            "version": "dev-develop",
+            "version": "dev-features/rentals",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/slug",
@@ -880,7 +880,7 @@
         },
         {
             "name": "botble/theme",
-            "version": "dev-develop",
+            "version": "dev-features/rentals",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/theme",
@@ -921,7 +921,7 @@
         },
         {
             "name": "botble/widget",
-            "version": "dev-develop",
+            "version": "dev-features/rentals",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/widget",
@@ -11570,6 +11570,60 @@
             "time": "2025-02-26T03:32:12+00:00"
         },
         {
+            "name": "deployer/deployer",
+            "version": "v7.5.12",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/deployphp/deployer.git",
+                "reference": "efc71dac9ccc86b3f9946e75d50cb106b775aae2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/deployphp/deployer/zipball/efc71dac9ccc86b3f9946e75d50cb106b775aae2",
+                "reference": "efc71dac9ccc86b3f9946e75d50cb106b775aae2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^8.0|^7.3"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.64",
+                "pestphp/pest": "^3.3",
+                "phpstan/phpstan": "^1.4",
+                "phpunit/php-code-coverage": "^11.0",
+                "phpunit/phpunit": "^11.4"
+            },
+            "bin": [
+                "bin/dep"
+            ],
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anton Medvedev",
+                    "email": "anton@medv.io"
+                }
+            ],
+            "description": "Deployment Tool",
+            "homepage": "https://deployer.org",
+            "support": {
+                "docs": "https://deployer.org/docs",
+                "issues": "https://github.com/deployphp/deployer/issues",
+                "source": "https://github.com/deployphp/deployer"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/antonmedv",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-02-19T16:45:27+00:00"
+        },
+        {
             "name": "driftingly/rector-laravel",
             "version": "2.0.4",
             "source": {
@@ -14551,7 +14605,11 @@
         "ext-curl": "*",
         "ext-gd": "*",
         "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
         "ext-pdo": "*",
+        "ext-tokenizer": "*",
+        "ext-xml": "*",
         "ext-zip": "*"
     },
     "platform-dev": {},

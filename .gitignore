@@ -124,3 +124,12 @@ phpunit.xml
 
 # Any local configuration or test files
 cookies.txt
+
+# ===================================
+# DEPLOYMENT CONFIGURATION
+# ===================================
+# Keep deployment scripts but ignore sensitive configs
+deploy-config.php
+.env.production
+.env.staging
+deployment_logs/

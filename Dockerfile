@@ -67,8 +67,9 @@ RUN groupadd --force -g 1000 www \
 # Copy PHP configuration
 COPY php.ini /usr/local/etc/php/conf.d/99-botble.ini
 
-# Copy nginx configuration
+# Copy nginx configuration and ensure mime.types exists
 COPY nginx.conf /etc/nginx/nginx.conf
+RUN test -f /etc/nginx/mime.types || cp /etc/nginx/mime.types.default /etc/nginx/mime.types || echo "text/html html;" > /etc/nginx/mime.types
 
 # Create necessary directories
 RUN mkdir -p /var/www/html/storage/logs \
@@ -116,24 +117,12 @@ RUN echo '[supervisord]' > /etc/supervisor/conf.d/supervisord.conf \
     && echo 'stderr_logfile=/var/log/supervisor/php-fpm.err.log' >> /etc/supervisor/conf.d/supervisord.conf \
     && echo 'stdout_logfile=/var/log/supervisor/php-fpm.out.log' >> /etc/supervisor/conf.d/supervisord.conf
 
-# Set up Laravel scheduler cron
-RUN echo '* * * * * www cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1' > /etc/cron.d/laravel-scheduler \
-    && chmod 0644 /etc/cron.d/laravel-scheduler \
-    && crontab /etc/cron.d/laravel-scheduler
-
-# Create startup script
+# SIMPLIFIED startup script - no Laravel caching commands that might fail
 RUN echo '#!/bin/bash' > /usr/local/bin/start.sh \
     && echo 'set -e' >> /usr/local/bin/start.sh \
     && echo '' >> /usr/local/bin/start.sh \
-    && echo '# Wait for database to be ready' >> /usr/local/bin/start.sh \
-    && echo 'echo "Waiting for database..."' >> /usr/local/bin/start.sh \
-    && echo 'sleep 10' >> /usr/local/bin/start.sh \
-    && echo '' >> /usr/local/bin/start.sh \
-    && echo '# Run Laravel optimizations' >> /usr/local/bin/start.sh \
+    && echo '# Basic Laravel setup' >> /usr/local/bin/start.sh \
     && echo 'cd /var/www/html' >> /usr/local/bin/start.sh \
-    && echo 'php artisan config:cache' >> /usr/local/bin/start.sh \
-    && echo 'php artisan route:cache' >> /usr/local/bin/start.sh \
-    && echo 'php artisan view:cache' >> /usr/local/bin/start.sh \
     && echo '' >> /usr/local/bin/start.sh \
     && echo '# Start cron service' >> /usr/local/bin/start.sh \
     && echo 'service cron start' >> /usr/local/bin/start.sh \
@@ -142,14 +131,8 @@ RUN echo '#!/bin/bash' > /usr/local/bin/start.sh \
     && echo 'exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf' >> /usr/local/bin/start.sh \
     && chmod +x /usr/local/bin/start.sh
 
-# The nginx.conf already has the correct fastcgi_pass configuration
-
 # Expose port 80
 EXPOSE 80
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost/health || exit 1
 
 # Start the application
 CMD ["/usr/local/bin/start.sh"]

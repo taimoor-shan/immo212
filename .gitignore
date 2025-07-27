@@ -1,46 +1,19 @@
-# Laravel & Botble CMS - Minimal .gitignore
-
-# Dependencies
+/.phpunit.cache
 /node_modules
-/vendor
-
-# Environment files
-.env
-.env.backup
-.env.testing
-.env.local
-.env.production
-
-# Runtime storage
-/storage/*.key
-/storage/logs/*.log
-/storage/framework/cache/data/*
-/storage/framework/sessions/*
-/storage/framework/views/*
-/storage/framework/testing/*
-
-# Build artifacts
+/public/build
 /public/hot
 /public/storage
-
-# Development tools
+/storage/*.key
+/vendor
+.env
+.env.backup
+.env.production
 .phpunit.result.cache
-_ide_helper.php
-_ide_helper_models.php
-/.php_cs.cache
-.php-cs-fixer.cache
-
-# IDE & OS
-/.idea
-/.vscode
-.DS_Store
-Thumbs.db
-
-# Local development
 Homestead.json
 Homestead.yaml
+auth.json
 npm-debug.log
-
-# Local files
-*.sqlite
-*.log
+yarn-error.log
+/.fleet
+/.idea
+/.vscode

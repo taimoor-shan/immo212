@@ -1,6 +1,10 @@
 # Multi-stage build for optimized production image
 FROM php:8.2-fpm AS base
 
+# Ensure bash is available and set as default shell
+RUN apt-get update && apt-get install -y bash
+SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
+
 # Set working directory
 WORKDIR /var/www/html
 
@@ -94,10 +98,10 @@ RUN chown -R www:www /var/www/html \
 # Switch to www user for Node.js operations
 USER www
 
-# Install Node dependencies and build assets
+# Install Node dependencies and build assets - Changed to use 'prod' instead of 'production'
 RUN cd /var/www/html && \
     npm ci --only=production \
-    && npm run production \
+    && npm run prod \
     && rm -rf node_modules
 
 # Switch back to root for final setup

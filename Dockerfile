@@ -70,9 +70,6 @@ COPY php.ini /usr/local/etc/php/conf.d/99-botble.ini
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Update nginx config for correct document root
-RUN sed -i 's|root /app/public;|root /var/www/html/public;|g' /etc/nginx/nginx.conf
-
 # Create necessary directories
 RUN mkdir -p /var/www/html/storage/logs \
     && mkdir -p /var/www/html/storage/framework/cache \
@@ -87,25 +84,16 @@ RUN mkdir -p /var/www/html/storage/logs \
 COPY . /var/www/html
 
 # Install PHP dependencies as root first (to avoid permission issues)
+# Set a reasonable memory limit for 4GB RAM server
 RUN cd /var/www/html && \
-    COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+    COMPOSER_MEMORY_LIMIT=2G composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
 # Set proper ownership after installation
 RUN chown -R www:www /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Switch to www user for Node.js operations
-USER www
-
-# Install Node dependencies and build assets - Changed to use 'prod' instead of 'production'
-RUN cd /var/www/html && \
-    npm ci --only=production \
-    && npm run prod \
-    && rm -rf node_modules
-
-# Switch back to root for final setup
-USER root
+# No npm build needed - using pre-compiled assets
 
 # Create supervisor configuration
 RUN echo '[supervisord]' > /etc/supervisor/conf.d/supervisord.conf \

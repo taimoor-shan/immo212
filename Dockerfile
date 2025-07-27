@@ -1,5 +1,5 @@
 # Multi-stage build for optimized production image
-FROM php:8.2-fpm as base
+FROM php:8.2-fpm AS base
 
 # Set working directory
 WORKDIR /var/www/html
@@ -80,21 +80,24 @@ RUN mkdir -p /var/www/html/storage/logs \
     && mkdir -p /var/log/nginx
 
 # Copy application files
-COPY --chown=www:www . /var/www/html
+COPY . /var/www/html
 
-# Set proper permissions
+# Install PHP dependencies as root first (to avoid permission issues)
+RUN cd /var/www/html && \
+    composer diagnose && \
+    composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+# Set proper ownership after installation
 RUN chown -R www:www /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Switch to www user for dependency installation
+# Switch to www user for Node.js operations
 USER www
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-
 # Install Node dependencies and build assets
-RUN npm ci --only=production \
+RUN cd /var/www/html && \
+    npm ci --only=production \
     && npm run production \
     && rm -rf node_modules
 

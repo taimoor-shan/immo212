@@ -1,135 +1,46 @@
-# ===================================
-# PRODUCTION-OPTIMIZED .GITIGNORE
-# For Coolify/VPS Deployment
-# ===================================
+# Laravel & Botble CMS - Minimal .gitignore
 
-# ===================================
-# DEVELOPMENT DEPENDENCIES
-# ===================================
+# Dependencies
 /node_modules
-/bower_components
-yarn.lock
-bun.lockb
-package-lock.json
+/vendor
 
-# Temporarily exclude composer.lock to allow fresh dependency resolution
-composer.lock
-
-# ===================================
-# ENVIRONMENT & CONFIGURATION
-# ===================================
+# Environment files
 .env
 .env.backup
 .env.testing
 .env.local
 .env.production
 
-# Keep .env.example for deployment reference
-!.env.example
-
-# ===================================
-# IDE & EDITOR FILES
-# ===================================
-/.idea
-/.vscode
-/.vagrant
-/.phpintel
-.phpstorm.meta.php
-.phpactor.json
-sftp-config.json
-
-# ===================================
-# OPERATING SYSTEM FILES
-# ===================================
-.DS_Store
-Thumbs.db
-__MACOSX
-
-# ===================================
-# LARAVEL FRAMEWORK FILES
-# ===================================
-/vendor
+# Runtime storage
 /storage/*.key
-/storage/app/backup
-/storage/cache_keys.json
-/storage/.license
-/storage/fonts
-/storage/framework/*.txt
-/storage/framework/laravel-excel/
-/storage/installing
-/storage/installed
-storage/framework/maintenance.php
+/storage/logs/*.log
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/framework/testing/*
 
-# ===================================
-# BUILD & DEVELOPMENT ARTIFACTS
-# ===================================
+# Build artifacts
 /public/hot
-/.sass-cache
-/.scribe
+/public/storage
 
-# ===================================
-# TESTING & DEVELOPMENT TOOLS
-# ===================================
+# Development tools
 .phpunit.result.cache
 _ide_helper.php
 _ide_helper_models.php
-npm-debug.log
+/.php_cs.cache
+.php-cs-fixer.cache
+
+# IDE & OS
+/.idea
+/.vscode
+.DS_Store
+Thumbs.db
+
+# Local development
 Homestead.json
 Homestead.yaml
-/.php_cs.cache
+npm-debug.log
 
-# ===================================
-# LOGS & TEMPORARY FILES
-# ===================================
-/log
-/storage/logs/*.log
-
-# ===================================
-# PRODUCTION ASSETS - INCLUDED
-# ===================================
-# The following are INCLUDED for production:
-# - public/themes (frontend theme assets)
-# - public/vendor/core (Botble core assets)
-# - public/mix-manifest.json (asset manifest)
-# - All language files (multilingual support)
-# - public/docs (documentation assets)
-# - nixpacks.toml (Nixpacks configuration)
-# - nginx.conf (Custom nginx configuration)
-
-# ===================================
-# STORAGE SYMLINK (EXCLUDED)
-# ===================================
-# This will be created during deployment
-/public/storage
-
-# ===================================
-# CUSTOM EXCLUSIONS
-# ===================================
-# Add any project-specific files to exclude below:
-
-# Database files (if any local test databases exist)
+# Local files
 *.sqlite
-database.sql
-database_export_*.sql
-
-# Deployment scripts (if they contain sensitive info)
-# deployment_files/ - Now included for Coolify deployment
-
-# Docker files (if not needed for production)
-docker-compose.yml
-
-# Test files and directories
-/tests/
-phpunit.xml
-
-# Any local configuration or test files
-cookies.txt
-
-# ===================================
-# DEPLOYMENT CONFIGURATION
-# ===================================
-# Keep deployment scripts but ignore sensitive configs
-deploy-config.php
-.env.production
-.env.staging
-deployment_logs/
+*.log

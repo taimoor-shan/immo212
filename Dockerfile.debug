@@ -1,10 +1,10 @@
-# Multi-stage build for optimized production image
-FROM php:8.2-fpm AS base
+# Simplified Dockerfile for Coolify debugging
+FROM php:8.2-fpm
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Install system dependencies and PHP extensions in one layer
+# Install essential system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -14,7 +14,6 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
-    libgd-dev \
     libicu-dev \
     libxslt-dev \
     libssl-dev \
@@ -25,8 +24,10 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     nginx \
     cron \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-configure intl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
         pdo \
         pdo_mysql \
@@ -42,11 +43,10 @@ RUN apt-get update && apt-get install -y \
         fileinfo \
         xsl \
         soap \
-        opcache \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+        opcache
+
+# Install Redis extension
+RUN pecl install redis && docker-php-ext-enable redis
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -56,42 +56,39 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# Create application user
+# Create www user
 RUN groupadd --force -g 1000 www \
     && useradd -ms /bin/bash --no-user-group -g 1000 -u 1000 www
 
-# Copy PHP configuration
+# Copy configuration files
 COPY php.ini /usr/local/etc/php/conf.d/99-botble.ini
-
-# Copy nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Update nginx config for correct document root
+# Fix nginx config path
 RUN sed -i 's|root /app/public;|root /var/www/html/public;|g' /etc/nginx/nginx.conf
 
-# Create necessary directories
+# Create required directories
 RUN mkdir -p /var/www/html/storage/logs \
     && mkdir -p /var/www/html/storage/framework/cache \
     && mkdir -p /var/www/html/storage/framework/sessions \
     && mkdir -p /var/www/html/storage/framework/views \
     && mkdir -p /var/www/html/bootstrap/cache \
     && mkdir -p /var/log/supervisor \
-    && mkdir -p /var/run \
     && mkdir -p /var/log/nginx
 
 # Copy application files
 COPY . /var/www/html
 
-# Install PHP dependencies as root first (to avoid permission issues)
+# Install dependencies with increased memory and timeout
 RUN cd /var/www/html && \
-    COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+    COMPOSER_MEMORY_LIMIT=-1 COMPOSER_PROCESS_TIMEOUT=600 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
-# Set proper ownership after installation
+# Set proper ownership
 RUN chown -R www:www /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Switch to www user for Node.js operations
+# Switch to www user for Node operations
 USER www
 
 # Install Node dependencies and build assets
@@ -100,7 +97,7 @@ RUN cd /var/www/html && \
     && npm run production \
     && rm -rf node_modules
 
-# Switch back to root for final setup
+# Switch back to root
 USER root
 
 # Create supervisor configuration
@@ -124,40 +121,34 @@ RUN echo '[supervisord]' > /etc/supervisor/conf.d/supervisord.conf \
     && echo 'stderr_logfile=/var/log/supervisor/php-fpm.err.log' >> /etc/supervisor/conf.d/supervisord.conf \
     && echo 'stdout_logfile=/var/log/supervisor/php-fpm.out.log' >> /etc/supervisor/conf.d/supervisord.conf
 
-# Set up Laravel scheduler cron
-RUN echo '* * * * * www cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1' > /etc/cron.d/laravel-scheduler \
-    && chmod 0644 /etc/cron.d/laravel-scheduler \
-    && crontab /etc/cron.d/laravel-scheduler
-
 # Create startup script
 RUN echo '#!/bin/bash' > /usr/local/bin/start.sh \
     && echo 'set -e' >> /usr/local/bin/start.sh \
     && echo '' >> /usr/local/bin/start.sh \
-    && echo '# Wait for database to be ready' >> /usr/local/bin/start.sh \
-    && echo 'echo "Waiting for database..."' >> /usr/local/bin/start.sh \
-    && echo 'sleep 10' >> /usr/local/bin/start.sh \
+    && echo 'echo "Starting Botble Real Estate application..."' >> /usr/local/bin/start.sh \
     && echo '' >> /usr/local/bin/start.sh \
-    && echo '# Run Laravel optimizations' >> /usr/local/bin/start.sh \
+    && echo '# Wait for database if needed' >> /usr/local/bin/start.sh \
+    && echo 'echo "Waiting for database..."' >> /usr/local/bin/start.sh \
+    && echo '' >> /usr/local/bin/start.sh \
+    && echo '# Laravel optimizations' >> /usr/local/bin/start.sh \
     && echo 'cd /var/www/html' >> /usr/local/bin/start.sh \
     && echo 'php artisan config:cache' >> /usr/local/bin/start.sh \
     && echo 'php artisan route:cache' >> /usr/local/bin/start.sh \
     && echo 'php artisan view:cache' >> /usr/local/bin/start.sh \
     && echo '' >> /usr/local/bin/start.sh \
-    && echo '# Start cron service' >> /usr/local/bin/start.sh \
+    && echo '# Start cron' >> /usr/local/bin/start.sh \
     && echo 'service cron start' >> /usr/local/bin/start.sh \
     && echo '' >> /usr/local/bin/start.sh \
     && echo '# Start supervisor' >> /usr/local/bin/start.sh \
     && echo 'exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf' >> /usr/local/bin/start.sh \
     && chmod +x /usr/local/bin/start.sh
 
-# The nginx.conf already has the correct fastcgi_pass configuration
-
-# Expose port 80
-EXPOSE 80
-
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost/health || exit 1
+
+# Expose port
+EXPOSE 80
 
 # Start the application
 CMD ["/usr/local/bin/start.sh"]

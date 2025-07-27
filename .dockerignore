@@ -6,10 +6,16 @@
 # Docker development files (keep Dockerfile for Coolify)
 .dockerignore
 
-# Documentation
+# Documentation (but keep essential deployment files)
 README.md
 CHANGELOG.md
 *.md
+!COOLIFY-DEPLOYMENT.md
+
+# Essential Coolify files - FORCE INCLUDE
+!Dockerfile
+!nginx.conf
+!php.ini
 
 # IDE
 .vscode

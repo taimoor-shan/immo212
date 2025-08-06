@@ -3,17 +3,14 @@
 namespace Botble\RealEstate\Http\Controllers\Fronts;
 
 use Botble\Base\Http\Controllers\BaseController;
-use Botble\Base\Supports\Breadcrumb;
 use Botble\RealEstate\Models\Property;
 use Botble\RealEstate\Models\VacationRentalBooking;
-use Botble\RealEstate\Models\PropertyAvailability;
-use Botble\RealEstate\Models\PropertyCalendarEvent;
 use Botble\RealEstate\Services\AvailabilityService;
 use Botble\RealEstate\Enums\PropertyTypeEnum;
 use Botble\Theme\Facades\Theme;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Assets;
+use Botble\Base\Facades\Assets;
 
 class VacationRentalController extends BaseController
 {

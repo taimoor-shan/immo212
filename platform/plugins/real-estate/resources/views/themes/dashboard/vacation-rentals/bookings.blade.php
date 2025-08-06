@@ -182,7 +182,7 @@
                 headers['X-CSRF-TOKEN'] = csrfToken.getAttribute('content');
             }
 
-            fetch(`{{ route('public.account.vacation-rentals.bookings.update-status', '') }}/${bookingId}/status`, {
+            fetch(`{{ route('public.account.vacation-rentals.bookings.update-status', '__BOOKING_ID__') }}`.replace('__BOOKING_ID__', bookingId), {
                 method: 'PUT',
                 headers: headers,
                 body: JSON.stringify({ status: status })

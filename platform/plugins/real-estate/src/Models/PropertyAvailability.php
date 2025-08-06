@@ -3,6 +3,7 @@
 namespace Botble\RealEstate\Models;
 
 use Botble\Base\Models\BaseModel;
+use Botble\RealEstate\Enums\PropertyTypeEnum;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
@@ -137,13 +138,70 @@ class PropertyAvailability extends BaseModel
             return false;
         }
 
-        // If no availability records exist for this property, assume available
-        // This allows new properties to be bookable without requiring explicit availability setup
+        // Get property to check if it's configured for vacation rental
+        $property = Property::find($propertyId);
+        if (!$property) {
+            return false;
+        }
+
+        // For vacation rentals, we need to be more careful about availability
+        if ($property->type === PropertyTypeEnum::VACATION_RENTAL) {
+            $totalRecords = self::forProperty($propertyId)
+                ->inDateRange($startDate, $endDate)
+                ->count();
+
+            // Calculate expected number of days
+            $expectedDays = $startDate->diffInDays($endDate);
+
+            // If no records exist or not all days have records, 
+            // create available records for missing dates
+            if ($totalRecords < $expectedDays) {
+                // Get existing dates
+                $existingDates = self::forProperty($propertyId)
+                    ->inDateRange($startDate, $endDate)
+                    ->pluck('date')
+                    ->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))
+                    ->toArray();
+
+                // Create records for missing dates
+                $currentDate = $startDate->copy();
+                while ($currentDate->lt($endDate)) {
+                    $dateStr = $currentDate->format('Y-m-d');
+                    if (!in_array($dateStr, $existingDates)) {
+                        self::updateOrCreate(
+                            [
+                                'property_id' => $propertyId,
+                                'date' => $dateStr,
+                            ],
+                            [
+                                'status' => self::STATUS_AVAILABLE,
+                                'price_per_night' => $property->price,
+                                'minimum_stay' => $property->minimum_stay ?? 1,
+                            ]
+                        );
+                    }
+                    $currentDate->addDay();
+                }
+                
+                // Now all dates should be available (since we just created them)
+                return true;
+            }
+
+            // If records exist, check that all dates are explicitly available
+            $availableDates = self::forProperty($propertyId)
+                ->inDateRange($startDate, $endDate)
+                ->where('status', self::STATUS_AVAILABLE)
+                ->count();
+
+            return $availableDates >= $expectedDays;
+        }
+
+        // For non-vacation rentals, use the original logic
+        // If no availability records exist, assume available
         $totalRecords = self::forProperty($propertyId)
             ->inDateRange($startDate, $endDate)
             ->count();
 
-        // If no records exist, assume available (default behavior)
         if ($totalRecords === 0) {
             return true;
         }
@@ -154,9 +212,7 @@ class PropertyAvailability extends BaseModel
             ->where('status', self::STATUS_AVAILABLE)
             ->count();
 
-        // Calculate expected number of days
         $expectedDays = $startDate->diffInDays($endDate);
-
         return $availableDates >= $expectedDays;
     }
 

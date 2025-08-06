@@ -5,15 +5,19 @@ namespace Botble\RealEstate\Tests\Feature;
 use Botble\RealEstate\Models\Property;
 use Botble\RealEstate\Models\VacationRentalBooking;
 use Botble\RealEstate\Enums\PropertyTypeEnum;
+use Botble\Slug\Models\Slug;
+use Botble\Slug\Facades\SlugHelper;
 use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 
 class VacationRentalBookingTest extends TestCase
 {
     use RefreshDatabase;
 
     protected Property $vacationRental;
+    protected Slug $propertySlug;
 
     protected function setUp(): void
     {
@@ -21,6 +25,7 @@ class VacationRentalBookingTest extends TestCase
         
         // Create a vacation rental property for testing
         $this->vacationRental = Property::factory()->create([
+            'name' => 'Test Vacation Rental',
             'type' => PropertyTypeEnum::VACATION_RENTAL,
             'price' => 150.00,
             'minimum_stay' => 2,
@@ -28,6 +33,14 @@ class VacationRentalBookingTest extends TestCase
             'cleaning_fee' => 50.00,
             'security_deposit' => 200.00,
             'moderation_status' => 'approved',
+        ]);
+
+        // Create a slug for the property
+        $this->propertySlug = Slug::create([
+            'reference_type' => Property::class,
+            'reference_id' => $this->vacationRental->id,
+            'key' => Str::slug($this->vacationRental->name),
+            'prefix' => SlugHelper::getPrefix(Property::class) ?: 'properties',
         ]);
     }
 
@@ -39,7 +52,7 @@ class VacationRentalBookingTest extends TestCase
         $guests = 4;
 
         $response = $this->get(route('public.vacation-rental.booking.form', [
-            'slug' => $this->vacationRental->slugable->key,
+            'slug' => $this->propertySlug->key,
             'check_in' => $checkIn,
             'check_out' => $checkOut,
             'guests' => $guests,
@@ -55,7 +68,7 @@ class VacationRentalBookingTest extends TestCase
     public function it_redirects_when_dates_are_missing()
     {
         $response = $this->get(route('public.vacation-rental.booking.form', [
-            'slug' => $this->vacationRental->slug,
+            'slug' => $this->propertySlug->key,
         ]));
 
         $response->assertRedirect($this->vacationRental->url);
@@ -69,7 +82,7 @@ class VacationRentalBookingTest extends TestCase
         $checkOut = Carbon::tomorrow()->format('Y-m-d');
 
         $response = $this->get(route('public.vacation-rental.booking.form', [
-            'slug' => $this->vacationRental->slug,
+            'slug' => $this->propertySlug->key,
             'check_in' => $checkIn,
             'check_out' => $checkOut,
             'guests' => 2,
@@ -86,7 +99,7 @@ class VacationRentalBookingTest extends TestCase
         $checkOut = Carbon::tomorrow()->addDay()->format('Y-m-d'); // Only 1 night
 
         $response = $this->get(route('public.vacation-rental.booking.form', [
-            'slug' => $this->vacationRental->slug,
+            'slug' => $this->propertySlug->key,
             'check_in' => $checkIn,
             'check_out' => $checkOut,
             'guests' => 2,
@@ -104,7 +117,7 @@ class VacationRentalBookingTest extends TestCase
         $guests = 10; // Exceeds maximum of 6
 
         $response = $this->get(route('public.vacation-rental.booking.form', [
-            'slug' => $this->vacationRental->slug,
+            'slug' => $this->propertySlug->key,
             'check_in' => $checkIn,
             'check_out' => $checkOut,
             'guests' => $guests,

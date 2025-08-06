@@ -9,12 +9,12 @@ use Botble\Slug\Models\Slug;
 use Botble\Slug\Facades\SlugHelper;
 use Carbon\Carbon;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Str;
 
 class VacationRentalBookingTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions; // Much safer - rolls back changes instead of dropping tables
 
     protected Property $vacationRental;
     protected Slug $propertySlug;

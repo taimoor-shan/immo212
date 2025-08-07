@@ -91,6 +91,7 @@ class AccountPropertyController extends BaseController
             ]));
 
             $property->expire_date = Carbon::now()->addDays(RealEstateHelper::propertyExpiredDays());
+            $property->never_expired = false; // Users cannot create never-expiring properties
 
             $enabledPostApproval = (bool) setting('enable_post_approval', 1);
 
@@ -206,6 +207,7 @@ class AccountPropertyController extends BaseController
             $property = $form->getModel();
 
             $property->fill($this->processRequestData($request));
+            $property->never_expired = false; // Users cannot create never-expiring properties
 
             $enabledPostApproval = (bool) setting('enable_post_approval', 1);
 

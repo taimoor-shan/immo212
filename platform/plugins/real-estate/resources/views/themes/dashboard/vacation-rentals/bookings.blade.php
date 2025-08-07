@@ -175,7 +175,9 @@
 
             const csrfToken = document.querySelector('meta[name="csrf-token"]');
             const headers = {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
             };
 
             if (csrfToken) {
@@ -187,13 +189,32 @@
                 headers: headers,
                 body: JSON.stringify({ status: status })
             })
-            .then(response => {
+            .then(async response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    // Try to get error details for debugging
+                    let errorMessage = `HTTP error! status: ${response.status}`;
+                    try {
+                        const errorText = await response.text();
+                        console.error('Error response:', errorText);
+                    } catch (e) {
+                        console.error('Could not read error response');
+                    }
+                    throw new Error(errorMessage);
                 }
-                return response.json();
+
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    // If not JSON, it might be a redirect or HTML response
+                    const responseText = await response.text();
+                    console.error('Non-JSON response received:', responseText.substring(0, 200) + '...');
+                    throw new Error('Server returned non-JSON response. Please check if you are logged in.');
+                }
             })
             .then(data => {
+                // Check for error in the response data
                 if (data.error === true) {
                     // Show error toast notification
                     if (typeof Botble !== 'undefined' && Botble.showError) {
@@ -202,7 +223,7 @@
                         alert(data.message || '{{ __("An error occurred") }}');
                     }
                 } else {
-                    // Success - show success toast notification
+                    // Success case (error is false or undefined)
                     if (data.message) {
                         if (typeof Botble !== 'undefined' && Botble.showSuccess) {
                             Botble.showSuccess(data.message);
@@ -218,12 +239,12 @@
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Booking status update failed:', error);
                 // Show error toast notification
                 if (typeof Botble !== 'undefined' && Botble.showError) {
-                    Botble.showError('{{ __("An error occurred. Please try again.") }}');
+                    Botble.showError(error.message || '{{ __("An error occurred. Please try again.") }}');
                 } else {
-                    alert('{{ __("An error occurred. Please try again.") }}');
+                    alert(error.message || '{{ __("An error occurred. Please try again.") }}');
                 }
             });
         }

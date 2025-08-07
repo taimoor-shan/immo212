@@ -3797,15 +3797,17 @@ label {
 }
 .wd-find-select .inner-group {
   padding: 0;
-  flex-wrap: nowrap;
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr 0.8fr;
   gap: 20px;
+  align-items: center;
   flex-grow: 1;
 }
 .wd-find-select .inner-group .form-style {
-  width: 25%;
   border-inline-end: 1px solid #a8beea;
+}
+.wd-find-select .inner-group .form-style:last-child {
+  border-inline-end: none;
 }
 .wd-find-select .inner-group .form-style .form-control,
 .wd-find-select .inner-group .form-style .nice-select {
@@ -3835,11 +3837,7 @@ label {
 .wd-find-select .inner-group .form-style .nice-select::after {
   right: 24px;
 }
-.wd-find-select .inner-group .form-search-category {
-  width: 25%;
-}
 .wd-find-select .inner-group .form-search-price {
-  width: 30%;
   padding-right: 12px;
 }
 .wd-find-select .inner-group .form-search-price .form-control {
@@ -3848,9 +3846,6 @@ label {
   border: none;
   border-radius: 0;
   border-bottom: 1px solid #999999;
-}
-.wd-find-select .inner-group .form-search-bedroom {
-  width: 20%;
 }
 .wd-find-select .inner-group label {
   font-size: 15px;
@@ -11739,6 +11734,18 @@ a:hover {
     grid-template-columns: 1fr 1fr;
   }
 }
+@media only screen and (max-width: 1024px) {
+  .wd-find-select .inner-group {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+  .wd-find-select .inner-group .form-search-price {
+    grid-column: 1/-1;
+  }
+  .wd-find-select .inner-group .box-filter {
+    grid-column: 1/-1;
+  }
+}
 @media only screen and (max-width: 991px) {
   .header-account {
     display: none;
@@ -11837,11 +11844,14 @@ a:hover {
     padding: 20px;
   }
   .wd-find-select .inner-group {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
     padding: 0;
   }
   .wd-find-select .inner-group .form-style {
     border-right: 0;
+    border-inline-end: none;
   }
   .wd-find-select .inner-group .form-style label {
     margin-bottom: 8px;
@@ -11852,6 +11862,9 @@ a:hover {
     border-bottom: 1px solid #a8beea;
     border-radius: 0;
     font-weight: 400;
+  }
+  .wd-find-select .inner-group .box-filter {
+    grid-column: 1/-1;
   }
   .wd-find-select .inner-group .box-filter .filter-advanced {
     flex-direction: row;
@@ -12173,6 +12186,7 @@ a:hover {
     margin-bottom: 16px;
   }
   .wd-find-select .inner-group {
+    grid-template-columns: 1fr;
     gap: 12px;
   }
   .box-title span {

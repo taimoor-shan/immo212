@@ -32,9 +32,9 @@
                                        name="min_price"
                                        id="min_price_dropdown"
                                        class="form-control"
-                                       placeholder="{{ __('1M DH') }}"
+                                       placeholder="{{ __('1K DH') }}"
                                        value="{{ BaseHelper::stringify(request()->float('min_price')) }}"
-                                       min="1000000"
+                                       min="1000"
                                        step="1000">
                             </div>
                             <div class="price-input-col">
@@ -43,9 +43,9 @@
                                        name="max_price"
                                        id="max_price_dropdown"
                                        class="form-control"
-                                       placeholder="{{ __('10M DH') }}"
+                                       placeholder="{{ __('1M DH') }}"
                                        value="{{ BaseHelper::stringify(request()->float('max_price')) }}"
-                                       min="10000000"
+                                       min="1000000"
                                        step="1000">
                             </div>
                         </div>

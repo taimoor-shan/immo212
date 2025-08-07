@@ -248,15 +248,18 @@
 
     .inner-group {
         padding: 0;
-        flex-wrap: nowrap;
-        display: flex;
-        align-items: center;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1.2fr 0.8fr;
         gap: 20px;
+        align-items: center;
         flex-grow: 1;
 
         .form-style {
-            width: 25%;
             border-inline-end: 1px solid $outline;
+
+            &:last-child {
+                border-inline-end: none;
+            }
 
             .form-control,
             .nice-select {
@@ -287,16 +290,13 @@
                     right: 24px;
                 }
             }
-
-
         }
 
         .form-search-category {
-            width: 25%;
+            // Grid handles the width automatically
         }
 
         .form-search-price {
-            width: 30%;
             padding-right: 12px;
 
             .form-control {
@@ -309,7 +309,7 @@
         }
 
         .form-search-bedroom {
-            width: 20%;
+            // Grid handles the width automatically
         }
 
         label {

@@ -228,14 +228,34 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        alert(data.message || '{{ __("An error occurred") }}');
+                        // Show error toast notification
+                        if (typeof Botble !== 'undefined' && Botble.showError) {
+                            Botble.showError(data.message || '{{ __("An error occurred") }}');
+                        } else {
+                            alert(data.message || '{{ __("An error occurred") }}');
+                        }
                     } else {
-                        location.reload();
+                        // Show success toast notification
+                        if (data.message) {
+                            if (typeof Botble !== 'undefined' && Botble.showSuccess) {
+                                Botble.showSuccess(data.message);
+                            }
+                        }
+
+                        // Reload page after a short delay to show the toast
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('{{ __("An error occurred") }}');
+                    // Show error toast notification
+                    if (typeof Botble !== 'undefined' && Botble.showError) {
+                        Botble.showError('{{ __("An error occurred") }}');
+                    } else {
+                        alert('{{ __("An error occurred") }}');
+                    }
                 });
             });
 
@@ -259,14 +279,34 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        alert(data.message || '{{ __("An error occurred") }}');
+                        // Show error toast notification
+                        if (typeof Botble !== 'undefined' && Botble.showError) {
+                            Botble.showError(data.message || '{{ __("An error occurred") }}');
+                        } else {
+                            alert(data.message || '{{ __("An error occurred") }}');
+                        }
                     } else {
-                        location.reload();
+                        // Show success toast notification
+                        if (data.message) {
+                            if (typeof Botble !== 'undefined' && Botble.showSuccess) {
+                                Botble.showSuccess(data.message);
+                            }
+                        }
+
+                        // Reload page after a short delay to show the toast
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('{{ __("An error occurred") }}');
+                    // Show error toast notification
+                    if (typeof Botble !== 'undefined' && Botble.showError) {
+                        Botble.showError('{{ __("An error occurred") }}');
+                    } else {
+                        alert('{{ __("An error occurred") }}');
+                    }
                 });
             });
         </script>

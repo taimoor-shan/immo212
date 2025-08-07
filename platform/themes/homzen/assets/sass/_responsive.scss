@@ -510,6 +510,24 @@
     }
 }
 
+// Tablet breakpoint for filter form
+@media only screen and (max-width: 1024px) {
+    .wd-find-select {
+        .inner-group {
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+
+            .form-search-price {
+                grid-column: 1 / -1; // Price range spans full width on tablet
+            }
+
+            .box-filter {
+                grid-column: 1 / -1; // More filters button spans full width
+            }
+        }
+    }
+}
+
 @media only screen and (max-width: 991px) {
     .header-account {
         display: none;
@@ -665,11 +683,14 @@
         padding: 20px;
 
         .inner-group {
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
             padding: 0;
 
             .form-style {
                 border-right: 0;
+                border-inline-end: none;
 
                 label {
                     margin-bottom: 8px;
@@ -685,6 +706,8 @@
             }
 
             .box-filter {
+                grid-column: 1 / -1; // Span full width
+
                 .filter-advanced {
                     flex-direction: row;
                     gap: 4px;
@@ -1207,8 +1230,11 @@
         margin-bottom: 16px;
     }
 
-    .wd-find-select .inner-group {
-        gap: 12px;
+    .wd-find-select {
+        .inner-group {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
     }
 
     .box-title {

@@ -187,17 +187,44 @@
                 headers: headers,
                 body: JSON.stringify({ status: status })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
-                if (data.error) {
-                    alert(data.message || '{{ __("An error occurred") }}');
+                if (data.error === true) {
+                    // Show error toast notification
+                    if (typeof Botble !== 'undefined' && Botble.showError) {
+                        Botble.showError(data.message || '{{ __("An error occurred") }}');
+                    } else {
+                        alert(data.message || '{{ __("An error occurred") }}');
+                    }
                 } else {
-                    location.reload();
+                    // Success - show success toast notification
+                    if (data.message) {
+                        if (typeof Botble !== 'undefined' && Botble.showSuccess) {
+                            Botble.showSuccess(data.message);
+                        } else {
+                            alert(data.message);
+                        }
+                    }
+
+                    // Reload page after a short delay to show the toast
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('{{ __("An error occurred") }}');
+                // Show error toast notification
+                if (typeof Botble !== 'undefined' && Botble.showError) {
+                    Botble.showError('{{ __("An error occurred. Please try again.") }}');
+                } else {
+                    alert('{{ __("An error occurred. Please try again.") }}');
+                }
             });
         }
     </script>

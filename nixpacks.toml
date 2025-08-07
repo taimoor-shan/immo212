@@ -3,6 +3,13 @@ nixPkgs = ["...", "python311Packages.supervisor"]
 
 [phases.build]
 cmds = [
+    # Clear npm cache before build
+    "npm cache clean --force || true",
+    # Create fresh cache directory
+    "mkdir -p /tmp/.npm",
+    # Install dependencies with clean slate
+    "npm ci --no-audit --no-fund --no-update-notifier || npm install --no-audit --no-fund --no-update-notifier",
+    # Create supervisor directories
     "mkdir -p /etc/supervisor/conf.d/",
     "cp /assets/worker-*.conf /etc/supervisor/conf.d/",
     "cp /assets/supervisord.conf /etc/supervisord.conf",

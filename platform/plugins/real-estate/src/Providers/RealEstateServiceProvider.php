@@ -502,16 +502,9 @@ class RealEstateServiceProvider extends ServiceProvider
                     'icon' => 'ti ti-calendar-check',
                 ])
                 ->registerItem([
-                    'id' => 'cms-account-vacation-rental-availability',
-                    'priority' => 2.7,
-                    'name' => 'Availability',
-                    'url' => fn () => route('public.account.vacation-rentals.availability'),
-                    'icon' => 'ti ti-calendar-time',
-                ])
-                ->registerItem([
                     'id' => 'cms-account-vacation-rental-calendar',
-                    'priority' => 2.8,
-                    'name' => 'Calendar',
+                    'priority' => 2.7,
+                    'name' => 'Availability Calendar',
                     'url' => fn () => route('public.account.vacation-rentals.calendar'),
                     'icon' => 'ti ti-calendar',
                 ])

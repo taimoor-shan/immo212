@@ -65,21 +65,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Current Month Summary -->
-                    <div class="card mt-3">
-                        <div class="card-header">
-                            <h5 class="card-title">{{ __('Current Month Summary') }}</h5>
-                        </div>
-                        <div class="card-body">
-                            <div id="availability-summary">
-                                <div class="text-center text-muted">
-                                    <x-core::icon name="ti ti-calendar" />
-                                    <p class="mb-0">{{ __('Select a month to view summary') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

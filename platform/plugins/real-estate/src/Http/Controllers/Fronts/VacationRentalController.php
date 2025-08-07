@@ -3,17 +3,14 @@
 namespace Botble\RealEstate\Http\Controllers\Fronts;
 
 use Botble\Base\Http\Controllers\BaseController;
-use Botble\Base\Supports\Breadcrumb;
 use Botble\RealEstate\Models\Property;
 use Botble\RealEstate\Models\VacationRentalBooking;
-use Botble\RealEstate\Models\PropertyAvailability;
-use Botble\RealEstate\Models\PropertyCalendarEvent;
 use Botble\RealEstate\Services\AvailabilityService;
 use Botble\RealEstate\Enums\PropertyTypeEnum;
 use Botble\Theme\Facades\Theme;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Assets;
+use Botble\Base\Facades\Assets;
 
 class VacationRentalController extends BaseController
 {
@@ -202,12 +199,18 @@ class VacationRentalController extends BaseController
             }
         }
 
-        $this->pageTitle(__('Calendar View'));
+        $this->pageTitle(__('Availability Calendar'));
 
-        Assets::usingVueJS()
-            ->addScriptsDirectly('vendor/core/plugins/real-estate/js/components.js');
+        // Add necessary assets for the calendar
+        Assets::addStylesDirectly([
+            'vendor/core/plugins/real-estate/css/calendar-backend.css',
+            'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css',
+        ])->addScriptsDirectly([
+            'https://cdn.jsdelivr.net/npm/flatpickr',
+            'vendor/core/plugins/real-estate/js/vacation-rental-form.js',
+        ]);
 
-        return view($this->getViewFileName('dashboard.vacation-rentals.calendar'), compact(
+        return view($this->getViewFileName('dashboard.vacation-rentals.calendar-new'), compact(
             'properties',
             'selectedProperty',
             'monthlyData'

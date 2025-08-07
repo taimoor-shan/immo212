@@ -147,7 +147,9 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
                 Route::prefix('vacation-rentals')->name('vacation-rentals.')->group(function (): void {
                     Route::get('dashboard', [VacationRentalController::class, 'dashboard'])->name('dashboard');
                     Route::get('bookings', [VacationRentalController::class, 'bookings'])->name('bookings');
-                    Route::get('availability', [VacationRentalController::class, 'availability'])->name('availability');
+                    Route::get('availability', function() {
+                        return redirect()->route('public.account.vacation-rentals.calendar');
+                    })->name('availability');
                     Route::get('availability-data', [VacationRentalController::class, 'getAvailabilityDataForEdit'])->name('availability-data');
                     Route::get('calendar', [VacationRentalController::class, 'calendar'])->name('calendar');
                     Route::post('block-dates', [VacationRentalController::class, 'blockDates'])->name('block-dates');

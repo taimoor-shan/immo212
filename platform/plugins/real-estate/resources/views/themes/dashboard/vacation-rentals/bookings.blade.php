@@ -175,29 +175,77 @@
 
             const csrfToken = document.querySelector('meta[name="csrf-token"]');
             const headers = {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
             };
 
             if (csrfToken) {
                 headers['X-CSRF-TOKEN'] = csrfToken.getAttribute('content');
             }
 
-            fetch(`{{ route('public.account.vacation-rentals.bookings.update-status', '') }}/${bookingId}/status`, {
+            fetch(`{{ route('public.account.vacation-rentals.bookings.update-status', '__BOOKING_ID__') }}`.replace('__BOOKING_ID__', bookingId), {
                 method: 'PUT',
                 headers: headers,
                 body: JSON.stringify({ status: status })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.message || '{{ __("An error occurred") }}');
+            .then(async response => {
+                if (!response.ok) {
+                    // Try to get error details for debugging
+                    let errorMessage = `HTTP error! status: ${response.status}`;
+                    try {
+                        const errorText = await response.text();
+                        console.error('Error response:', errorText);
+                    } catch (e) {
+                        console.error('Could not read error response');
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
                 } else {
-                    location.reload();
+                    // If not JSON, it might be a redirect or HTML response
+                    const responseText = await response.text();
+                    console.error('Non-JSON response received:', responseText.substring(0, 200) + '...');
+                    throw new Error('Server returned non-JSON response. Please check if you are logged in.');
+                }
+            })
+            .then(data => {
+                // Check for error in the response data
+                if (data.error === true) {
+                    // Show error toast notification
+                    if (typeof Botble !== 'undefined' && Botble.showError) {
+                        Botble.showError(data.message || '{{ __("An error occurred") }}');
+                    } else {
+                        alert(data.message || '{{ __("An error occurred") }}');
+                    }
+                } else {
+                    // Success case (error is false or undefined)
+                    if (data.message) {
+                        if (typeof Botble !== 'undefined' && Botble.showSuccess) {
+                            Botble.showSuccess(data.message);
+                        } else {
+                            alert(data.message);
+                        }
+                    }
+
+                    // Reload page after a short delay to show the toast
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('{{ __("An error occurred") }}');
+                console.error('Booking status update failed:', error);
+                // Show error toast notification
+                if (typeof Botble !== 'undefined' && Botble.showError) {
+                    Botble.showError(error.message || '{{ __("An error occurred. Please try again.") }}');
+                } else {
+                    alert(error.message || '{{ __("An error occurred. Please try again.") }}');
+                }
             });
         }
     </script>

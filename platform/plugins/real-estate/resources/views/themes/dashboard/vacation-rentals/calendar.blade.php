@@ -3,15 +3,15 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">{{ __('Calendar View') }}</h3>
+            <h3 class="card-title">{{ __('Availability Calendar') }}</h3>
         </div>
         
         <div class="card-body">
             <!-- Property Selection -->
-            <form method="GET" class="row g-3 mb-4">
-                <div class="col-md-4">
+            <form method="GET" class="row g-3 mb-4" id="property-selection-form">
+                <div class="col-md-6">
                     <label class="form-label">{{ __('Select Property') }}</label>
-                    <select name="property_id" class="form-select" onchange="this.form.submit()">
+                    <select name="property_id" class="form-select" id="property-select" onchange="this.form.submit()">
                         <option value="">{{ __('Choose a property...') }}</option>
                         @foreach($properties as $property)
                             <option value="{{ $property->id }}" {{ request('property_id') == $property->id ? 'selected' : '' }}>
@@ -53,6 +53,14 @@
                         <p class="text-muted">
                             {{ \Carbon\Carbon::create(request('year', date('Y')), request('month', date('n')))->format('F Y') }}
                         </p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#blockDatesModal">
+                            {{ __('Block Dates') }}
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#unblockDatesModal">
+                            {{ __('Unblock Dates') }}
+                        </button>
                     </div>
                 </div>
 

@@ -110,8 +110,8 @@
                                                 <div class="flex-fill">
                                                     <div class="font-weight-medium">{{ $event['title'] }}</div>
                                                     <div class="text-muted">
-                                                        {{ \Carbon\Carbon::parse($event['start_date'])->format('M j') }} - 
-                                                        {{ \Carbon\Carbon::parse($event['end_date'])->format('M j, Y') }}
+                                                        {{ \Carbon\Carbon::parse($event['start'])->format('M j') }} - 
+                                                        {{ \Carbon\Carbon::parse($event['end'])->addDays(-1)->format('M j, Y') }}
                                                     </div>
                                                     @if($event['description'])
                                                         <div class="text-muted small">{{ $event['description'] }}</div>
@@ -119,7 +119,7 @@
                                                 </div>
                                                 <div class="ms-auto">
                                                     <span class="badge" style="background-color: {{ $event['color'] }}">
-                                                        {{ ucfirst($event['event_type']) }}
+                                                        {{ ucfirst($event['extendedProps']['event_type'] ?? 'event') }}
                                                     </span>
                                                 </div>
                                             </div>
@@ -214,7 +214,10 @@
                 const formData = new FormData(this);
                 
                 const csrfToken = document.querySelector('meta[name="csrf-token"]');
-                const headers = {};
+                const headers = {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                };
 
                 if (csrfToken) {
                     headers['X-CSRF-TOKEN'] = csrfToken.getAttribute('content');
@@ -228,14 +231,34 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        alert(data.message || '{{ __("An error occurred") }}');
+                        // Show error toast notification
+                        if (typeof Botble !== 'undefined' && Botble.showError) {
+                            Botble.showError(data.message || '{{ __("An error occurred") }}');
+                        } else {
+                            alert(data.message || '{{ __("An error occurred") }}');
+                        }
                     } else {
-                        location.reload();
+                        // Show success toast notification
+                        if (data.message) {
+                            if (typeof Botble !== 'undefined' && Botble.showSuccess) {
+                                Botble.showSuccess(data.message);
+                            }
+                        }
+
+                        // Reload page after a short delay to show the toast
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('{{ __("An error occurred") }}');
+                    // Show error toast notification
+                    if (typeof Botble !== 'undefined' && Botble.showError) {
+                        Botble.showError('{{ __("An error occurred") }}');
+                    } else {
+                        alert('{{ __("An error occurred") }}');
+                    }
                 });
             });
 
@@ -245,7 +268,10 @@
                 const formData = new FormData(this);
                 
                 const csrfToken2 = document.querySelector('meta[name="csrf-token"]');
-                const headers2 = {};
+                const headers2 = {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                };
 
                 if (csrfToken2) {
                     headers2['X-CSRF-TOKEN'] = csrfToken2.getAttribute('content');
@@ -259,14 +285,34 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        alert(data.message || '{{ __("An error occurred") }}');
+                        // Show error toast notification
+                        if (typeof Botble !== 'undefined' && Botble.showError) {
+                            Botble.showError(data.message || '{{ __("An error occurred") }}');
+                        } else {
+                            alert(data.message || '{{ __("An error occurred") }}');
+                        }
                     } else {
-                        location.reload();
+                        // Show success toast notification
+                        if (data.message) {
+                            if (typeof Botble !== 'undefined' && Botble.showSuccess) {
+                                Botble.showSuccess(data.message);
+                            }
+                        }
+
+                        // Reload page after a short delay to show the toast
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('{{ __("An error occurred") }}');
+                    // Show error toast notification
+                    if (typeof Botble !== 'undefined' && Botble.showError) {
+                        Botble.showError('{{ __("An error occurred") }}');
+                    } else {
+                        alert('{{ __("An error occurred") }}');
+                    }
                 });
             });
         </script>

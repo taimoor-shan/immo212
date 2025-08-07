@@ -4,5 +4,16 @@
     "type": "package",
     "require": {
         "khaled.alshamaa/ar-php": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Botble\\RealEstate\\": "src/",
+            "Botble\\RealEstate\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Botble\\RealEstate\\Tests\\": "tests/"
+        }
     }
 }

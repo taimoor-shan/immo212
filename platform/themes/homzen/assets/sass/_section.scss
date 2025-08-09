@@ -1,5 +1,7 @@
 /*------------ section ---------------- */
 
+$border: 6px;
+
 .flat-section {
     padding: 100px 0px 100px;
 }
@@ -63,7 +65,7 @@
 /*------------ blog ---------------- */
 .widget-box {
     padding: 24px;
-    border-radius: 16px;
+    border-radius: $border;
 }
 
 .flat-blog-item {
@@ -87,7 +89,7 @@
         font-size: 12px;
         line-height: 19px;
         letter-spacing: 0.8px;
-        font-weight: 600;
+        font-weight: 500;
     }
 
     .content-box {
@@ -151,7 +153,7 @@
         font-size: 12px;
         line-height: 19px;
         letter-spacing: 0.8px;
-        font-weight: 600;
+        font-weight: 500;
         border-radius :$radius;
     }
 
@@ -191,7 +193,7 @@
             flex-grow: 1;
             color: $white;
             line-height:1.4;
-            font-size:18px;
+            font-size:16px;
             font-weight:400;
 
             a {
@@ -221,7 +223,7 @@
 
     &.style-1 {
         position: relative;
-        border-radius: 16px;
+        border-radius: $border;
         overflow: hidden;
         margin-bottom: 0;
 
@@ -339,7 +341,7 @@
         }
 
         .img-style {
-            border-radius: 20px;
+            border-radius: $border;
             overflow: hidden;
         }
 
@@ -402,13 +404,13 @@
                     letter-spacing: 0.8px;
                     color: $dull;
                     font-family: $font-1;
-                    font-weight: 600;
+                    font-weight: 500;
                 }
 
                 .title {
                     font-size: 18px;
                     line-height: 28px;
-                    font-weight: 600;
+                    font-weight: 500;
                     color: $on-surface;
                 }
             }
@@ -492,7 +494,7 @@
             font-size: 12px;
             line-height: 19px;
             font-family: $font-1;
-            font-weight: 600;
+            font-weight: 500;
             color: $dull;
 
             &::before {
@@ -564,7 +566,7 @@
         }
 
         .subtitle {
-            font-weight: 600;
+            font-weight: 500;
             color: $body-text;
             margin-bottom: 4px;
             font-size: 16px;
@@ -588,14 +590,14 @@
 
 .flat-quote {
     padding: 32px 40px;
-    border-radius: 12px;
+    border-radius: $radius;
     background-color: $surface;
     border-left: 4px solid $primary;
 
     .quote {
         font-size: 24px;
         line-height: 30px;
-        font-weight: 600;
+        font-weight: 500;
         color: $on-surface;
         margin-bottom: 16px;
     }
@@ -605,7 +607,7 @@
         font-size: 16px;
         line-height: 26px;
         letter-spacing: 0.8px;
-        font-weight: 600;
+        font-weight: 500;
         position: relative;
         padding-left: 28px;
 
@@ -629,7 +631,7 @@
     line-height: 19px;
     letter-spacing: 0.8px;
     font-family: $font-1;
-    font-weight: 600;
+    font-weight: 500;
 
     &:hover {
         background-color: $primary;
@@ -664,7 +666,7 @@
         align-items: center;
         justify-content: center;
         font-size: 16px;
-        font-weight: 600;
+        font-weight: 500;
         color: $on-surface;
         text-align: center;
         width: 48px;
@@ -738,7 +740,7 @@
 
     .view-question {
         margin-top: 22px;
-        font-weight: 600;
+        font-weight: 500;
         display: inline-block;
         border-bottom: 1px solid $on-surface;
     }
@@ -794,7 +796,7 @@
 
 .info-box {
     background: $white;
-    border-radius: 12px;
+    border-radius: $border;
 
     .box-top {
         padding: 20px 20px 16px;
@@ -832,7 +834,7 @@
             }
 
             span {
-                font-weight: 600;
+                font-weight: 500;
                 font-size: 18px;
                 line-height: 28px;
             }
@@ -901,8 +903,11 @@
     display: block;
     border-radius :$radius;
     overflow: hidden;
-    border: 1.5px solid $outline;
+    // border: 1.5px solid $outline;
     @include transition3;
+ box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+  box-sizing: border-box;
+  margin-bottom: .5em;
 
     &:hover{
         border-color: $primary;
@@ -1000,7 +1005,7 @@
 
         .property-type-badge{
             font-size: 14px;
-            font-weight:600;
+            font-weight:500;
             color:$body-text;
         }
 
@@ -1111,7 +1116,7 @@
                     }
 
                     span {
-                        font-weight: 600;
+                        font-weight: 500;
                         font-size: 20px;
                         line-height: 28px;
                     }
@@ -1331,7 +1336,7 @@
 // widget location
 .box-location {
     position: relative;
-    border-radius: 16px;
+    border-radius: $border;
     overflow: hidden;
     display: block;
     @include transition6;
@@ -1343,7 +1348,7 @@
         right: 16px;
         z-index: 12;
         padding: 17px 24px;
-        border-radius: 12px;
+        border-radius: $border;
         @include transition6;
 
         .sub-title {
@@ -1363,7 +1368,7 @@
         width: 100%;
 
         img {
-            border-radius: 16px;
+            border-radius: $border;
             width: 100%;
         }
     }
@@ -1544,7 +1549,7 @@
 
 .box-location-v2 {
     .box-img {
-        border-radius: 16px;
+        border-radius: $border;
         max-height: 12rem;
 
         @media (min-width: 768px) {
@@ -1745,7 +1750,7 @@
         .title {
             color: $white;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 500;
             line-height: 1.4;
             margin: 0;
             text-align: center;
@@ -1805,7 +1810,7 @@
         padding: 28px;
         background-color: $white;
         box-shadow: 0 10px 25px 0 #365f681a;
-        border-radius: 16px;
+        border-radius: $border;
 
         .content {
             .btn-view {
@@ -1825,7 +1830,7 @@
     &.style-2 {
         align-items: center;
         padding: 40px 30px;
-        border-radius: 16px;
+        border-radius: $border;
     background-color: rgb(255, 255, 255);
     border: 1px solid rgb(205, 205, 211);
     box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 15px;
@@ -1945,7 +1950,7 @@
             gap: 8px;
             font-size: 18px;
             line-height: 28px;
-            font-weight: 600;
+            font-weight: 500;
 
             &:last-child,
             &:nth-child(2) {
@@ -2145,14 +2150,14 @@
             line-height: 66px;
             font-family: $font-1;
             color: $primary;
-            font-weight: 600;
+            font-weight: 500;
         }
 
         .title-count {
             font-family: $font-1;
             font-size: 24px;
             line-height: 30px;
-            font-weight: 600;
+            font-weight: 500;
             letter-spacing: 0.8px;
             color: $on-surface;
         }
@@ -2290,7 +2295,7 @@
                 .flag-tag {
                     font-size: 16px;
                     line-height: 26px;
-                    font-weight: 600;
+                    font-weight: 500;
                 }
             }
 
@@ -2324,7 +2329,7 @@
                     gap: 12px;
                     font-size: 20px;
                     line-height: 28px;
-                    font-weight: 600;
+                    font-weight: 500;
                     color: $on-surface;
 
                     .icon {
@@ -3127,7 +3132,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: all 500ms ease;
+            transition: all 300ms ease;
         }
 
         .flag-tag {
@@ -3164,13 +3169,13 @@
         font-size: 18px;
         line-height: 24px;
         margin-top: 0;
-        font-weight: 600;
+        font-weight: 500;
     }
 
     .price {
         font-size: 14px;
         line-height: 20px;
-        font-weight: 600;
+        font-weight: 500;
         color: $primary;
         margin-top: 4px;
         text-align: start;
@@ -3183,7 +3188,7 @@
         margin-bottom: 6px;
 
         li {
-            font-weight: 600;
+            font-weight: 500;
             font-size: 12px;
             line-height: 19px;
             letter-spacing: 0.8px;
@@ -3313,7 +3318,7 @@
         }
 
         .title {
-            font-weight: 600;
+            font-weight: 500;
             font-family: $font-1;
             margin-bottom: 20px;
         }
@@ -3463,7 +3468,7 @@
         width: 48px;
         height: 50px;
         @include flex(center, center);
-        font-weight: 600;
+        font-weight: 500;
         border-radius :$radius;
 
         &:hover,
@@ -3626,7 +3631,7 @@
 
 .header-property-detail {
     padding: 30px;
-    border-radius: 16px;
+    border-radius: $border;
     background-color: $white;
 
     .content-top {
@@ -3654,7 +3659,7 @@
             .label {
                 margin-bottom: 12px;
                 letter-spacing: 0.8px;
-                font-weight: 600;
+                font-weight: 500;
                 color: $dull;
                 opacity: 0.8;
             }
@@ -3672,7 +3677,7 @@
                 gap: 8px;
                 font-size: 18px;
                 line-height: 28px;
-                font-weight: 600;
+                font-weight: 500;
                 color: $on-surface;
 
                 .meta-item-review {
@@ -3760,7 +3765,7 @@
             gap: 12px;
 
             span {
-                font-weight: 600;
+                font-weight: 500;
             }
 
             .label {
@@ -3805,7 +3810,7 @@
 
     .img-video {
         position: relative;
-        border-radius: 16px;
+        border-radius: $border;
         overflow: hidden;
 
         img {
@@ -3893,7 +3898,7 @@
 
 .map-single {
     height: 364px;
-    border-radius: 16px;
+    border-radius: $border;
 
     .marker-card {
         .face {
@@ -3930,7 +3935,7 @@
     .floor-item {
         padding: 0px 20px;
         background-color: $surface;
-        border-radius: 12px;
+        border-radius: $border;
 
         .floor-header {
             @include flex(center, space-between);
@@ -3977,7 +3982,7 @@
             .box-img {
                 padding: 20px 30px;
                 background-color: $white;
-                border-radius: 12px;
+                border-radius: $border;
                 overflow: hidden;
             }
         }
@@ -4012,7 +4017,7 @@
 
     .box-img {
         position: relative;
-        border-radius: 16px;
+        border-radius: $border;
         overflow: hidden;
 
         .box-icon {
@@ -4082,7 +4087,7 @@
     }
 
     .box-loan-calc {
-        border-radius: 16px;
+        border-radius: $border;
         background-color: $surface;
 
         .box-top {
@@ -4242,7 +4247,7 @@
             flex-shrink: 0;
             width: 143px;
             height: 48px;
-            font-weight: 600;
+            font-weight: 500;
             @include flex(center, center);
             @include transition4;
             border-bottom: 2px solid transparent;
@@ -4261,7 +4266,7 @@
 
 .widget-box-header-single {
     background-color: $white;
-    border-radius: 16px;
+    border-radius: $border;
     margin-bottom: 30px;
 
     .header-property-detail {
@@ -4289,7 +4294,7 @@
 
 .widget-box-single {
     padding: 30px;
-    border-radius: 16px;
+    border-radius: $border;
     background-color: $white;
 
     &.single-property-info {
@@ -4441,7 +4446,7 @@
 // }
 .single-property-gallery {
     .image-sw-single {
-        border-radius: 16px;
+        border-radius: $border;
         overflow: hidden;
     }
 
@@ -4552,20 +4557,24 @@
         margin-bottom: 30px;
     }
 }
-
+.faqSec{
+    .section-title{
+        text-align: center;
+    }
+}
 .box-faq {
     .faq-item {
         border: 1px solid $outline;
-        border-radius: 12px;
+        border-radius: $border;
         padding: 0px 20px;
 
         .faq-header {
             padding: 20px 0px;
             padding-right: 30px;
             display: block;
-            font-size: 20px;
+            font-size: 18px;
             line-height: 28px;
-            font-weight: 600;
+            font-weight: 500;
             position: relative;
 
             &::after {
@@ -4590,8 +4599,8 @@
             border-top: 1px solid $outline;
             padding: 12px 0px 20px;
             color: $dull;
-            font-size: 18px;
-            line-height: 28px;
+            font-size: 16px;
+            line-height: 26px;
         }
 
         &:not(:last-child) {
@@ -4603,7 +4612,7 @@
 // pricing
 .box-pricing {
     padding: 30px;
-    border-radius: 16px;
+    border-radius: $border;
     background-color: $surface;
     height: 100%;
 
@@ -4700,7 +4709,7 @@
         font-size: 12px;
         line-height: 19px;
         letter-spacing: 0.8px;
-        font-weight: 600;
+        font-weight: 500;
         font-family: $font-1;
     }
 }
@@ -4727,7 +4736,7 @@
 
     .banner-video {
         margin-top: 40px;
-        border-radius: 16px;
+        border-radius: $border;
         overflow: hidden;
         position: relative;
 
@@ -4793,7 +4802,7 @@
 
 .box-contact-v2 {
     padding: 40px;
-    border-radius: 16px;
+    border-radius: $border;
     box-shadow: 0px 10px 25px 0px #365f681a;
     background-color: $white;
 
@@ -4853,7 +4862,7 @@
 
 .contact-info {
     padding: 30px;
-    border-radius: 16px;
+    border-radius: $border;
     background-color: $surface;
 
     h5 {
@@ -4902,7 +4911,7 @@
 
 .map-contact {
     height: 600px;
-    border-radius: 16px;
+    border-radius: $border;
 
     .marker-card {
         .face {
@@ -4971,7 +4980,7 @@
     .btn-login-social {
         @include flex(center, center);
         gap: 12px;
-        font-weight: 600;
+        font-weight: 500;
         height: 48px;
         border: 1px solid $outline;
         border-radius :$radius;
@@ -5035,7 +5044,7 @@
 }
 
 .modal .modal-dialog .modal-content {
-    border-radius: 24px;
+    border-radius: $radius;
     border: 0;
     background: $surface;
 }
@@ -5186,7 +5195,7 @@
     @extend .bGrid;
 
     .bento-blog-item {
-        border-radius: 16px;
+        border-radius: $border;
         overflow: hidden;
         background: $white;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
@@ -5217,7 +5226,7 @@
                     font-size: 12px;
                     line-height: 19px;
                     letter-spacing: 0.8px;
-                    font-weight: 600;
+                    font-weight: 500;
                     border-radius: $radius;
                     margin-bottom: 12px;
                 }
@@ -5229,7 +5238,7 @@
                     a {
                         color: $on-surface;
                         text-decoration: none;
-                        font-weight: 600;
+                        font-weight: 500;
 
                         &:hover {
                             color: $primary;
@@ -5320,7 +5329,7 @@
                     font-size: 11px;
                     line-height: 16px;
                     letter-spacing: 0.6px;
-                    font-weight: 600;
+                    font-weight: 500;
                     border-radius: 4px;
                     margin-bottom: 8px;
                     backdrop-filter: blur(4px);
@@ -5333,7 +5342,7 @@
                     a {
                         color: $white;
                         text-decoration: none;
-                        font-weight: 600;
+                        font-weight: 500;
                         font-size: 18px;
                         line-height: 24px;
 
@@ -5481,7 +5490,7 @@
                 text-align: center;
 
                 .title {
-                    font-weight: 600;
+                    font-weight: 500;
                     font-size: 20px;
                     line-height: 26px;
                     margin-bottom: 8px;

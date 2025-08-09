@@ -1,1 +1,227 @@
-(()=>{function e(e,t){return function(e){if(Array.isArray(e))return e}(e)||function(e,t){var o=null==e?null:"undefined"!=typeof Symbol&&e[Symbol.iterator]||e["@@iterator"];if(null!=o){var n,r,a,i,s=[],l=!0,c=!1;try{if(a=(o=o.call(e)).next,0===t){if(Object(o)!==o)return;l=!1}else for(;!(l=(n=a.call(o)).done)&&(s.push(n.value),s.length!==t);l=!0);}catch(e){c=!0,r=e}finally{try{if(!l&&null!=o.return&&(i=o.return(),Object(i)!==i))return}finally{if(c)throw r}}return s}}(e,t)||n(e,t)||function(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function t(e){return t="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},t(e)}function o(e){return function(e){if(Array.isArray(e))return r(e)}(e)||function(e){if("undefined"!=typeof Symbol&&null!=e[Symbol.iterator]||null!=e["@@iterator"])return Array.from(e)}(e)||n(e)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function n(e,t){if(e){if("string"==typeof e)return r(e,t);var o={}.toString.call(e).slice(8,-1);return"Object"===o&&e.constructor&&(o=e.constructor.name),"Map"===o||"Set"===o?Array.from(e):"Arguments"===o||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(o)?r(e,t):void 0}}function r(e,t){(null==t||t>e.length)&&(t=e.length);for(var o=0,n=Array(t);o<t;o++)n[o]=e[o];return n}$((function(){var n=$(document).find("#bulk-import"),r=n.find(".form-import-data"),a=n.find(".btn-import"),i=[],s=0;$(document).on("click",".btn-import",(function(e){e.preventDefault(),u.getQueuedFiles().length>0&&(Botble.showButtonLoading(a),n.find(".show-errors").hide(),s=0,i=[],u.processQueue()),u.on("sending",(function(){n.find(".bulk-import-message").removeClass("alert-success").addClass("alert-info").text(a.data("uploading-text")).show()})),u.on("error",(function(e,t){Botble.showError(t.message)}))}));var l=function(f){var d=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,m=arguments.length>2&&void 0!==arguments[2]?arguments[2]:1e3;0===d&&n.find(".bulk-import-message").text(a.data("validating-text")),$httpClient.make().post(r.data("validate-url"),{file:f,offset:d,limit:m,update_existing:$("#update-existing").is(":checked")?1:0}).then((function(r){var d=r.data,m=d.data,p=d.message;if(m&&m.failed&&Object.keys(m.failed).length>0){i=[].concat(o(i),o(m.failed)),s+=m.count;var h=n.find("#imported-listing"),y=n.find(".show-errors"),b=$(document).find("#failure-template").html(),g="";i.forEach((function(o,n){var r=void 0!==o.row?o.row:n+1,a=[];console.log("Error data structure:",o),Array.isArray(o.errors)?a=o.errors:"object"===t(o.errors)&&null!==o.errors&&Object.entries(o.errors).forEach((function(t){var o=e(t,2),n=o[0],r=o[1];Array.isArray(r)?r.forEach((function(e){a.push("".concat(n,": ").concat(e))})):"string"==typeof r&&a.push("".concat(n,": ").concat(r))})),0===a.length&&"object"===t(o)&&null!==o&&Object.entries(o).forEach((function(t){var o=e(t,2),n=o[0],r=o[1];"row"!==n&&Array.isArray(r)?r.forEach((function(e){a.push("".concat(n,": ").concat(e))})):"row"!==n&&"string"==typeof r&&a.push("".concat(n,": ").concat(r))})),g+=b.replace("__row__",r).replace("__errors__",a.join(", "))})),y.show(),n.find(".main-form-message").show(),h.show().html(g),i=[],s=0,Botble.hideButtonLoading(a),u.removeAllFiles(),n.find(".bulk-import-message").hide()}else m&&m.count>0?(n.find(".bulk-import-message").show(),n.find(".bulk-import-message").text(p),l(f,m.offset),i=[].concat(o(i),o(m.failed)),s+=m.count):c(f)}))},c=function(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,o=arguments.length>2&&void 0!==arguments[2]?arguments[2]:10;0===t&&(n.find(".bulk-import-message").text(a.data("importing-text")),Botble.showButtonLoading(a)),$httpClient.make().post(r.data("import-url"),{file:e,offset:t,limit:o,update_existing:$("#update-existing").is(":checked")?1:0}).then((function(t){var o=t.data,r=o.data,i=o.message,l=n.find(".processing"),f=l.find(".process");r&&r.count>0?(l.show(),c(e,r.offset),f.css("width",r.offset/s*100+"%"),n.find(".bulk-import-message").html(i)):(Botble.showSuccess(i),r.total_message&&(n.find(".main-form-message").show(),n.find(".bulk-import-message").removeClass("alert-info").addClass("alert-success").text(r.total_message).show(),u.removeAllFiles(),l.hide(),s=0,Botble.hideButtonLoading(a)))}))},u=new Dropzone(".import-dropzone",{url:r.data("upload-url"),method:"post",headers:{"X-CSRF-TOKEN":r.find("input[name=_token]").val()},previewTemplate:$(document).find("#preview-template").html(),autoProcessQueue:!1,chunking:!0,chunkSize:1048576,acceptedFiles:r.find(".import-properties-dropzone").data("mimetypes"),maxFiles:1,maxfilesexceeded:function(e){this.removeFile(e)},success:function(e,t){var o=t.data;t.message;o&&o.file_path&&l(o.file_path)}}),f=!1;$(document).on("click",".download-template",(function(e){if(e.preventDefault(),!f){var t=$(e.currentTarget),o=t.data("extension"),n=t.html();t.html(t.data("downloading")),t.addClass("text-secondary"),f=!0,$httpClient.make().withResponseType("blob").post(t.data("url"),{extension:o}).then((function(e){var o=e.data,n=document.createElement("a"),r=window.URL.createObjectURL(o);n.href=r,n.download=t.data("filename"),document.body.append(n),n.click(),n.remove(),window.URL.revokeObjectURL(r)})).finally((function(){setTimeout((function(){t.html(n),t.removeClass("text-secondary"),f=!1}),2e3)}))}}))}))})();
+/******/ (() => { // webpackBootstrap
+/*!******************************************************************!*\
+  !*** ./platform/plugins/real-estate/resources/js/bulk-import.js ***!
+  \******************************************************************/
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+$(function () {
+  var container = $(document).find('#bulk-import');
+  var $form = container.find('.form-import-data');
+  var $button = container.find('.btn-import');
+  var failedRows = [];
+  var totalRows = 0;
+  $(document).on('click', '.btn-import', function (event) {
+    event.preventDefault();
+    if (dropzone.getQueuedFiles().length > 0) {
+      Botble.showButtonLoading($button);
+      container.find('.show-errors').hide();
+      totalRows = 0;
+      failedRows = [];
+      dropzone.processQueue();
+    }
+    dropzone.on('sending', function () {
+      container.find('.bulk-import-message').removeClass('alert-success').addClass('alert-info').text($button.data('uploading-text')).show();
+    });
+    dropzone.on('error', function (file, message) {
+      Botble.showError(message.message);
+    });
+  });
+  var _validateData = function validateData(file) {
+    var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var limit = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1000;
+    if (offset === 0) {
+      container.find('.bulk-import-message').text($button.data('validating-text'));
+    }
+    $httpClient.make().post($form.data('validate-url'), {
+      file: file,
+      offset: offset,
+      limit: limit,
+      update_existing: $('#update-existing').is(':checked') ? 1 : 0
+    }).then(function (_ref) {
+      var response = _ref.data;
+      var data = response.data,
+        message = response.message;
+
+      // Check if there are any validation errors in the current batch
+      if (data && data.failed && Object.keys(data.failed).length > 0) {
+        // We have validation errors, stop the validation process
+        failedRows = [].concat(_toConsumableArray(failedRows), _toConsumableArray(data.failed));
+        totalRows += data.count;
+
+        // Display the errors immediately
+        var $listing = container.find('#imported-listing');
+        var $show = container.find('.show-errors');
+        var failureTemplate = $(document).find('#failure-template').html();
+        var result = '';
+        failedRows.forEach(function (val, index) {
+          // If row is undefined, use the index + 1 as the row number
+          var rowNumber = val.row !== undefined ? val.row : index + 1;
+          // Format the error messages
+          var errorMessages = [];
+
+          // Log the error structure for debugging
+          console.log('Error data structure:', val);
+
+          // Handle different error formats
+          if (Array.isArray(val.errors)) {
+            // Direct array of error messages
+            errorMessages = val.errors;
+          } else if (_typeof(val.errors) === 'object' && val.errors !== null) {
+            // Object with field names as keys and arrays of error messages as values
+            Object.entries(val.errors).forEach(function (_ref2) {
+              var _ref3 = _slicedToArray(_ref2, 2),
+                field = _ref3[0],
+                messages = _ref3[1];
+              if (Array.isArray(messages)) {
+                // Add field name to each message
+                messages.forEach(function (message) {
+                  errorMessages.push("".concat(field, ": ").concat(message));
+                });
+              } else if (typeof messages === 'string') {
+                errorMessages.push("".concat(field, ": ").concat(messages));
+              }
+            });
+          }
+
+          // If errorMessages is still empty, try to extract errors directly from the object
+          if (errorMessages.length === 0 && _typeof(val) === 'object' && val !== null) {
+            Object.entries(val).forEach(function (_ref4) {
+              var _ref5 = _slicedToArray(_ref4, 2),
+                field = _ref5[0],
+                value = _ref5[1];
+              if (field !== 'row' && Array.isArray(value)) {
+                value.forEach(function (message) {
+                  errorMessages.push("".concat(field, ": ").concat(message));
+                });
+              } else if (field !== 'row' && typeof value === 'string') {
+                errorMessages.push("".concat(field, ": ").concat(value));
+              }
+            });
+          }
+          result += failureTemplate.replace('__row__', rowNumber).replace('__errors__', errorMessages.join(', '));
+        });
+        $show.show();
+        container.find('.main-form-message').show();
+        $listing.show().html(result);
+        failedRows = [];
+        totalRows = 0;
+        Botble.hideButtonLoading($button);
+        dropzone.removeAllFiles();
+        container.find('.bulk-import-message').hide();
+      } else if (data && data.count > 0) {
+        // No errors in this batch, continue validation
+        container.find('.bulk-import-message').show();
+        container.find('.bulk-import-message').text(message);
+        _validateData(file, data.offset);
+        failedRows = [].concat(_toConsumableArray(failedRows), _toConsumableArray(data.failed));
+        totalRows += data.count;
+      } else {
+        // No errors and no more data to validate, proceed to import
+        _importData(file);
+      }
+    });
+  };
+  var _importData = function importData(file) {
+    var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var limit = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10;
+    if (offset === 0) {
+      container.find('.bulk-import-message').text($button.data('importing-text'));
+      Botble.showButtonLoading($button);
+    }
+    $httpClient.make().post($form.data('import-url'), {
+      file: file,
+      offset: offset,
+      limit: limit,
+      update_existing: $('#update-existing').is(':checked') ? 1 : 0
+    }).then(function (_ref6) {
+      var response = _ref6.data;
+      var data = response.data,
+        message = response.message;
+      var processing = container.find('.processing');
+      var process = processing.find('.process');
+      if (data && data.count > 0) {
+        processing.show();
+        _importData(file, data.offset);
+        process.css('width', data.offset / totalRows * 100 + '%');
+        container.find('.bulk-import-message').html(message);
+      } else {
+        Botble.showSuccess(message);
+        if (data.total_message) {
+          container.find('.main-form-message').show();
+          container.find('.bulk-import-message').removeClass('alert-info').addClass('alert-success').text(data.total_message).show();
+          dropzone.removeAllFiles();
+          processing.hide();
+          totalRows = 0;
+          Botble.hideButtonLoading($button);
+        }
+      }
+    });
+  };
+  var dropzone = new Dropzone('.import-dropzone', {
+    url: $form.data('upload-url'),
+    method: 'post',
+    headers: {
+      'X-CSRF-TOKEN': $form.find('input[name=_token]').val()
+    },
+    previewTemplate: $(document).find('#preview-template').html(),
+    autoProcessQueue: false,
+    chunking: true,
+    chunkSize: 1048576,
+    acceptedFiles: $form.find('.import-properties-dropzone').data('mimetypes'),
+    maxFiles: 1,
+    maxfilesexceeded: function maxfilesexceeded(file) {
+      this.removeFile(file);
+    },
+    success: function success(file, response) {
+      var data = response.data,
+        message = response.message;
+      if (data && data.file_path) {
+        _validateData(data.file_path);
+      }
+    }
+  });
+  var isDownloadingTemplate = false;
+  $(document).on('click', '.download-template', function (event) {
+    event.preventDefault();
+    if (isDownloadingTemplate) {
+      return;
+    }
+    var $this = $(event.currentTarget);
+    var extension = $this.data('extension');
+    var $content = $this.html();
+    $this.html($this.data('downloading'));
+    $this.addClass('text-secondary');
+    isDownloadingTemplate = true;
+    $httpClient.make().withResponseType('blob').post($this.data('url'), {
+      extension: extension
+    }).then(function (_ref7) {
+      var data = _ref7.data;
+      var a = document.createElement('a');
+      var url = window.URL.createObjectURL(data);
+      a.href = url;
+      a.download = $this.data('filename');
+      document.body.append(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    })["finally"](function () {
+      setTimeout(function () {
+        $this.html($content);
+        $this.removeClass('text-secondary');
+        isDownloadingTemplate = false;
+      }, 2000);
+    });
+  });
+});
+/******/ })()
+;
+//# sourceMappingURL=bulk-import.js.map

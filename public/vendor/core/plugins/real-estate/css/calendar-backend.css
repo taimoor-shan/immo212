@@ -63,7 +63,7 @@
 }
 .property-availability-calendar .flatpickr-prev-month,
 .property-availability-calendar .flatpickr-next-month {
-  color: #6c757d !important;
+  color: #ffffff !important;
   transition: all 0.3s ease !important;
   width: 28px !important;
   height: 28px !important;
@@ -71,11 +71,25 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  background-color: #007bff !important;
+  top: 20px !important;
 }
-.property-availability-calendar .flatpickr-prev-month:hover,
-.property-availability-calendar .flatpickr-next-month:hover {
-  color: #007bff !important;
-  background: rgba(0, 123, 255, 0.1) !important;
+.property-availability-calendar .flatpickr-prev-month svg,
+.property-availability-calendar .flatpickr-next-month svg {
+  width: 20px;
+  height: 20px;
+  fill: #ffffff;
+}
+.property-availability-calendar .flatpickr-prev-month:hover svg,
+.property-availability-calendar .flatpickr-next-month:hover svg {
+  fill: #ffffff !important;
+  background: #007bff !important;
+}
+.property-availability-calendar .flatpickr-next-month {
+  right: 10px !important;
+}
+.property-availability-calendar .flatpickr-prev-month {
+  left: 10px !important;
 }
 .property-availability-calendar .flatpickr-weekdays {
   background: #f8f9fa !important;

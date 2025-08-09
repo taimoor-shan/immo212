@@ -57,7 +57,7 @@
         h5 {
             margin: 0;
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 500;
             margin-bottom: 1em;
         }
 
@@ -137,7 +137,7 @@
 
         .flatpickr-month {
             color: #495057;
-            font-weight: 600;
+            font-weight: 500;
         }
 
         .flatpickr-days {
@@ -156,12 +156,12 @@
                     background: #007bff;
                     border-color: #007bff;
                     color: white;
-                    font-weight: 600;
+                    font-weight: 500;
                 }
 
                 &.today {
                     border: 2px solid #007bff;
-                    font-weight: 600;
+                    font-weight: 500;
                 }
 
                 // Availability status styles matching admin calendar

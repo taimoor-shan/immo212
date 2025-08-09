@@ -163,7 +163,7 @@
         }
         
         #property-availability-calendar {
-            min-height: 400px;
+            min-height: auto;
         }
         
         /* Calendar day colors to match legend */

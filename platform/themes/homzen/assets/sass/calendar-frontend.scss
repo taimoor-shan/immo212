@@ -20,7 +20,7 @@
 
         h5 {
             margin: 0 0 15px 0;
-            font-weight: 600;
+            font-weight: 500;
             font-size: 18px;
         }
 
@@ -75,7 +75,7 @@
 
                 .flatpickr-month {
                     color: #495057;
-                    font-weight: 600;
+                    font-weight: 500;
                     font-size: 16px;
                 }
 
@@ -108,7 +108,7 @@
                 
                 .flatpickr-weekday {
                     color: #6c757d;
-                    font-weight: 600;
+                    font-weight: 500;
                     font-size: 12px;
                     text-transform: uppercase;
                     letter-spacing: 0.5px;
@@ -134,7 +134,7 @@
 
                     &.today {
                         border: 2px solid #007bff;
-                        font-weight: 600;
+                        font-weight: 500;
                         color: #007bff;
                     }
 
@@ -168,7 +168,7 @@
                     &.inRange {
                         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                         color: white;
-                        font-weight: 600;
+                        font-weight: 500;
                         border: none;
 
                         &:hover {
@@ -196,7 +196,7 @@
                         left: 50%;
                         transform: translateX(-50%);
                         font-size: 9px;
-                        font-weight: 600;
+                        font-weight: 500;
                         opacity: 0.8;
                     }
 
@@ -238,14 +238,14 @@
                     display: block;
                     font-size: 12px;
                     color: #6c757d;
-                    font-weight: 600;
+                    font-weight: 500;
                     text-transform: uppercase;
                     letter-spacing: 0.5px;
                     margin-bottom: 5px;
                 }
 
                 span {
-                    font-weight: 600;
+                    font-weight: 500;
                     color: #495057;
                     font-size: 14px;
                 }
@@ -275,7 +275,7 @@
                 }
 
                 span:last-child {
-                    font-weight: 600;
+                    font-weight: 500;
                     color: #495057;
                 }
             }
@@ -299,7 +299,7 @@
             width: 100%;
             padding: 15px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 500;
             border-radius: $radius;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;

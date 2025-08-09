@@ -4,9 +4,9 @@
         @if($items->isNotEmpty())
             <ul class="mt-12">
                 @foreach($items as $item)
-                    <li class="mt-12 d-flex align-items-center gap-8">
-                        <x-core::icon :name="$item['icon']" class="text-variant-2" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;" />
-                        <p class="text-white">{!! BaseHelper::clean(nl2br($item['text'])) !!}</p>
+                    <li class="mt-12 d-flex align-items-start gap-8">
+                        <x-core::icon :name="$item['icon']" class="text-variant-2 mt-1" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;" />
+                        <p class="text-prime">{!! BaseHelper::clean(nl2br($item['text'])) !!}</p>
                     </li>
                 @endforeach
             </ul>

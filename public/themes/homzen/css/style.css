@@ -3344,7 +3344,7 @@ label {
 }
 .tf-btn.secondary:hover {
   background-color: var(--primary-color);
-  color: #ffffff;
+  color: #ffffff !important;
 }
 .tf-btn.secWhite {
   background-color: transparent;
@@ -10520,8 +10520,13 @@ h2.section-title {
   gap: 0.5rem;
   align-items: center;
 }
-
-.dropdown-item.active, .dropdown-item:active {
+.top-header .dropdown-menu {
+  padding-block: 0;
+}
+.top-header .dropdown-menu .dropdown-item {
+  color: var(--primary-color);
+}
+.top-header .dropdown-menu .dropdown-item.active, .top-header .dropdown-menu .dropdown-item:active {
   background-color: var(--primary-color);
   color: #fff;
 }

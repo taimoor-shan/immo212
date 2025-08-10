@@ -27,7 +27,6 @@
             </ul>
         </div>
     </div>
-
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const shareBtn = document.getElementById('shareDropdownBtn-{{ $model->id ?? 'default' }}');

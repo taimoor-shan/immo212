@@ -37,7 +37,7 @@
         border-color: $primary;
         &:hover {
             background-color: $primary;
-            color: $white;
+            color: $white !important;
         }
     }
     &.secWhite {

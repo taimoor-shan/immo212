@@ -83,6 +83,9 @@
                 <div class="wrapper-onepage" id="nearby">
                     @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.facilities'), ['class' => 'widget-box-single'])
                 </div>
+                <div class="wrapper-onepage" id="mortgage-calculator">
+                    @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.mortgage-calculator'), ['class' => 'widget-box-single', 'property' => $property])
+                </div>
                 @if (RealEstateHelper::isEnabledProjects() && $property->project_id && ($project = $property->project))
                     <div class="wrapper-onepage" id="project">
                         @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.project'), ['class' => 'widget-box-single'])

@@ -22,6 +22,8 @@
 
                 @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.facilities'), ['class' => 'single-property-element'])
 
+                @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.mortgage-calculator'), ['class' => 'single-property-element', 'property' => $property])
+
                 @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.project'), ['class' => 'single-property-element'])
 
                 @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.map'), ['class' => 'single-property-element'])

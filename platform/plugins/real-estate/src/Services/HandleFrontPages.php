@@ -124,6 +124,7 @@ class HandleFrontPages
                  */
                 $project = Project::query()
                     ->where($condition)
+                    ->notExpired()
                     ->with(RealEstateHelper::getProjectRelationsQuery())
                     ->when($reviewData, function (ProjectBuilder $query) use ($reviewData) {
                         return $query

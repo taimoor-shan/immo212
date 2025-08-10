@@ -4,6 +4,7 @@ namespace Botble\RealEstate\Tables;
 
 use Botble\Base\Facades\BaseHelper;
 use Botble\RealEstate\Enums\ProjectStatusEnum;
+use Botble\RealEstate\Enums\ModerationStatusEnum;
 use Botble\RealEstate\Models\Investor;
 use Botble\RealEstate\Models\Project;
 use Botble\Table\Abstracts\TableAbstract;
@@ -48,6 +49,12 @@ class ProjectTable extends TableAbstract
             ->editColumn('unique_id', function (Project $item) {
                 return BaseHelper::clean($item->unique_id ?: '&mdash;');
             });
+        
+        if (Schema::hasColumn('re_projects', 'moderation_status')) {
+            $data->editColumn('moderation_status', function (Project $item) {
+                return BaseHelper::clean($item->moderation_status_html);
+            });
+        }
 
         return $this->toJson($data);
     }
@@ -134,15 +141,25 @@ class ProjectTable extends TableAbstract
 
     public function getBulkChanges(): array
     {
-        return [
+        $changes = [
             NameBulkChange::make(),
             StatusBulkChange::make()
                 ->choices(ProjectStatusEnum::labels()),
-            SelectBulkChange::make()
-                ->name('investor_id')
-                ->title(trans('plugins/real-estate::project.form.investor'))
-                ->searchable()
-                ->choices(fn () => Investor::query()->pluck('name', 'id')->all()),
         ];
+        
+        if (Schema::hasColumn('re_projects', 'moderation_status')) {
+            $changes[] = StatusBulkChange::make()
+                ->name('moderation_status')
+                ->title(trans('plugins/real-estate::property.moderation_status'))
+                ->choices(ModerationStatusEnum::labels());
+        }
+        
+        $changes[] = SelectBulkChange::make()
+            ->name('investor_id')
+            ->title(trans('plugins/real-estate::project.form.investor'))
+            ->searchable()
+            ->choices(fn () => Investor::query()->pluck('name', 'id')->all());
+            
+        return $changes;
     }
 }

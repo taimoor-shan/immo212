@@ -110,9 +110,23 @@
                             style="text-decoration: none; line-height: 32px;"
                         >
                             <i
-                                class="far fa-newspaper mr1"></i>{{ trans('plugins/real-estate::account-property.properties') }}
+                                class="far fa-newspaper mr1"
+                            ></i>{{ trans('plugins/real-estate::account-property.properties') }}
                         </a>
                     </li>
+
+                    @if (RealEstateHelper::isEnabledProjects())
+                        <li>
+                            <a
+                                class="no-underline mr2 black-50 hover-black-70 pv1 ph2 db mr2"
+                                href="{{ route('public.account.projects.index') }}"
+                                title="{{ trans('plugins/real-estate::project.name') }}"
+                                style="text-decoration: none; line-height: 32px;"
+                            >
+                                <i class="ti ti-building mr1"></i>{{ trans('plugins/real-estate::project.name') }}
+                            </a>
+                        </li>
+                    @endif
 
                     @if (auth('account')->user()->canPost())
                         <li>
@@ -123,12 +137,25 @@
                                 style="text-decoration: none; line-height: 32px;"
                             >
                                 <i
-                                    class="far fa-edit mr1"></i>{{ trans('plugins/real-estate::account-property.write_property') }}
+                                    class="far fa-edit mr1"
+                                ></i>{{ trans('plugins/real-estate::account-property.write_property') }}
                             </a>
                         </li>
+                        @if (RealEstateHelper::isEnabledProjects())
+                            <li>
+                                <a
+                                    class="no-underline mr2 black-50 hover-black-70 pv1 ph2 db mr2"
+                                    href="{{ route('public.account.projects.create') }}"
+                                    title="{{ trans('plugins/real-estate::project.create') }}"
+                                    style="text-decoration: none; line-height: 32px;"
+                                >
+                                    <i class="ti ti-plus mr1"></i>{{ trans('plugins/real-estate::project.create') }}
+                                </a>
+                            </li>
+                        @endif
                     @endif
-                    <li>
-                        <a
+                    			<li>
+                        	<a
                             class="no-underline mr2 black-50 hover-black-70 pv1 ph2 db"
                             href="#"
                             title="{{ trans('plugins/real-estate::dashboard.header_logout_link') }}"

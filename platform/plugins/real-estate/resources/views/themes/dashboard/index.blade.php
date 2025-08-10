@@ -51,6 +51,54 @@
                 </div>
             </a>
         </div>
+
+        @if (\Botble\RealEstate\Facades\RealEstateHelper::isEnabledProjects())
+            <div class="col-12 col-md-6 col-lg-4 dashboard-widget-item mt-3">
+                <a class="overflow-hidden text-white rounded d-block position-relative text-decoration-none bg-primary">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="px-4 py-3 details d-flex flex-column justify-content-between">
+                            <div class="desc fw-medium">{{ trans('plugins/real-estate::project.name') }} - {{ trans('plugins/real-estate::dashboard.approved_properties') }}</div>
+                            <div class="number fw-bolder">
+                                {{ \Botble\RealEstate\Models\Project::query()->where(['author_id' => $user->getKey(), 'author_type' => \Botble\RealEstate\Models\Account::class, 'moderation_status' => \Botble\RealEstate\Enums\ModerationStatusEnum::APPROVED])->count() }}
+                            </div>
+                        </div>
+                        <div class="pb-5 visual ps-1 position-absolute end-0">
+                            <x-core::icon name="ti ti-circle-check" class="me-n2" style="opacity: 0.1;" />
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 dashboard-widget-item mt-3">
+                <a class="overflow-hidden text-white rounded d-block position-relative text-decoration-none bg-danger">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="px-4 py-3 details d-flex flex-column justify-content-between">
+                            <div class="desc fw-medium">{{ trans('plugins/real-estate::project.name') }} - {{ trans('plugins/real-estate::dashboard.pending_approve_properties') }}</div>
+                            <div class="number fw-bolder">
+                                {{ \Botble\RealEstate\Models\Project::query()->where(['author_id' => $user->getKey(), 'author_type' => \Botble\RealEstate\Models\Account::class, 'moderation_status' => \Botble\RealEstate\Enums\ModerationStatusEnum::PENDING])->count() }}
+                            </div>
+                        </div>
+                        <div class="pb-5 visual ps-1 position-absolute end-0">
+                            <x-core::icon name="ti ti-clock-hour-8" class="me-n2" style="opacity: 0.1;" />
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 dashboard-widget-item mt-3">
+                <a class="overflow-hidden text-white rounded d-block position-relative text-decoration-none bg-secondary">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="px-4 py-3 details d-flex flex-column justify-content-between">
+                            <div class="desc fw-medium">{{ trans('plugins/real-estate::project.name') }} - {{ trans('plugins/real-estate::dashboard.rejected_properties') }}</div>
+                            <div class="number fw-bolder">
+                                {{ \Botble\RealEstate\Models\Project::query()->where(['author_id' => $user->getKey(), 'author_type' => \Botble\RealEstate\Models\Account::class, 'moderation_status' => \Botble\RealEstate\Enums\ModerationStatusEnum::REJECTED])->count() }}
+                            </div>
+                        </div>
+                        <div class="pb-5 visual ps-1 position-absolute end-0">
+                            <x-core::icon name="ti ti-edit" class="me-n2" style="opacity: 0.1;" />
+                        </div>
+                    </div>
+                </a>
+            </div>
+        @endif
     </div>
 
     <activity-log-component ajax-url="{{ route('public.account.activity-logs') }}" v-slot="{ activityLogs, loading }">

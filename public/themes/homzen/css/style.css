@@ -3310,7 +3310,7 @@ label {
   text-align: center;
   padding: 0.8rem 1.25rem;
   border-radius: 6px;
-  background-color: var(--primary-color);
+  background-color: #003087;
   color: #ffffff !important;
   border: 1px solid var(--primary-color);
   transition: all 0.3s ease;
@@ -3325,8 +3325,8 @@ label {
   height: 1.2rem;
 }
 .tf-btn:hover {
-  background-color: var(--hover-color);
-  border-color: var(--hover-color);
+  background-color: #0070e0;
+  border-color: #0070e0;
   color: #ffffff;
 }
 .tf-btn.primary {

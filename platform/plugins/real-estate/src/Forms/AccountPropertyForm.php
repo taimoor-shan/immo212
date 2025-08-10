@@ -10,6 +10,8 @@ use Botble\RealEstate\Facades\RealEstateHelper;
 use Botble\RealEstate\Forms\Fields\CustomEditorField;
 use Botble\RealEstate\Forms\Fields\MultipleUploadField;
 use Botble\RealEstate\Http\Requests\AccountPropertyRequest;
+use Botble\RealEstate\Models\Account;
+use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
 
 class AccountPropertyForm extends PropertyForm
@@ -56,5 +58,32 @@ class AccountPropertyForm extends PropertyForm
                         'max' => RealEstateHelper::maxPropertyImagesUploadByAgent(),
                     ]))
             );
+        
+        // Override the project dropdown to only show user's own projects
+        if (RealEstateHelper::isEnabledProjects()) {
+            // Get only the current user's projects
+            $userProjects = Project::query()
+                ->select('name', 'id')
+                ->where('author_id', auth('account')->id())
+                ->where('author_type', Account::class)
+                ->latest()
+                ->get()
+                ->mapWithKeys(fn (Project $item) => [$item->getKey() => $item->name])
+                ->all();
+            
+            // Remove the existing project_id field if it exists
+            $this->remove('project_id');
+            
+            // Add the project dropdown with only user's projects
+            if (! empty($userProjects)) {
+                $this->add('project_id', 'customSelect', [
+                    'label' => trans('plugins/real-estate::property.form.project'),
+                    'attr' => [
+                        'class' => 'select-search-full',
+                    ],
+                    'choices' => [0 => trans('plugins/real-estate::property.select_project')] + $userProjects,
+                ]);
+            }
+        }
     }
 }

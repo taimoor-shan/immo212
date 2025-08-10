@@ -5,6 +5,7 @@ namespace Botble\RealEstate\Models;
 use Botble\Base\Casts\SafeContent;
 use Botble\Base\Models\BaseModel;
 use Botble\Media\Facades\RvMedia;
+use Botble\RealEstate\Enums\ModerationStatusEnum;
 use Botble\RealEstate\Enums\ProjectStatusEnum;
 use Botble\RealEstate\Models\Traits\UniqueId;
 use Botble\RealEstate\QueryBuilders\ProjectBuilder;
@@ -52,11 +53,17 @@ class Project extends BaseModel
         'latitude',
         'longitude',
         'unique_id',
-        'private_notes',
+'private_notes',
+        'moderation_status',
+        'expire_date',
+        'never_expired',
     ];
 
     protected $casts = [
         'status' => ProjectStatusEnum::class,
+        'moderation_status' => ModerationStatusEnum::class,
+        'expire_date' => 'datetime',
+        'never_expired' => 'boolean',
         'date_finish' => 'datetime',
         'date_sell' => 'datetime',
         'price_from' => 'float',
@@ -263,6 +270,26 @@ class Project extends BaseModel
             }
 
             return implode(', ', array_filter([$this->city->name, $this->state->name]));
+        });
+    }
+
+    protected function moderationStatusHtml(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->moderation_status->toHtml();
+            },
+        );
+    }
+
+    protected function isPendingModeration(): Attribute
+    {
+        return Attribute::get(function () {
+            if (! $this->exists) {
+                return false;
+            }
+
+            return ! in_array($this->moderation_status, [ModerationStatusEnum::APPROVED, ModerationStatusEnum::REJECTED]);
         });
     }
 }

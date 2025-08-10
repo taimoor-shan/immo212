@@ -5,7 +5,7 @@
     text-align: center;
     padding: .8rem 1.25rem;
     border-radius: $radius;
-    background-color: $primary;
+    background-color: #003087;
     color: $white !important;
     border: 1px solid $primary;
     transition: all 0.3s ease;
@@ -19,8 +19,8 @@
         height: 1.2rem;
     }
     &:hover {
-        background-color: $primary-hover;
-        border-color: $primary-hover;
+        background-color: #0070e0;
+        border-color:#0070e0;
         color:$white;
     }
     &.primary {

@@ -521,7 +521,17 @@ class RealEstateServiceProvider extends ServiceProvider
                     'name' => 'plugins/real-estate::property.name',
                     'url' => fn () => route('public.account.properties.index'),
                     'icon' => 'ti ti-bed',
-                ]);
+                ])
+                ->when(RealEstateHelper::isEnabledProjects(), function (DashboardMenuSupport $dashboardMenu): void {
+                    $dashboardMenu
+                        ->registerItem([
+                            'id' => 'cms-account-projects',
+                            'priority' => 2.1,
+                            'name' => 'plugins/real-estate::project.name',
+                            'url' => fn () => route('public.account.projects.index'),
+                            'icon' => 'ti ti-building',
+                        ]);
+                });
         });
 
         DashboardMenu::default();

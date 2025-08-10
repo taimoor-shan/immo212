@@ -5,7 +5,7 @@
     text-align: center;
     padding: .8rem 1.25rem;
     border-radius: $radius;
-    background-color: #003087;
+    background-color: $primary;
     color: $white !important;
     border: 1px solid $primary;
     transition: all 0.3s ease;
@@ -33,7 +33,7 @@
     }
     &.secondary {
         background-color: transparent;
-        color: $primary;
+        color: $primary !important;
         border-color: $primary;
         &:hover {
             background-color: $primary;

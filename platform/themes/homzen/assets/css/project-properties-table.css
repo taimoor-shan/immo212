@@ -1,0 +1,83 @@
+/* Project Properties Table Styles */
+.flat-properties-list {
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
+.properties-table-wrapper {
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
+}
+
+.properties-table-wrapper .table {
+    margin-bottom: 0;
+}
+
+.properties-table-wrapper .table thead th {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: var(--text-variant-1);
+    padding: 1rem;
+    border-bottom: 2px solid var(--border-color-1);
+}
+
+.properties-table-wrapper .table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color-2);
+}
+
+.properties-table-wrapper .table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.properties-table-wrapper .table tbody tr:hover {
+    background-color: var(--bg-surface-hover, #f8f9fa);
+}
+
+.properties-table-wrapper .property-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.properties-table-wrapper .tf-btn.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 14px;
+}
+
+/* Mobile Property Cards */
+.property-card {
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color-2);
+}
+
+.property-card:hover {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.property-card .property-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    .flat-properties-list {
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+    
+    .box-title .section-title {
+        font-size: 24px;
+    }
+}
+
+/* Badge styles */
+.badge.bg-primary-subtle {
+    background-color: rgba(var(--primary-rgb), 0.1) !important;
+    color: var(--primary) !important;
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}

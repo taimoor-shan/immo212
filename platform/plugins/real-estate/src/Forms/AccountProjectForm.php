@@ -22,6 +22,7 @@ class AccountProjectForm extends ProjectForm
             ->setValidatorClass(AccountProjectRequest::class)
             ->remove('is_featured')
             ->remove('featured_priority')
+            ->remove('moderation_status')
             ->remove('author_id')
             ->remove('images[]')
             ->remove('content')

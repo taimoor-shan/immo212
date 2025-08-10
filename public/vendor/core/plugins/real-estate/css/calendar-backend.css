@@ -71,7 +71,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  background-color: #007bff !important;
+  background-color: #e4eaf5 !important;
   top: 20px !important;
 }
 .property-availability-calendar .flatpickr-prev-month svg,

@@ -204,3 +204,4 @@ class ProjectController extends BaseController
 
         $project->customFields()->saveMany($customFields);
     }
+}

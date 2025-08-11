@@ -6,7 +6,7 @@
     padding: .8rem 1.25rem;
     border-radius: $radius;
     background-color: $primary;
-    color: $white;
+    color: $white !important;
     border: 1px solid $primary;
     transition: all 0.3s ease;
     text-decoration: none;
@@ -19,8 +19,8 @@
         height: 1.2rem;
     }
     &:hover {
-        background-color: $primary-hover;
-        border-color: $primary-hover;
+        background-color: #0070e0;
+        border-color:#0070e0;
         color:$white;
     }
     &.primary {
@@ -33,7 +33,7 @@
     }
     &.secondary {
         background-color: transparent;
-        color: $primary;
+        color: $primary !important;
         border-color: $primary;
         &:hover {
             background-color: $primary;
@@ -43,7 +43,7 @@
     &.secWhite {
         background-color: transparent;
         color: $white;
-        border: 1.5px solid $white;
+        border: 1px solid $white;
         &:hover {
             background-color: $white;
             color: $primary;
@@ -72,7 +72,7 @@
 .btn-read-more {
     font-size: 16px;
     line-height: 26px;
-    font-weight: 600;
+    font-weight: 500;
     color: $on-surface;
     border-bottom: 2px solid $on-surface;
     padding: 0px 0px 4px 0px;

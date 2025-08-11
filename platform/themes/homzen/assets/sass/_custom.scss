@@ -227,7 +227,7 @@ svg {
             font-family: $font-1;
             font-size: 16px;
             line-height: 26px;
-            font-weight: 600;
+            font-weight: 500;
             text-align: center;
             padding: 10px 20px;
             border-radius: 4px;
@@ -257,7 +257,7 @@ svg {
 
     .main-menu {
         .navigation > li > a {
-            color: var(--main-header-text-color);
+            color: $primary;
         }
     }
 }
@@ -620,7 +620,7 @@ svg {
         .title {
             a {
                 font-size: 1.5rem;
-                font-weight: 600;
+                font-weight: 500;
 
                 &:hover {
                     color: var(--primary-color);
@@ -699,7 +699,7 @@ svg {
         .search-suggestion-content {
             h6 {
                 font-size: 1rem;
-                font-weight: 600;
+                font-weight: 500;
                 color: var(--bs-gray-800);
                 line-height: 1.5;
             }
@@ -763,7 +763,7 @@ h2.section-title {
     font-family: $font-2;
     font-size: 30px;
     line-height: 36px;
-    font-weight: 600;
+    font-weight: 500;
     color: $on-surface;
     text-align:start;
 }
@@ -829,7 +829,7 @@ h2.section-title {
     border-radius: var(--bs-border-radius);
     color: #fff;
     display: inline-block;
-    font-weight: 600;
+    font-weight: 500;
     padding: 2px 5px;
     text-align: center;
     white-space: nowrap;
@@ -908,7 +908,7 @@ h2.section-title {
 
         .agent-name {
             font-size: 1.5rem;
-            font-weight: 600;
+            font-weight: 500;
             line-height: 1;
         }
 
@@ -922,7 +922,7 @@ h2.section-title {
             font-size: 1rem;
 
             strong {
-                font-weight: 600;
+                font-weight: 500;
             }
         }
 
@@ -992,7 +992,7 @@ h2.section-title {
 
         h5 {
             font-size: 1.25rem;
-            font-weight: 600;
+            font-weight: 500;
             margin-bottom: 1rem;
             line-height: 1;
         }
@@ -1135,7 +1135,7 @@ body[dir="rtl"] {
 
         .career-title {
             font-size: 1.25rem;
-            font-weight: 600;
+            font-weight: 500;
             margin-bottom: 0.5rem;
             line-height: 1;
 
@@ -1159,7 +1159,7 @@ body[dir="rtl"] {
 
         .career-name {
             font-size: 2rem;
-            font-weight: 600;
+            font-weight: 500;
             margin-bottom: 1rem;
             line-height: 1;
         }
@@ -1175,7 +1175,7 @@ body[dir="rtl"] {
             }
 
             h1, h2, h3, h4, h5, h6 {
-                font-weight: 600;
+                font-weight: 500;
                 margin: 1rem 0 0.5rem;
                 line-height: 1;
             }
@@ -1209,7 +1209,7 @@ body[dir="rtl"] {
     .career-related {
         .career-related-title {
             font-size: 1.5rem;
-            font-weight: 600;
+            font-weight: 500;
             margin-bottom: 1rem;
             line-height: 1;
         }
@@ -1237,7 +1237,7 @@ body[dir="rtl"] {
             width: 80px;
             height: 80px;
             font-size: 35px;
-            font-weight: 600;
+            font-weight: 500;
             padding: 10px;
             background-color: var(--primary-color);
             border-radius: 12px;
@@ -1621,7 +1621,7 @@ label.required:after {
 
                 h3 {
                     font-size: 1.25rem !important;
-                    font-weight: 600;
+                    font-weight: 500;
                     line-height: 1;
                     margin-bottom: 0;
                 }
@@ -1694,7 +1694,7 @@ label.required:after {
             font-size: 30px;
             line-height: 1.2;
             text-align: start;
-            font-weight: 600;
+            font-weight: 500;
         }
     }
 

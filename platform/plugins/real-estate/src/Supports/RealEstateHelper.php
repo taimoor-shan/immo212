@@ -131,7 +131,9 @@ class RealEstateHelper
 
     public function getProjectDisplayQueryConditions(): array
     {
-        $conditions = [];
+        $conditions = [
+            're_projects.moderation_status' => ModerationStatusEnum::APPROVED,
+        ];
 
         foreach ($this->exceptedProjectsStatuses() as $status) {
             $conditions[] = ['re_projects.status', '!=', $status];

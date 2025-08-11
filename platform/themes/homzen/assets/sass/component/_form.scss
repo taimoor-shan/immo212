@@ -397,7 +397,7 @@
 
             .form-style {
                 label {
-                    font-weight: 600;
+                    font-weight: 500;
                     color: $on-surface;
                     letter-spacing: 0.8px;
                 }
@@ -455,7 +455,7 @@
                     line-height: 24px;
                     letter-spacing: 0.8px;
                     color: $on-surface;
-                    font-weight: 600;
+                    font-weight: 500;
                 }
             }
         }
@@ -604,7 +604,7 @@
                     border: 0;
                     font-size: 18px;
                     line-height: 28px;
-                    font-weight: 600;
+                    font-weight: 500;
                 }
             }
 
@@ -623,7 +623,7 @@
                         .current {
                             font-size: 18px;
                             line-height: 28px;
-                            font-weight: 600;
+                            font-weight: 500;
                         }
 
                         &:after {
@@ -775,7 +775,7 @@
             margin-bottom: 8px;
             font-size: 14px;
             line-height: 24px;
-            font-weight: 600;
+            font-weight: 500;
             letter-spacing: 0.8px;
             color: $on-surface;
         }
@@ -1044,7 +1044,7 @@
             }
 
             .text-advanced {
-                font-weight: 600;
+                font-weight: 500;
             }
         }
 
@@ -1114,7 +1114,7 @@
         background: $white;
         color: $primary;
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 500;
         padding: 4px 12px;
         border-radius: 20px;
         border: 1px solid rgba(255, 107, 53, 0.2);
@@ -1265,7 +1265,7 @@
             top: 50%;
             transform: translateY(-50%);
             color: $primary;
-            font-weight: 600;
+            font-weight: 500;
             z-index: 2;
         }
 

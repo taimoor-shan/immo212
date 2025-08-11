@@ -103,6 +103,15 @@ Route::group(['namespace' => 'Botble\RealEstate\Http\Controllers', 'middleware' 
         Route::group(['prefix' => 'projects', 'as' => 'project.'], function (): void {
             Route::resource('', 'ProjectController')
                 ->parameters(['' => 'project']);
+            
+            Route::group(['permission' => 'project.edit'], function (): void {
+                Route::post('{project}/approve', ['Botble\RealEstate\Http\Controllers\ProjectController', 'approve'])
+                    ->name('approve')
+                    ->wherePrimaryKey();
+                Route::post('{project}/reject', ['Botble\RealEstate\Http\Controllers\ProjectController', 'reject'])
+                    ->name('reject')
+                    ->wherePrimaryKey();
+            });
         });
 
         Route::group(['prefix' => 'property-features', 'as' => 'property_feature.'], function (): void {

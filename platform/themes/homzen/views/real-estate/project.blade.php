@@ -5,6 +5,7 @@
     Theme::asset()->container('footer')->usePath()->add('fancybox', 'plugins/fancybox/jquery.fancybox.min.js');
     Theme::asset()->usePath()->add('leaflet', 'plugins/leaflet/leaflet.css');
     Theme::asset()->container('footer')->usePath()->add('leaflet', 'plugins/leaflet/leaflet.js');
+    Theme::asset()->usePath()->add('project-properties-table', 'css/project-properties-table.css');
     Theme::layout('full-width');
     Theme::set('pageTitle', $project->name);
 @endphp
@@ -36,8 +37,8 @@
 
                 @if ($project->content)
                     <div class="single-property-element single-property-desc">
-                        <div class="h7 title fw-7">{{ __('Description') }}</div>
-                        <div class="body-2 text-variant-1">
+                        <div class="h7 title fw-6">{{ __('Description') }}</div>
+                        <div class="text-variant-1">
                             <div class="ck-content single-detail">
                                 {!! BaseHelper::clean($project->content) !!}
                             </div>
@@ -46,7 +47,7 @@
                 @endif
                 @if ($videoUrl = $project->getMetaData('video_url', true))
                     <div class="single-property-element single-property-video">
-                        <div class="h7 title fw-7">{{ __('Video') }}</div>
+                        <div class="h7 title fw-6">{{ __('Video') }}</div>
                         <div class="img-video">
                             <img src="{{ RvMedia::getImageUrl($project->getMetaData('video_thumbnail', true)) ?: \Botble\Theme\Supports\Youtube::getThumbnail($videoUrl) }}" alt="{{ $project->name }}">
                             <a href="{{ $videoUrl }}" @if(\Botble\Theme\Supports\Youtube::isYoutubeURL($videoUrl)) data-fancybox="gallery2" @endif class="btn-video">
@@ -56,7 +57,7 @@
                     </div>
                 @endif
                 <div class="single-property-element single-property-overview">
-                    <div class="h7 title fw-7">{{ __('Overview') }}</div>
+                    <div class="h7 title fw-6 mb-4">{{ __('Overview') }}</div>
                     <div class="row row-cols-sm-2 row-cols-lg-3 g-3 g-lg-4 info-box">
                         <div class="col item">
                             <div class="box-icon w-52">
@@ -151,7 +152,7 @@
                 </div>
                 @if ($project->features->isNotEmpty())
                     <div class="single-property-element single-property-feature">
-                        <div class="h7 title fw-7">{{ __('Amenities and features') }}</div>
+                        <div class="h7 title fw-6">{{ __('Amenities and features') }}</div>
                         <div class="box-feature">
                             <ul>
                                 @foreach ($project->features as $feature)
@@ -168,8 +169,8 @@
                 @endif
                 @if ($project->facilities->isNotEmpty())
                     <div class="single-property-element single-property-nearby">
-                        <div class="h7 title fw-7">{{ __('What’s nearby?') }}</div>
-                        <p class="body-2">{{ __("Explore nearby amenities to precisely locate your property and identify surrounding conveniences, providing a comprehensive overview of the living environment and the property's convenience.") }}</p>
+                        <div class="h7 title fw-6">{{ __('What’s nearby?') }}</div>
+                        <p class="">{{ __("Explore nearby amenities to precisely locate your property and identify surrounding conveniences, providing a comprehensive overview of the living environment and the property's convenience.") }}</p>
                         <ul class="grid-3 box-nearby">
                             @foreach ($project->facilities as $facility)
                                 <li class="item-nearby">
@@ -179,14 +180,14 @@
                                         @endif
                                         {{ $facility->name }}:
                                     </span>
-                                    <span class="fw-7">{{ $facility->pivot->distance }}</span>
+                                    <span class="fw-6">{{ $facility->pivot->distance }}</span>
                                 </li>
                             @endforeach
                         </ul>
                     </div>
                 @endif
                 <div class="single-property-element single-property-map">
-                    <div class="h7 title fw-7">{{ __('Location') }}</div>
+                    <div class="h7 title fw-6">{{ __('Location') }}</div>
                     @if (theme_option('real_estate_show_map_on_single_detail_page', 'yes') === 'yes')
                         @if ($project->latitude && $project->longitude)
                             <div data-bb-toggle="detail-map" id="map" style="min-height: 400px;" data-tile-layer="{{ RealEstateHelper::getMapTileLayer() }}" data-center="{{ json_encode([$project->latitude, $project->longitude]) }}" data-map-icon="{{ $project->map_icon }}"></div>
@@ -205,7 +206,7 @@
                         @endphp
                         <ul class="info-map">
                             <li>
-                                <div class="fw-7">{{ __('Address') }}</div>
+                                <div class="fw-6">{{ __('Address') }}</div>
                                 <a class="mt-4 text-variant-1" href="{{ $mapUrl }}" target="_blank">
                                     {{ $locationOnMap }}
                                 </a>
@@ -225,7 +226,7 @@
             <div class="col-lg-4">
                 <div class="widget-sidebar wrapper-sidebar-right">
                         <div class="widget-box single-property-contact bg-surface">
-                            <div class="h7 title fw-7">{{ __('Contact Agency') }}</div>
+                            <div class="h7 title fw-6">{{ __('Contact Agency') }}</div>
 
                             @if (! RealEstateHelper::hideAgentInfoInPropertyDetailPage() && ($account = $project->author))
                                 <div class="box-avatar">
@@ -274,28 +275,180 @@
 </section>
 
 @php
-    $relatedProperties = app(\Botble\RealEstate\Repositories\Interfaces\PropertyInterface::class)
+    $projectProperties = app(\Botble\RealEstate\Repositories\Interfaces\PropertyInterface::class)
     ->getPropertiesByConditions(
         [
             're_properties.project_id' => $project->getKey(),
         ],
-        8,
+        100, // Get up to 100 properties
         \Botble\RealEstate\Facades\RealEstateHelper::getPropertyRelationsQuery(),
     );
 @endphp
 
-@if ($relatedProperties->isNotEmpty())
-    <section class="flat-section pt-0 flat-latest-property">
+@if ($projectProperties->isNotEmpty())
+    <section class="flat-section pt-0 flat-properties-list">
         <div class="container">
-            <div class="box-title">
-                <div class="text-subtitle text-prime">{{ __('Latest Properties') }}</div>
-                <h2 class="section-title mt-4">{{ __('Properties in project ":name"', ['name' => $project->name]) }}</h2>
+            <div class="box-title mb-5">
+                <div class="text-subtitle text-prime">{{ __('Project Properties') }}</div>
+                <h2 class="section-title mt-4">{{ __('Available Properties in :name', ['name' => $project->name]) }}</h2>
+                <p class="text-variant-1 mt-3">{{ __('Total :count properties in this project', ['count' => $projectProperties->count()]) }}</p>
             </div>
-            <div class="swiper tf-latest-property" data-preview-lg="3" data-preview-md="2" data-preview-sm="2" data-space="30" data-loop="true">
-                <div class="swiper-wrapper">
-                    @foreach($relatedProperties as $property)
-                        <div class="swiper-slide">
-                            @include(Theme::getThemeNamespace('views.real-estate.properties.item-grid'), ['property' => $property, 'class' => 'style-2'])
+            
+            <!-- Properties Table for Desktop -->
+            <div class="properties-table-wrapper d-none d-lg-block bg-surface rounded-3 p-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="fw-4">{{ __('Property') }}</th>
+                                <th scope="col" class="fw-4">{{ __('Type') }}</th>
+                                <th scope="col" class="fw-4">{{ __('Price') }}</th>
+                                <th scope="col" class="fw-4">{{ __('Size') }}</th>
+                                <th scope="col" class="fw-4">{{ __('Bedrooms') }}</th>
+                                <th scope="col" class="fw-4">{{ __('Bathrooms') }}</th>
+                                <th scope="col" class="fw-4">{{ __('Status') }}</th>
+                                <th scope="col" class="fw-4 text-end">{{ __('Action') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($projectProperties as $property)
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="property-thumb rounded-2 overflow-hidden" style="width: 80px; height: 60px;">
+                                                <a href="{{ $property->url }}">
+                                                    {{ RvMedia::image($property->image, $property->name, 'thumb') }}
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <a href="{{ $property->url }}" class="fw-6 text-dark text-decoration-none">
+                                                    {{ Str::limit($property->name, 30) }}
+                                                </a>
+                                                @if($property->short_address)
+                                                    <div class="text-variant-1 small mt-1">
+                                                        <i class="icon icon-mapPin me-1"></i>
+                                                        {{ Str::limit($property->short_address, 25) }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if($property->category)
+                                            <span class="badge bg-primary-subtle text-primary">{{ $property->category->name }}</span>
+                                        @else
+                                            <span class="text-muted">--</span>
+                                        @endif
+                                    </td>
+                                    <td class="fw-6 text-prime">
+                                        {{ format_price($property->price, $property->currency) }}
+                                        @if($property->period && $property->type == 'rent')
+                                            <span class="text-variant-1 fw-normal">/ {{ $property->period->label() }}</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($property->square)
+                                            <span>{{ $property->square_text }}</span>
+                                        @else
+                                            <span class="text-muted">--</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($property->number_bedroom)
+                                            <div class="d-flex align-items-center gap-1">
+                                                <i class="icon icon-bed text-variant-1"></i>
+                                                <span>{{ $property->number_bedroom }}</span>
+                                            </div>
+                                        @else
+                                            <span class="text-muted">--</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($property->number_bathroom)
+                                            <div class="d-flex align-items-center gap-1">
+                                                <i class="icon icon-bathtub text-variant-1"></i>
+                                                <span>{{ $property->number_bathroom }}</span>
+                                            </div>
+                                        @else
+                                            <span class="text-muted">--</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        {!! BaseHelper::clean($property->status->toHtml()) !!}
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{{ $property->url }}" class="tf-btn btn-sm primary">
+                                            {{ __('View Details') }}
+                                            <i class="icon icon-arrow-right-2 ms-2"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Properties Grid for Mobile/Tablet -->
+            <div class="d-lg-none">
+                <div class="row g-4">
+                    @foreach($projectProperties as $property)
+                        <div class="col-12 col-md-6">
+                            <div class="property-card bg-surface rounded-3 p-3">
+                                <div class="d-flex gap-3 mb-3">
+                                    <div class="property-thumb rounded-2 overflow-hidden flex-shrink-0" style="width: 100px; height: 80px;">
+                                        <a href="{{ $property->url }}">
+                                            {{ RvMedia::image($property->image, $property->name, 'thumb') }}
+                                        </a>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <a href="{{ $property->url }}" class="fw-6 text-dark text-decoration-none d-block mb-1">
+                                            {{ Str::limit($property->name, 40) }}
+                                        </a>
+                                        @if($property->category)
+                                            <span class="badge bg-primary-subtle text-primary">{{ $property->category->name }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                <div class="property-details">
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-6">
+                                            <div class="text-variant-1 small">{{ __('Price') }}</div>
+                                            <div class="fw-6 text-prime">
+                                                {{ format_price($property->price, $property->currency) }}
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-variant-1 small">{{ __('Status') }}</div>
+                                            <div>{!! BaseHelper::clean($property->status->toHtml()) !!}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex gap-3 mb-3 text-variant-1">
+                                        @if($property->number_bedroom)
+                                            <span><i class="icon icon-bed me-1"></i>{{ $property->number_bedroom }}</span>
+                                        @endif
+                                        @if($property->number_bathroom)
+                                            <span><i class="icon icon-bathtub me-1"></i>{{ $property->number_bathroom }}</span>
+                                        @endif
+                                        @if($property->square)
+                                            <span><i class="icon icon-ruler me-1"></i>{{ $property->square_text }}</span>
+                                        @endif
+                                    </div>
+                                    
+                                    @if($property->short_address)
+                                        <div class="text-variant-1 small mb-3">
+                                            <i class="icon icon-mapPin me-1"></i>
+                                            {{ $property->short_address }}
+                                        </div>
+                                    @endif
+                                    
+                                    <a href="{{ $property->url }}" class="tf-btn primary w-100">
+                                        {{ __('View Property Details') }}
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     @endforeach
                 </div>

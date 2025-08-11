@@ -148,7 +148,7 @@
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         font-size: 0.75rem;
-        font-weight: 600;
+        font-weight: 500;
         padding: 4px 8px;
         border-radius: 4px;
     }
@@ -211,7 +211,7 @@
     
     .vacation-rental-card .fee-amount {
         color: #374151;
-        font-weight: 600;
+        font-weight: 500;
     }
     
     .vacation-rental-card .vacation-rental-cta {
@@ -227,7 +227,7 @@
         text-decoration: none;
         border-radius: 6px;
         font-size: 0.875rem;
-        font-weight: 600;
+        font-weight: 500;
         text-align: center;
         transition: all 0.3s ease;
     }

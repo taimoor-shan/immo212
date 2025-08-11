@@ -1,16 +1,16 @@
 <div class="content-bottom">
     <div class="info-box">
         <ul class="meta">
-            <!-- @if (RealEstateHelper::isEnabledReview())
+            @if (RealEstateHelper::isEnabledReview())
                 <li class="meta-item">
                     <div class="rating-star" style="--bb-rating-size: 100px">
                         <span style="width: {{ $model->reviews_avg_star * 20 }}%;"></span>
                     </div>
                     ({{ $model->reviews_count ?: 0 }})
                 </li>
-            @endif -->
+            @endif
 
-            <!-- @if (setting('real_estate_display_views_count_in_detail_page', true))
+            @if (setting('real_estate_display_views_count_in_detail_page', true))
                 <li class="meta-item">
                     <x-core::icon name="ti ti-eye" />
                     @if ($model->views === 1)
@@ -19,14 +19,14 @@
                         {{ __(':number Views', ['number' => number_format($model->views)]) }}
                     @endif
                 </li>
-            @endif -->
+            @endif
 
-            <!-- @if (theme_option('real_estate_show_listing_date_on_single_detail_page', 'yes') == 'yes')
+            @if (theme_option('real_estate_show_listing_date_on_single_detail_page', 'yes') == 'yes')
                 <li class="meta-item">
                     <x-core::icon name="ti ti-calendar" />
                     {{ Theme::formatDate($model->created_at) }}
                 </li>
-            @endif -->
+            @endif
             @if ($model->number_bedroom)
                 <li class="meta-item">
                     <x-core::icon name="ti ti-bed" />

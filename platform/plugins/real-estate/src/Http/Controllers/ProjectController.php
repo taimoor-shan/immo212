@@ -2,7 +2,9 @@
 
 namespace Botble\RealEstate\Http\Controllers;
 
+use Botble\Base\Facades\EmailHandler;
 use Botble\Base\Http\Actions\DeleteResourceAction;
+use Botble\RealEstate\Enums\ModerationStatusEnum;
 use Botble\RealEstate\Facades\RealEstateHelper;
 use Botble\RealEstate\Forms\ProjectForm;
 use Botble\RealEstate\Http\Requests\ProjectRequest;
@@ -12,6 +14,7 @@ use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Services\SaveFacilitiesService;
 use Botble\RealEstate\Services\StoreProjectCategoryService;
 use Botble\RealEstate\Tables\ProjectTable;
+use Illuminate\Http\Request;
 
 class ProjectController extends BaseController
 {
@@ -137,6 +140,58 @@ class ProjectController extends BaseController
     public function destroy(Project $project)
     {
         return DeleteResourceAction::make($project);
+    }
+
+    public function approve(Project $project)
+    {
+        abort_unless($project->is_pending_moderation, 404);
+
+        $project->moderation_status = ModerationStatusEnum::APPROVED;
+        $project->save();
+
+        if ($project->author && $project->author->email) {
+            EmailHandler::setModule(REAL_ESTATE_MODULE_SCREEN_NAME)
+                ->setVariableValues([
+                    'author_name' => $project->author->name,
+                    'post_name' => $project->name,
+                    'post_url' => route('public.account.projects.edit', $project->getKey()),
+                ])
+                ->sendUsingTemplate('property-approved', $project->author->email);
+        }
+
+        return $this
+            ->httpResponse()
+            ->setPreviousUrl(route('project.index'))
+            ->setMessage(trans('plugins/real-estate::property.status_moderation.approved'));
+    }
+
+    public function reject(Project $project, Request $request)
+    {
+        abort_unless($project->is_pending_moderation, 404);
+
+        $request->validate([
+            'reason' => ['required', 'string', 'max:400'],
+        ]);
+
+        $project->moderation_status = ModerationStatusEnum::REJECTED;
+        $project->reject_reason = $request->input('reason');
+        $project->save();
+
+        if ($project->author && $project->author->email) {
+            EmailHandler::setModule(REAL_ESTATE_MODULE_SCREEN_NAME)
+                ->setVariableValues([
+                    'author_name' => $project->author->name,
+                    'post_name' => $project->name,
+                    'post_url' => route('public.account.projects.edit', $project->getKey()),
+                    'reason' => $request->input('reason'),
+                ])
+                ->sendUsingTemplate('property-rejected', $project->author->email);
+        }
+
+        return $this
+            ->httpResponse()
+            ->setPreviousUrl(route('project.index'))
+            ->setMessage(trans('plugins/real-estate::property.status_moderation.rejected'));
     }
 
     protected function saveCustomFields(Project $project, array $customFields = []): void

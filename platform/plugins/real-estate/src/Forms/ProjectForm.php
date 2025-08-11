@@ -6,12 +6,14 @@ use Botble\Base\Facades\Assets;
 use Botble\Base\Forms\FieldOptions\AutocompleteFieldOption;
 use Botble\Base\Forms\FieldOptions\ContentFieldOption;
 use Botble\Base\Forms\FieldOptions\DescriptionFieldOption;
+use Botble\Base\Forms\FieldOptions\HtmlFieldOption;
 use Botble\Base\Forms\FieldOptions\NameFieldOption;
 use Botble\Base\Forms\FieldOptions\OnOffFieldOption;
 use Botble\Base\Forms\FieldOptions\StatusFieldOption;
 use Botble\Base\Forms\FieldOptions\TextareaFieldOption;
 use Botble\Base\Forms\Fields\AutocompleteField;
 use Botble\Base\Forms\Fields\EditorField;
+use Botble\Base\Forms\Fields\HtmlField;
 use Botble\Base\Forms\Fields\NumberField;
 use Botble\Base\Forms\Fields\OnOffField;
 use Botble\Base\Forms\Fields\SelectField;
@@ -110,6 +112,7 @@ class ProjectForm extends FormAbstract
 
         $this
             ->model(Project::class)
+            ->template('plugins/real-estate::partials.forms.project-form')
             ->setValidatorClass(ProjectRequest::class)
             ->add('name', TextField::class, NameFieldOption::make()->required()->toArray())
             ->add('description', TextareaField::class, DescriptionFieldOption::make()->toArray())
@@ -304,6 +307,17 @@ class ProjectForm extends FormAbstract
                 ],
             ])
             ->add('status', SelectField::class, StatusFieldOption::make()->choices(ProjectStatusEnum::labels())->toArray())
+            ->when($this->getModel()->exists, function (FormAbstract $form): void {
+                $form->add(
+                    'moderation_status',
+                    HtmlField::class,
+                    HtmlFieldOption::make()
+                        ->label(trans('plugins/real-estate::property.moderation_status'))
+                        ->content(view('plugins/real-estate::partials.moderation-status', [
+                            'model' => $this->getModel(),
+                        ])->render())
+                );
+            })
             ->add('categories[]', 'categoryMulti', [
                 'label' => trans('plugins/real-estate::project.form.categories'),
                 'choices' => get_property_categories_with_children(),

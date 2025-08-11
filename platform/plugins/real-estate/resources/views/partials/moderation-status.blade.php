@@ -1,4 +1,4 @@
-@if ($model->is_pending_moderation)
+@if ($model->is_pending_moderation && is_in_admin(true))
     <div class="btn-list">
         <x-core::button type="button" color="success" icon="ti ti-check" size="sm" data-bs-toggle="modal" data-bs-target="#approve-property-modal">
             {{ trans('plugins/real-estate::property.status_moderation.approve') }}

@@ -2,6 +2,258 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./platform/plugins/announcement/resources/sass/announcement.scss":
+/*!************************************************************************!*\
+  !*** ./platform/plugins/announcement/resources/sass/announcement.scss ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/backup/resources/sass/backup.scss":
+/*!************************************************************!*\
+  !*** ./platform/plugins/backup/resources/sass/backup.scss ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/contact/resources/sass/contact-public.scss":
+/*!*********************************************************************!*\
+  !*** ./platform/plugins/contact/resources/sass/contact-public.scss ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/contact/resources/sass/contact.scss":
+/*!**************************************************************!*\
+  !*** ./platform/plugins/contact/resources/sass/contact.scss ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/cookie-consent/resources/sass/cookie-consent.scss":
+/*!****************************************************************************!*\
+  !*** ./platform/plugins/cookie-consent/resources/sass/cookie-consent.scss ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/faq/resources/sass/faq.scss":
+/*!******************************************************!*\
+  !*** ./platform/plugins/faq/resources/sass/faq.scss ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/language/resources/sass/language-public.scss":
+/*!***********************************************************************!*\
+  !*** ./platform/plugins/language/resources/sass/language-public.scss ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/language/resources/sass/language.scss":
+/*!****************************************************************!*\
+  !*** ./platform/plugins/language/resources/sass/language.scss ***!
+  \****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/newsletter/resources/sass/newsletter.scss":
+/*!********************************************************************!*\
+  !*** ./platform/plugins/newsletter/resources/sass/newsletter.scss ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/payment/resources/sass/payment-setting.scss":
+/*!**********************************************************************!*\
+  !*** ./platform/plugins/payment/resources/sass/payment-setting.scss ***!
+  \**********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/payment/resources/sass/payment.scss":
+/*!**************************************************************!*\
+  !*** ./platform/plugins/payment/resources/sass/payment.scss ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/real-estate/resources/sass/account-admin.scss":
+/*!************************************************************************!*\
+  !*** ./platform/plugins/real-estate/resources/sass/account-admin.scss ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/real-estate/resources/sass/calendar-backend.scss":
+/*!***************************************************************************!*\
+  !*** ./platform/plugins/real-estate/resources/sass/calendar-backend.scss ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/real-estate/resources/sass/currencies.scss":
+/*!*********************************************************************!*\
+  !*** ./platform/plugins/real-estate/resources/sass/currencies.scss ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/real-estate/resources/sass/dashboard/style-rtl.scss":
+/*!******************************************************************************!*\
+  !*** ./platform/plugins/real-estate/resources/sass/dashboard/style-rtl.scss ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/real-estate/resources/sass/dashboard/style.scss":
+/*!**************************************************************************!*\
+  !*** ./platform/plugins/real-estate/resources/sass/dashboard/style.scss ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/real-estate/resources/sass/front-auth.scss":
+/*!*********************************************************************!*\
+  !*** ./platform/plugins/real-estate/resources/sass/front-auth.scss ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/real-estate/resources/sass/real-estate.scss":
+/*!**********************************************************************!*\
+  !*** ./platform/plugins/real-estate/resources/sass/real-estate.scss ***!
+  \**********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/real-estate/resources/sass/review.scss":
+/*!*****************************************************************!*\
+  !*** ./platform/plugins/real-estate/resources/sass/review.scss ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/social-login/resources/sass/social-login.scss":
+/*!************************************************************************!*\
+  !*** ./platform/plugins/social-login/resources/sass/social-login.scss ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./platform/plugins/translation/resources/sass/translation.scss":
+/*!**********************************************************************!*\
+  !*** ./platform/plugins/translation/resources/sass/translation.scss ***!
+  \**********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./platform/themes/homzen/assets/js/script.js":
 /*!****************************************************!*\
   !*** ./platform/themes/homzen/assets/js/script.js ***!
@@ -2286,7 +2538,28 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
 /******/ 			"/themes/homzen/js/script": 0,
-/******/ 			"themes/homzen/css/style": 0
+/******/ 			"vendor/core/plugins/real-estate/css/dashboard/style": 0,
+/******/ 			"vendor/core/plugins/social-login/css/social-login": 0,
+/******/ 			"vendor/core/plugins/translation/css/translation": 0,
+/******/ 			"themes/homzen/css/style": 0,
+/******/ 			"vendor/core/plugins/announcement/css/announcement": 0,
+/******/ 			"vendor/core/plugins/backup/css/backup": 0,
+/******/ 			"vendor/core/plugins/contact/css/contact-public": 0,
+/******/ 			"vendor/core/plugins/contact/css/contact": 0,
+/******/ 			"vendor/core/plugins/cookie-consent/css/cookie-consent": 0,
+/******/ 			"vendor/core/plugins/faq/css/faq": 0,
+/******/ 			"vendor/core/plugins/language/css/language-public": 0,
+/******/ 			"vendor/core/plugins/language/css/language": 0,
+/******/ 			"vendor/core/plugins/newsletter/css/newsletter": 0,
+/******/ 			"vendor/core/plugins/payment/css/payment-setting": 0,
+/******/ 			"vendor/core/plugins/payment/css/payment": 0,
+/******/ 			"vendor/core/plugins/real-estate/css/calendar-backend": 0,
+/******/ 			"vendor/core/plugins/real-estate/css/front-auth": 0,
+/******/ 			"vendor/core/plugins/real-estate/css/account-admin": 0,
+/******/ 			"vendor/core/plugins/real-estate/css/currencies": 0,
+/******/ 			"vendor/core/plugins/real-estate/css/review": 0,
+/******/ 			"vendor/core/plugins/real-estate/css/real-estate": 0,
+/******/ 			"vendor/core/plugins/real-estate/css/dashboard/style-rtl": 0
 /******/ 		};
 /******/ 		
 /******/ 		// no chunk on demand loading
@@ -2336,8 +2609,29 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	__webpack_require__.O(undefined, ["themes/homzen/css/style"], () => (__webpack_require__("./platform/themes/homzen/assets/js/script.js")))
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["themes/homzen/css/style"], () => (__webpack_require__("./platform/themes/homzen/assets/sass/style.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/themes/homzen/assets/js/script.js")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/themes/homzen/assets/sass/style.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/translation/resources/sass/translation.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/social-login/resources/sass/social-login.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/real-estate/resources/sass/dashboard/style.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/real-estate/resources/sass/dashboard/style-rtl.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/real-estate/resources/sass/real-estate.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/real-estate/resources/sass/review.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/real-estate/resources/sass/currencies.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/real-estate/resources/sass/account-admin.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/real-estate/resources/sass/front-auth.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/real-estate/resources/sass/calendar-backend.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/payment/resources/sass/payment.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/payment/resources/sass/payment-setting.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/newsletter/resources/sass/newsletter.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/language/resources/sass/language.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/language/resources/sass/language-public.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/faq/resources/sass/faq.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/cookie-consent/resources/sass/cookie-consent.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/contact/resources/sass/contact.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/contact/resources/sass/contact-public.scss")))
+/******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/backup/resources/sass/backup.scss")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["vendor/core/plugins/real-estate/css/dashboard/style","vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/style","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl"], () => (__webpack_require__("./platform/plugins/announcement/resources/sass/announcement.scss")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

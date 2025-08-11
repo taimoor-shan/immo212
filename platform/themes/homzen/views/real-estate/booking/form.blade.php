@@ -345,7 +345,7 @@
         }
 
         .info-value {
-            font-weight: 600;
+            font-weight: 500;
             color: #082479;
         }
 
@@ -386,7 +386,7 @@
         .total-price .price-label,
         .total-price .price-value {
             font-size: 1.1rem;
-            font-weight: 600;
+            font-weight: 500;
             color: var(--primary-color);
         }
 
@@ -477,7 +477,7 @@
         }
 
         .payment-name {
-            font-weight: 600;
+            font-weight: 500;
             color: #082479;
             margin-bottom: 0.25rem;
         }
@@ -520,7 +520,7 @@
 
         .form-submit .tf-btn {
             font-size: 1.1rem;
-            font-weight: 600;
+            font-weight: 500;
             padding: 1rem 2rem;
             min-height: 56px;
             position: relative;

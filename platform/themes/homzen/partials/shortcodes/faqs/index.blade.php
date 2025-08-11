@@ -1,4 +1,4 @@
-<section class="flat-section">
+<section class="flat-section faqSec">
     <div class="container">
         {!! Theme::partial('shortcode-heading', ['shortcode' => $shortcode]) !!}
 

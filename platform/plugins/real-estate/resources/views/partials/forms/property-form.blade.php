@@ -1,7 +1,7 @@
 @extends('core/base::forms.form')
 
 @section('form_end')
-    @if($form->getModel()?->is_pending_moderation)
+    @if($form->getModel()?->is_pending_moderation && is_in_admin(true))
         <x-core::modal.action
             id="approve-property-modal"
             type="success"

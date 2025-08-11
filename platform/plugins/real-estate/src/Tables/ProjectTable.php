@@ -4,6 +4,7 @@ namespace Botble\RealEstate\Tables;
 
 use Botble\Base\Facades\BaseHelper;
 use Botble\RealEstate\Enums\ProjectStatusEnum;
+use Botble\RealEstate\Enums\ModerationStatusEnum;
 use Botble\RealEstate\Models\Investor;
 use Botble\RealEstate\Models\Project;
 use Botble\Table\Abstracts\TableAbstract;
@@ -15,6 +16,7 @@ use Botble\Table\BulkChanges\SelectBulkChange;
 use Botble\Table\BulkChanges\StatusBulkChange;
 use Botble\Table\Columns\Column;
 use Botble\Table\Columns\CreatedAtColumn;
+use Botble\Table\Columns\EnumColumn;
 use Botble\Table\Columns\IdColumn;
 use Botble\Table\Columns\ImageColumn;
 use Botble\Table\Columns\NameColumn;
@@ -23,6 +25,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Schema;
 
 class ProjectTable extends TableAbstract
 {
@@ -46,6 +49,12 @@ class ProjectTable extends TableAbstract
             ->editColumn('unique_id', function (Project $item) {
                 return BaseHelper::clean($item->unique_id ?: '&mdash;');
             });
+        
+        if (Schema::hasColumn('re_projects', 'moderation_status')) {
+            $data->editColumn('moderation_status', function (Project $item) {
+                return BaseHelper::clean($item->moderation_status_html);
+            });
+        }
 
         return $this->toJson($data);
     }
@@ -64,13 +73,17 @@ class ProjectTable extends TableAbstract
                 'created_at',
                 'unique_id',
             ]);
+        
+        if (Schema::hasColumn('re_projects', 'moderation_status')) {
+            $query->addSelect('moderation_status');
+        }
 
         return $this->applyScopes($query);
     }
 
     public function columns(): array
     {
-        return [
+        $columns = [
             IdColumn::make(),
             ImageColumn::make()
                 ->searchable(false)
@@ -81,8 +94,17 @@ class ProjectTable extends TableAbstract
             Column::make('unique_id')
                 ->title(trans('plugins/real-estate::project.unique_id')),
             CreatedAtColumn::make(),
-            StatusColumn::make(),
         ];
+        
+        if (Schema::hasColumn('re_projects', 'moderation_status')) {
+            $columns[] = EnumColumn::make('moderation_status')
+                ->title(trans('plugins/real-estate::property.moderation_status'))
+                ->width(150);
+        }
+        
+        $columns[] = StatusColumn::make();
+        
+        return $columns;
     }
 
     public function buttons(): array
@@ -119,15 +141,25 @@ class ProjectTable extends TableAbstract
 
     public function getBulkChanges(): array
     {
-        return [
+        $changes = [
             NameBulkChange::make(),
             StatusBulkChange::make()
                 ->choices(ProjectStatusEnum::labels()),
-            SelectBulkChange::make()
-                ->name('investor_id')
-                ->title(trans('plugins/real-estate::project.form.investor'))
-                ->searchable()
-                ->choices(fn () => Investor::query()->pluck('name', 'id')->all()),
         ];
+        
+        if (Schema::hasColumn('re_projects', 'moderation_status')) {
+            $changes[] = StatusBulkChange::make()
+                ->name('moderation_status')
+                ->title(trans('plugins/real-estate::property.moderation_status'))
+                ->choices(ModerationStatusEnum::labels());
+        }
+        
+        $changes[] = SelectBulkChange::make()
+            ->name('investor_id')
+            ->title(trans('plugins/real-estate::project.form.investor'))
+            ->searchable()
+            ->choices(fn () => Investor::query()->pluck('name', 'id')->all());
+            
+        return $changes;
     }
 }

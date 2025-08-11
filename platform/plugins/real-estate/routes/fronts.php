@@ -179,6 +179,13 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
                     Route::post('renew/{id}', [AccountPropertyController::class, 'renew'])->name('renew')->wherePrimaryKey();
                 });
 
+                if (RealEstateHelper::isEnabledProjects()) {
+                    Route::prefix('projects')->name('projects.')->group(function (): void {
+                        Route::resource('', \Botble\RealEstate\Http\Controllers\Fronts\AccountProjectController::class)->parameters(['' => 'project']);
+                        Route::post('renew/{id}', [\Botble\RealEstate\Http\Controllers\Fronts\AccountProjectController::class, 'renew'])->name('renew')->wherePrimaryKey();
+                    });
+                }
+
                 Route::prefix('invoices')
                     ->name('invoices.')
                     ->controller(InvoiceController::class)

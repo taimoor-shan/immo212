@@ -78,12 +78,11 @@
 .property-availability-calendar .flatpickr-next-month svg {
   width: 20px;
   height: 20px;
-  fill: #ffffff;
+  fill: #000000;
 }
-.property-availability-calendar .flatpickr-prev-month:hover svg,
-.property-availability-calendar .flatpickr-next-month:hover svg {
-  fill: #ffffff !important;
-  background: #007bff !important;
+.property-availability-calendar .flatpickr-prev-month:hover,
+.property-availability-calendar .flatpickr-next-month:hover {
+  background: #b5caf0 !important;
 }
 .property-availability-calendar .flatpickr-next-month {
   right: 10px !important;

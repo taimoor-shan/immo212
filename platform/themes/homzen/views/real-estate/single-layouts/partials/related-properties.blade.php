@@ -11,10 +11,10 @@
     <section class="flat-section pt-0 flat-latest-property">
         <div class="container">
             <div class="box-title">
-                <div class="text-subtitle text-prime">{{ __('Featured properties') }}</div>
-                <h2 class="section-title mt-4">{{ __('The Most Recent Estate') }}</h2>
+                <!-- <div class="text-subtitle text-prime">{{ __('Featured properties') }}</div> -->
+                <h2 class="section-title mt-4">{{ __('Similiar Properties') }}</h2>
             </div>
-            <div class="swiper tf-latest-property" data-preview-lg="3" data-preview-md="2" data-preview-sm="2" data-space="30" data-loop="true">
+            <div class="swiper tf-latest-property" data-preview-lg="4" data-preview-md="3" data-preview-sm="2" data-space="30" data-loop="true">
                 <div class="swiper-wrapper">
                     @foreach($relatedProperties as $property)
                         <div class="swiper-slide">

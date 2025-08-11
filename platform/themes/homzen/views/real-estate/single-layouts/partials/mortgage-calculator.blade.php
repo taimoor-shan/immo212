@@ -1,7 +1,11 @@
 @php
     // Get property price - use a default if not available
     $property_price = $property->price_numeric ?? 500000;
-    $currency_symbol = 'MAD';
+
+    // Get current application currency
+    $current_currency = get_application_currency();
+    $currency_symbol = $current_currency ? $current_currency->symbol : 'USD';
+    $currency_title = $current_currency ? $current_currency->title : 'USD';
     
     // Default calculator settings with sensible defaults for Morocco
     $mcal_terms = theme_option('mcal_terms', 25); // Default 25 years
@@ -34,7 +38,7 @@
             </div>
 
             <!-- Data Display Section -->
-            <div class="mortgage-calculator-data w-100 mb-4" role="complementary">
+            <div class="mortgage-calculator-data w-100 mb-4 ms-0 ms-lg-5" role="complementary">
                 <ul class="list-unstyled list-lined" role="list">
                     <li class="mortgage-calculator-data-1 d-flex align-items-center justify-content-between stats-data-1" role="listitem">
                         <div class="list-lined-item w-100 d-flex justify-content-between py-2">	
@@ -91,7 +95,7 @@
                     @endif
 
                     @if($mcal_pmi_enable)
-                    <li class="mortgage-calculator-data-4 d-flex align-items-center justify-content-between stats-data-4 rslt-pmi" role="listitem" style="display:none;">
+                    <li class="mortgage-calculator-data-4 d-flex align-items-center justify-content-between stats-data-4 rslt-pmi" role="listitem">
                         <div class="list-lined-item w-100 d-flex justify-content-between py-2">	
                             <span>
                                 <i class="ti ti-badge me-1" aria-hidden="true"></i> 
@@ -128,7 +132,6 @@
                                    placeholder="{{ __('Total Amount') }}" 
                                    value="{{ intval($property_price) }}">
                             <span class="input-group-text" aria-hidden="true">{{ $currency_symbol }}</span>
-
                         </div>
                     </div>
                 </div>
@@ -161,11 +164,10 @@
                     <div class="form-group mb-3">
                         <label class="form-label" for="loanTermInYears">{{ __('Loan Terms (Years)') }}</label>
                         <div class="input-group">
-                        
                             <input id="loanTermInYears" type="text" class="form-control" 
                                    placeholder="{{ __('Loan Terms (Years)') }}" 
                                    value="{{ $mcal_terms }}">
-                                       <span class="input-group-text" aria-hidden="true">
+                            <span class="input-group-text" aria-hidden="true">
                               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#6c757d" d="M19 4h-2V3a1 1 0 0 0-2 0v1H9V3a1 1 0 0 0-2 0v1H5a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3m1 15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-7h16Zm0-9H4V7a1 1 0 0 1 1-1h2v1a1 1 0 0 0 2 0V6h6v1a1 1 0 0 0 2 0V6h2a1 1 0 0 1 1 1Z"/></svg>
                             </span>
                         </div>
@@ -195,7 +197,6 @@
                                    placeholder="{{ __('Home Insurance') }}" 
                                    value="{{ $mcal_hi }}">
                             <span class="input-group-text" aria-hidden="true">{{ $currency_symbol }}</span>
-
                         </div>
                     </div>
                 </div>
@@ -210,7 +211,6 @@
                                    placeholder="{{ __('Monthly HOA Fees') }}" 
                                    value="{{ $mcal_hoa }}">
                             <span class="input-group-text" aria-hidden="true">{{ $currency_symbol }}</span>
-
                         </div>
                     </div>
                 </div>
@@ -276,10 +276,15 @@
                 return 0;
             }
             var value = element.val();
-            return parseFloat((value + '').replace(/[^0-9.-]/g, '')) || 0;
+            var parsed = parseFloat((value + '').replace(/[^0-9.-]/g, ''));
+            return isNaN(parsed) ? 0 : parsed;
         }
         
         function calculateMonthlyPayment(principal, annualInterestRate, loanTermInYears) {
+            if (principal <= 0 || loanTermInYears <= 0) {
+                return 0;
+            }
+            
             if (annualInterestRate === 0) {
                 return principal / (loanTermInYears * 12);
             }
@@ -295,14 +300,55 @@
         }
         
         function numberFormat(number, decimals) {
-            if (decimals) {
-                return number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            if (isNaN(number) || number < 0) {
+                return '0';
             }
-            return Math.round(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+            @php
+                $decimalSeparator = setting('real_estate_decimal_separator', '.');
+                if ($decimalSeparator == 'space') $decimalSeparator = ' ';
+
+                $thousandSeparator = setting('real_estate_thousands_separator', ',');
+                if ($thousandSeparator == 'space') $thousandSeparator = ' ';
+
+                $currencyDecimals = $current_currency ? $current_currency->decimals : 2;
+            @endphp
+
+            var decimalPlaces = decimals ? {{ $currencyDecimals }} : 0;
+            var decimalSeparator = '{{ $decimalSeparator }}';
+            var thousandSeparator = '{{ $thousandSeparator }}';
+
+            // Format the number with proper decimals
+            var formatted = number.toFixed(decimalPlaces);
+
+            // Split into integer and decimal parts
+            var parts = formatted.split('.');
+            var integerPart = parts[0];
+            var decimalPart = parts[1];
+
+            // Add thousand separators to integer part
+            integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+
+            // Combine parts with proper decimal separator
+            if (decimalPlaces > 0 && decimalPart) {
+                return integerPart + decimalSeparator + decimalPart;
+            }
+
+            return integerPart;
         }
         
         function currencyFormat(value) {
-            return value + ' MAD';
+            @if($current_currency && $current_currency->is_prefix_symbol)
+                @php
+                    $space = setting('real_estate_add_space_between_price_and_currency', 0) == 1 ? ' ' : '';
+                @endphp
+                return '{{ $currency_symbol }}{{ $space }}' + value;
+            @else
+                @php
+                    $space = setting('real_estate_add_space_between_price_and_currency', 0) == 1 ? ' ' : '';
+                @endphp
+                return value + '{{ $space }}{{ $currency_symbol }}';
+            @endif
         }
         
         var myChart = null;
@@ -364,46 +410,82 @@
             var annualPropertyTaxRate = parseNumberInput('#annualPropertyTaxRate');
             var annualHomeInsurance = parseNumberInput('#annualHomeInsurance');
             var monthlyHOAFees = parseNumberInput('#monthlyHOAFees');
-            var pmi = parseNumberInput('#pmi');
+            var pmiRate = parseNumberInput('#pmi');
             
+            console.log('Input values:', {
+                homePrice: homePrice,
+                downPaymentPercentage: downPaymentPercentage,
+                annualInterestRate: annualInterestRate,
+                loanTermInYears: loanTermInYears,
+                pmiRate: pmiRate
+            });
+            
+            // Calculate basic values
             var downPayment = homePrice * (downPaymentPercentage / 100);
             var principal = homePrice - downPayment;
             var monthlyPayment = calculateMonthlyPayment(principal, annualInterestRate, loanTermInYears);
             var monthlyPropertyTax = (homePrice * (annualPropertyTaxRate / 100)) / 12;
             var monthlyHomeInsurance = annualHomeInsurance / 12;
+            
+            // PMI calculation - Fixed logic
             var pmiRequired = downPaymentPercentage < 20;
-            var monthlyPMI = pmiRequired ? (principal * (pmi / 100)) / 12 : 0;
+            var monthlyPMI = 0;
+            
+            if (pmiRequired && pmiRate > 0 && principal > 0) {
+                // PMI is calculated on the loan amount (principal) annually, then divided by 12
+                monthlyPMI = (principal * (pmiRate / 100)) / 12;
+            }
+            
+            console.log('PMI calculation:', {
+                pmiRequired: pmiRequired,
+                pmiRate: pmiRate,
+                principal: principal,
+                monthlyPMI: monthlyPMI
+            });
             
             var totalMonthlyPayment = monthlyPayment + monthlyPropertyTax + monthlyHomeInsurance + monthlyHOAFees + monthlyPMI;
             
-            // Update UI
+            // Update UI elements
             $('#downPaymentResult').html(currencyFormat(numberFormat(downPayment, true)));
             $('#loadAmountResult').html(currencyFormat(numberFormat(principal, true)));
             $('#monthlyMortgagePaymentResult').html(currencyFormat(numberFormat(monthlyPayment, true)));
             $('#monthlyPropertyTaxResult').html(currencyFormat(numberFormat(monthlyPropertyTax, true)));
             $('#monthlyHomeInsuranceResult').html(currencyFormat(numberFormat(monthlyHomeInsurance, true)));
-            
-            if (pmiRequired) {
-                $('.rslt-pmi').show();
-                $('#monthlyPMIResult').html(currencyFormat(numberFormat(monthlyPMI, true)));
-            } else {
-                $('.rslt-pmi').hide();
-            }
-            
             $('#monthlyHOAResult').html(currencyFormat(numberFormat(monthlyHOAFees, true)));
             $('#m_monthly_val').html(currencyFormat(numberFormat(totalMonthlyPayment, true)));
             
-            // Update chart
-            var chartData = [
-                { label: 'Mortgage', value: monthlyPayment, color: '#ff6384' },
-                { label: 'Property Tax', value: monthlyPropertyTax, color: '#36a2eb' },
-                { label: 'Insurance', value: monthlyHomeInsurance, color: '#ffce56' }
-            ];
+            // Handle PMI display - Show/hide entire row based on down payment requirement
+            var pmiElement = $('.rslt-pmi');
+            var pmiEnabled = $('#pmi').length > 0 && !$('#pmi').is(':hidden');
             
-            if (monthlyHOAFees > 0) {
-                chartData.push({ label: 'HOA', value: monthlyHOAFees, color: '#c2d500' });
+            // Only show PMI row if PMI is enabled AND down payment is less than 20%
+            if (pmiEnabled && pmiRequired) {
+                pmiElement.show();
+                $('#monthlyPMIResult').html(currencyFormat(numberFormat(monthlyPMI, true)));
+                console.log('PMI row shown - Down payment:', downPaymentPercentage + '%', 'PMI amount:', monthlyPMI);
+            } else {
+                pmiElement.hide();
+                console.log('PMI row hidden - Down payment:', downPaymentPercentage + '%', 'PMI Required:', pmiRequired);
             }
             
+            // Update chart data
+            var chartData = [
+                { label: 'Mortgage Payment', value: monthlyPayment, color: '#ff6384' }
+            ];
+            
+            if (monthlyPropertyTax > 0) {
+                chartData.push({ label: 'Property Tax', value: monthlyPropertyTax, color: '#36a2eb' });
+            }
+            
+            if (monthlyHomeInsurance > 0) {
+                chartData.push({ label: 'Home Insurance', value: monthlyHomeInsurance, color: '#ffce56' });
+            }
+            
+            if (monthlyHOAFees > 0) {
+                chartData.push({ label: 'HOA Fees', value: monthlyHOAFees, color: '#c2d500' });
+            }
+            
+            // Only add PMI to chart if it's actually required and being charged
             if (pmiRequired && monthlyPMI > 0) {
                 chartData.push({ label: 'PMI', value: monthlyPMI, color: '#4bc0c0' });
             }
@@ -411,11 +493,19 @@
             updateChart(chartData);
         }
         
-        // Set up event handlers
-        $('#houzez-calculator-form input').on('input', calculateMortgage);
+        // Set up event handlers with debouncing
+        var calculationTimeout;
+        function debouncedCalculation() {
+            clearTimeout(calculationTimeout);
+            calculationTimeout = setTimeout(calculateMortgage, 300);
+        }
+        
+        $('#houzez-calculator-form input').on('input keyup change', debouncedCalculation);
         
         // Initial calculation
-        setTimeout(calculateMortgage, 100);
+        setTimeout(calculateMortgage, 500);
+        
+        console.log('Mortgage Calculator: Initialization complete');
     }
     
     // Start initialization
@@ -449,7 +539,7 @@
 
 .mortgage-calculator-monthly-payment {
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 500;
     color: #1a1a1a;
 }
 
@@ -460,11 +550,10 @@
 
 .mortgage-calculator-data .list-lined-item {
     border-bottom: 1px solid #e5e5e5;
+    font-size: 14px;
 }
 
-.mortgage-calculator-data .list-lined-item:last-child {
-    border-bottom: none;
-}
+
 
 .mortgage-calculator-data .list-lined-item i {
     color: #00BA74;

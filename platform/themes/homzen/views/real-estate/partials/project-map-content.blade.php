@@ -9,7 +9,7 @@
             </div>
             <div class="content">
                 <p class="location">
-                    <x-core::icon name="ti ti-map-pin" />
+                   
                     __location__
                 </p>
                 <div class="title">

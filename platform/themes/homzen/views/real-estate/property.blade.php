@@ -57,7 +57,7 @@
                 <!-- Location moved to where meta-list was -->
                 @if($property->short_address)
                     <p class="location">
-                        <x-core::icon name="ti ti-map-pin" />
+                       
                         {{ $property->short_address }}
                     </p>
                 @endif

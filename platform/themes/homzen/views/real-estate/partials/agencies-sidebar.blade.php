@@ -29,7 +29,7 @@
                                         <h6 class="mb-1 textMuted">{{ $agency->name }}</h6>
                                     @else
                                         <a href="{{ $agency->url }}">
-                         a                   <h6 class="link mb-1 textMuted">{{ $agency->name }}</h6>
+                                   <h6 class="link mb-1 textMuted">{{ $agency->name }}</h6>
                                         </a>
                                     @endif
                                 </div>

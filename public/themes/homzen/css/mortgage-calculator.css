@@ -1,0 +1,222 @@
+/* Mortgage Calculator Styles */
+.mortgage-calculator-container {
+    padding: 30px 0;
+}
+
+/* Chart Section */
+.mortgage-calculator-chart {
+    position: relative;
+    min-height: 250px;
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+.mortgage-calculator-monthly-payment-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    pointer-events: none;
+}
+
+.mortgage-calculator-monthly-payment {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.2;
+}
+
+.mortgage-calculator-monthly-requency {
+    font-size: 14px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+/* Data Display Section */
+.mortgage-calculator-data {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.list-lined {
+    margin: 0;
+    padding: 0;
+}
+
+.list-lined-item {
+    border-bottom: 1px solid #e9ecef;
+    padding: 12px 0 !important;
+}
+
+.mortgage-calculator-data li:last-child .list-lined-item {
+    border-bottom: none;
+}
+
+/* Color indicators for data items */
+.stats-data-1 .ti-badge { color: #ff6384; }
+.stats-data-01 .ti-badge { color: #36a2eb; }
+.stats-data-2 .ti-badge { color: #36a2eb; }
+.stats-data-3 .ti-badge { color: #ffce56; }
+.stats-data-4 .ti-badge { color: #4bc0c0; }
+.stats-data-5 .ti-badge { color: #c2d500; }
+
+/* Form Styles */
+#houzez-calculator-form {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+#houzez-calculator-form .form-group {
+    margin-bottom: 20px;
+}
+
+#houzez-calculator-form .form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+#houzez-calculator-form .input-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    width: 100%;
+}
+
+#houzez-calculator-form .form-control {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #dee2e6;
+    appearance: none;
+    border-radius: 8px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+    margin: 0;
+
+}
+
+#houzez-calculator-form .input-group > .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#houzez-calculator-form .input-group-text {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #6c757d;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: 0;
+}
+
+#houzez-calculator-form .input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    margin-left: 0;
+}
+
+#houzez-calculator-form .form-control:focus {
+    color: #212529;
+    background-color: #fff;
+    border-color: #4BC0C0;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(75, 192, 192, 0.15);
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .mortgage-calculator-chart {
+        margin-bottom: 30px;
+    }
+    
+    .d-flex.flex-lg-row {
+        flex-direction: column !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .mortgage-calculator-monthly-payment {
+        font-size: 20px;
+    }
+    
+    .mortgage-calculator-monthly-requency {
+        font-size: 12px;
+    }
+    
+    #houzez-calculator-form {
+        padding: 15px;
+    }
+}
+
+/* Dark mode support */
+body.dark-mode .mortgage-calculator-data {
+    background: #2b2b2b;
+}
+
+body.dark-mode .list-lined-item {
+    border-color: #404040;
+}
+
+body.dark-mode #houzez-calculator-form {
+    background: #2b2b2b;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode #houzez-calculator-form .form-control {
+    background: #1a1a1a;
+    border-color: #404040;
+    color: #e0e0e0;
+}
+
+body.dark-mode #houzez-calculator-form .input-group-text {
+    background: #1a1a1a;
+    border-color: #404040;
+    color: #a0a0a0;
+}
+
+body.dark-mode .mortgage-calculator-monthly-payment {
+    color: #e0e0e0;
+}
+
+body.dark-mode .mortgage-calculator-monthly-requency {
+    color: #a0a0a0;
+}
+
+/* Animation */
+.mortgage-calculator-monthly-payment {
+    transition: all 0.3s ease;
+}
+
+/* Loading state */
+.mortgage-calculator-container.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}

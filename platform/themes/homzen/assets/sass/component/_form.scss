@@ -334,7 +334,7 @@
 
         .box-filter {
             position: absolute;
-            bottom: -36px;
+            bottom: -37px;
             right: 0;
             width: max-content;
             flex-shrink: 0;
@@ -352,7 +352,7 @@
                 gap: 10px;
                 background: #ffffff;
                 padding: 6px 10px 6px;
-                border-radius: $radius;
+                border-radius: 4px;
                 border-top-left-radius: 0;
                 border-top-right-radius: 0;
 

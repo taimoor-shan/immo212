@@ -874,12 +874,20 @@ h2.section-title {
         gap: 0.5rem;
         align-items: center;
     }
-}
 
-.dropdown-item.active, .dropdown-item:active {
+    .dropdown-menu{
+    padding-block: 0;
+    .dropdown-item{
+color: $primary;
+    }
+    .dropdown-item.active, .dropdown-item:active {
     background-color: var(--primary-color);
     color: #fff;
 }
+}
+}
+
+
 
 .agent-detail-section {
     margin: 2rem 0;

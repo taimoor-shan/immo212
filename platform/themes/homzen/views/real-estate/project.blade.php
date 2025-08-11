@@ -8,6 +8,15 @@
     Theme::asset()->usePath()->add('project-properties-table', 'css/project-properties-table.css');
     Theme::layout('full-width');
     Theme::set('pageTitle', $project->name);
+
+     $projectProperties = app(\Botble\RealEstate\Repositories\Interfaces\PropertyInterface::class)
+    ->getPropertiesByConditions(
+        [
+            're_properties.project_id' => $project->getKey(),
+        ],
+        100, // Get up to 100 properties
+        \Botble\RealEstate\Facades\RealEstateHelper::getPropertyRelationsQuery(),
+    );
 @endphp
 
 @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.gallery-slider'), ['model' => $project])
@@ -186,106 +195,8 @@
                         </ul>
                     </div>
                 @endif
-                <div class="single-property-element single-property-map">
-                    <div class="h7 title fw-6">{{ __('Location') }}</div>
-                    @if (theme_option('real_estate_show_map_on_single_detail_page', 'yes') === 'yes')
-                        @if ($project->latitude && $project->longitude)
-                            <div data-bb-toggle="detail-map" id="map" style="min-height: 400px;" data-tile-layer="{{ RealEstateHelper::getMapTileLayer() }}" data-center="{{ json_encode([$project->latitude, $project->longitude]) }}" data-map-icon="{{ $project->map_icon }}"></div>
-                        @else
-                            <iframe width="100%" style="min-height: 400px" src="https://maps.google.com/maps?q={{ urlencode($project->location) }}%20&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
-                        @endif
-                    @endif
 
-                    @if ($locationOnMap = ($project->location ?: $project->short_address))
-                        @php
-                            $mapUrl = 'https://www.google.com/maps/search/' . urlencode($locationOnMap);
-
-                            if ($project->latitude && $project->longitude) {
-                                $mapUrl = 'https://maps.google.com/?q=' . $project->latitude . ',' . $project->longitude;
-                            }
-                        @endphp
-                        <ul class="info-map">
-                            <li>
-                                <div class="fw-6">{{ __('Address') }}</div>
-                                <a class="mt-4 text-variant-1" href="{{ $mapUrl }}" target="_blank">
-                                    {{ $locationOnMap }}
-                                </a>
-                            </li>
-                        </ul>
-                    @endif
-
-                    @include(Theme::getThemeNamespace('views.real-estate.partials.social-sharing'), ['model' => $project])
-                </div>
-
-                {!! apply_filters('after_single_content_detail', null, $project) !!}
-
-                {!! apply_filters(BASE_FILTER_PUBLIC_COMMENT_AREA, null, $project) !!}
-
-                @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.reviews'), ['model' => $project])
-            </div>
-            <div class="col-lg-4">
-                <div class="widget-sidebar wrapper-sidebar-right">
-                        <div class="widget-box single-property-contact bg-surface">
-                            <div class="h7 title fw-6">{{ __('Contact Agency') }}</div>
-
-                            @if (! RealEstateHelper::hideAgentInfoInPropertyDetailPage() && ($account = $project->author))
-                                <div class="box-avatar">
-                                    <div class="avatar avt-100 round">
-                                        <a href="{{ $account->url }}" class="d-block">
-                                            {{ RvMedia::image($account->avatar?->url ?: $account->avatar_url, $account->name) }}
-                                        </a>
-                                    </div>
-                                    <div class="info line-clamp-1">
-                                        <div class="text-1 name">
-                                            <a href="{{ $account->url }}">{{ $account->name }}</a>
-                                        </div>
-                                        @if ($account->phone && ! setting('real_estate_hide_agency_phone', false))
-                                            <a href="tel:{{ $account->phone }}" class="info-item">{{ $account->phone }}</a>
-                                        @elseif($hotline = theme_option('hotline'))
-                                            <a href="tel:{{ $hotline }}" class="info-item">{{ $hotline }}</a>
-                                        @endif
-                                        @if ($account->email && ! setting('real_estate_hide_agency_email', false))
-                                            <a href="mailto:{{ $account->email }}" class="info-item">{{ $account->email }}</a>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endif
-
-                            {!! apply_filters('project_right_details_info', null, $project) !!}
-
-                            {!! apply_filters('before_consult_form', null, $project) !!}
-
-                            {!! \Botble\RealEstate\Forms\Fronts\ConsultForm::create()
-                                ->formClass('contact-form')
-                                ->setFormInputWrapperClass('ip-group')
-                                ->modify('content', 'textarea', ['attr' => ['class' => '']])
-                                ->modify('submit', 'submit', ['attr' => ['class' => 'tf-btn primary w-100']])
-                                ->add('type', 'hidden', ['attr' => ['value' => 'project']])
-                                ->add('data_id', 'hidden', ['attr' => ['value' => $project->getKey()]])
-                                ->addBefore('content', 'data_name', 'text', ['label' => false, 'attr' => ['value' => $project->name, 'disabled' => true]])
-                                ->renderForm()
-                            !!}
-
-                            {!! apply_filters('after_consult_form', null, $project) !!}
-                        </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-@php
-    $projectProperties = app(\Botble\RealEstate\Repositories\Interfaces\PropertyInterface::class)
-    ->getPropertiesByConditions(
-        [
-            're_properties.project_id' => $project->getKey(),
-        ],
-        100, // Get up to 100 properties
-        \Botble\RealEstate\Facades\RealEstateHelper::getPropertyRelationsQuery(),
-    );
-@endphp
-
-@if ($projectProperties->isNotEmpty())
+                @if ($projectProperties->isNotEmpty())
     <section class="flat-section pt-0 flat-properties-list">
         <div class="container">
             <div class="box-title mb-5">
@@ -456,6 +367,93 @@
         </div>
     </section>
 @endif
+                <div class="single-property-element single-property-map">
+                    <div class="h7 title fw-6">{{ __('Location') }}</div>
+                    @if (theme_option('real_estate_show_map_on_single_detail_page', 'yes') === 'yes')
+                        @if ($project->latitude && $project->longitude)
+                            <div data-bb-toggle="detail-map" id="map" style="min-height: 400px;" data-tile-layer="{{ RealEstateHelper::getMapTileLayer() }}" data-center="{{ json_encode([$project->latitude, $project->longitude]) }}" data-map-icon="{{ $project->map_icon }}"></div>
+                        @else
+                            <iframe width="100%" style="min-height: 400px" src="https://maps.google.com/maps?q={{ urlencode($project->location) }}%20&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+                        @endif
+                    @endif
+
+                    @if ($locationOnMap = ($project->location ?: $project->short_address))
+                        @php
+                            $mapUrl = 'https://www.google.com/maps/search/' . urlencode($locationOnMap);
+
+                            if ($project->latitude && $project->longitude) {
+                                $mapUrl = 'https://maps.google.com/?q=' . $project->latitude . ',' . $project->longitude;
+                            }
+                        @endphp
+                        <ul class="info-map">
+                            <li>
+                                <div class="fw-6">{{ __('Address') }}</div>
+                                <a class="mt-4 text-variant-1" href="{{ $mapUrl }}" target="_blank">
+                                    {{ $locationOnMap }}
+                                </a>
+                            </li>
+                        </ul>
+                    @endif
+
+                    <!-- @include(Theme::getThemeNamespace('views.real-estate.partials.social-sharing'), ['model' => $project]) -->
+                </div>
+
+                {!! apply_filters('after_single_content_detail', null, $project) !!}
+
+                {!! apply_filters(BASE_FILTER_PUBLIC_COMMENT_AREA, null, $project) !!}
+
+                @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.reviews'), ['model' => $project])
+            </div>
+            <div class="col-lg-4">
+                <div class="widget-sidebar wrapper-sidebar-right">
+                        <div class="widget-box single-property-contact bg-surface">
+                            <div class="h7 title fw-6">{{ __('Contact Agency') }}</div>
+
+                            @if (! RealEstateHelper::hideAgentInfoInPropertyDetailPage() && ($account = $project->author))
+                                <div class="box-avatar">
+                                    <div class="avatar avt-100 round">
+                                        <a href="{{ $account->url }}" class="d-block">
+                                            {{ RvMedia::image($account->avatar?->url ?: $account->avatar_url, $account->name) }}
+                                        </a>
+                                    </div>
+                                    <div class="info line-clamp-1">
+                                        <div class="text-1 name">
+                                            <a href="{{ $account->url }}">{{ $account->name }}</a>
+                                        </div>
+                                        @if ($account->phone && ! setting('real_estate_hide_agency_phone', false))
+                                            <a href="tel:{{ $account->phone }}" class="info-item">{{ $account->phone }}</a>
+                                        @elseif($hotline = theme_option('hotline'))
+                                            <a href="tel:{{ $hotline }}" class="info-item">{{ $hotline }}</a>
+                                        @endif
+                                        @if ($account->email && ! setting('real_estate_hide_agency_email', false))
+                                            <a href="mailto:{{ $account->email }}" class="info-item">{{ $account->email }}</a>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+
+                            {!! apply_filters('project_right_details_info', null, $project) !!}
+
+                            {!! apply_filters('before_consult_form', null, $project) !!}
+
+                            {!! \Botble\RealEstate\Forms\Fronts\ConsultForm::create()
+                                ->formClass('contact-form')
+                                ->setFormInputWrapperClass('ip-group')
+                                ->modify('content', 'textarea', ['attr' => ['class' => '']])
+                                ->modify('submit', 'submit', ['attr' => ['class' => 'tf-btn primary w-100']])
+                                ->add('type', 'hidden', ['attr' => ['value' => 'project']])
+                                ->add('data_id', 'hidden', ['attr' => ['value' => $project->getKey()]])
+                                ->addBefore('content', 'data_name', 'text', ['label' => false, 'attr' => ['value' => $project->name, 'disabled' => true]])
+                                ->renderForm()
+                            !!}
+
+                            {!! apply_filters('after_consult_form', null, $project) !!}
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <template id="map-popup-content">
     <div class="map-popup-content">

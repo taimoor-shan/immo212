@@ -12,7 +12,6 @@
             <div class="top">
                 <div class="d-flex gap-8">
                     <span class="flag-tag vacation-rental">{{ __('Vacation Rental') }}</span>
-                    {!! BaseHelper::clean($property->status->toHtml()) !!}
                 </div>
                 @if (RealEstateHelper::isEnabledWishlist())
                     <div class="d-flex gap-4">
@@ -37,9 +36,9 @@
             @endif
             
             <!-- Property Title -->
-            <{{ $class === 'lg' ? 'h5' : 'div' }} @class(['text-capitalize', 'h7 fw-5' => $class !== 'lg'])>
+            <!-- <{{ $class === 'lg' ? 'h5' : 'div' }} @class(['text-capitalize', 'h7 fw-5' => $class !== 'lg'])>
                 <a href="{{ $property->url }}" class="link line-clamp-1" title="{{ $property->name }}">{!! BaseHelper::clean($property->name) !!}</a>
-            </{{ $class === 'lg' ? 'h5' : 'div' }}>
+            </{{ $class === 'lg' ? 'h5' : 'div' }}> -->
             
             <!-- Price per night -->
             <div class="vacation-rental-price">
@@ -56,7 +55,7 @@
             @endif
             
             <!-- Vacation Rental Specific Info -->
-            <div class="vacation-rental-info">
+            <!-- <div class="vacation-rental-info">
                 <div class="row g-2">
                     @if($property->maximum_guests)
                         <div class="col-6">
@@ -75,7 +74,7 @@
                         </div>
                     @endif
                 </div>
-            </div>
+            </div> -->
             
             <!-- Standard Property Meta -->
             <ul class="meta-list">
@@ -157,13 +156,13 @@
         display: flex;
         align-items: baseline;
         gap: 4px;
-        margin: 8px 0;
+        margin: 0 0 8px;
     }
     
     .vacation-rental-card .price-amount {
         font-size: 1.25rem;
         font-weight: 700;
-        color: #2563eb;
+        color: var(--primary-color);
     }
     
     .vacation-rental-card .price-period {

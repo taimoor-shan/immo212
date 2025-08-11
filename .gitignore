@@ -1,19 +1,60 @@
-/.phpunit.cache
+# Dependencies (will be installed during deployment)
 /node_modules
+/vendor
+
+# Build artifacts (will be built during deployment)
 /public/build
 /public/hot
-/storage/*.key
-/vendor
+
+# Environment files
 /.env
-/original-project
 .env.example
 .env.production
+
+# Cache and temporary files (generated at runtime)
+/storage/*.key
+/storage/logs/*.log
+/storage/debugbar/*.json
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/bootstrap/cache/*.php
+
+# Development and testing
+/.phpunit.cache
 .phpunit.result.cache
-Homestead.json
-Homestead.yaml
-auth.json
-npm-debug.log
-yarn-error.log
+/reference-code
+
+# IDE and editor files
 /.fleet
 /.idea
 /.vscode
+
+# Package manager logs
+npm-debug.log
+yarn-error.log
+
+# Deployment files
+Homestead.json
+Homestead.yaml
+auth.json
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Note: Keep package-lock.json for consistent dependency versions
+# Note: Keep /public/storage and user uploads - no external storage in Coolify

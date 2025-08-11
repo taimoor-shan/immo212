@@ -80,13 +80,13 @@
                                 @if($property->cleaning_fee)
                                     <div class="info-item">
                                         <span class="label">{{ __('Cleaning fee:') }}</span>
-                                        <span class="value">${{ number_format($property->cleaning_fee, 2) }}</span>
+                                        <span class="value">{{ number_format($property->cleaning_fee, 2) }}</span>
                                     </div>
                                 @endif
                                 @if($property->security_deposit)
                                     <div class="info-item">
                                         <span class="label">{{ __('Security deposit:') }}</span>
-                                        <span class="value">${{ number_format($property->security_deposit, 2) }}</span>
+                                        <span class="value">{{ number_format($property->security_deposit, 2) }}</span>
                                     </div>
                                 @endif
                             </div>
@@ -137,7 +137,7 @@
                     <div class="row g-2 text-sm">
                         <div class="col-md-4">
                             <div class="booking-info-item">
-                                <x-core::icon name="ti ti-currency-dollar" class="me-1" />
+                            
                                 <span>{{ __('Base price: :price/night', ['price' => $property->price_format]) }}</span>
                             </div>
                         </div>

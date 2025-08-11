@@ -45,7 +45,7 @@
                     </button>
                 </li>
                 <li>
-                    <div class="property-share-dropdown" style="position: relative; display: inline-block;">
+                    <!-- <div class="property-share-dropdown" style="position: relative; display: inline-block;">
                         <button type="button" class="tf-btn secondary sm" id="shareDropdownBtn">
                             <x-core::icon name="ti ti-share" />
                             <span>Share</span>
@@ -83,7 +83,9 @@
                                 </li>
                             </ul>
                         </div>
-                    </div>
+                    </div> -->
+               
+                @include(Theme::getThemeNamespace('views.real-estate.partials.social-sharing'), ['model' => $property])
                 </li>
             </ul>
         @endif

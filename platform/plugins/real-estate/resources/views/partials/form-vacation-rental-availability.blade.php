@@ -27,7 +27,7 @@
 
             <!-- Calendar Container -->
             <div class="row">
-                <div class="col-md-9">
+                <div class="col-lg-9">
                     <div class="property-availability-calendar">
                         <div id="property-availability-calendar"
                              data-property-id="{{ $propertyId }}">
@@ -36,7 +36,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-lg-3">
                     <!-- Quick Actions -->
                     <div class="card">
                         <div class="card-header">
@@ -57,7 +57,6 @@
                                     {{ __('Maintenance') }}
                                 </button>
                             </div>
-
                             <!-- Block Reason Input -->
                             <div class="mt-3" id="block-reason-container" style="display: none;">
                                 <label for="block-reason" class="form-label">{{ __('Reason (Optional)') }}</label>

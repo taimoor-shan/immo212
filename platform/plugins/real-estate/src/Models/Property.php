@@ -61,6 +61,9 @@ class Property extends BaseModel
         'unique_id',
         'private_notes',
         'floor_plans',
+        'floor_name',
+        'floor_plan_image',
+        'floor_plan_document',
         'reject_reason',
         // Vacation rental specific fields
         'check_in_time',

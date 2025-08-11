@@ -131,7 +131,7 @@ class PropertyForm extends FormAbstract
 
         $squareUnit = setting('real_estate_square_unit', 'm²') ? sprintf('(%s)', setting('real_estate_square_unit', 'm²')) : null;
 
-        if ($this->getModel() && is_in_admin(true)) {
+        if ($this->getModel() && $this->getModel()->exists && $this->getModel()->getKey() && is_in_admin(true)) {
             add_filter('base_action_form_actions_extra', function (?string $html) {
                 return $html . view(
                     'plugins/real-estate::partials.forms.duplicate-button',
@@ -140,6 +140,16 @@ class PropertyForm extends FormAbstract
                             'label' => trans('plugins/real-estate::property.duplicate'),
                         ]
                 )->render();
+            });
+        }
+
+        // Add "Back to Project" button if property belongs to a project
+        if ($this->getModel() && $this->getModel()->project_id && is_in_admin(true)) {
+            add_filter('base_action_form_actions_extra', function (?string $html) {
+                $backButton = '<a href="' . route('project.edit', $this->getModel()->project_id) . '" class="btn btn-outline-secondary me-2">
+                    <i class="fa fa-arrow-left"></i> Back to Project
+                </a>';
+                return $backButton . $html;
             });
         }
 
@@ -493,68 +503,37 @@ class PropertyForm extends FormAbstract
                     ->colspan(2)
             )
             ->add(
-                'floor_plans',
-                RepeaterField::class,
-                RepeaterFieldOption::make()
-                    ->label(trans('plugins/real-estate::property.floor_plans.title'))
-                    ->fields([
-                        'name' => [
-                            'type' => 'text',
-                            'label' => trans('plugins/real-estate::property.floor_plans.name'),
-                            'attributes' => [
-                                'name' => 'name',
-                                'value' => null,
-                                'options' => [
-                                    'class' => 'form-control',
-                                    'data-counter' => 255,
-                                ],
-                            ],
-                        ],
-                        'description' => [
-                            'type' => 'textarea',
-                            'label' => trans('plugins/real-estate::property.floor_plans.description'),
-                            'attributes' => [
-                                'name' => 'description',
-                                'value' => null,
-                                'options' => [
-                                    'class' => 'form-control',
-                                    'rows' => 2,
-                                ],
-                            ],
-                        ],
-                        'image' => [
-                            'type' => 'mediaImage',
-                            'label' => trans('plugins/real-estate::property.floor_plans.image'),
-                            'attributes' => [
-                                'name' => 'image',
-                                'value' => null,
-                            ],
-                        ],
-                        'bedrooms' => [
-                            'type' => 'number',
-                            'label' => trans('plugins/real-estate::property.floor_plans.bedrooms'),
-                            'attributes' => [
-                                'name' => 'bedrooms',
-                                'value' => null,
-                                'options' => [
-                                    'class' => 'form-control',
-                                    'placeholder' => trans('plugins/real-estate::property.floor_plans.bedrooms_placeholder'),
-                                ],
-                            ],
-                        ],
-                        'bathrooms' => [
-                            'type' => 'number',
-                            'label' => trans('plugins/real-estate::property.floor_plans.bathrooms'),
-                            'attributes' => [
-                                'name' => 'bathrooms',
-                                'value' => null,
-                                'options' => [
-                                    'class' => 'form-control',
-                                    'placeholder' => trans('plugins/real-estate::property.floor_plans.bathrooms_placeholder'),
-                                ],
-                            ],
-                        ],
-                    ])
+                'floor_name',
+                TextField::class,
+                [
+                    'label' => 'Floor Name/Number',
+                    'attr' => [
+                        'placeholder' => 'e.g., Ground Floor, Floor 1, Floor 2, Penthouse',
+                    ],
+                    'help_block' => [
+                        'text' => 'Specify which floor this property/unit is located on'
+                    ]
+                ]
+            )
+            ->add(
+                'floor_plan_image',
+                'mediaImage',
+                [
+                    'label' => 'Floor Plan Image',
+                    'help_block' => [
+                        'text' => 'Upload floor plan as image (JPG, PNG, etc.)'
+                    ]
+                ]
+            )
+            ->add(
+                'floor_plan_document',
+                'mediaFile',
+                [
+                    'label' => 'Floor Plan Document',
+                    'help_block' => [
+                        'text' => 'Upload floor plan as document (PDF, DWG, etc.)'
+                    ]
+                ]
             )
             ->addMetaBoxes([
                 'features' => [

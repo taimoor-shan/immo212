@@ -305,6 +305,13 @@ class ProjectForm extends FormAbstract
                     ),
                     'priority' => 0,
                 ],
+                'properties' => [
+                    'title' => 'Properties',
+                    'content' => view('plugins/real-estate::partials.project-properties', [
+                        'project' => $this->getModel()
+                    ])->render(),
+                    'priority' => 2,
+                ],
             ])
             ->add('status', SelectField::class, StatusFieldOption::make()->choices(ProjectStatusEnum::labels())->toArray())
             ->when($this->getModel()->exists, function (FormAbstract $form): void {

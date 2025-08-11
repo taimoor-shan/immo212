@@ -37,11 +37,28 @@ class PropertyController extends BaseController
         return $dataTable->renderTable();
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $this->pageTitle(trans('plugins/real-estate::property.create'));
 
-        return PropertyForm::create()->renderForm();
+        $form = PropertyForm::create();
+
+        // Pre-populate project_id if provided
+        if ($projectId = $request->get('project_id')) {
+            $project = \Botble\RealEstate\Models\Project::find($projectId);
+            if ($project) {
+                $property = new \Botble\RealEstate\Models\Property(['project_id' => $projectId]);
+                $form->setModel($property);
+                $this->breadcrumb()->add($project->name, route('project.edit', $project->id));
+
+                // Add hidden field to track that this property is being created from project
+                if ($request->get('from_project')) {
+                    $form->add('from_project', 'hidden', ['value' => 1]);
+                }
+            }
+        }
+
+        return $form->renderForm();
     }
 
     public function store(
@@ -84,10 +101,22 @@ class PropertyController extends BaseController
             $propertyCategoryService->execute($request, $property);
         });
 
+        $property = $propertyForm->getModel();
+
+        // If property was created from project context, redirect back to project
+        if ($property->project_id && $request->has('from_project')) {
+            return $this
+                ->httpResponse()
+                ->setPreviousUrl(route('project.edit', $property->project_id))
+                ->setNextUrl(route('project.edit', $property->project_id))
+                ->setMessage(trans('plugins/real-estate::property.created_successfully') . ' ' . trans('plugins/real-estate::property.redirecting_to_project'))
+                ->withCreatedSuccessMessage();
+        }
+
         return $this
             ->httpResponse()
             ->setPreviousUrl(route('property.index'))
-            ->setNextUrl(route('property.edit', $propertyForm->getModel()->getKey()))
+            ->setNextUrl(route('property.edit', $property->getKey()))
             ->withCreatedSuccessMessage();
     }
 
@@ -133,11 +162,16 @@ class PropertyController extends BaseController
         /**
          * @var Property $property
          */
-        $property = Property::query()->with(['features', 'author'])->findOrFail($id);
+        $property = Property::query()->with(['features', 'author', 'project'])->findOrFail($id);
 
         Assets::addScriptsDirectly(['vendor/core/plugins/real-estate/js/duplicate-property.js']);
 
         $this->pageTitle(trans('core/base::forms.edit_item', ['name' => $property->name]));
+
+        // Add project breadcrumb if property belongs to a project
+        if ($property->project_id && $property->project) {
+            $this->breadcrumb()->add($property->project->name, route('project.edit', $property->project->id));
+        }
 
         return PropertyForm::createFromModel($property)->renderForm();
     }

@@ -213,10 +213,10 @@
                             <tr>
                                 <th scope="col" class="fw-4">{{ __('Property') }}</th>
                                 <th scope="col" class="fw-4">{{ __('Type') }}</th>
+                                <th scope="col" class="fw-4">{{ __('Floor') }}</th>
                                 <th scope="col" class="fw-4">{{ __('Price') }}</th>
                                 <th scope="col" class="fw-4">{{ __('Size') }}</th>
                                 <th scope="col" class="fw-4">{{ __('Beds.') }}</th>
-                                <!-- <th scope="col" class="fw-4">{{ __('Bathrooms') }}</th> -->
                                 <th scope="col" class="fw-4">{{ __('Status') }}</th>
                                 <th scope="col" class="fw-4 text-end"></th>
                             </tr>
@@ -247,6 +247,15 @@
                                     <td>
                                         @if($property->category)
                                             <span class="badge bg-primary-subtle text-primary">{{ $property->category->name }}</span>
+                                        @else
+                                            <span class="text-muted">--</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($property->floor_name)
+                                            <span class="text-variant-1">{{ $property->floor_name }}</span>
+                                        @elseif($property->number_floor)
+                                            <span class="text-variant-1">Floor {{ $property->number_floor }}</span>
                                         @else
                                             <span class="text-muted">--</span>
                                         @endif
@@ -288,10 +297,31 @@
                                         {!! BaseHelper::clean($property->status->toHtml()) !!}
                                     </td>
                                     <td class="text-end">
-                                        <a href="{{ $property->url }}" class="tf-btn btn-sm primary d-flex gap-2 align-items-center">
-                                            {{ __('View') }}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#fbfbfb" d="M12.47 6.47a.75.75 0 0 1 1.06 0l5 5a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 1 1-1.06-1.06l3.72-3.72H6a.75.75 0 0 1 0-1.5h10.19l-3.72-3.72a.75.75 0 0 1 0-1.06"/></svg>
-                                        </a>
+                                        <div class="d-flex gap-2 justify-content-end">
+                                            @if($property->floor_plan_image || $property->floor_plan_document)
+                                                <div class="dropdown">
+                                                    <button class="tf-btn btn-sm outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                        {{ __('Floor Plan') }}
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        @if($property->floor_plan_image)
+                                                            <li><a class="dropdown-item" href="{{ RvMedia::url($property->floor_plan_image) }}" target="_blank">
+                                                                <i class="icon icon-image me-2"></i>{{ __('View Image') }}
+                                                            </a></li>
+                                                        @endif
+                                                        @if($property->floor_plan_document)
+                                                            <li><a class="dropdown-item" href="{{ RvMedia::url($property->floor_plan_document) }}" target="_blank">
+                                                                <i class="icon icon-file me-2"></i>{{ __('Download Document') }}
+                                                            </a></li>
+                                                        @endif
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                            <a href="{{ $property->url }}" class="tf-btn btn-sm primary d-flex gap-2 align-items-center">
+                                                {{ __('View') }}
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#fbfbfb" d="M12.47 6.47a.75.75 0 0 1 1.06 0l5 5a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 1 1-1.06-1.06l3.72-3.72H6a.75.75 0 0 1 0-1.5h10.19l-3.72-3.72a.75.75 0 0 1 0-1.06"/></svg>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -340,7 +370,11 @@
                                         @if($property->number_bedroom)
                                             <span><i class="icon icon-bed me-1"></i>{{ $property->number_bedroom }}</span>
                                         @endif
-                                  
+
+                                        @if($property->floor_name || $property->number_floor)
+                                            <span><i class="icon icon-stairs me-1"></i>{{ $property->floor_name ?: 'Floor ' . $property->number_floor }}</span>
+                                        @endif
+
                                         @if($property->square)
                                             <span><i class="icon icon-ruler me-1"></i>{{ $property->square_text }}</span>
                                         @endif
@@ -352,10 +386,31 @@
                                             {{ $property->short_address }}
                                         </div>
                                     @endif
-                                    
-                                    <a href="{{ $property->url }}" class="tf-btn primary w-100">
-                                        {{ __('View') }}
-                                    </a>
+
+                                    <div class="d-flex gap-2">
+                                        @if($property->floor_plan_image || $property->floor_plan_document)
+                                            <div class="dropdown">
+                                                <button class="tf-btn outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                    {{ __('Floor Plan') }}
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    @if($property->floor_plan_image)
+                                                        <li><a class="dropdown-item" href="{{ RvMedia::url($property->floor_plan_image) }}" target="_blank">
+                                                            <i class="icon icon-image me-2"></i>{{ __('View Image') }}
+                                                        </a></li>
+                                                    @endif
+                                                    @if($property->floor_plan_document)
+                                                        <li><a class="dropdown-item" href="{{ RvMedia::url($property->floor_plan_document) }}" target="_blank">
+                                                            <i class="icon icon-file me-2"></i>{{ __('Download Document') }}
+                                                        </a></li>
+                                                    @endif
+                                                </ul>
+                                            </div>
+                                        @endif
+                                        <a href="{{ $property->url }}" class="tf-btn primary flex-grow-1">
+                                            {{ __('View') }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

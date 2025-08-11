@@ -197,16 +197,16 @@
                 @endif
 
                 @if ($projectProperties->isNotEmpty())
-    <section class="flat-section pt-0 flat-properties-list">
+    <div class=".single-property-element pt-0 flat-properties-list">
         <div class="container">
-            <div class="box-title mb-5">
-                <div class="text-subtitle text-prime">{{ __('Project Properties') }}</div>
-                <h2 class="section-title mt-4">{{ __('Available Properties in :name', ['name' => $project->name]) }}</h2>
-                <p class="text-variant-1 mt-3">{{ __('Total :count properties in this project', ['count' => $projectProperties->count()]) }}</p>
+            <div class="box-title mb-2">
+                <div class="h7 title fw-6">{{ __('Sublistings') }}</div>
+                <!-- <h2 class="title fw-6">{{ __('Available Properties in :name', ['name' => $project->name]) }}</h2>
+                <p class="text-variant-1 mt-3">{{ __('Total :count properties in this project', ['count' => $projectProperties->count()]) }}</p> -->
             </div>
             
             <!-- Properties Table for Desktop -->
-            <div class="properties-table-wrapper d-none d-lg-block bg-surface rounded-3 p-4">
+            <div class="properties-table-wrapper d-none d-lg-block">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead>
@@ -215,10 +215,10 @@
                                 <th scope="col" class="fw-4">{{ __('Type') }}</th>
                                 <th scope="col" class="fw-4">{{ __('Price') }}</th>
                                 <th scope="col" class="fw-4">{{ __('Size') }}</th>
-                                <th scope="col" class="fw-4">{{ __('Bedrooms') }}</th>
-                                <th scope="col" class="fw-4">{{ __('Bathrooms') }}</th>
+                                <th scope="col" class="fw-4">{{ __('Beds.') }}</th>
+                                <!-- <th scope="col" class="fw-4">{{ __('Bathrooms') }}</th> -->
                                 <th scope="col" class="fw-4">{{ __('Status') }}</th>
-                                <th scope="col" class="fw-4 text-end">{{ __('Action') }}</th>
+                                <th scope="col" class="fw-4 text-end"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -267,14 +267,14 @@
                                     <td>
                                         @if($property->number_bedroom)
                                             <div class="d-flex align-items-center gap-1">
-                                                <i class="icon icon-bed text-variant-1"></i>
+                                                
                                                 <span>{{ $property->number_bedroom }}</span>
                                             </div>
                                         @else
                                             <span class="text-muted">--</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         @if($property->number_bathroom)
                                             <div class="d-flex align-items-center gap-1">
                                                 <i class="icon icon-bathtub text-variant-1"></i>
@@ -283,14 +283,14 @@
                                         @else
                                             <span class="text-muted">--</span>
                                         @endif
-                                    </td>
+                                    </td> -->
                                     <td>
                                         {!! BaseHelper::clean($property->status->toHtml()) !!}
                                     </td>
                                     <td class="text-end">
-                                        <a href="{{ $property->url }}" class="tf-btn btn-sm primary">
-                                            {{ __('View Details') }}
-                                            <i class="icon icon-arrow-right-2 ms-2"></i>
+                                        <a href="{{ $property->url }}" class="tf-btn btn-sm primary d-flex gap-2 align-items-center">
+                                            {{ __('View') }}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#fbfbfb" d="M12.47 6.47a.75.75 0 0 1 1.06 0l5 5a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 1 1-1.06-1.06l3.72-3.72H6a.75.75 0 0 1 0-1.5h10.19l-3.72-3.72a.75.75 0 0 1 0-1.06"/></svg>
                                         </a>
                                     </td>
                                 </tr>
@@ -340,9 +340,7 @@
                                         @if($property->number_bedroom)
                                             <span><i class="icon icon-bed me-1"></i>{{ $property->number_bedroom }}</span>
                                         @endif
-                                        @if($property->number_bathroom)
-                                            <span><i class="icon icon-bathtub me-1"></i>{{ $property->number_bathroom }}</span>
-                                        @endif
+                                  
                                         @if($property->square)
                                             <span><i class="icon icon-ruler me-1"></i>{{ $property->square_text }}</span>
                                         @endif
@@ -356,7 +354,7 @@
                                     @endif
                                     
                                     <a href="{{ $property->url }}" class="tf-btn primary w-100">
-                                        {{ __('View Property Details') }}
+                                        {{ __('View') }}
                                     </a>
                                 </div>
                             </div>
@@ -365,7 +363,7 @@
                 </div>
             </div>
         </div>
-    </section>
+</div>
 @endif
                 <div class="single-property-element single-property-map">
                     <div class="h7 title fw-6">{{ __('Location') }}</div>

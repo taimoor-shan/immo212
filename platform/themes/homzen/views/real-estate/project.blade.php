@@ -201,180 +201,174 @@
                 @endif
 
                 @if ($projectProperties->isNotEmpty())
-                        <div class=".single-property-element pt-0 flat-properties-list">
+                    <div class="single-property-element pt-0 flat-properties-list">
 
-                            <div class="box-title mb-2">
-                                <div class="h7 title fw-6">{{ __('Sublistings') }}</div>
-                                <!-- <h2 class="title fw-6">{{ __('Available Properties in :name', ['name' => $project->name]) }}</h2>
-                        <p class="text-variant-1 mt-3">{{ __('Total :count properties in this project', ['count' => $projectProperties->count()]) }}</p> -->
-                            </div>
+                        <div class="box-title mb-2">
+                            <div class="h7 title fw-6">{{ __('Sublistings') }}</div>
+                            <!-- <h2 class="title fw-6">{{ __('Available Properties in :name', ['name' => $project->name]) }}</h2>
+                            <p class="text-variant-1 mt-3">{{ __('Total :count properties in this project', ['count' => $projectProperties->count()]) }}</p> -->
+                        </div>
 
-                            <!-- Properties Table for Desktop -->
-                            <div class="properties-table-wrapper d-none d-lg-block">
-                                <div class="table-responsive ">
-                                    <table class="table table-hover align-middle table-striped">
-                                        <tbody>
-                                            @foreach($projectProperties as $property)
-                                                <tr>
-                                                    @if($property->number_bedroom)
-                                                        <td>
-
-
-
-                                                            <span class="text-variant-1">{{ $property->number_bedroom }} Bedroom</span>
-
-
-
-                                                        </td>
-                                                    @endif
-                                                    <td>
-                                                        @if($property->floor_name)
-                                                            <span class="text-variant-1">{{ $property->floor_name }}</span>
-                                                        @elseif($property->number_floor)
-                                                            <span class="text-variant-1">Floor {{ $property->number_floor }}</span>
-                                                        @else
-                                                            <span class="text-muted">--</span>
-                                                        @endif
-                                                    </td>
-                                                    <td class="fw-6 text-prime">
-                                                        {{ format_price($property->price, $property->currency) }}
-                                                        @if($property->period && $property->type == 'rent')
-                                                            <span class="text-variant-1 fw-normal">/
-                                                                {{ $property->period->label() }}</span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if($property->square)
-                                                            <span>{{ $property->square_text }}</span>
-                                                        @else
-                                                            <span class="text-muted">--</span>
-                                                        @endif
-                                                    </td>
-
-
-                                                    <td>
-                                                        {!! BaseHelper::clean($property->status->toHtml()) !!}
-                                                    </td>
-                                                    @if(($property->floor_plan_document) || ($property->floor_plan_image))
-                                                        <td>
-                                                            @if($property->floor_plan_document)
-                                                                <a class="tf-btn secondary sm"
-                                                                    href="{{ RvMedia::url($property->floor_plan_document) }}"
-                                                                    target="_blank">
-                                                                    {{ __('Floor Plan') }}
-                                                                </a>
-                                                            @elseif($property->floor_plan_image)
-                                                                <a class="tf-btn secondary sm"
-                                                                    href="{{ RvMedia::url($property->floor_plan_image) }}" target="_blank">
-                                                                    {{ __('Floor Plan') }}
-                                                                </a>
-                                                            @endif
-                                                        </td>
-                                                    @endif
-                                                    <td>
-
-
-                                                        <a href="{{ $property->url }}" class="text-prime">
-                                                            {!! BaseHelper::renderIcon('ti ti-chevron-right') !!}
-                                                        </a>
-
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <!-- Properties Grid for Mobile/Tablet -->
-                            <!-- <div class="d-lg-none">
-                        <div class="row g-4">
-                            @foreach($projectProperties as $property)
-                                <div class="col-12 col-md-6">
-                                    <div class="property-card bg-surface rounded-3 p-3">
-                                        <div class="d-flex gap-3 mb-3">
-                                            <div class="property-thumb rounded-2 overflow-hidden flex-shrink-0" style="width: 100px; height: 80px;">
-                                                <a href="{{ $property->url }}">
-                                                    {{ RvMedia::image($property->image, $property->name, 'thumb') }}
-                                                </a>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <a href="{{ $property->url }}" class="fw-6 text-dark text-decoration-none d-block mb-1">
-                                                    {{ Str::limit($property->name, 40) }}
-                                                </a>
-                                                @if($property->category)
-                                                    <span class="badge bg-primary-subtle text-primary">{{ $property->category->name }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="property-details">
-                                            <div class="row g-2 mb-3">
-                                                <div class="col-6">
-                                                    <div class="text-variant-1 small">{{ __('Price') }}</div>
-                                                    <div class="fw-6 text-prime">
-                                                        {{ format_price($property->price, $property->currency) }}
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="text-variant-1 small">{{ __('Status') }}</div>
-                                                    <div>{!! BaseHelper::clean($property->status->toHtml()) !!}</div>
-                                                </div>
-                                            </div>
-
-                                            <div class="d-flex gap-3 mb-3 text-variant-1">
+                        <!-- Properties Table for Desktop -->
+                        <div class="properties-table-wrapper d-none d-lg-block">
+                            <div class="table-responsive ">
+                                <table class="table table-hover align-middle table-striped">
+                                    <tbody>
+                                        @foreach($projectProperties as $property)
+                                            <tr>
                                                 @if($property->number_bedroom)
-                                                    <span><i class="icon icon-bed me-1"></i>{{ $property->number_bedroom }}</span>
+                                                    <td>
+                                                        <span class="text-variant-1">{{ $property->number_bedroom }} Bedroom</span>
+                                                    </td>
                                                 @endif
+                                                <td>
+                                                    @if($property->floor_name)
+                                                        <span class="text-variant-1">{{ $property->floor_name }}</span>
+                                                    @elseif($property->number_floor)
+                                                        <span class="text-variant-1">Floor {{ $property->number_floor }}</span>
+                                                    @else
+                                                        <span class="text-muted">--</span>
+                                                    @endif
+                                                </td>
+                                                <td class="fw-6 text-prime">
+                                                    {{ format_price($property->price, $property->currency) }}
+                                                    @if($property->period && $property->type == 'rent')
+                                                        <span class="text-variant-1 fw-normal">/
+                                                            {{ $property->period->label() }}</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($property->square)
+                                                        <span>{{ $property->square_text }}</span>
+                                                    @else
+                                                        <span class="text-muted">--</span>
+                                                    @endif
+                                                </td>
 
-                                                @if($property->floor_name || $property->number_floor)
-                                                    <span><i class="icon icon-stairs me-1"></i>{{ $property->floor_name ?: 'Floor ' . $property->number_floor }}</span>
-                                                @endif
 
-                                                @if($property->square)
-                                                    <span><i class="icon icon-ruler me-1"></i>{{ $property->square_text }}</span>
+                                                <td>
+                                                    {!! BaseHelper::clean($property->status->toHtml()) !!}
+                                                </td>
+                                                @if(($property->floor_plan_document) || ($property->floor_plan_image))
+                                                    <td>
+                                                        @if($property->floor_plan_document)
+                                                            <a class="tf-btn secondary sm"
+                                                                href="{{ RvMedia::url($property->floor_plan_document) }}"
+                                                                target="_blank">
+                                                                {{ __('Floor Plan') }}
+                                                            </a>
+                                                        @elseif($property->floor_plan_image)
+                                                            <a class="tf-btn secondary sm"
+                                                                href="{{ RvMedia::url($property->floor_plan_image) }}" target="_blank">
+                                                                {{ __('Floor Plan') }}
+                                                            </a>
+                                                        @endif
+                                                    </td>
                                                 @endif
+                                                <td>
+
+
+                                                    <a href="{{ $property->url }}" class="text-prime">
+                                                        {!! BaseHelper::renderIcon('ti ti-chevron-right') !!}
+                                                    </a>
+
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Properties Grid for Mobile/Tablet -->
+                        <!-- <div class="d-lg-none">
+                            <div class="row g-4">
+                                @foreach($projectProperties as $property)
+                                    <div class="col-12 col-md-6">
+                                        <div class="property-card bg-surface rounded-3 p-3">
+                                            <div class="d-flex gap-3 mb-3">
+                                                <div class="property-thumb rounded-2 overflow-hidden flex-shrink-0" style="width: 100px; height: 80px;">
+                                                    <a href="{{ $property->url }}">
+                                                        {{ RvMedia::image($property->image, $property->name, 'thumb') }}
+                                                    </a>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <a href="{{ $property->url }}" class="fw-6 text-dark text-decoration-none d-block mb-1">
+                                                        {{ Str::limit($property->name, 40) }}
+                                                    </a>
+                                                    @if($property->category)
+                                                        <span class="badge bg-primary-subtle text-primary">{{ $property->category->name }}</span>
+                                                    @endif
+                                                </div>
                                             </div>
 
-                                            @if($property->short_address)
-                                                <div class="text-variant-1 small mb-3">
-                                                    <i class="icon icon-mapPin me-1"></i>
-                                                    {{ $property->short_address }}
+                                            <div class="property-details">
+                                                <div class="row g-2 mb-3">
+                                                    <div class="col-6">
+                                                        <div class="text-variant-1 small">{{ __('Price') }}</div>
+                                                        <div class="fw-6 text-prime">
+                                                            {{ format_price($property->price, $property->currency) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="text-variant-1 small">{{ __('Status') }}</div>
+                                                        <div>{!! BaseHelper::clean($property->status->toHtml()) !!}</div>
+                                                    </div>
                                                 </div>
-                                            @endif
 
-                                            <div class="d-flex gap-2">
-                                                @if($property->floor_plan_image || $property->floor_plan_document)
-                                                    <div class="dropdown">
-                                                        <button class="tf-btn outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                            {{ __('Floor Plan') }}
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            @if($property->floor_plan_image)
-                                                                <li><a class="dropdown-item" href="{{ RvMedia::url($property->floor_plan_image) }}" target="_blank">
-                                                                    <i class="icon icon-image me-2"></i>{{ __('View Image') }}
-                                                                </a></li>
-                                                            @endif
-                                                            @if($property->floor_plan_document)
-                                                                <li><a class="dropdown-item" href="{{ RvMedia::url($property->floor_plan_document) }}" target="_blank">
-                                                                    <i class="icon icon-file me-2"></i>{{ __('Download Document') }}
-                                                                </a></li>
-                                                            @endif
-                                                        </ul>
+                                                <div class="d-flex gap-3 mb-3 text-variant-1">
+                                                    @if($property->number_bedroom)
+                                                        <span><i class="icon icon-bed me-1"></i>{{ $property->number_bedroom }}</span>
+                                                    @endif
+
+                                                    @if($property->floor_name || $property->number_floor)
+                                                        <span><i class="icon icon-stairs me-1"></i>{{ $property->floor_name ?: 'Floor ' . $property->number_floor }}</span>
+                                                    @endif
+
+                                                    @if($property->square)
+                                                        <span><i class="icon icon-ruler me-1"></i>{{ $property->square_text }}</span>
+                                                    @endif
+                                                </div>
+
+                                                @if($property->short_address)
+                                                    <div class="text-variant-1 small mb-3">
+                                                        <i class="icon icon-mapPin me-1"></i>
+                                                        {{ $property->short_address }}
                                                     </div>
                                                 @endif
-                                                <a href="{{ $property->url }}" class="tf-btn primary flex-grow-1">
-                                                    {{ __('View') }}
-                                                </a>
+
+                                                <div class="d-flex gap-2">
+                                                    @if($property->floor_plan_image || $property->floor_plan_document)
+                                                        <div class="dropdown">
+                                                            <button class="tf-btn outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                                {{ __('Floor Plan') }}
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                @if($property->floor_plan_image)
+                                                                    <li><a class="dropdown-item" href="{{ RvMedia::url($property->floor_plan_image) }}" target="_blank">
+                                                                        <i class="icon icon-image me-2"></i>{{ __('View Image') }}
+                                                                    </a></li>
+                                                                @endif
+                                                                @if($property->floor_plan_document)
+                                                                    <li><a class="dropdown-item" href="{{ RvMedia::url($property->floor_plan_document) }}" target="_blank">
+                                                                        <i class="icon icon-file me-2"></i>{{ __('Download Document') }}
+                                                                    </a></li>
+                                                                @endif
+                                                            </ul>
+                                                        </div>
+                                                    @endif
+                                                    <a href="{{ $property->url }}" class="tf-btn primary flex-grow-1">
+                                                        {{ __('View') }}
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div> -->
+                                @endforeach
+                            </div>
+                        </div> -->
 
-                        </div>
+                    </div>
                 @endif
                 <div class="single-property-element single-property-map">
                     <div class="h7 title fw-6">{{ __('Location') }}</div>

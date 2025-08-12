@@ -338,6 +338,46 @@ class Property extends BaseModel
         });
     }
 
+    /**
+     * Check if property should use single floor plan interface
+     */
+    public function shouldUseSingleFloorPlan(): bool
+    {
+        return $this->number_floor === 1;
+    }
+
+    /**
+     * Check if property should use multiple floor plans interface
+     */
+    public function shouldUseMultipleFloorPlans(): bool
+    {
+        return $this->number_floor > 1;
+    }
+
+    /**
+     * Get the appropriate floor plan data based on number_floor
+     */
+    public function getConditionalFloorPlanData(): array
+    {
+        if ($this->shouldUseSingleFloorPlan()) {
+            return [
+                'type' => 'single',
+                'floor_name' => $this->floor_name,
+                'floor_plan_image' => $this->floor_plan_image,
+                'floor_plan_document' => $this->floor_plan_document,
+            ];
+        }
+
+        if ($this->shouldUseMultipleFloorPlans()) {
+            return [
+                'type' => 'multiple',
+                'floor_plans' => $this->formatted_floor_plans,
+            ];
+        }
+
+        return ['type' => 'none'];
+    }
+
     protected function isPendingModeration(): Attribute
     {
         return Attribute::get(function () {

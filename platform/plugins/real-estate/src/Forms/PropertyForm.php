@@ -57,6 +57,7 @@ class PropertyForm extends FormAbstract
                 'vendor/core/plugins/real-estate/js/real-estate.js',
                 'vendor/core/plugins/real-estate/js/components.js',
                 'vendor/core/plugins/real-estate/js/vacation-rental-form.js',
+                'vendor/core/plugins/real-estate/js/conditional-floor-plans.js',
             ]);
 
         $projects = Project::query()
@@ -502,6 +503,21 @@ class PropertyForm extends FormAbstract
                     ->rows(2)
                     ->colspan(2)
             )
+            // Conditional Floor Plans Section
+            ->add('floor_plans_section_start', 'html', [
+                'html' => '<div class="floor-plans-conditional-section">
+                    <div class="alert alert-info">
+                        <strong>Floor Plans:</strong> The interface will automatically adjust based on the number of floors.
+                        <br><small>• Single floor (1): Simple image and document upload</small>
+                        <br><small>• Multiple floors (2+): Detailed floor-by-floor information</small>
+                    </div>',
+            ])
+
+            // Single Floor Plan Fields (shown when number_floor = 1)
+            ->add('single_floor_plan_start', 'html', [
+                'html' => '<div id="single-floor-plan" class="single-floor-fields" style="display: none;">
+                    <h5 class="mb-3">Single Floor Plan</h5>',
+            ])
             ->add(
                 'floor_name',
                 TextField::class,
@@ -509,10 +525,14 @@ class PropertyForm extends FormAbstract
                     'label' => 'Floor Name/Number',
                     'attr' => [
                         'placeholder' => 'e.g., Ground Floor, Floor 1, Floor 2, Penthouse',
+                        'class' => 'form-control single-floor-field',
                     ],
                     'help_block' => [
                         'text' => 'Specify which floor this property/unit is located on'
-                    ]
+                    ],
+                    'wrapper' => [
+                        'class' => 'form-group mb-3 single-floor-field',
+                    ],
                 ]
             )
             ->add(
@@ -522,7 +542,10 @@ class PropertyForm extends FormAbstract
                     'label' => 'Floor Plan Image',
                     'help_block' => [
                         'text' => 'Upload floor plan as image (JPG, PNG, etc.)'
-                    ]
+                    ],
+                    'wrapper' => [
+                        'class' => 'form-group mb-3 single-floor-field',
+                    ],
                 ]
             )
             ->add(
@@ -532,9 +555,96 @@ class PropertyForm extends FormAbstract
                     'label' => 'Floor Plan Document',
                     'help_block' => [
                         'text' => 'Upload floor plan as document (PDF, DWG, etc.)'
-                    ]
+                    ],
+                    'wrapper' => [
+                        'class' => 'form-group mb-3 single-floor-field',
+                    ],
                 ]
             )
+            ->add('single_floor_plan_end', 'html', [
+                'html' => '</div>',
+            ])
+
+            // Multiple Floor Plans Repeater (shown when number_floor > 1)
+            ->add('multi_floor_plans_start', 'html', [
+                'html' => '<div id="multi-floor-plans" class="multi-floor-fields" style="display: none;">
+                    <h5 class="mb-3">Multiple Floor Plans</h5>',
+            ])
+            ->add(
+                'floor_plans',
+                RepeaterField::class,
+                RepeaterFieldOption::make()
+                    ->label('Floor Plans')
+                    ->fields([
+                        [
+                            'type' => 'text',
+                            'label' => 'Floor Name',
+                            'attributes' => [
+                                'name' => 'name',
+                                'value' => null,
+                                'options' => [
+                                    'class' => 'form-control',
+                                    'placeholder' => 'e.g., Ground Floor, 1st Floor, 2nd Floor',
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'textarea',
+                            'label' => 'Floor Description',
+                            'attributes' => [
+                                'name' => 'description',
+                                'value' => null,
+                                'options' => [
+                                    'class' => 'form-control',
+                                    'rows' => 2,
+                                    'placeholder' => 'Optional description of this floor',
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'mediaImage',
+                            'label' => 'Floor Plan Image',
+                            'attributes' => [
+                                'name' => 'image',
+                                'value' => null,
+                            ],
+                        ],
+                        [
+                            'type' => 'number',
+                            'label' => 'Bedrooms',
+                            'attributes' => [
+                                'name' => 'bedrooms',
+                                'value' => null,
+                                'options' => [
+                                    'class' => 'form-control',
+                                    'min' => 0,
+                                    'placeholder' => '0',
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'number',
+                            'label' => 'Bathrooms',
+                            'attributes' => [
+                                'name' => 'bathrooms',
+                                'value' => null,
+                                'options' => [
+                                    'class' => 'form-control',
+                                    'min' => 0,
+                                    'placeholder' => '0',
+                                ],
+                            ],
+                        ],
+                    ])
+                    ->value($this->getModel()->floor_plans ?? [])
+                    ->toArray()
+            )
+            ->add('multi_floor_plans_end', 'html', [
+                'html' => '</div>',
+            ])
+            ->add('floor_plans_section_end', 'html', [
+                'html' => '</div>',
+            ])
             ->addMetaBoxes([
                 'features' => [
                     'title' => trans('plugins/real-estate::property.form.features'),

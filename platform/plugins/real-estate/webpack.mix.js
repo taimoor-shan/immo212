@@ -28,6 +28,7 @@ mix
     .js(`${source}/resources/js/setting.js`, `${dist}/js`)
     .js(`${source}/resources/js/front-review.js`, `${dist}/js`)
     .js(`${source}/resources/js/vacation-rental-form.js`, `${dist}/js`)
+    .js(`${source}/resources/js/conditional-floor-plans.js`, `${dist}/js`)
 
 if (mix.inProduction()) {
     mix

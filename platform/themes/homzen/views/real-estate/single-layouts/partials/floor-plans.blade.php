@@ -8,7 +8,6 @@
 @if ($showFloorPlans)
     <div @class(['single-property-floor', $class ?? null])>
         <div class="h7 title fw-6">{{ __('Floor plans') }}</div>
-
         @if ($hasSingleFloorPlan && !$hasMultipleFloorPlans)
             {{-- Single Floor Plan Display --}}
             <div class="single-floor-plan-display">

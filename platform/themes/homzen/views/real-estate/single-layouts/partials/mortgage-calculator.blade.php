@@ -24,7 +24,7 @@
 @endphp
 
 <div class="single-property-element {{ $class ?? '' }}">
-    <div class="h7 title-property">{{ __('Mortgage Calculator') }}</div>
+    <div class="h7 title">{{ __('Mortgage Calculator') }}</div>
     
     <div class="mortgage-calculator-container">
         <div class="d-flex align-items-center flex-column flex-lg-row gap-4">

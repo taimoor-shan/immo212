@@ -5,7 +5,7 @@
                 <div class="item1 box-img">
                     {{ RvMedia::image($image, $property->name) }}
                     <div class="box-btn">
-                        <a href="{{ RvMedia::getImageUrl($image) }}" data-fancybox="gallery" class="tf-btn primary">{{ __('View All Photos (:count)', ['count' => count($property->images)]) }}</a>
+                        <a href="{{ RvMedia::getImageUrl($image) }}" data-fancybox="gallery" class="photoBtn"> {!! BaseHelper::renderIcon('ti ti-library-photo') !!}{{ __('Photos') }}</a>
                     </div>
                 </div>
             @else

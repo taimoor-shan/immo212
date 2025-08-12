@@ -12,7 +12,7 @@
 
             @if (setting('real_estate_display_views_count_in_detail_page', true))
                 <li class="meta-item">
-                    <x-core::icon name="ti ti-eye" />
+                    Views:
                     @if ($model->views === 1)
                         {{ __('1 Views') }}
                     @else
@@ -23,27 +23,27 @@
 
             @if (theme_option('real_estate_show_listing_date_on_single_detail_page', 'yes') == 'yes')
                 <li class="meta-item">
-                    <x-core::icon name="ti ti-calendar" />
+                    Created at:
                     {{ Theme::formatDate($model->created_at) }}
                 </li>
             @endif
-            @if ($model->number_bedroom)
+            @if ($model->number_floor)
                 <li class="meta-item">
-                    <x-core::icon name="ti ti-bed" />
-                    {{ $model->number_bedroom }}
+                    Floors:
+                    {{ $model->number_floor }}
                 </li>
             @endif
 
             @if ($model->square)
                 <li class="meta-item">
-                    <x-core::icon name="ti ti-ruler" />
+                    Area:
                     {{ $model->square_text }}
                 </li>
             @endif
 
             @if ($model->short_address)
                 <p class="meta-item">
-                    <x-core::icon name="ti ti-map-pin" />
+                   
                     {{ $model->short_address }}
                 </p>
             @endif

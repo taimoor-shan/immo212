@@ -606,26 +606,19 @@ svg {
     }
 
     .project-thumb {
-        min-width: 300px;
+        max-width: 170px;
 
         img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 16px;
+            border-radius: $radius;
         }
     }
 
     .project-info {
-        .title {
-            a {
-                font-size: 1.5rem;
-                font-weight: 500;
-
-                &:hover {
-                    color: var(--primary-color);
-                }
-            }
+        .h7 {
+            max-width: 360px;
         }
 
         ul.meta {

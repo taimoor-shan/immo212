@@ -4,7 +4,7 @@ $font-1: var(--primary-font);
 $font-2: var(--heading-font);
 $fontIcon: 'icomoon';
 // Border Radius
-$radius: 6px;
+$radius: 4px;
 // color
 $primary: var(--primary-color);
 $primary-hover: var(--hover-color);
@@ -13,7 +13,7 @@ $yellow: #f4d118;
 $success: #65d78d;
 $white: #ffffff;
 // $surface: #f8f6f2;
-$surface: #e4eaf5;
+$surface: #f3f5fa;
 $outline: #a8beea;
 $on-surface: #082479;
 $muted:#888888;
@@ -23,6 +23,7 @@ $accent: #e2530d;
 $green: #52bc77;
 
 $backdrop: rgba(22, 30, 45, 0.3);
+
 
 $garden-1: linear-gradient(89.9deg, rgba(15, 78, 152, 0.7) 0.07%, rgba(238, 103, 66, 0.7) 99.9%);
 $garden-2: linear-gradient(180deg, rgba(11, 33, 50, 0) 0%, rgba(11, 33, 50, 0.9) 100%);

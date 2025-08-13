@@ -23,7 +23,7 @@
 
                 @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.facilities'), ['class' => 'single-property-element'])
 
-                @if($property->type != \Botble\RealEstate\Enums\PropertyTypeEnum::VACATION_RENTAL)
+                @if($property->type == \Botble\RealEstate\Enums\PropertyTypeEnum::SALE)
                     @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.mortgage-calculator'), ['class' => 'single-property-element', 'property' => $property])
                 @endif
                 @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.floor-plans'), ['class' => 'single-property-element'])

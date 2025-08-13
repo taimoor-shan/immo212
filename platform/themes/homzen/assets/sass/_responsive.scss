@@ -427,6 +427,7 @@
 
         .box-right {
             flex-shrink: unset;
+            max-width: 100%;
         }
     }
 
@@ -909,7 +910,7 @@
     }
 
     .wrap-banner {
-        display: block;
+        flex-wrap: wrap-reverse;
 
         .box-left {
             padding: 60px;
@@ -1633,6 +1634,7 @@
     .wrap-banner {
         .box-left {
             padding: 30px;
+            width: 100%;
         }
     }
 

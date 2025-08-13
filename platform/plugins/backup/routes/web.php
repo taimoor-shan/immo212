@@ -20,7 +20,7 @@ Route::group(['namespace' => 'Botble\Backup\Http\Controllers'], function (): voi
             Route::delete('delete/{folder}', [
                 'as' => 'backups.destroy',
                 'uses' => 'BackupController@destroy',
-                'middleware' => 'preventDemo',
+                'middleware' => ['preventDemo', 'Botble\Base\Http\Middleware\RequiresJsonRequestMiddleware'],
             ]);
 
             Route::get('restore/{folder}', [

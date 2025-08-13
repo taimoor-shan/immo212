@@ -3,8 +3,14 @@
 /vendor
 
 # Build artifacts (will be built during deployment)
-/public/build
 /public/hot
+/public/build
+/public/themes/*/css/
+/public/themes/*/js/
+/public/vendor/
+/public/mix-manifest.json
+*.css.map
+*.js.map
 
 # Environment files
 /.env

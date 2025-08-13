@@ -1654,6 +1654,7 @@ label {
 .main-header .logo-box {
   position: relative;
   z-index: 10;
+  padding-block: 12px;
 }
 
 .main-header .logo-box .logo img {

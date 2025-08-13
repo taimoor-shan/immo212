@@ -199,7 +199,6 @@
                         </ul>
                     </div>
                 @endif
-
                 @if ($projectProperties->isNotEmpty())
                     <div class="single-property-element pt-0 flat-properties-list">
 
@@ -210,7 +209,7 @@
                         </div>
 
                         <!-- Properties Table for Desktop -->
-                        <div class="properties-table-wrapper d-none d-lg-block">
+                        <div class="properties-table-wrapper">
                             <div class="table-responsive ">
                                 <table class="table table-hover align-middle table-striped">
                                     <tbody>

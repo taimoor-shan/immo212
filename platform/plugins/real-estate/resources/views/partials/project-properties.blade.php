@@ -5,7 +5,6 @@
         ? route('public.account.properties.create', ['project_id' => $project->id, 'from_project' => 1])
         : route('property.create', ['project_id' => $project->id, 'from_project' => 1]);
 @endphp
-
 <div class="project-properties-management">
     @if($project && $project->exists)
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -15,7 +14,6 @@
                 <i class="fa fa-plus"></i> Add Property
             </a>
         </div>
-        
         @if($project->properties()->count() > 0)
             <div class="table-responsive">
                 <table class="table table-sm table-hover">
@@ -82,7 +80,6 @@
                     </tbody>
                 </table>
             </div>
-            
             @if($project->properties()->count() > 10)
                 @php
                     $allPropertiesRoute = $isUserContext 
@@ -113,7 +110,7 @@
 </div>
 
 @php
-    $deleteBaseUrl = $isUserContext ? '/account/properties/' : '/admin/real-estate/properties/';
+    $deleteBaseUrl = $isUserContext ? '/account/properties/' : '/admin/properties/';
 @endphp
 
 <script>

@@ -215,7 +215,7 @@ Route::group(['namespace' => 'Botble\RealEstate\Http\Controllers', 'middleware' 
                     'as' => 'destroy',
                     'uses' => 'VacationRentalAdminController@destroyBooking',
                     'permission' => 'vacation-rental.booking.destroy',
-                ])->wherePrimaryKey();
+                ])->wherePrimaryKey()->middleware('Botble\Base\Http\Middleware\RequiresJsonRequestMiddleware');
             });
         });
 
@@ -349,7 +349,7 @@ Route::group(['namespace' => 'Botble\RealEstate\Http\Controllers', 'middleware' 
                 'as' => 'deletes',
                 'uses' => 'CouponController@deletes',
                 'permission' => 'coupons.destroy',
-            ]);
+            ])->middleware('Botble\Base\Http\Middleware\RequiresJsonRequestMiddleware');
         });
     });
 });

@@ -24,7 +24,7 @@ Route::group(['namespace' => 'Botble\PluginManagement\Http\Controllers'], functi
                 Route::delete('{plugin}', [
                     'as' => 'plugins.remove',
                     'uses' => 'PluginManagementController@destroy',
-                    'middleware' => 'preventDemo',
+                    'middleware' => ['preventDemo', 'Botble\Base\Http\Middleware\RequiresJsonRequestMiddleware'],
                     'permission' => 'plugins.index',
                 ]);
 

@@ -13,6 +13,7 @@ use Botble\RealEstate\Services\AvailabilityService;
 use Botble\RealEstate\Tables\VacationRentalBookingTable;
 use Botble\RealEstate\Tables\VacationRentalPropertyTable;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
@@ -409,15 +410,20 @@ class VacationRentalAdminController extends BaseController
             ->with('success_msg', trans('plugins/real-estate::vacation-rental.booking_updated_successfully'));
     }
 
-    public function destroyBooking($id): RedirectResponse
+    public function destroyBooking($id)
     {
-        $booking = VacationRentalBooking::findOrFail($id);
+        try {
+            $booking = VacationRentalBooking::findOrFail($id);
 
-        // Note: Availability cleanup is handled automatically by the VacationRentalBooking model's deleted event
-        $booking->delete();
+            // Note: Availability cleanup is handled automatically by the VacationRentalBooking model's deleted event
+            $booking->delete();
 
-        return redirect()
-            ->route('vacation-rental.bookings')
-            ->with('success_msg', trans('plugins/real-estate::vacation-rental.booking_deleted_successfully'));
+            return $this->httpResponse()
+                ->setMessage(trans('plugins/real-estate::vacation-rental.booking_deleted_successfully'));
+        } catch (Exception $exception) {
+            return $this->httpResponse()
+                ->setError()
+                ->setMessage($exception->getMessage());
+        }
     }
 }

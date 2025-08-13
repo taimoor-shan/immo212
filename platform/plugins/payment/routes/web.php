@@ -8,7 +8,9 @@ AdminHelper::registerRoutes(function (): void {
     Route::group(['prefix' => 'payments/logs', 'as' => 'payments.logs.', 'permission' => 'payments.logs'], function (): void {
         Route::match(['GET', 'POST'], '', [PaymentLogController::class, 'index'])->name('index');
         Route::get('{paymentLog}', [PaymentLogController::class, 'show'])->name('show');
-        Route::delete('{paymentLog}', [PaymentLogController::class, 'destroy'])->name('destroy');
+        Route::delete('{paymentLog}', [PaymentLogController::class, 'destroy'])
+            ->name('destroy')
+            ->middleware('Botble\Base\Http\Middleware\RequiresJsonRequestMiddleware');
     });
 
     Route::group(['namespace' => 'Botble\Payment\Http\Controllers'], function (): void {

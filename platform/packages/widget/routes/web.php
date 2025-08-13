@@ -23,7 +23,7 @@ Route::group(['namespace' => 'Botble\Widget\Http\Controllers'], function (): voi
                 'as' => 'widgets.destroy',
                 'uses' => 'WidgetController@destroy',
                 'permission' => 'widgets.index',
-            ]);
+            ])->middleware('Botble\Base\Http\Middleware\RequiresJsonRequestMiddleware');
         });
     });
 });

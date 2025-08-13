@@ -113,7 +113,7 @@ Route::group(['namespace' => 'Botble\Base\Http\Controllers'], function (): void 
                     Route::delete('{id}', [
                         'as' => 'destroy',
                         'uses' => 'destroy',
-                    ])->wherePrimaryKey();
+                    ])->wherePrimaryKey()->middleware(RequiresJsonRequestMiddleware::class);
 
                     Route::get('read-notification/{id}', [
                         'as' => 'read-notification',
@@ -128,7 +128,7 @@ Route::group(['namespace' => 'Botble\Base\Http\Controllers'], function (): void 
                     Route::delete('destroy-all-notification', [
                         'as' => 'destroy-all-notification',
                         'uses' => 'deleteAll',
-                    ]);
+                    ])->middleware(RequiresJsonRequestMiddleware::class);
 
                     Route::get('count-unread', [
                         'as' => 'count-unread',

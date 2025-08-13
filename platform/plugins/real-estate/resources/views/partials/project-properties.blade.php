@@ -62,6 +62,9 @@
                                     $editPropertyRoute = $isUserContext 
                                         ? route('public.account.properties.edit', $property->id)
                                         : route('property.edit', $property->id);
+                                    $deleteUrl = $isUserContext
+                                        ? route('public.account.properties.destroy', $property->id)
+                                        : route('property.destroy', $property->id);
                                 @endphp
                                 <td>
                                     <div class="btn-group btn-group-sm">
@@ -69,8 +72,10 @@
                                            class="btn btn-outline-primary btn-sm">
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                        <button class="btn btn-outline-danger btn-sm" 
-                                                onclick="deleteProperty({{ $property->id }}, '{{ $property->name }}')">
+                                        <button class="btn btn-outline-danger btn-sm delete-property"
+                                                data-id="{{ $property->id }}"
+                                                data-name="{{ $property->name }}"
+                                                data-url="{{ $deleteUrl }}">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </div>
@@ -109,35 +114,69 @@
     @endif
 </div>
 
-@php
-    $deleteBaseUrl = $isUserContext ? '/account/properties/' : '/admin/properties/';
-@endphp
 
 <script>
-function deleteProperty(propertyId, propertyName) {
-    if (confirm('Are you sure you want to delete "' + propertyName + '"?')) {
-        // Determine the delete URL based on context
-        const deleteUrl = '{{ $deleteBaseUrl }}' + propertyId;
-        
-        fetch(deleteUrl, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Content-Type': 'application/json',
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle delete property buttons
+    document.querySelectorAll('.delete-property').forEach(button => {
+        button.addEventListener('click', function() {
+            const propertyId = this.getAttribute('data-id');
+            const propertyName = this.getAttribute('data-name');
+            const deleteUrl = this.getAttribute('data-url');
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            if (confirm('Are you sure you want to delete "' + propertyName + '"?')) {
+                fetch(deleteUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': token,
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    // Check if response is ok before parsing JSON
+                    if (!response.ok) {
+                        // Show descriptive alert with status and text
+                        alert(`Error deleting property: ${response.status} ${response.statusText}`);
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    // Return the JSON promise, handle parsing errors in the catch block
+                    return response.json().catch(jsonError => {
+                        alert('Error: Server returned invalid response. Please try again.');
+                        throw new Error('Invalid JSON response from server');
+                    });
+                })
+                .then(data => {
+                    // On success, check if error is false
+                    if (data.error === false) {
+                        // Remove the corresponding row from the table
+                        const row = this.closest('tr');
+                        if (row) {
+                            row.remove();
+                            // Update property count if available
+                            const countElement = document.querySelector('.text-muted');
+                            if (countElement && countElement.textContent.includes('properties in this project')) {
+                                const currentCount = parseInt(countElement.textContent.match(/\d+/)[0]);
+                                countElement.textContent = `${currentCount - 1} properties in this project`;
+                            }
+                        } else {
+                            // Fallback to page reload if row removal fails
+                            location.reload();
+                        }
+                    } else {
+                        alert('Error deleting property: ' + (data.message || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Delete property error:', error);
+                    // Only show alert if it wasn't already shown above
+                    if (!error.message.includes('HTTP')) {
+                        alert('Network error while deleting property. Please check your connection and try again.');
+                    }
+                });
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error === false) {
-                location.reload();
-            } else {
-                alert('Error deleting property: ' + data.message);
-            }
-        })
-        .catch(error => {
-            alert('Error deleting property');
-            console.error('Error:', error);
         });
-    }
-}
+    });
+});
 </script>

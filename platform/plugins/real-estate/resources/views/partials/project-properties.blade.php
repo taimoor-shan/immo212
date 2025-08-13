@@ -113,7 +113,7 @@
 </div>
 
 @php
-    $deleteBaseUrl = $isUserContext ? '/account/properties/' : '/admin/properties/';
+    $deleteBaseUrl = $isUserContext ? '/account/properties/' : '/admin/real-estate/properties/';
 @endphp
 
 <script>

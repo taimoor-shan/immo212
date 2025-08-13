@@ -43,7 +43,7 @@ class AccountPropertyController extends BaseController
         return $propertyTable->render('plugins/real-estate::account.table.base');
     }
 
-    public function create()
+    public function create(Request $request)
     {
         if (! auth('account')->user()->canPost()) {
             return redirect()->back()->with(['error_msg' => trans('plugins/real-estate::package.add_credit_alert')]);

@@ -76,12 +76,21 @@ class AccountPropertyForm extends PropertyForm
             
             // Add the project dropdown with only user's projects
             if (! empty($userProjects)) {
+                // Check if project_id is provided in the request (from project management)
+                $selectedProjectId = request()->get('project_id', old('project_id', $this->getModel()->project_id));
+                
+                // Verify the project belongs to the user if provided
+                if ($selectedProjectId && !isset($userProjects[$selectedProjectId])) {
+                    $selectedProjectId = null;
+                }
+                
                 $this->add('project_id', 'customSelect', [
                     'label' => trans('plugins/real-estate::property.form.project'),
                     'attr' => [
                         'class' => 'select-search-full',
                     ],
                     'choices' => [0 => trans('plugins/real-estate::property.select_project')] + $userProjects,
+                    'selected' => $selectedProjectId,
                 ]);
             }
         }

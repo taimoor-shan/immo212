@@ -1,8 +1,16 @@
+@php
+    // Determine if we're in admin or user context by checking the current route pattern
+    $isUserContext = request()->is('account/*') || !is_in_admin();
+    $createPropertyRoute = $isUserContext 
+        ? route('public.account.properties.create', ['project_id' => $project->id, 'from_project' => 1])
+        : route('property.create', ['project_id' => $project->id, 'from_project' => 1]);
+@endphp
+
 <div class="project-properties-management">
     @if($project && $project->exists)
         <div class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-muted">{{ $project->properties()->count() }} properties in this project</span>
-            <a href="{{ route('property.create', ['project_id' => $project->id, 'from_project' => 1]) }}"
+            <a href="{{ $createPropertyRoute }}"
                class="btn btn-primary btn-sm">
                 <i class="fa fa-plus"></i> Add Property
             </a>
@@ -52,9 +60,14 @@
                                 <td>{!! $property->status->toHtml() !!}</td>
                                 <td>{{ $property->number_bedroom ?: '--' }}</td>
                                 <td>{{ $property->square_text ?: '--' }}</td>
+                                @php
+                                    $editPropertyRoute = $isUserContext 
+                                        ? route('public.account.properties.edit', $property->id)
+                                        : route('property.edit', $property->id);
+                                @endphp
                                 <td>
                                     <div class="btn-group btn-group-sm">
-                                        <a href="{{ route('property.edit', $property->id) }}" 
+                                        <a href="{{ $editPropertyRoute }}" 
                                            class="btn btn-outline-primary btn-sm">
                                             <i class="fa fa-edit"></i>
                                         </a>
@@ -71,8 +84,13 @@
             </div>
             
             @if($project->properties()->count() > 10)
+                @php
+                    $allPropertiesRoute = $isUserContext 
+                        ? route('public.account.properties.index', ['project_id' => $project->id])
+                        : route('property.index', ['project_id' => $project->id]);
+                @endphp
                 <div class="text-center mt-3">
-                    <a href="{{ route('property.index', ['project_id' => $project->id]) }}" 
+                    <a href="{{ $allPropertiesRoute }}" 
                        class="btn btn-outline-secondary btn-sm">View All Properties ({{ $project->properties()->count() }})</a>
                 </div>
             @endif
@@ -82,7 +100,7 @@
                     <i class="fa fa-home fa-3x text-muted"></i>
                 </div>
                 <p class="text-muted">No properties added to this project yet.</p>
-                <a href="{{ route('property.create', ['project_id' => $project->id, 'from_project' => 1]) }}"
+                <a href="{{ $createPropertyRoute }}"
                    class="btn btn-primary">Add First Property</a>
             </div>
         @endif
@@ -94,10 +112,17 @@
     @endif
 </div>
 
+@php
+    $deleteBaseUrl = $isUserContext ? '/account/properties/' : '/admin/properties/';
+@endphp
+
 <script>
 function deleteProperty(propertyId, propertyName) {
     if (confirm('Are you sure you want to delete "' + propertyName + '"?')) {
-        fetch('/admin/properties/' + propertyId, {
+        // Determine the delete URL based on context
+        const deleteUrl = '{{ $deleteBaseUrl }}' + propertyId;
+        
+        fetch(deleteUrl, {
             method: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),

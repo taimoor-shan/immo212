@@ -270,7 +270,6 @@ class HandleFrontPages
                  // Rentals
 
                 case VacationRental::class:
-               dd(''. $slug->reference_id);
                 $condition = [
 
                     'id' => $slug->reference_id,

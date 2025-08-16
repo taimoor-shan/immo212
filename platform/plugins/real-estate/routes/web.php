@@ -188,35 +188,27 @@ Route::group(['namespace' => 'Botble\RealEstate\Http\Controllers', 'middleware' 
         });
 
         Route::group(['prefix' => 'vacation-rentals', 'as' => 'vacation-rental.'], function (): void {
-            Route::match(['GET', 'POST'], '/', 'VacationRentalAdminController@index')->name('index');
-            Route::get('overview', 'VacationRentalAdminController@overview')->name('overview');
-            Route::get('dashboard', 'VacationRentalAdminController@dashboard')->name('dashboard');
-            Route::match(['GET', 'POST'], 'properties', 'VacationRentalAdminController@properties')->name('properties');
-            Route::match(['GET', 'POST'], 'bookings', 'VacationRentalAdminController@bookings')->name('bookings');
-            Route::get('availability', 'VacationRentalAdminController@availability')->name('availability');
-            Route::get('calendar', 'VacationRentalAdminController@calendar')->name('calendar');
-
-            // API routes for property edit calendar
-            Route::get('availability-data', 'VacationRentalAdminController@getAvailabilityData')->name('availability-data');
-            Route::post('block-dates', 'VacationRentalAdminController@blockDates')->name('block-dates');
-            Route::post('unblock-dates', 'VacationRentalAdminController@unblockDates')->name('unblock-dates');
-            Route::post('maintenance-dates', 'VacationRentalAdminController@maintenanceDates')->name('maintenance-dates');
-
-            // Booking management routes
-            Route::group(['prefix' => 'bookings', 'as' => 'booking.'], function (): void {
-                Route::get('{id}', 'VacationRentalAdminController@showBooking')->name('show')->wherePrimaryKey();
-
-                Route::group(['permission' => 'vacation-rental.booking.edit'], function (): void {
-                    Route::get('{id}/edit', 'VacationRentalAdminController@editBooking')->name('edit')->wherePrimaryKey();
-                    Route::put('{id}', 'VacationRentalAdminController@updateBooking')->name('update')->wherePrimaryKey();
-                });
-
-                Route::delete('{id}', [
-                    'as' => 'destroy',
-                    'uses' => 'VacationRentalAdminController@destroyBooking',
-                    'permission' => 'vacation-rental.booking.destroy',
-                ])->wherePrimaryKey()->middleware('Botble\Base\Http\Middleware\RequiresJsonRequestMiddleware');
-            });
+            Route::resource('', 'VacationRentalController')
+                ->parameters(['' => 'vacation_rental']);
+            
+            // Calendar and availability management
+            Route::get('calendar', 'VacationRentalController@calendar')->name('calendar');
+            Route::get('availability', 'VacationRentalController@availability')->name('availability');
+            
+            // API endpoints for availability management
+            Route::get('availability-data', 'VacationRentalController@getAvailabilityData')
+                ->name('availability-data');
+            Route::post('block-dates', 'VacationRentalController@blockDates')
+                ->name('block-dates');
+            Route::post('unblock-dates', 'VacationRentalController@unblockDates')
+                ->name('unblock-dates');
+            Route::post('maintenance-dates', 'VacationRentalController@maintenanceDates')
+                ->name('maintenance-dates');
+            
+            // Booking management
+            Route::get('bookings', 'VacationRentalController@bookings')->name('bookings');
+            Route::get('bookings/{booking}', 'VacationRentalController@showBooking')->name('booking.show');
+            Route::put('bookings/{booking}/status', 'VacationRentalController@updateBookingStatus')->name('booking.update-status');
         });
 
         Route::group(['prefix' => 'reviews', 'as' => 'review.'], function (): void {

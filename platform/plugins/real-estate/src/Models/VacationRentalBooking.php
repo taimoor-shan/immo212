@@ -19,6 +19,7 @@ class VacationRentalBooking extends BaseModel
     protected $fillable = [
         'booking_number',
         'property_id',
+        'vacation_rental_id',
         'account_id',
         'guest_name',
         'guest_email',
@@ -104,6 +105,17 @@ class VacationRentalBooking extends BaseModel
         return $this->belongsTo(Property::class);
     }
 
+    public function vacationRental(): BelongsTo
+    {
+        return $this->belongsTo(VacationRental::class);
+    }
+
+    // Get the main rental (either vacation rental or property)
+    public function getRental()
+    {
+        return $this->vacation_rental_id ? $this->vacationRental : $this->property;
+    }
+
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
@@ -111,13 +123,26 @@ class VacationRentalBooking extends BaseModel
 
     public function calendarEvents(): HasMany
     {
-        return $this->hasMany(PropertyCalendarEvent::class, 'booking_id');
+        return $this->hasMany(VacationRentalCalendarEvent::class, 'booking_id');
     }
 
     // Scopes
     public function scopeForProperty(Builder $query, int $propertyId): Builder
     {
         return $query->where('property_id', $propertyId);
+    }
+
+    public function scopeForVacationRental(Builder $query, int $vacationRentalId): Builder
+    {
+        return $query->where('vacation_rental_id', $vacationRentalId);
+    }
+
+    public function scopeForRental(Builder $query, $rentalId, $isVacationRental = true): Builder
+    {
+        if ($isVacationRental) {
+            return $query->where('vacation_rental_id', $rentalId);
+        }
+        return $query->where('property_id', $rentalId);
     }
 
     public function scopeActive(Builder $query): Builder
@@ -217,9 +242,9 @@ class VacationRentalBooking extends BaseModel
         return $number;
     }
 
-    public static function checkDateConflict(int $propertyId, Carbon $checkIn, Carbon $checkOut, ?int $excludeBookingId = null): bool
+    public static function checkDateConflict(int $rentalId, Carbon $checkIn, Carbon $checkOut, ?int $excludeBookingId = null, bool $isVacationRental = true): bool
     {
-        $query = self::forProperty($propertyId)
+        $query = self::forRental($rentalId, $isVacationRental)
             ->active()
             ->where(function ($q) use ($checkIn, $checkOut) {
                 $q->whereBetween('check_in_date', [$checkIn, $checkOut->copy()->subDay()])
@@ -253,23 +278,43 @@ class VacationRentalBooking extends BaseModel
 
         static::created(function ($booking) {
             // Create calendar event for this booking
-            PropertyCalendarEvent::create([
-                'property_id' => $booking->property_id,
-                'booking_id' => $booking->id,
-                'title' => "Booking: {$booking->guest_name}",
-                'description' => "Guests: {$booking->guests_count}",
-                'start_date' => $booking->check_in_date,
-                'end_date' => $booking->check_out_date->copy()->subDay(), // End date is exclusive
-                'event_type' => 'booking',
-                'color' => '#28a745',
-            ]);
+            if ($booking->vacation_rental_id) {
+                VacationRentalCalendarEvent::create([
+                    'vacation_rental_id' => $booking->vacation_rental_id,
+                    'booking_id' => $booking->id,
+                    'title' => "Booking: {$booking->guest_name}",
+                    'description' => "Guests: {$booking->guests_count}",
+                    'start_date' => $booking->check_in_date,
+                    'end_date' => $booking->check_out_date->copy()->subDay(), // End date is exclusive
+                    'event_type' => 'booking',
+                    'color' => '#28a745',
+                ]);
 
-            // Update property availability
-            PropertyAvailability::bulkUpdateAvailability(
-                $booking->property_id,
-                $booking->getDateRange(),
-                ['status' => PropertyAvailability::STATUS_BOOKED]
-            );
+                // Update vacation rental availability
+                VacationRentalAvailability::bulkUpdateAvailability(
+                    $booking->vacation_rental_id,
+                    $booking->getDateRange(),
+                    ['status' => VacationRentalAvailability::STATUS_BOOKED]
+                );
+            } elseif ($booking->property_id) {
+                PropertyCalendarEvent::create([
+                    'property_id' => $booking->property_id,
+                    'booking_id' => $booking->id,
+                    'title' => "Booking: {$booking->guest_name}",
+                    'description' => "Guests: {$booking->guests_count}",
+                    'start_date' => $booking->check_in_date,
+                    'end_date' => $booking->check_out_date->copy()->subDay(), // End date is exclusive
+                    'event_type' => 'booking',
+                    'color' => '#28a745',
+                ]);
+
+                // Update property availability
+                PropertyAvailability::bulkUpdateAvailability(
+                    $booking->property_id,
+                    $booking->getDateRange(),
+                    ['status' => PropertyAvailability::STATUS_BOOKED]
+                );
+            }
         });
 
         static::updated(function ($booking) {
@@ -279,35 +324,66 @@ class VacationRentalBooking extends BaseModel
                 $newStatus = $booking->status;
 
                 // Update calendar event color based on status
-                PropertyCalendarEvent::where('booking_id', $booking->id)->update([
-                    'color' => $booking->getStatusColor(),
-                    'title' => "Booking: {$booking->guest_name} ({$booking->getStatuses()[$newStatus]})"
-                ]);
+                if ($booking->vacation_rental_id) {
+                    VacationRentalCalendarEvent::where('booking_id', $booking->id)->update([
+                        'color' => $booking->getStatusColor(),
+                        'title' => "Booking: {$booking->guest_name} ({$booking->getStatuses()[$newStatus]})"
+                    ]);
+                } else {
+                    PropertyCalendarEvent::where('booking_id', $booking->id)->update([
+                        'color' => $booking->getStatusColor(),
+                        'title' => "Booking: {$booking->guest_name} ({$booking->getStatuses()[$newStatus]})"
+                    ]);
+                }
 
                 // Update availability based on status change
                 if (in_array($newStatus, [self::STATUS_CANCELLED, self::STATUS_NO_SHOW])) {
                     // Cancelled or no-show bookings should free up the dates
-                    PropertyAvailability::bulkUpdateAvailability(
-                        $booking->property_id,
-                        $booking->getDateRange(),
-                        ['status' => PropertyAvailability::STATUS_AVAILABLE, 'notes' => null]
-                    );
+                    if ($booking->vacation_rental_id) {
+                        VacationRentalAvailability::bulkUpdateAvailability(
+                            $booking->vacation_rental_id,
+                            $booking->getDateRange(),
+                            ['status' => VacationRentalAvailability::STATUS_AVAILABLE, 'notes' => null]
+                        );
+                    } else {
+                        PropertyAvailability::bulkUpdateAvailability(
+                            $booking->property_id,
+                            $booking->getDateRange(),
+                            ['status' => PropertyAvailability::STATUS_AVAILABLE, 'notes' => null]
+                        );
+                    }
                 } elseif ($newStatus === self::STATUS_COMPLETED) {
                     // Completed bookings should also free up the dates for future bookings
-                    PropertyAvailability::bulkUpdateAvailability(
-                        $booking->property_id,
-                        $booking->getDateRange(),
-                        ['status' => PropertyAvailability::STATUS_AVAILABLE, 'notes' => null]
-                    );
+                    if ($booking->vacation_rental_id) {
+                        VacationRentalAvailability::bulkUpdateAvailability(
+                            $booking->vacation_rental_id,
+                            $booking->getDateRange(),
+                            ['status' => VacationRentalAvailability::STATUS_AVAILABLE, 'notes' => null]
+                        );
+                    } else {
+                        PropertyAvailability::bulkUpdateAvailability(
+                            $booking->property_id,
+                            $booking->getDateRange(),
+                            ['status' => PropertyAvailability::STATUS_AVAILABLE, 'notes' => null]
+                        );
+                    }
                 } elseif (in_array($newStatus, [self::STATUS_PENDING, self::STATUS_CONFIRMED])) {
                     // Pending or confirmed bookings should keep dates booked
                     // Only update if coming from a cancelled/no-show/completed status
                     if (in_array($oldStatus, [self::STATUS_CANCELLED, self::STATUS_NO_SHOW, self::STATUS_COMPLETED])) {
-                        PropertyAvailability::bulkUpdateAvailability(
-                            $booking->property_id,
-                            $booking->getDateRange(),
-                            ['status' => PropertyAvailability::STATUS_BOOKED]
-                        );
+                        if ($booking->vacation_rental_id) {
+                            VacationRentalAvailability::bulkUpdateAvailability(
+                                $booking->vacation_rental_id,
+                                $booking->getDateRange(),
+                                ['status' => VacationRentalAvailability::STATUS_BOOKED]
+                            );
+                        } else {
+                            PropertyAvailability::bulkUpdateAvailability(
+                                $booking->property_id,
+                                $booking->getDateRange(),
+                                ['status' => PropertyAvailability::STATUS_BOOKED]
+                            );
+                        }
                     }
                 }
             }
@@ -315,14 +391,25 @@ class VacationRentalBooking extends BaseModel
 
         static::deleted(function ($booking) {
             // Remove calendar event for this booking
-            PropertyCalendarEvent::where('booking_id', $booking->id)->delete();
+            if ($booking->vacation_rental_id) {
+                VacationRentalCalendarEvent::where('booking_id', $booking->id)->delete();
 
-            // Update property availability back to available
-            PropertyAvailability::bulkUpdateAvailability(
-                $booking->property_id,
-                $booking->getDateRange(),
-                ['status' => PropertyAvailability::STATUS_AVAILABLE, 'notes' => null]
-            );
+                // Update vacation rental availability back to available
+                VacationRentalAvailability::bulkUpdateAvailability(
+                    $booking->vacation_rental_id,
+                    $booking->getDateRange(),
+                    ['status' => VacationRentalAvailability::STATUS_AVAILABLE, 'notes' => null]
+                );
+            } else {
+                PropertyCalendarEvent::where('booking_id', $booking->id)->delete();
+
+                // Update property availability back to available
+                PropertyAvailability::bulkUpdateAvailability(
+                    $booking->property_id,
+                    $booking->getDateRange(),
+                    ['status' => PropertyAvailability::STATUS_AVAILABLE, 'notes' => null]
+                );
+            }
         });
     }
 

@@ -12,7 +12,7 @@
 
                 @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.description'), ['class' => 'single-property-element'])
 
-                @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-info'), ['class' => 'single-property-element'])
+                {{-- @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-info'), ['class' => 'single-property-element']) --}}
 
                 @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.video'), ['class' => 'single-property-element'])
 
@@ -20,9 +20,8 @@
 
                 @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.facilities'), ['class' => 'single-property-element'])
 
-                @if($property->type != \Botble\RealEstate\Enums\PropertyTypeEnum::VACATION_RENTAL)
-                    @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.mortgage-calculator'), ['class' => 'single-property-element', 'property' => $property])
-                @endif
+                {{-- Mortgage calculator is shown for all regular properties --}}
+                @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.mortgage-calculator'), ['class' => 'single-property-element', 'property' => $property])
 
                 @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.project'), ['class' => 'single-property-element'])
 
@@ -48,11 +47,8 @@
                 <div class="widget-sidebar wrapper-sidebar-right">
                     {!! apply_filters('ads_render', null, 'detail_page_sidebar_before') !!}
 
-                    @if($property->type == \Botble\RealEstate\Enums\PropertyTypeEnum::VACATION_RENTAL)
-                        @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-booking'), ['class' => 'bg-surface'])
-                    @else
-                        @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.contact'), ['class' => 'bg-surface'])
-                    @endif
+                    {{-- Contact form is shown for all regular properties --}}
+                    @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.contact'), ['class' => 'bg-surface'])
 
                     {!! apply_filters('ads_render', null, 'detail_page_sidebar_after') !!}
                 </div>

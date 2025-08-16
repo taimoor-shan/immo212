@@ -4,11 +4,10 @@ namespace Botble\RealEstate\Http\Controllers;
 
 use Botble\Base\Facades\Assets;
 use Botble\Base\Http\Controllers\BaseController;
-use Botble\RealEstate\Enums\PropertyTypeEnum;
-use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\Models\VacationRentalBooking;
-use Botble\RealEstate\Models\PropertyAvailability;
-use Botble\RealEstate\Models\PropertyCalendarEvent;
+use Botble\RealEstate\Models\VacationRentalAvailability;
+use Botble\RealEstate\Models\VacationRentalCalendarEvent;
 use Botble\RealEstate\Services\AvailabilityService;
 use Botble\RealEstate\Tables\VacationRentalBookingTable;
 use Botble\RealEstate\Tables\VacationRentalPropertyTable;
@@ -49,7 +48,7 @@ class VacationRentalAdminController extends BaseController
         $this->pageTitle(trans('plugins/real-estate::vacation-rental.overview'));
 
         // Get vacation rental statistics
-        $totalProperties = Property::where('type', PropertyTypeEnum::VACATION_RENTAL)->count();
+        $totalProperties = VacationRental::count();
         $totalBookings = VacationRentalBooking::count();
         $activeBookings = VacationRentalBooking::where('status', VacationRentalBooking::STATUS_CONFIRMED)
             ->where('check_in_date', '<=', Carbon::today())
@@ -63,22 +62,21 @@ class VacationRentalAdminController extends BaseController
             ->sum('total_amount');
 
         // Recent bookings
-        $recentBookings = VacationRentalBooking::with(['property'])
+        $recentBookings = VacationRentalBooking::with(['vacationRental'])
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
 
         // Upcoming check-ins
-        $upcomingCheckIns = VacationRentalBooking::with(['property'])
+        $upcomingCheckIns = VacationRentalBooking::with(['vacationRental'])
             ->where('status', VacationRentalBooking::STATUS_CONFIRMED)
             ->where('check_in_date', '>=', Carbon::today())
             ->where('check_in_date', '<=', Carbon::today()->addDays(7))
             ->orderBy('check_in_date')
             ->get();
 
-        // Properties needing attention
-        $propertiesNeedingAttention = Property::where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->whereDoesntHave('vacationRentalBookings', function ($query) {
+        // Vacation rentals needing attention
+        $propertiesNeedingAttention = VacationRental::whereDoesntHave('bookings', function ($query) {
                 $query->where('check_in_date', '>=', Carbon::now()->subDays(30));
             })
             ->limit(5)
@@ -122,7 +120,7 @@ class VacationRentalAdminController extends BaseController
         $this->pageTitle(trans('plugins/real-estate::vacation-rental.dashboard'));
 
         // Get vacation rental statistics
-        $totalProperties = Property::where('type', PropertyTypeEnum::VACATION_RENTAL)->count();
+        $totalProperties = VacationRental::count();
         $totalBookings = VacationRentalBooking::count();
         $activeBookings = VacationRentalBooking::where('status', VacationRentalBooking::STATUS_CONFIRMED)
             ->where('check_in_date', '<=', Carbon::today())
@@ -136,22 +134,21 @@ class VacationRentalAdminController extends BaseController
             ->sum('total_amount');
 
         // Recent bookings
-        $recentBookings = VacationRentalBooking::with(['property'])
+        $recentBookings = VacationRentalBooking::with(['vacationRental'])
             ->latest()
             ->limit(10)
             ->get();
 
         // Upcoming check-ins
-        $upcomingCheckIns = VacationRentalBooking::with(['property'])
+        $upcomingCheckIns = VacationRentalBooking::with(['vacationRental'])
             ->where('status', VacationRentalBooking::STATUS_CONFIRMED)
             ->where('check_in_date', '>=', Carbon::today())
             ->where('check_in_date', '<=', Carbon::today()->addDays(7))
             ->orderBy('check_in_date')
             ->get();
 
-        // Properties needing attention
-        $propertiesNeedingAttention = Property::where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->where(function ($query) {
+        // Vacation rentals needing attention
+        $propertiesNeedingAttention = VacationRental::where(function ($query) {
                 $query->where('moderation_status', 'pending')
                     ->orWhereNull('check_in_time')
                     ->orWhereNull('check_out_time')
@@ -187,30 +184,29 @@ class VacationRentalAdminController extends BaseController
     {
         $this->pageTitle(trans('plugins/real-estate::vacation-rental.availability'));
 
-        $properties = Property::where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->select('id', 'name')
+        $vacationRentals = VacationRental::select('id', 'name')
             ->orderBy('name')
             ->get();
 
-        $selectedProperty = null;
+        $selectedVacationRental = null;
         $availabilityData = [];
         $calendarEvents = [];
 
-        if ($request->filled('property_id')) {
-            $selectedProperty = Property::find($request->property_id);
+        if ($request->filled('vacation_rental_id')) {
+            $selectedVacationRental = VacationRental::find($request->vacation_rental_id);
             
-            if ($selectedProperty && $selectedProperty->type === PropertyTypeEnum::VACATION_RENTAL) {
+            if ($selectedVacationRental) {
                 $startDate = Carbon::parse($request->get('month', Carbon::now()->format('Y-m')))->startOfMonth();
                 $endDate = $startDate->copy()->endOfMonth();
 
-                $availabilityData = $this->availabilityService->getAvailabilityDetails(
-                    $selectedProperty->id,
+                $availabilityData = VacationRentalAvailability::getAvailabilityForDateRange(
+                    $selectedVacationRental->id,
                     $startDate,
                     $endDate
                 );
 
-                $calendarEvents = $this->availabilityService->getCalendarEvents(
-                    $selectedProperty->id,
+                $calendarEvents = VacationRentalCalendarEvent::getEventsForCalendar(
+                    $selectedVacationRental->id,
                     $startDate,
                     $endDate
                 );
@@ -221,8 +217,8 @@ class VacationRentalAdminController extends BaseController
             ->addScriptsDirectly('vendor/core/plugins/real-estate/js/vacation-rental-admin.js');
 
         return view('plugins/real-estate::vacation-rental.availability', compact(
-            'properties',
-            'selectedProperty',
+            'vacationRentals',
+            'selectedVacationRental',
             'availabilityData',
             'calendarEvents'
         ));
@@ -232,23 +228,22 @@ class VacationRentalAdminController extends BaseController
     {
         $this->pageTitle(trans('plugins/real-estate::vacation-rental.calendar'));
 
-        $properties = Property::where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->select('id', 'name')
+        $vacationRentals = VacationRental::select('id', 'name')
             ->orderBy('name')
             ->get();
 
-        $selectedProperty = null;
+        $selectedVacationRental = null;
         $monthlyData = [];
 
-        if ($request->filled('property_id')) {
-            $selectedProperty = Property::find($request->property_id);
+        if ($request->filled('vacation_rental_id')) {
+            $selectedVacationRental = VacationRental::find($request->vacation_rental_id);
             
-            if ($selectedProperty && $selectedProperty->type === PropertyTypeEnum::VACATION_RENTAL) {
+            if ($selectedVacationRental) {
                 $year = $request->get('year', Carbon::now()->year);
                 $month = $request->get('month', Carbon::now()->month);
 
-                $monthlyData = $this->availabilityService->getMonthlyAvailabilitySummary(
-                    $selectedProperty->id,
+                $monthlyData = VacationRentalCalendarEvent::getMonthlyEvents(
+                    $selectedVacationRental->id,
                     $year,
                     $month
                 );
@@ -259,8 +254,8 @@ class VacationRentalAdminController extends BaseController
             ->addScriptsDirectly('vendor/core/plugins/real-estate/js/vacation-rental-admin.js');
 
         return view('plugins/real-estate::vacation-rental.calendar', compact(
-            'properties',
-            'selectedProperty',
+            'vacationRentals',
+            'selectedVacationRental',
             'monthlyData'
         ));
     }
@@ -268,18 +263,14 @@ class VacationRentalAdminController extends BaseController
     public function blockDates(Request $request)
     {
         $request->validate([
-            'property_id' => 'required|exists:re_properties,id',
+            'vacation_rental_id' => 'required|exists:re_vacation_rentals,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'reason' => 'nullable|string|max:255',
         ]);
 
-        $property = Property::where('id', $request->property_id)
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->firstOrFail();
-
-        $this->availabilityService->blockDates(
-            $property->id,
+        VacationRentalAvailability::blockDates(
+            $request->vacation_rental_id,
             Carbon::parse($request->start_date),
             Carbon::parse($request->end_date),
             $request->reason ?? 'Blocked by admin'
@@ -292,17 +283,13 @@ class VacationRentalAdminController extends BaseController
     public function unblockDates(Request $request)
     {
         $request->validate([
-            'property_id' => 'required|exists:re_properties,id',
+            'vacation_rental_id' => 'required|exists:re_vacation_rentals,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        $property = Property::where('id', $request->property_id)
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->firstOrFail();
-
-        $this->availabilityService->unblockDates(
-            $property->id,
+        VacationRentalAvailability::unblockDates(
+            $request->vacation_rental_id,
             Carbon::parse($request->start_date),
             Carbon::parse($request->end_date)
         );
@@ -314,18 +301,14 @@ class VacationRentalAdminController extends BaseController
     public function maintenanceDates(Request $request)
     {
         $request->validate([
-            'property_id' => 'required|exists:re_properties,id',
+            'vacation_rental_id' => 'required|exists:re_vacation_rentals,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'reason' => 'nullable|string|max:255',
         ]);
 
-        $property = Property::where('id', $request->property_id)
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->firstOrFail();
-
-        $this->availabilityService->maintenanceDates(
-            $property->id,
+        VacationRentalAvailability::setMaintenanceDates(
+            $request->vacation_rental_id,
             Carbon::parse($request->start_date),
             Carbon::parse($request->end_date),
             $request->reason ?? 'Maintenance'
@@ -338,20 +321,16 @@ class VacationRentalAdminController extends BaseController
     public function getAvailabilityData(Request $request)
     {
         $request->validate([
-            'property_id' => 'required|exists:re_properties,id',
+            'vacation_rental_id' => 'required|exists:re_vacation_rentals,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        $property = Property::where('id', $request->property_id)
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->firstOrFail();
-
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
 
-        $availabilityData = $this->availabilityService->getAvailabilityDetails(
-            $property->id,
+        $availabilityData = VacationRentalAvailability::getAvailabilityForDateRange(
+            $request->vacation_rental_id,
             $startDate,
             $endDate
         );
@@ -361,7 +340,7 @@ class VacationRentalAdminController extends BaseController
 
     public function showBooking($id)
     {
-        $booking = VacationRentalBooking::with(['property', 'property.currency'])
+        $booking = VacationRentalBooking::with(['vacationRental', 'vacationRental.currency'])
             ->findOrFail($id);
 
         $this->setupBreadcrumb();
@@ -374,7 +353,7 @@ class VacationRentalAdminController extends BaseController
 
     public function editBooking($id)
     {
-        $booking = VacationRentalBooking::with(['property', 'property.currency'])
+        $booking = VacationRentalBooking::with(['vacationRental', 'vacationRental.currency'])
             ->findOrFail($id);
 
         $this->setupBreadcrumb();

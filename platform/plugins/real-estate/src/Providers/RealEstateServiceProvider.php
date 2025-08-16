@@ -49,6 +49,7 @@ use Botble\RealEstate\Models\Invoice;
 use Botble\RealEstate\Models\Package;
 use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\Models\Review;
 use Botble\RealEstate\Models\Transaction;
 use Botble\RealEstate\PanelSections\SettingRealEstatePanelSetting;
@@ -221,9 +222,12 @@ class RealEstateServiceProvider extends ServiceProvider
             SlugHelper::registerModule(Property::class, fn () => trans('plugins/real-estate::property.properties'));
             SlugHelper::registerModule(Category::class, fn () => trans('plugins/real-estate::category.property_categories'));
             SlugHelper::registerModule(Project::class, fn () => trans('plugins/real-estate::project.projects'));
+            SlugHelper::registerModule(VacationRental::class, fn () => trans('plugins/real-estate::vacation-rental.name'));
+
             SlugHelper::setPrefix(Project::class, 'projects', true);
 
             SlugHelper::setPrefix(Property::class, 'properties', true);
+            SlugHelper::setPrefix(VacationRental::class, 'rentals', true);
             SlugHelper::setPrefix(Category::class, 'property-category', true);
 
             if (! setting('real_estate_disabled_public_profile')) {
@@ -419,35 +423,8 @@ class RealEstateServiceProvider extends ServiceProvider
                     'parent_id' => 'cms-plugins-real-estate',
                     'name' => 'plugins/real-estate::vacation-rental.name',
                     'icon' => null,
-                    'url' => fn () => route('vacation-rental.overview'),
+                    'url' => fn () => route('vacation-rental.index'),
                     'permissions' => ['vacation-rental.index'],
-                ])
-                ->registerItem([
-                    'id' => 'cms-plugins-vacation-rental-overview',
-                    'priority' => 0,
-                    'parent_id' => 'cms-plugins-vacation-rental',
-                    'name' => 'plugins/real-estate::vacation-rental.overview',
-                    'icon' => null,
-                    'url' => fn () => route('vacation-rental.overview'),
-                    'permissions' => ['vacation-rental.dashboard'],
-                ])
-                ->registerItem([
-                    'id' => 'cms-plugins-vacation-rental-properties',
-                    'priority' => 1,
-                    'parent_id' => 'cms-plugins-vacation-rental',
-                    'name' => 'plugins/real-estate::vacation-rental.properties',
-                    'icon' => null,
-                    'url' => fn () => route('vacation-rental.properties'),
-                    'permissions' => ['vacation-rental.index'],
-                ])
-                ->registerItem([
-                    'id' => 'cms-plugins-vacation-rental-bookings',
-                    'priority' => 2,
-                    'parent_id' => 'cms-plugins-vacation-rental',
-                    'name' => 'plugins/real-estate::vacation-rental.bookings',
-                    'icon' => null,
-                    'url' => fn () => route('vacation-rental.bookings'),
-                    'permissions' => ['vacation-rental.bookings'],
                 ]);
         });
 

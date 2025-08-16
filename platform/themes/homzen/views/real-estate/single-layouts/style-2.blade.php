@@ -28,13 +28,11 @@
                     {{ __('Nearby') }}
                 </a>
             </li>
-            @if($property->type != \Botble\RealEstate\Enums\PropertyTypeEnum::VACATION_RENTAL)
-                <li>
-                    <a  class="cate-single-item" href="#mortgage-calculator">
-                        {{ __('Mortgage Calculator') }}
-                    </a>
-                </li>
-            @endif
+            <li>
+                <a  class="cate-single-item" href="#mortgage-calculator">
+                    {{ __('Mortgage Calculator') }}
+                </a>
+            </li>
             @if (RealEstateHelper::isEnabledProjects() && $property->project_id && ($project = $property->project))
                 <li>
                     <a  class="cate-single-item" href="#project">
@@ -77,9 +75,7 @@
                 </div>
                 {!! apply_filters('before_single_content_detail', null, $property) !!}
 
-                <div class="wrapper-onepage" id="vacation-rental-info">
-                    @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-info'), ['class' => 'widget-box-single'])
-                </div>
+                {{-- Vacation rental info is only shown for VacationRental model, not Property --}}
 
                 <div class="wrapper-onepage" id="video">
                     @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.video'), ['class' => 'widget-box-single'])
@@ -90,11 +86,9 @@
                 <div class="wrapper-onepage" id="nearby">
                     @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.facilities'), ['class' => 'widget-box-single'])
                 </div>
-                @if($property->type != \Botble\RealEstate\Enums\PropertyTypeEnum::VACATION_RENTAL)
-                    <div class="wrapper-onepage" id="mortgage-calculator">
-                        @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.mortgage-calculator'), ['class' => 'widget-box-single', 'property' => $property])
-                    </div>
-                @endif
+                <div class="wrapper-onepage" id="mortgage-calculator">
+                    @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.mortgage-calculator'), ['class' => 'widget-box-single', 'property' => $property])
+                </div>
                 @if (RealEstateHelper::isEnabledProjects() && $property->project_id && ($project = $property->project))
                     <div class="wrapper-onepage" id="project">
                         @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.project'), ['class' => 'widget-box-single'])
@@ -128,11 +122,8 @@
                 <div class="widget-sidebar wrapper-sidebar-right">
                     {!! apply_filters('ads_render', null, 'detail_page_sidebar_before') !!}
 
-                    @if($property->type == \Botble\RealEstate\Enums\PropertyTypeEnum::VACATION_RENTAL)
-                        @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-booking'), ['class' => 'bg-white mb-4'])
-                    @endif
-
-                    @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.contact'), ['class' => 'bg-white'])
+                {{-- Contact form is shown for all regular properties --}}
+                @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.contact'), ['class' => 'bg-surface'])
 
                     {!! apply_filters('ads_render', null, 'detail_page_sidebar_after') !!}
                 </div>

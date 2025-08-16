@@ -9,6 +9,7 @@ use Botble\RealEstate\Models\Account;
 use Botble\RealEstate\Models\Category;
 use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\QueryBuilders\ProjectBuilder;
 use Botble\RealEstate\QueryBuilders\PropertyBuilder;
 use Botble\RealEstate\Repositories\Interfaces\ProjectInterface;
@@ -265,6 +266,74 @@ class HandleFrontPages
                     'data' => compact('account', 'properties'),
                     'slug' => $account->slug,
                 ];
+
+                 // Rentals
+
+                case VacationRental::class:
+               dd(''. $slug->reference_id);
+                $condition = [
+
+                    'id' => $slug->reference_id,
+                ];
+
+                // if (! $isPreviewing) {
+                //     $condition = [
+                //         ...$condition,
+                //         ...RealEstateHelper::getPropertyDisplayQueryConditions(),
+                //     ];
+                // }
+
+                $reviewData = RealEstateHelper::getReviewExtraData();
+
+                $rental = VacationRental::query()
+                    ->where($condition)
+                    // ->notExpired()
+                    ->firstOrFail();
+
+                if ($rental->slugable->key !== $slug->key) {
+                    return redirect()->to($rental->url);
+                }
+
+                SeoHelper::setTitle($rental->name)
+                    ->setDescription(Str::words($rental->description, 120));
+
+                $meta = new SeoOpenGraph();
+                if ($rental->image) {
+                    $meta->setImage(RvMedia::getImageUrl($rental->image));
+                }
+                $meta->setDescription($rental->description);
+                $meta->setUrl($rental->url);
+                $meta->setTitle($rental->name);
+                $meta->setType('article');
+
+                SeoHelper::setSeoOpenGraph($meta);
+
+                Theme::breadcrumb()
+                    ->add(__('Properties'), route('public.properties'))
+                    ->add($rental->name);
+
+                Helper::handleViewCount($rental, 'viewed_rental');
+
+                do_action(BASE_ACTION_PUBLIC_RENDER_SINGLE, PROPERTY_MODULE_SCREEN_NAME, $rental);
+
+                if (function_exists('admin_bar')) {
+                    admin_bar()->registerLink(__('Edit this rental'), route('rental.edit', $rental->id));
+                }
+
+                $images = [];
+                if (! empty($rental->images) && is_array($rental->images)) {
+                    foreach ($rental->images as $image) {
+                        $images[] = RvMedia::getImageUrl($image, null, false, RvMedia::getDefaultImage());
+                    }
+                }
+
+                return [
+                    'view' => 'real-estate.rental',
+                    'default_view' => 'plugins/real-estate::themes.rental',
+                    'data' => compact('rental', 'images'),
+                    'slug' => $rental->slug,
+                ];
+                 
         }
 
         return $slug;

@@ -1,11 +1,14 @@
-@if($property->type == \Botble\RealEstate\Enums\PropertyTypeEnum::VACATION_RENTAL)
+@if(isset($vacationRental) || (isset($property) && method_exists($property, 'isVacationRental') && $property->isVacationRental()))
+    @php
+        $rental = $vacationRental ?? $property;
+    @endphp
     <div @class(['single-property-vacation-rental-info', $class ?? null])>
         <div class="h7 title fw-6">{{ __('Vacation Rental Information') }}</div>
         
         <div class="vacation-rental-details mt-3">
             <div class="row g-3">
                 <!-- Check-in/Check-out Times -->
-                @if($property->check_in_time || $property->check_out_time)
+                @if($rental->check_in_time || $rental->check_out_time)
                     <div class="col-md-6">
                         <div class="info-card">
                             <div class="info-header">
@@ -13,16 +16,16 @@
                                 <span class="fw-6">{{ __('Check-in & Check-out') }}</span>
                             </div>
                             <div class="info-content">
-                                @if($property->check_in_time)
+                                @if($rental->check_in_time)
                                     <div class="info-item">
                                         <span class="label">{{ __('Check-in:') }}</span>
-                                        <span class="value">{{ $property->check_in_time }}</span>
+                                        <span class="value">{{ $rental->check_in_time }}</span>
                                     </div>
                                 @endif
-                                @if($property->check_out_time)
+                                @if($rental->check_out_time)
                                     <div class="info-item">
                                         <span class="label">{{ __('Check-out:') }}</span>
-                                        <span class="value">{{ $property->check_out_time }}</span>
+                                        <span class="value">{{ $rental->check_out_time }}</span>
                                     </div>
                                 @endif
                             </div>
@@ -31,7 +34,7 @@
                 @endif
 
                 <!-- Stay Requirements -->
-                @if($property->minimum_stay || $property->maximum_stay || $property->maximum_guests)
+                @if($rental->minimum_stay || $rental->maximum_stay || $rental->maximum_guests)
                     <div class="col-md-6">
                         <div class="info-card">
                             <div class="info-header">
@@ -39,28 +42,28 @@
                                 <span class="fw-6">{{ __('Stay Requirements') }}</span>
                             </div>
                             <div class="info-content">
-                                @if($property->minimum_stay)
+                                @if($rental->minimum_stay)
                                     <div class="info-item">
                                         <span class="label">{{ __('Minimum stay:') }}</span>
-                                        <span class="value">{{ $property->minimum_stay }} {{ $property->minimum_stay == 1 ? __('night') : __('nights') }}</span>
+                                        <span class="value">{{ $rental->minimum_stay }} {{ $rental->minimum_stay == 1 ? __('night') : __('nights') }}</span>
                                     </div>
                                 @endif
-                                @if($property->maximum_stay)
+                                @if($rental->maximum_stay)
                                     <div class="info-item">
                                         <span class="label">{{ __('Maximum stay:') }}</span>
                                         <span class="value">
-                                            @if($property->maximum_stay == 0)
+                                            @if($rental->maximum_stay == 0)
                                                 {{ __('No limit') }}
                                             @else
-                                                {{ $property->maximum_stay }} {{ $property->maximum_stay == 1 ? __('night') : __('nights') }}
+                                                {{ $rental->maximum_stay }} {{ $rental->maximum_stay == 1 ? __('night') : __('nights') }}
                                             @endif
                                         </span>
                                     </div>
                                 @endif
-                                @if($property->maximum_guests)
+                                @if($rental->maximum_guests)
                                     <div class="info-item">
                                         <span class="label">{{ __('Maximum guests:') }}</span>
-                                        <span class="value">{{ $property->maximum_guests }}</span>
+                                        <span class="value">{{ $rental->maximum_guests }}</span>
                                     </div>
                                 @endif
                             </div>
@@ -69,7 +72,7 @@
                 @endif
 
                 <!-- Pricing Information -->
-                @if($property->cleaning_fee || $property->security_deposit)
+                @if($rental->cleaning_fee || $rental->security_deposit)
                     <div class="col-md-6">
                         <div class="info-card">
                             <div class="info-header">
@@ -77,16 +80,16 @@
                                 <span class="fw-6">{{ __('Additional Fees') }}</span>
                             </div>
                             <div class="info-content">
-                                @if($property->cleaning_fee)
+                                @if($rental->cleaning_fee)
                                     <div class="info-item">
                                         <span class="label">{{ __('Cleaning fee:') }}</span>
-                                        <span class="value">{{ number_format($property->cleaning_fee, 2) }}</span>
+                                        <span class="value">{{ number_format($rental->cleaning_fee, 2) }}</span>
                                     </div>
                                 @endif
-                                @if($property->security_deposit)
+                                @if($rental->security_deposit)
                                     <div class="info-item">
                                         <span class="label">{{ __('Security deposit:') }}</span>
-                                        <span class="value">{{ number_format($property->security_deposit, 2) }}</span>
+                                        <span class="value">{{ number_format($rental->security_deposit, 2) }}</span>
                                     </div>
                                 @endif
                             </div>
@@ -95,7 +98,7 @@
                 @endif
 
                 <!-- Cancellation Policy -->
-                @if($property->cancellation_policy)
+                @if($rental->cancellation_policy)
                     <div class="col-md-6">
                         <div class="info-card">
                             <div class="info-header">
@@ -104,7 +107,7 @@
                             </div>
                             <div class="info-content">
                                 <div class="info-item">
-                                    <span class="value">{{ ucfirst(str_replace('_', ' ', $property->cancellation_policy)) }}</span>
+                                    <span class="value">{{ ucfirst(str_replace('_', ' ', $rental->cancellation_policy)) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -113,7 +116,7 @@
             </div>
 
             <!-- House Rules -->
-            @if($property->house_rules)
+            @if($rental->house_rules)
                 <div class="house-rules mt-4">
                     <div class="info-header mb-3">
                         <x-core::icon name="ti ti-list-check" class="text-danger" />
@@ -121,7 +124,7 @@
                     </div>
                     <div class="house-rules-content">
                         <div class="text-variant-1">
-                            {!! nl2br(e($property->house_rules)) !!}
+                            {!! nl2br(e($rental->house_rules)) !!}
                         </div>
                     </div>
                 </div>
@@ -138,22 +141,22 @@
                         <div class="col-md-4">
                             <div class="booking-info-item">
                             
-                                <span>{{ __('Base price: :price/night', ['price' => $property->price_format]) }}</span>
+                                <span>{{ __('Base price: :price/night', ['price' => $rental->price_format]) }}</span>
                             </div>
                         </div>
-                        @if($property->minimum_stay)
+                        @if($rental->minimum_stay)
                             <div class="col-md-4">
                                 <div class="booking-info-item">
                                     <x-core::icon name="ti ti-calendar" class="me-1" />
-                                    <span>{{ __('Min :nights nights', ['nights' => $property->minimum_stay]) }}</span>
+                                    <span>{{ __('Min :nights nights', ['nights' => $rental->minimum_stay]) }}</span>
                                 </div>
                             </div>
                         @endif
-                        @if($property->maximum_guests)
+                        @if($rental->maximum_guests)
                             <div class="col-md-4">
                                 <div class="booking-info-item">
                                     <x-core::icon name="ti ti-users" class="me-1" />
-                                    <span>{{ __('Max :guests guests', ['guests' => $property->maximum_guests]) }}</span>
+                                    <span>{{ __('Max :guests guests', ['guests' => $rental->maximum_guests]) }}</span>
                                 </div>
                             </div>
                         @endif

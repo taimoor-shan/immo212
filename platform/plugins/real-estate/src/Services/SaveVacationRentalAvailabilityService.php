@@ -2,23 +2,16 @@
 
 namespace Botble\RealEstate\Services;
 
-use Botble\RealEstate\Models\Property;
 use Botble\RealEstate\Models\VacationRental;
-use Botble\RealEstate\Models\PropertyAvailability;
 use Botble\RealEstate\Models\VacationRentalAvailability;
-use Botble\RealEstate\Models\PropertyCalendarEvent;
-// PropertyTypeEnum no longer needed since vacation rentals are separate
+use Botble\RealEstate\Models\VacationRentalCalendarEvent;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 
-class SavePropertyAvailabilityService
+class SaveVacationRentalAvailabilityService
 {
-    public function execute(Property $property, array $availabilityData = []): void
+    public function execute(VacationRental $vacationRental, array $availabilityData = []): void
     {
-        // Since vacation rentals are now separate, this service is not needed for regular properties
-        // Regular properties use a simpler availability system
-        return;
-
         // If no availability data provided, skip processing
         if (empty($availabilityData)) {
             return;
@@ -27,7 +20,8 @@ class SavePropertyAvailabilityService
         // Decode JSON strings if necessary (JavaScript sends JSON strings)
         $processedData = $this->processAvailabilityData($availabilityData);
 
-        \Log::info('Processed availability data', [
+        \Log::info('Processed vacation rental availability data', [
+            'vacation_rental_id' => $vacationRental->id,
             'original_data' => $availabilityData,
             'processed_data' => $processedData,
             'data_types' => array_map('gettype', $processedData)
@@ -35,22 +29,22 @@ class SavePropertyAvailabilityService
 
         // Process blocked dates (individual dates from admin)
         if (!empty($processedData['blocked_dates'])) {
-            $this->processIndividualBlockedDates($property->id, $processedData['blocked_dates']);
+            $this->processIndividualBlockedDates($vacationRental->id, $processedData['blocked_dates']);
         }
 
         // Process maintenance dates (individual dates from admin)
         if (!empty($processedData['maintenance_dates'])) {
-            $this->processIndividualMaintenanceDates($property->id, $processedData['maintenance_dates']);
+            $this->processIndividualMaintenanceDates($vacationRental->id, $processedData['maintenance_dates']);
         }
 
         // Process unblocked dates (individual dates to make available again)
         if (!empty($processedData['unblocked_dates'])) {
-            $this->processIndividualUnblockedDates($property->id, $processedData['unblocked_dates']);
+            $this->processIndividualUnblockedDates($vacationRental->id, $processedData['unblocked_dates']);
         }
 
         // Process custom pricing for specific dates
         if (!empty($processedData['custom_pricing'])) {
-            $this->processCustomPricing($property->id, $processedData['custom_pricing']);
+            $this->processCustomPricing($vacationRental->id, $processedData['custom_pricing']);
         }
     }
 
@@ -108,7 +102,7 @@ class SavePropertyAvailabilityService
     /**
      * Process individual blocked dates from admin availability management
      */
-    private function processIndividualBlockedDates(int $propertyId, array $blockedDates): void
+    private function processIndividualBlockedDates(int $vacationRentalId, array $blockedDates): void
     {
         foreach ($blockedDates as $dateString) {
             if (empty($dateString)) {
@@ -120,17 +114,17 @@ class SavePropertyAvailabilityService
                 $reason = 'Blocked by owner';
 
                 // Create calendar event for single day
-                PropertyCalendarEvent::createBlockedPeriod($propertyId, $date, $date, 'Blocked', $reason);
+                VacationRentalCalendarEvent::createBlockedPeriod($vacationRentalId, $date, $date, 'Blocked', $reason);
 
                 // Update availability record for single day
-                $this->updateAvailabilityRecords($propertyId, $date, $date, [
-                    'status' => PropertyAvailability::STATUS_BLOCKED,
-                    'notes' => $reason,
+                $this->updateAvailabilityRecords($vacationRentalId, $date, $date, [
+                    'status' => VacationRentalAvailability::STATUS_BLOCKED,
+                    'reason' => $reason,
                 ]);
 
             } catch (\Exception $e) {
                 \Log::error('Error processing blocked date', [
-                    'property_id' => $propertyId,
+                    'vacation_rental_id' => $vacationRentalId,
                     'date_string' => $dateString,
                     'error' => $e->getMessage()
                 ]);
@@ -141,7 +135,7 @@ class SavePropertyAvailabilityService
     /**
      * Process individual maintenance dates from admin availability management
      */
-    private function processIndividualMaintenanceDates(int $propertyId, array $maintenanceDates): void
+    private function processIndividualMaintenanceDates(int $vacationRentalId, array $maintenanceDates): void
     {
         foreach ($maintenanceDates as $dateString) {
             if (empty($dateString)) {
@@ -153,17 +147,17 @@ class SavePropertyAvailabilityService
                 $reason = 'Maintenance scheduled';
 
                 // Create calendar event for single day
-                PropertyCalendarEvent::createMaintenancePeriod($propertyId, $date, $date, 'Maintenance', $reason);
+                VacationRentalCalendarEvent::createMaintenancePeriod($vacationRentalId, $date, $date, 'Maintenance', $reason);
 
                 // Update availability record for single day
-                $this->updateAvailabilityRecords($propertyId, $date, $date, [
-                    'status' => PropertyAvailability::STATUS_MAINTENANCE,
-                    'notes' => $reason,
+                $this->updateAvailabilityRecords($vacationRentalId, $date, $date, [
+                    'status' => VacationRentalAvailability::STATUS_MAINTENANCE,
+                    'reason' => $reason,
                 ]);
 
             } catch (\Exception $e) {
                 \Log::error('Error processing maintenance date', [
-                    'property_id' => $propertyId,
+                    'vacation_rental_id' => $vacationRentalId,
                     'date_string' => $dateString,
                     'error' => $e->getMessage()
                 ]);
@@ -174,7 +168,7 @@ class SavePropertyAvailabilityService
     /**
      * Process individual unblocked dates (make available again)
      */
-    private function processIndividualUnblockedDates(int $propertyId, array $unblockedDates): void
+    private function processIndividualUnblockedDates(int $vacationRentalId, array $unblockedDates): void
     {
         foreach ($unblockedDates as $dateString) {
             if (empty($dateString)) {
@@ -185,20 +179,20 @@ class SavePropertyAvailabilityService
                 $date = Carbon::parse($dateString);
 
                 // Remove any existing calendar events for this date
-                PropertyCalendarEvent::where('property_id', $propertyId)
+                VacationRentalCalendarEvent::where('vacation_rental_id', $vacationRentalId)
                     ->whereDate('start_date', '<=', $date)
                     ->whereDate('end_date', '>=', $date)
                     ->delete();
 
                 // Update availability record to make available
-                $this->updateAvailabilityRecords($propertyId, $date, $date, [
-                    'status' => PropertyAvailability::STATUS_AVAILABLE,
-                    'notes' => 'Made available by owner',
+                $this->updateAvailabilityRecords($vacationRentalId, $date, $date, [
+                    'status' => VacationRentalAvailability::STATUS_AVAILABLE,
+                    'reason' => 'Made available by owner',
                 ]);
 
             } catch (\Exception $e) {
                 \Log::error('Error processing unblocked date', [
-                    'property_id' => $propertyId,
+                    'vacation_rental_id' => $vacationRentalId,
                     'date_string' => $dateString,
                     'error' => $e->getMessage()
                 ]);
@@ -209,7 +203,7 @@ class SavePropertyAvailabilityService
     /**
      * Process blocked date ranges (for booking system)
      */
-    private function processBlockedDates(int $propertyId, array $blockedDates): void
+    private function processBlockedDates(int $vacationRentalId, array $blockedDates): void
     {
         foreach ($blockedDates as $dateRange) {
             if (empty($dateRange['start_date']) || empty($dateRange['end_date'])) {
@@ -221,17 +215,17 @@ class SavePropertyAvailabilityService
             $reason = $dateRange['reason'] ?? 'Blocked by owner';
 
             // Create calendar event
-            PropertyCalendarEvent::createBlockedPeriod($propertyId, $startDate, $endDate, 'Blocked', $reason);
+            VacationRentalCalendarEvent::createBlockedPeriod($vacationRentalId, $startDate, $endDate, 'Blocked', $reason);
 
             // Update availability records
-            $this->updateAvailabilityRecords($propertyId, $startDate, $endDate, [
-                'status' => PropertyAvailability::STATUS_BLOCKED,
-                'notes' => $reason,
+            $this->updateAvailabilityRecords($vacationRentalId, $startDate, $endDate, [
+                'status' => VacationRentalAvailability::STATUS_BLOCKED,
+                'reason' => $reason,
             ]);
         }
     }
 
-    private function processMaintenanceDates(int $propertyId, array $maintenanceDates): void
+    private function processMaintenanceDates(int $vacationRentalId, array $maintenanceDates): void
     {
         foreach ($maintenanceDates as $dateRange) {
             if (empty($dateRange['start_date']) || empty($dateRange['end_date'])) {
@@ -243,17 +237,17 @@ class SavePropertyAvailabilityService
             $reason = $dateRange['reason'] ?? 'Maintenance';
 
             // Create calendar event
-            PropertyCalendarEvent::createMaintenancePeriod($propertyId, $startDate, $endDate, 'Maintenance', $reason);
+            VacationRentalCalendarEvent::createMaintenancePeriod($vacationRentalId, $startDate, $endDate, 'Maintenance', $reason);
 
             // Update availability records
-            $this->updateAvailabilityRecords($propertyId, $startDate, $endDate, [
-                'status' => PropertyAvailability::STATUS_MAINTENANCE,
-                'notes' => $reason,
+            $this->updateAvailabilityRecords($vacationRentalId, $startDate, $endDate, [
+                'status' => VacationRentalAvailability::STATUS_MAINTENANCE,
+                'reason' => $reason,
             ]);
         }
     }
 
-    private function processUnblockedDates(int $propertyId, array $unblockedDates): void
+    private function processUnblockedDates(int $vacationRentalId, array $unblockedDates): void
     {
         foreach ($unblockedDates as $dateRange) {
             if (empty($dateRange['start_date']) || empty($dateRange['end_date'])) {
@@ -264,20 +258,20 @@ class SavePropertyAvailabilityService
             $endDate = Carbon::parse($dateRange['end_date']);
 
             // Remove calendar events
-            PropertyCalendarEvent::forProperty($propertyId)
-                ->whereIn('event_type', [PropertyCalendarEvent::TYPE_BLOCKED, PropertyCalendarEvent::TYPE_MAINTENANCE])
+            VacationRentalCalendarEvent::forVacationRental($vacationRentalId)
+                ->whereIn('event_type', [VacationRentalCalendarEvent::TYPE_BLOCKED, VacationRentalCalendarEvent::TYPE_MAINTENANCE])
                 ->inDateRange($startDate, $endDate)
                 ->delete();
 
             // Update availability records
-            $this->updateAvailabilityRecords($propertyId, $startDate, $endDate, [
-                'status' => PropertyAvailability::STATUS_AVAILABLE,
-                'notes' => null,
+            $this->updateAvailabilityRecords($vacationRentalId, $startDate, $endDate, [
+                'status' => VacationRentalAvailability::STATUS_AVAILABLE,
+                'reason' => null,
             ]);
         }
     }
 
-    private function processCustomPricing(int $propertyId, array $customPricing): void
+    private function processCustomPricing(int $vacationRentalId, array $customPricing): void
     {
         foreach ($customPricing as $priceData) {
             if (empty($priceData['date']) || empty($priceData['price'])) {
@@ -287,20 +281,20 @@ class SavePropertyAvailabilityService
             $date = Carbon::parse($priceData['date']);
             $price = (float) $priceData['price'];
 
-            PropertyAvailability::updateOrCreate(
+            VacationRentalAvailability::updateOrCreate(
                 [
-                    'property_id' => $propertyId,
+                    'vacation_rental_id' => $vacationRentalId,
                     'date' => $date->format('Y-m-d'),
                 ],
                 [
-                    'price_per_night' => $price,
-                    'status' => PropertyAvailability::STATUS_AVAILABLE,
+                    'price' => $price,
+                    'status' => VacationRentalAvailability::STATUS_AVAILABLE,
                 ]
             );
         }
     }
 
-    private function updateAvailabilityRecords(int $propertyId, Carbon $startDate, Carbon $endDate, array $data): void
+    private function updateAvailabilityRecords(int $vacationRentalId, Carbon $startDate, Carbon $endDate, array $data): void
     {
         $dates = [];
         $period = CarbonPeriod::create($startDate, $endDate);
@@ -309,49 +303,34 @@ class SavePropertyAvailabilityService
             $dates[] = $date->format('Y-m-d');
         }
 
-        PropertyAvailability::bulkUpdateAvailability($propertyId, $dates, $data);
+        VacationRentalAvailability::bulkUpdateAvailability($vacationRentalId, $dates, $data);
     }
 
     /**
-     * Clear all availability data for a property
+     * Clear all availability data for a vacation rental
      */
-    public function clearPropertyAvailability(int $propertyId): void
+    public function clearVacationRentalAvailability(int $vacationRentalId): void
     {
         // Remove all availability records
-        PropertyAvailability::where('property_id', $propertyId)->delete();
+        VacationRentalAvailability::where('vacation_rental_id', $vacationRentalId)->delete();
 
         // Remove all calendar events
-        PropertyCalendarEvent::where('property_id', $propertyId)->delete();
+        VacationRentalCalendarEvent::where('vacation_rental_id', $vacationRentalId)->delete();
     }
 
     /**
      * Get current availability data for a vacation rental in form-friendly format
      */
-    public function getPropertyAvailabilityForForm($model): array
+    public function getVacationRentalAvailabilityForForm(VacationRental $vacationRental): array
     {
-        // Handle both VacationRental and Property models for backward compatibility
-        // But this service is primarily for vacation rentals
-        if ($model instanceof VacationRental) {
-            $vacationRentalId = $model->id;
-            \Log::info('getPropertyAvailabilityForForm called for VacationRental', [
-                'vacation_rental_id' => $vacationRentalId
-            ]);
-            
-            // Get availability records for vacation rental
-            $availabilityRecords = VacationRentalAvailability::where('vacation_rental_id', $vacationRentalId)->get();
-        } elseif ($model instanceof Property) {
-            // For backward compatibility with property-based vacation rentals
-            $propertyId = $model->id;
-            \Log::info('getPropertyAvailabilityForForm called for Property', [
-                'property_id' => $propertyId,
-                'property_type' => $model->type
-            ]);
-            
-            // Get availability records for property
-            $availabilityRecords = PropertyAvailability::where('property_id', $propertyId)->get();
-        } else {
-            return [];
-        }
+        $vacationRentalId = $vacationRental->id;
+        
+        \Log::info('getVacationRentalAvailabilityForForm called', [
+            'vacation_rental_id' => $vacationRentalId
+        ]);
+        
+        // Get availability records for vacation rental
+        $availabilityRecords = VacationRentalAvailability::where('vacation_rental_id', $vacationRentalId)->get();
 
         $blockedDates = [];
         $maintenanceDates = [];
@@ -363,14 +342,10 @@ class SavePropertyAvailabilityService
             $dateString = $record->date->format('Y-m-d');
 
             // Build availability by date for calendar display
-            // Handle different field names for vacation rental vs property availability
-            $notes = $model instanceof VacationRental ? $record->reason : $record->notes;
-            $price = $model instanceof VacationRental ? $record->price : $record->price_per_night;
-            
             $availabilityByDate[$dateString] = [
                 'status' => $record->status,
-                'reason' => $notes,
-                'price' => $price,
+                'reason' => $record->reason,
+                'price' => $record->price,
             ];
 
             // Group by status for form data (individual dates)
@@ -383,17 +358,17 @@ class SavePropertyAvailabilityService
                     break;
                 case VacationRentalAvailability::STATUS_AVAILABLE:
                     // Only include explicitly unblocked dates (not default available)
-                    if ($notes === 'Made available by owner') {
+                    if ($record->reason === 'Made available by owner') {
                         $unblockedDates[] = $dateString;
                     }
                     break;
             }
 
             // Custom pricing
-            if ($price && $price > 0) {
+            if ($record->price && $record->price > 0) {
                 $customPricing[] = [
                     'date' => $dateString,
-                    'price' => $price,
+                    'price' => $record->price,
                 ];
             }
         }
@@ -406,14 +381,11 @@ class SavePropertyAvailabilityService
             'availability_by_date' => $availabilityByDate,
         ];
 
-        \Log::info('getPropertyAvailabilityForForm result (individual dates format)', [
+        \Log::info('getVacationRentalAvailabilityForForm result', [
             'blocked_dates_count' => count($blockedDates),
             'maintenance_dates_count' => count($maintenanceDates),
             'unblocked_dates_count' => count($unblockedDates),
-            'availability_records_count' => count($availabilityByDate),
-            'blocked_dates' => $blockedDates,
-            'maintenance_dates' => $maintenanceDates,
-            'unblocked_dates' => $unblockedDates
+            'availability_records_count' => count($availabilityByDate)
         ]);
 
         return $result;

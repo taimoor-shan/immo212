@@ -314,7 +314,7 @@
                 $currencyDecimals = $current_currency ? $current_currency->decimals : 2;
             @endphp
 
-            var decimalPlaces = decimals ? {{ $currencyDecimals }} : 0;
+            var decimalPlaces = decimals ? {{ $currencyDecimals ?: 2 }} : 0;
             var decimalSeparator = '{{ $decimalSeparator }}';
             var thousandSeparator = '{{ $thousandSeparator }}';
 

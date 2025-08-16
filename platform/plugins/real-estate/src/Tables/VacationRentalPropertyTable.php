@@ -6,8 +6,7 @@ use Botble\Base\Facades\BaseHelper;
 use Botble\Base\Facades\Html;
 use Botble\RealEstate\Enums\ModerationStatusEnum;
 use Botble\RealEstate\Enums\PropertyStatusEnum;
-use Botble\RealEstate\Enums\PropertyTypeEnum;
-use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\Table\Abstracts\TableAbstract;
 use Botble\Table\Actions\DeleteAction;
 use Botble\Table\Actions\EditAction;
@@ -36,10 +35,10 @@ class VacationRentalPropertyTable extends TableAbstract
     public function setup(): void
     {
         $this
-            ->model(Property::class)
+            ->model(VacationRental::class)
             ->addActions([
-                EditAction::make()->route('property.edit'),
-                DeleteAction::make()->route('property.destroy'),
+                EditAction::make()->route('vacation-rental.edit'),
+                DeleteAction::make()->route('vacation-rental.destroy'),
             ])
             ->setAjaxUrl(route('vacation-rental.properties'));
     }
@@ -48,43 +47,43 @@ class VacationRentalPropertyTable extends TableAbstract
     {
         $data = $this->table
             ->eloquent($this->query())
-            ->editColumn('name', function (Property $item) {
-                if (! $this->hasPermission('property.edit')) {
+            ->editColumn('name', function (VacationRental $item) {
+                if (! $this->hasPermission('vacation-rental.edit')) {
                     return BaseHelper::clean($item->name);
                 }
 
-                return Html::link(route('property.edit', $item->getKey()), BaseHelper::clean($item->name));
+                return Html::link(route('vacation-rental.edit', $item->getKey()), BaseHelper::clean($item->name));
             })
-            ->editColumn('image', function (Property $item) {
+            ->editColumn('image', function (VacationRental $item) {
                 $firstImage = null;
                 if (is_array($item->images) && !empty($item->images) && isset($item->images[0])) {
                     $firstImage = $item->images[0];
                 }
                 return $this->displayThumbnail($firstImage);
             })
-            ->editColumn('unique_id', function (Property $item) {
+            ->editColumn('unique_id', function (VacationRental $item) {
                 return $item->unique_id ?: '&mdash;';
             })
-            ->editColumn('price', function (Property $item) {
+            ->editColumn('price', function (VacationRental $item) {
                 return format_price($item->price, $item->currency) . ' / ' . __('night');
             })
-            ->editColumn('minimum_stay', function (Property $item) {
+            ->editColumn('minimum_stay', function (VacationRental $item) {
                 return $item->minimum_stay ? $item->minimum_stay . ' ' . __('nights') : '&mdash;';
             })
-            ->editColumn('maximum_guests', function (Property $item) {
+            ->editColumn('maximum_guests', function (VacationRental $item) {
                 return $item->maximum_guests ?: '&mdash;';
             })
-            ->addColumn('availability_status', function (Property $item) {
-                // Simple status based on property status
+            ->addColumn('availability_status', function (VacationRental $item) {
+                // Simple status based on vacation rental status
                 return '<span class="badge bg-success text-success-fg">Available</span>';
             })
-            ->addColumn('operations', function (Property $item) {
+            ->addColumn('operations', function (VacationRental $item) {
                 $operations = '';
 
                 try {
-                    if ($this->hasPermission('property.edit')) {
+                    if ($this->hasPermission('vacation-rental.edit')) {
                         $operations .= Html::link(
-                            route('vacation-rental.availability') . '?property_id=' . $item->id,
+                            route('vacation-rental.availability') . '?vacation_rental_id=' . $item->id,
                             '<i class="fa fa-calendar"></i> ' . __('Availability'),
                             ['class' => 'btn btn-sm btn-info me-1']
                         );
@@ -122,7 +121,6 @@ class VacationRentalPropertyTable extends TableAbstract
                 'check_in_time',
                 'check_out_time',
             ])
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
             ->with(['currency']);
 
         return $this->applyScopes($query);
@@ -135,7 +133,7 @@ class VacationRentalPropertyTable extends TableAbstract
             ImageColumn::make()
                 ->searchable(false)
                 ->orderable(false),
-            NameColumn::make()->route('property.edit'),
+            NameColumn::make()->route('vacation-rental.edit'),
             Column::make('price')
                 ->title(trans('plugins/real-estate::property.form.price_per_night')),
             Column::make('minimum_stay')
@@ -158,13 +156,13 @@ class VacationRentalPropertyTable extends TableAbstract
 
     public function buttons(): array
     {
-        return $this->addCreateButton(route('property.create'), 'property.create');
+        return $this->addCreateButton(route('vacation-rental.create'), 'vacation-rental.create');
     }
 
     public function bulkActions(): array
     {
         return [
-            DeleteBulkAction::make()->permission('property.destroy'),
+            DeleteBulkAction::make()->permission('vacation-rental.destroy'),
         ];
     }
 

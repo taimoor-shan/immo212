@@ -1,4 +1,4 @@
-@if($property->type == \Botble\RealEstate\Enums\PropertyTypeEnum::VACATION_RENTAL)
+@if(isset($rental) && method_exists($rental, 'isVacationRental') && $rental->isVacationRental())
     <div @class(['widget-box single-property-vacation-rental-booking single-property-contact', $class ?? null])>
         <div class="h7 title fw-6">{{ __('Book This Property') }}</div>
         

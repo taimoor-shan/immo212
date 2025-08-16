@@ -4,10 +4,11 @@ namespace Botble\RealEstate\Services;
 
 use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 
 class SaveFacilitiesService
 {
-    public function execute(Property|Project $item, array|string|null $facilities): void
+    public function execute(Property|Project|VacationRental $item, array|string|null $facilities): void
     {
         $item->facilities()->detach();
 

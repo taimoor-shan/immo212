@@ -15,7 +15,6 @@ mix
         }
     })
     .js(`${source}/assets/js/script.js`, `${dist}/js`)
-    .js(`${source}/assets/js/calendar-frontend.js`, `${dist}/js`)
     .js(`${source}/assets/js/mortgage-calculator.js`, `${dist}/js`)
     .copy(`${source}/assets/css/mortgage-calculator.css`, `${dist}/css`)
     .copy('node_modules/flatpickr/dist/flatpickr.min.css', `${dist}/css/plugins`);

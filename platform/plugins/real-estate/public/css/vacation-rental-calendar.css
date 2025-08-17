@@ -1,0 +1,322 @@
+/* Vacation Rental Calendar Styles */
+
+.vacation-rental-calendar-wrapper {
+    position: relative;
+}
+
+/* Calendar Legend */
+.calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.legend-color.available {
+    background-color: #28a745;
+}
+
+.legend-color.booked {
+    background-color: #007bff;
+}
+
+.legend-color.blocked {
+    background-color: #dc3545;
+}
+
+.legend-color.maintenance {
+    background-color: #ffc107;
+}
+
+/* Calendar Container */
+.vacation-rental-calendar-container {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.vacation-rental-calendar {
+    min-height: 400px;
+}
+
+/* Flatpickr Calendar Customization */
+.flatpickr-calendar {
+    width: 100% !important;
+    max-width: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+}
+
+.flatpickr-months {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 8px 8px 0 0;
+}
+
+.flatpickr-month {
+    background: transparent;
+}
+
+.flatpickr-current-month {
+    font-size: 18px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.flatpickr-weekdays {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.flatpickr-weekday {
+    font-weight: 600;
+    color: #6c757d;
+    font-size: 13px;
+}
+
+.flatpickr-days {
+    padding: 10px;
+}
+
+.flatpickr-day {
+    border-radius: 6px;
+    margin: 2px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.flatpickr-day:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+/* Calendar Day Status Colors */
+.flatpickr-day.calendar-available {
+    background-color: #d4edda !important;
+    border-color: #28a745 !important;
+    color: #155724 !important;
+}
+
+.flatpickr-day.calendar-booked {
+    background-color: #cce7ff !important;
+    border-color: #007bff !important;
+    color: #004085 !important;
+    cursor: not-allowed;
+}
+
+.flatpickr-day.calendar-blocked {
+    background-color: #f8d7da !important;
+    border-color: #dc3545 !important;
+    color: #721c24 !important;
+    cursor: not-allowed;
+}
+
+.flatpickr-day.calendar-maintenance {
+    background-color: #fff3cd !important;
+    border-color: #ffc107 !important;
+    color: #856404 !important;
+    cursor: not-allowed;
+}
+
+/* Selected range styling */
+.flatpickr-day.selected {
+    background: #007bff !important;
+    border-color: #007bff !important;
+    color: white !important;
+}
+
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+    background: #007bff !important;
+    border-color: #007bff !important;
+    color: white !important;
+}
+
+.flatpickr-day.inRange {
+    background: rgba(0, 123, 255, 0.2) !important;
+    border-color: #007bff !important;
+    color: #007bff !important;
+}
+
+/* Disabled dates */
+.flatpickr-day.flatpickr-disabled {
+    background: #f8f9fa !important;
+    border-color: #e9ecef !important;
+    color: #6c757d !important;
+    cursor: not-allowed;
+}
+
+/* Today indicator */
+.flatpickr-day.today {
+    border: 2px solid #007bff;
+    font-weight: 700;
+}
+
+/* Pricing Breakdown */
+#pricing-breakdown {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.pricing-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.pricing-row:last-child {
+    border-bottom: none;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 2px solid #dee2e6;
+}
+
+.pricing-label {
+    color: #495057;
+}
+
+.pricing-value {
+    color: #007bff;
+    font-weight: 500;
+}
+
+/* Loading States */
+#calendar-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.vacation-rental-calendar-wrapper.loading .vacation-rental-calendar {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Error States */
+#calendar-error {
+    margin-top: 15px;
+}
+
+/* Action Buttons */
+.calendar-actions .btn {
+    margin-bottom: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .calendar-legend {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .vacation-rental-calendar-container {
+        padding: 15px;
+    }
+    
+    .flatpickr-calendar {
+        font-size: 14px;
+    }
+    
+    .flatpickr-day {
+        height: 35px;
+        line-height: 35px;
+    }
+}
+
+/* Tooltip Styles */
+.calendar-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 1000;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.calendar-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+}
+
+/* Animation for calendar updates */
+.flatpickr-day.updating {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Selected dates display */
+#selected-dates-display {
+    background: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 8px 12px;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+}
+
+/* Form styling */
+#booking-form-container .card {
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#booking-form-container .card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* Action cards */
+.calendar-actions .card {
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-actions .card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}

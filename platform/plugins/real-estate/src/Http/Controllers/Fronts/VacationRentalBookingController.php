@@ -3,8 +3,9 @@
 namespace Botble\RealEstate\Http\Controllers\Fronts;
 
 use Botble\Base\Http\Controllers\BaseController;
-use Botble\RealEstate\Services\AvailabilityService;
+use Botble\RealEstate\Services\SaveVacationRentalAvailabilityService;
 use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\Models\VacationRentalBooking;
 use Botble\RealEstate\Enums\PropertyTypeEnum;
 use Botble\RealEstate\Http\Requests\VacationRentalBookingRequest;
@@ -25,9 +26,9 @@ use Illuminate\Support\ViewErrorBag;
 
 class VacationRentalBookingController extends BaseController
 {
-    protected AvailabilityService $availabilityService;
+    protected SaveVacationRentalAvailabilityService $availabilityService;
 
-    public function __construct(AvailabilityService $availabilityService)
+    public function __construct(SaveVacationRentalAvailabilityService $availabilityService)
     {
         $this->availabilityService = $availabilityService;
     }
@@ -49,8 +50,7 @@ class VacationRentalBookingController extends BaseController
             abort(404);
         }
 
-        $property = Property::where('id', $slug->reference_id)
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
+        $property = VacationRental::where('id', $slug->reference_id)
             ->where('moderation_status', 'approved')
             ->firstOrFail();
 
@@ -72,14 +72,15 @@ class VacationRentalBookingController extends BaseController
         }
 
         // Check availability
-        if (!$this->availabilityService->checkAvailability($property->id, $checkInDate, $checkOutDate)) {
+        if (!$this->availabilityService->checkAvailability($property, $checkInDate, $checkOutDate)) {
             return redirect($property->url)->with('error', __('Selected dates are not available.'));
         }
 
-        // Validate minimum stay
-        if (!$this->availabilityService->validateMinimumStay($property->id, $checkInDate, $checkOutDate)) {
-            $effectiveMinimumStay = $this->availabilityService->getEffectiveMinimumStay($property->id, $checkInDate);
-            return redirect($property->url)->with('error', __('Minimum stay is :nights nights.', ['nights' => $effectiveMinimumStay]));
+        // Validate minimum stay (simplified for now)
+        $nights = $checkInDate->diffInDays($checkOutDate);
+        $minimumStay = $property->minimum_stay ?? 1;
+        if ($nights < $minimumStay) {
+            return redirect($property->url)->with('error', __('Minimum stay is :nights nights.', ['nights' => $minimumStay]));
         }
 
         // Check maximum guests
@@ -88,7 +89,7 @@ class VacationRentalBookingController extends BaseController
         }
 
         try {
-            $pricing = $this->availabilityService->calculateBookingPrice($property->id, $checkInDate, $checkOutDate, $guests);
+            $pricing = $this->availabilityService->calculateBookingPrice($property, $checkInDate, $checkOutDate, $guests);
         } catch (\Exception $e) {
             return redirect($property->url)->with('error', $e->getMessage());
         }
@@ -118,8 +119,7 @@ class VacationRentalBookingController extends BaseController
             'check_out_date_raw' => $request->check_out_date,
         ]);
 
-        $property = Property::where('id', $request->property_id)
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
+        $property = VacationRental::where('id', $request->property_id)
             ->where('moderation_status', 'approved')
             ->firstOrFail();
 
@@ -129,7 +129,7 @@ class VacationRentalBookingController extends BaseController
 
 
         // Re-validate availability (in case it changed)
-        if (!$this->availabilityService->checkAvailability($property->id, $checkInDate, $checkOutDate)) {
+        if (!$this->availabilityService->checkAvailability($property, $checkInDate, $checkOutDate)) {
             return $this->httpResponse()
                 ->setError()
                 ->setMessage(__('Selected dates are no longer available.'));
@@ -137,9 +137,9 @@ class VacationRentalBookingController extends BaseController
 
         try {
             $pricing = $this->availabilityService->calculateBookingPrice(
-                $property->id, 
-                $checkInDate, 
-                $checkOutDate, 
+                $property,
+                $checkInDate,
+                $checkOutDate,
                 $request->guests_count
             );
 
@@ -330,7 +330,7 @@ class VacationRentalBookingController extends BaseController
         }
 
         $booking = VacationRentalBooking::find($bookingId);
-        
+
         if (!$booking) {
             return redirect()->route('public.properties')->with('error', __('Booking not found.'));
         }
@@ -535,12 +535,14 @@ class VacationRentalBookingController extends BaseController
         }
 
         try {
+            $property = VacationRental::findOrFail($propertyId);
+
             if ($exceptionsOnly) {
                 // Return only non-available dates for performance optimization
-                $availability = $this->availabilityService->getAvailabilityExceptions($propertyId, $startDate, $endDate);
+                $availability = $this->availabilityService->getAvailabilityExceptions($property, $startDate, $endDate);
             } else {
                 // Return full availability data (backward compatibility)
-                $availability = $this->availabilityService->getAvailabilityDetails($propertyId, $startDate, $endDate);
+                $availability = $this->availabilityService->getAvailabilityDetails($property, $startDate, $endDate);
             }
 
             return $this->httpResponse()->setData($availability);
@@ -568,10 +570,11 @@ class VacationRentalBookingController extends BaseController
         }
 
         try {
+            $property = VacationRental::findOrFail($propertyId);
             $checkInDate = Carbon::parse($checkIn);
             $checkOutDate = Carbon::parse($checkOut);
 
-            $pricing = $this->availabilityService->calculateBookingPrice($propertyId, $checkInDate, $checkOutDate, $guests);
+            $pricing = $this->availabilityService->calculateBookingPrice($property, $checkInDate, $checkOutDate, $guests);
 
             return $this->httpResponse()->setData($pricing);
         } catch (\InvalidArgumentException $e) {

@@ -5,7 +5,7 @@ class VacationRentalFrontendCalendar {
     constructor(options = {}) {
         this.options = {
             propertyId: null,
-            container: '#property-calendar',
+            container: '#vacation-rental-calendar',
             availabilityEndpoint: null,
             pricingEndpoint: null,
             bookingEndpoint: null,
@@ -16,7 +16,7 @@ class VacationRentalFrontendCalendar {
             isLoggedIn: false,
             ...options
         };
-        
+
         this.calendar = null;
         this.availabilityData = {};
         this.pricingData = {};
@@ -321,12 +321,12 @@ class VacationRentalFrontendCalendar {
                             <div class="color-box"></div>
                             <span>Booked</span>
                         </div>
-                       
+
                         <div class="legend-item maintenance">
                             <div class="color-box"></div>
                             <span>Maintenance</span>
                         </div>
-                        
+
                     </div>
                 </div>
                 <div class="calendar-container">
@@ -546,14 +546,14 @@ class VacationRentalFrontendCalendar {
         const checkinDisplay = document.getElementById('checkin-display');
         const checkoutDisplay = document.getElementById('checkout-display');
         const nightsDisplay = document.getElementById('nights-display');
-        
+
         if (this.checkInDate && this.checkOutDate) {
             const nights = Math.ceil((this.checkOutDate - this.checkInDate) / (1000 * 60 * 60 * 24));
-            
+
             checkinDisplay.textContent = this.formatDate(this.checkInDate);
             checkoutDisplay.textContent = this.formatDate(this.checkOutDate);
             nightsDisplay.textContent = nights;
-            
+
             summary.style.display = 'block';
         }
     }
@@ -579,7 +579,7 @@ class VacationRentalFrontendCalendar {
             });
 
             const data = await response.json();
-            
+
             if (data.error) {
                 this.showError(data.message);
                 return;
@@ -594,37 +594,37 @@ class VacationRentalFrontendCalendar {
     displayPricingBreakdown(pricing) {
         const breakdown = document.getElementById('pricing-breakdown');
         const totalPrice = document.getElementById('total-price');
-        
+
         let html = '';
-        
+
         if (pricing.total_nights_cost) {
             html += `<div class="price-item">
                 <span>${pricing.nights} nights × ${pricing.average_nightly_rate.toFixed(2)}</span>
                 <span>${pricing.total_nights_cost.toFixed(2)}</span>
             </div>`;
         }
-        
+
         if (pricing.cleaning_fee > 0) {
             html += `<div class="price-item">
                 <span>Cleaning fee</span>
                 <span>${pricing.cleaning_fee.toFixed(2)}</span>
             </div>`;
         }
-        
+
         if (pricing.service_fee > 0) {
             html += `<div class="price-item">
                 <span>Service fee</span>
                 <span>${pricing.service_fee.toFixed(2)}</span>
             </div>`;
         }
-        
+
         if (pricing.taxes > 0) {
             html += `<div class="price-item">
                 <span>Taxes</span>
                 <span>${pricing.taxes.toFixed(2)}</span>
             </div>`;
         }
-        
+
         breakdown.innerHTML = html;
         totalPrice.textContent = `${pricing.total_amount.toFixed(2)}`;
     }
@@ -911,9 +911,9 @@ class VacationRentalFrontendCalendar {
             font-size: 14px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         `;
-        
+
         document.body.appendChild(notification);
-        
+
         // Auto remove after 3 seconds
         setTimeout(() => {
             notification.remove();
@@ -989,14 +989,14 @@ class VacationRentalFrontendCalendar {
 
 // Auto-initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    const calendarContainer = document.querySelector('#property-calendar');
+    const calendarContainer = document.querySelector('#vacation-rental-calendar');
     if (calendarContainer) {
-        const propertyId = calendarContainer.dataset.propertyId;
+        const propertyId = calendarContainer.dataset.vacationRentalId;
         const minStay = parseInt(calendarContainer.dataset.minStay) || 1;
         const maxStay = parseInt(calendarContainer.dataset.maxStay) || null;
         const maxGuests = parseInt(calendarContainer.dataset.maxGuests) || null;
         const isLoggedIn = calendarContainer.dataset.isLoggedIn === 'true';
-        
+
         if (propertyId) {
             window.vacationRentalFrontendCalendar = new VacationRentalFrontendCalendar({
                 propertyId: propertyId,

@@ -263,18 +263,17 @@ class VacationRentalAdminController extends BaseController
     public function blockDates(Request $request)
     {
         $request->validate([
-            'property_id' => 'required|exists:re_properties,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'property_id' => 'required|exists:re_vacation_rentals,id',
+            'dates' => 'required|array',
+            'dates.*' => 'date',
             'reason' => 'nullable|string|max:255',
         ]);
 
-        $property = VacationRental::findOrFail($request->property_id);
+        $vacationRental = VacationRental::findOrFail($request->property_id);
 
         $this->availabilityService->blockDates(
-            $property->id,
-            Carbon::parse($request->start_date),
-            Carbon::parse($request->end_date),
+            $vacationRental,
+            $request->dates,
             $request->reason ?? 'Blocked by admin'
         );
 
@@ -285,17 +284,16 @@ class VacationRentalAdminController extends BaseController
     public function unblockDates(Request $request)
     {
         $request->validate([
-            'property_id' => 'required|exists:re_properties,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'property_id' => 'required|exists:re_vacation_rentals,id',
+            'dates' => 'required|array',
+            'dates.*' => 'date',
         ]);
 
-        $property = VacationRental::findOrFail($request->property_id);
+        $vacationRental = VacationRental::findOrFail($request->property_id);
 
         $this->availabilityService->unblockDates(
-            $property->id,
-            Carbon::parse($request->start_date),
-            Carbon::parse($request->end_date)
+            $vacationRental,
+            $request->dates
         );
 
         return $this->httpResponse()
@@ -305,18 +303,17 @@ class VacationRentalAdminController extends BaseController
     public function maintenanceDates(Request $request)
     {
         $request->validate([
-            'property_id' => 'required|exists:re_properties,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'property_id' => 'required|exists:re_vacation_rentals,id',
+            'dates' => 'required|array',
+            'dates.*' => 'date',
             'reason' => 'nullable|string|max:255',
         ]);
 
-        $property = VacationRental::findOrFail($request->property_id);
+        $vacationRental = VacationRental::findOrFail($request->property_id);
 
         $this->availabilityService->maintenanceDates(
-            $property->id,
-            Carbon::parse($request->start_date),
-            Carbon::parse($request->end_date),
+            $vacationRental,
+            $request->dates,
             $request->reason ?? 'Maintenance'
         );
 
@@ -327,18 +324,18 @@ class VacationRentalAdminController extends BaseController
     public function getAvailabilityData(Request $request)
     {
         $request->validate([
-            'property_id' => 'required|exists:re_properties,id',
+            'property_id' => 'required|exists:re_vacation_rentals,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        $property = VacationRental::findOrFail($request->property_id);
+        $vacationRental = VacationRental::findOrFail($request->property_id);
 
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
 
         $availabilityData = $this->availabilityService->getAvailabilityDetails(
-            $property->id,
+            $vacationRental,
             $startDate,
             $endDate
         );
@@ -413,4 +410,6 @@ class VacationRentalAdminController extends BaseController
                 ->setMessage($exception->getMessage());
         }
     }
+
+
 }

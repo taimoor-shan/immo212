@@ -88,6 +88,7 @@ class VacationRentalController extends BaseController
             ]);
 
             $vacationRental->fill($data);
+            $vacationRental->images = array_filter($request->input('images', []));
             $vacationRental->save();
 
             $form->fireModelEvents($vacationRental);
@@ -160,7 +161,6 @@ class VacationRentalController extends BaseController
                 $data = array_merge($request->except(['expire_date']), [
                     'author_id' => $authorId,
                     'author_type' => Account::class,
-                    'images' => array_filter($request->input('images') ?: []),
                     'expire_date' => $request->input('never_expired') ? null : $request->input('expire_date'),
                     // Ensure numeric fields have proper defaults to prevent constraint violations
                     'number_bedroom' => $request->input('number_bedroom') ?? 0,
@@ -169,6 +169,7 @@ class VacationRentalController extends BaseController
                 ]);
 
                 $vacationRental->fill($data);
+                $vacationRental->images = array_filter($request->input('images', []));
                 $vacationRental->save();
 
                 $form->fireModelEvents($vacationRental);
@@ -257,7 +258,7 @@ class VacationRentalController extends BaseController
         }
 
         $vacationRental = VacationRental::findOrFail($vacationRentalId);
-        
+
         $availability = $vacationRental->availability()
             ->whereBetween('date', [$startDate, $endDate])
             ->get()

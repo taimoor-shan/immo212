@@ -103,7 +103,7 @@ Route::group(['namespace' => 'Botble\RealEstate\Http\Controllers', 'middleware' 
         Route::group(['prefix' => 'projects', 'as' => 'project.'], function (): void {
             Route::resource('', 'ProjectController')
                 ->parameters(['' => 'project']);
-            
+
             Route::group(['permission' => 'project.edit'], function (): void {
                 Route::post('{project}/approve', ['Botble\RealEstate\Http\Controllers\ProjectController', 'approve'])
                     ->name('approve')
@@ -213,6 +213,12 @@ Route::group(['namespace' => 'Botble\RealEstate\Http\Controllers', 'middleware' 
             Route::get('admin/availability', 'VacationRentalAdminController@availability')->name('admin.availability');
             Route::get('admin/calendar', 'VacationRentalAdminController@calendar')->name('admin.calendar');
             Route::match(['GET', 'POST'], 'properties', 'VacationRentalAdminController@properties')->name('properties');
+
+            // Admin API endpoints for calendar management
+            Route::get('availability-data', 'VacationRentalAdminController@getAvailabilityData')->name('admin.availability-data');
+            Route::post('block-dates', 'VacationRentalAdminController@blockDates')->name('admin.block-dates');
+            Route::post('unblock-dates', 'VacationRentalAdminController@unblockDates')->name('admin.unblock-dates');
+            Route::post('maintenance-dates', 'VacationRentalAdminController@maintenanceDates')->name('admin.maintenance-dates');
 
             // API routes for vacation rental calendar management
             Route::get('availability-data', 'VacationRentalController@getAvailabilityData')->name('availability-data');
@@ -389,8 +395,8 @@ Route::group([
         ->name('booking.callback');
 
     // API routes for frontend calendar
-    Route::get('api/v1/properties/{id}/availability', 'VacationRentalBookingController@getAvailability')
+    Route::get('api/properties/{id}/availability', 'VacationRentalBookingController@getAvailability')
         ->name('api.availability');
-    Route::post('api/v1/properties/{id}/calculate-price', 'VacationRentalBookingController@calculatePrice')
+    Route::post('api/properties/{id}/calculate-price', 'VacationRentalBookingController@calculatePrice')
         ->name('api.calculate-price');
 });

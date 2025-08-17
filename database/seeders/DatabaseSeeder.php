@@ -6,6 +6,7 @@ use Botble\ACL\Database\Seeders\UserSeeder;
 use Botble\Base\Supports\BaseSeeder;
 use Botble\Language\Database\Seeders\LanguageSeeder;
 use Botble\RealEstate\Database\Seeders\CurrencySeeder;
+use Botble\RealEstate\Database\Seeders\VacationRentalSeeder;
 
 class DatabaseSeeder extends BaseSeeder
 {

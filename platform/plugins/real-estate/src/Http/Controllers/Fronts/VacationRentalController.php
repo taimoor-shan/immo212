@@ -33,7 +33,7 @@ class VacationRentalController extends BaseController
     public function dashboard()
     {
         $user = auth('account')->user();
-        
+
         // Get vacation rental properties for this user
         $vacationRentals = $user->vacationRentals()
             ->with(['availability', 'bookings'])
@@ -44,7 +44,7 @@ class VacationRentalController extends BaseController
         $totalBookings = VacationRentalBooking::whereIn('vacation_rental_id', $vacationRentals->pluck('id'))
             ->where('status', '!=', VacationRentalBooking::STATUS_CANCELLED)
             ->count();
-        
+
         $currentMonth = Carbon::now();
         $monthlyRevenue = VacationRentalBooking::whereIn('vacation_rental_id', $vacationRentals->pluck('id'))
             ->where('status', VacationRentalBooking::STATUS_CONFIRMED)
@@ -136,7 +136,7 @@ class VacationRentalController extends BaseController
 
         if ($request->filled('property_id')) {
             $selectedProperty = $properties->where('id', $request->property_id)->first();
-            
+
             if ($selectedProperty) {
                 $startDate = Carbon::parse($request->get('month', Carbon::now()->format('Y-m')))->startOfMonth();
                 $endDate = $startDate->copy()->endOfMonth();
@@ -178,7 +178,7 @@ class VacationRentalController extends BaseController
 
         if ($request->filled('property_id')) {
             $selectedProperty = $properties->where('id', $request->property_id)->first();
-            
+
             if ($selectedProperty) {
                 $year = $request->get('year', Carbon::now()->year);
                 $month = $request->get('month', Carbon::now()->month);
@@ -212,19 +212,19 @@ class VacationRentalController extends BaseController
     public function blockDates(Request $request)
     {
         $request->validate([
-            'property_id' => 'required|exists:re_properties,id',
+            'property_id' => 'required|exists:re_vacation_rentals,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'reason' => 'nullable|string|max:255',
         ]);
 
         $user = auth('account')->user();
-        $property = $user->vacationRentals()
+        $vacationRental = $user->vacationRentals()
             ->where('id', $request->property_id)
             ->firstOrFail();
 
         $this->availabilityService->blockDates(
-            $property->id,
+            $vacationRental,
             Carbon::parse($request->start_date),
             Carbon::parse($request->end_date),
             $request->reason ?? 'Blocked by owner'
@@ -237,18 +237,18 @@ class VacationRentalController extends BaseController
     public function unblockDates(Request $request)
     {
         $request->validate([
-            'property_id' => 'required|exists:re_properties,id',
+            'property_id' => 'required|exists:re_vacation_rentals,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
         $user = auth('account')->user();
-        $property = $user->vacationRentals()
+        $vacationRental = $user->vacationRentals()
             ->where('id', $request->property_id)
             ->firstOrFail();
 
         $this->availabilityService->unblockDates(
-            $property->id,
+            $vacationRental,
             Carbon::parse($request->start_date),
             Carbon::parse($request->end_date)
         );
@@ -306,13 +306,13 @@ class VacationRentalController extends BaseController
     public function getAvailabilityDataForEdit(Request $request)
     {
         $request->validate([
-            'property_id' => 'required|exists:re_properties,id',
+            'property_id' => 'required|exists:re_vacation_rentals,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
         $user = auth('account')->user();
-        $property = $user->vacationRentals()
+        $vacationRental = $user->vacationRentals()
             ->where('id', $request->property_id)
             ->firstOrFail();
 
@@ -320,7 +320,7 @@ class VacationRentalController extends BaseController
         $endDate = Carbon::parse($request->end_date);
 
         $availability = $this->availabilityService->getAvailabilityDetails(
-            $property->id,
+            $vacationRental,
             $startDate,
             $endDate
         );

@@ -11,6 +11,7 @@ use Illuminate\Support\HtmlString;
  * @method static VacationRentalStatusEnum DRAFT()
  * @method static VacationRentalStatusEnum NOT_AVAILABLE()
  * @method static VacationRentalStatusEnum RENTING()
+ * @method static VacationRentalStatusEnum PUBLISHED()
  */
 class VacationRentalStatusEnum extends Enum
 {
@@ -19,6 +20,8 @@ class VacationRentalStatusEnum extends Enum
     public const NOT_AVAILABLE = 'not_available';
 
     public const RENTING = 'renting';
+
+    public const PUBLISHED = 'published';
 
     public static $langPath = 'plugins/real-estate::vacation-rental.statuses';
 
@@ -35,6 +38,8 @@ class VacationRentalStatusEnum extends Enum
                 )
                     ->toHtml(),
                 self::RENTING => Html::tag('span', self::RENTING()->label(), ['class' => 'label-success status-label'])
+                    ->toHtml(),
+                self::PUBLISHED => Html::tag('span', self::PUBLISHED()->label(), ['class' => 'label-success status-label'])
                     ->toHtml(),
                 default => Html::tag('span', $this->label(), ['class' => 'label-default status-label'])->toHtml(),
             };

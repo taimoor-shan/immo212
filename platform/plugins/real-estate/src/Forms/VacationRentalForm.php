@@ -118,7 +118,13 @@ class VacationRentalForm extends FormAbstract
             ->add('name', TextField::class, NameFieldOption::make()->required())
             ->add('description', TextareaField::class, DescriptionFieldOption::make())
             ->add('content', EditorField::class, ContentFieldOption::make()->allowedShortcodes())
-            ->add('images', MediaImagesField::class, MediaImagesFieldOption::make())
+            ->add(
+                'images[]',
+                MediaImagesField::class,
+                MediaImagesFieldOption::make()
+                    ->label(trans('plugins/real-estate::property.form.images'))
+                    ->selected($this->getModel()->id ? $this->getModel()->images : [])
+            )
             ->add('location', TextField::class, [
                 'label' => trans('plugins/real-estate::property.form.location'),
                 'attr' => [

@@ -4,7 +4,7 @@ namespace Botble\RealEstate\Database\Factories;
 
 use Botble\Base\Facades\Html;
 use Botble\RealEstate\Enums\ModerationStatusEnum;
-use Botble\RealEstate\Enums\PropertyStatusEnum;
+use Botble\RealEstate\Enums\VacationRentalStatusEnum;
 use Botble\RealEstate\Models\Account;
 use Botble\RealEstate\Models\Category;
 use Botble\RealEstate\Models\Currency;
@@ -20,7 +20,7 @@ class VacationRentalFactory extends Factory
     {
         $name = $this->faker->words(rand(2, 4), true);
         $description = $this->faker->sentences(rand(2, 4), true);
-        
+
         return [
             'name' => $name,
             'description' => $description,
@@ -36,7 +36,7 @@ class VacationRentalFactory extends Factory
             'number_floor' => $this->faker->numberBetween(1, 3),
             'square' => $this->faker->numberBetween(50, 500),
             'price' => $this->faker->numberBetween(50, 500), // Price per night
-            'status' => PropertyStatusEnum::SELLING,
+            'status' => VacationRentalStatusEnum::RENTING,
             'moderation_status' => ModerationStatusEnum::APPROVED,
             'is_featured' => $this->faker->boolean(20), // 20% chance of being featured
             'featured_priority' => $this->faker->optional(0.2)->numberBetween(1, 10),
@@ -49,7 +49,7 @@ class VacationRentalFactory extends Factory
             'longitude' => $this->faker->longitude,
             'unique_id' => $this->faker->unique()->uuid,
             'private_notes' => $this->faker->optional(0.3)->sentence,
-            
+
             // Vacation rental specific fields
             'check_in_time' => $this->faker->time('H:i', '16:00'),
             'check_out_time' => $this->faker->time('H:i', '11:00'),
@@ -60,7 +60,7 @@ class VacationRentalFactory extends Factory
             'security_deposit' => $this->faker->optional(0.6)->numberBetween(100, 500),
             'house_rules' => $this->faker->optional(0.7)->sentences(3, true),
             'cancellation_policy' => $this->faker->randomElement(['flexible', 'moderate', 'strict', 'super_strict']),
-            
+
             'views' => $this->faker->numberBetween(0, 1000),
         ];
     }

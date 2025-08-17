@@ -6,12 +6,36 @@ use Botble\Base\Supports\BaseSeeder;
 use Botble\Location\Models\City;
 use Botble\Location\Models\Country;
 use Botble\Location\Models\State;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class LocationSeeder extends BaseSeeder
 {
     public function run(): void
     {
+        // Disable foreign key checks to avoid constraint violations
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        // Truncate vacation rental related tables first to avoid foreign key constraint errors
+        // Only truncate tables that exist
+        $vacationRentalTables = [
+            're_vacation_rental_availability_rules',
+            're_vacation_rental_availability',
+            're_vacation_rental_calendar_events',
+            're_vacation_rental_bookings',
+            're_vacation_rental_facilities_distances',
+            're_vacation_rental_features',
+            're_vacation_rental_categories',
+            're_vacation_rentals'
+        ];
+
+        foreach ($vacationRentalTables as $table) {
+            if (DB::getSchemaBuilder()->hasTable($table)) {
+                DB::table($table)->truncate();
+            }
+        }
+
+        // Now truncate location tables
         Country::query()->truncate();
         State::query()->truncate();
         City::query()->truncate();
@@ -276,5 +300,8 @@ class LocationSeeder extends BaseSeeder
                 'image' => $this->filePath(sprintf('locations/%s.jpg', rand(1, 5))),
             ]);
         }
+
+        // Re-enable foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

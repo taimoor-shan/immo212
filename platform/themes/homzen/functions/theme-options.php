@@ -96,16 +96,14 @@ app('events')->listen(RenderingThemeOptionSettings::class, function (): void {
                 ->sectionId('opt-text-subsection-real-estate')
                 ->name('real_estate_property_detail_layout')
                 ->label(__('Property detail page layout'))
-                ->defaultValue(1)
-                ->numberItemsPerRow(2)
-                ->options(
-                    collect(range(1, 4))->mapWithKeys(fn ($style) => [
-                        $style => [
-                            'image' => Theme::asset()->url("images/single-layouts/style-$style.png"),
-                            'label' => __('Style :number', ['number' => $style]),
-                        ],
-                    ])->all()
-                )
+                ->defaultValue(4)
+                ->numberItemsPerRow(1)
+                ->options([
+                    4 => [
+                        'image' => Theme::asset()->url('images/single-layouts/style-4.png'),
+                        'label' => __('Style :number', ['number' => 4]),
+                    ],
+                ])
         )
         ->setField(
             UiSelectorField::make()

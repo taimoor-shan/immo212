@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static string|null getProjectsListPageUrl()
  * @method static \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Support\Collection getPropertiesFilter(int|null $perPage = 12, array $extra = [])
  * @method static \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Support\Collection getProjectsFilter(int|null $perPage = 12, array $extra = [])
+ * @method static \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Support\Collection getVacationRentalsFilter(int|null $perPage = 12, array $extra = [])
  * @method static array getPropertiesPerPageList()
  * @method static array getProjectsPerPageList()
  * @method static array getSortByList()

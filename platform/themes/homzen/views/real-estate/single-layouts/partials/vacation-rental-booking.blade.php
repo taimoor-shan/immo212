@@ -1,8 +1,8 @@
-@if($property->type == \Botble\RealEstate\Enums\PropertyTypeEnum::VACATION_RENTAL)
-    <div @class(['widget-box single-property-vacation-rental-booking single-property-contact', $class ?? null])>
-        <div class="h7 title fw-6">{{ __('Book This Property') }}</div>
-        
-        @if (! RealEstateHelper::hideAgentInfoInPropertyDetailPage() && ($account = $property->author))
+@if($vacationRental)
+    <div @class(['widget-box single-vacation-rental-booking single-property-contact', $class ?? null])>
+        <div class="h7 title fw-6">{{ __('Book This Vacation Rental') }}</div>
+
+        @if (! RealEstateHelper::hideAgentInfoInPropertyDetailPage() && ($account = $vacationRental->author))
             <div class="box-avatar mb-3">
                 <div class="avatar avt-100 round">
                     <a href="{{ $account->url }}" class="d-block">
@@ -25,23 +25,23 @@
             </div>
         @endif
 
-        {!! apply_filters('property_right_details_info', null, $property) !!}
+        {!! apply_filters('vacation_rental_right_details_info', null, $vacationRental) !!}
 
-        {!! apply_filters('before_vacation_rental_booking_form', null, $property) !!}
+        {!! apply_filters('before_vacation_rental_booking_form', null, $vacationRental) !!}
 
-        <div id="property-calendar"
-             data-property-id="{{ $property->id }}"
-             data-availability-url="{{ route('public.vacation-rental.api.availability', ['id' => $property->id]) }}"
-             data-pricing-url="{{ route('public.vacation-rental.api.calculate-price', ['id' => $property->id]) }}"
+        <div id="vacation-rental-calendar"
+             data-vacation-rental-id="{{ $vacationRental->id }}"
+             data-availability-url="{{ route('public.vacation-rental.api.availability', ['id' => $vacationRental->id]) }}"
+             data-pricing-url="{{ route('public.vacation-rental.api.calculate-price', ['id' => $vacationRental->id]) }}"
              data-booking-url="{{ route('public.vacation-rental.booking.process') }}"
              data-login-url="{{ route('public.account.login') }}"
-             data-min-stay="{{ $property->min_stay ?: 1 }}"
-             data-max-stay="{{ $property->max_stay ?: '' }}"
-             data-max-guests="{{ $property->max_guests ?: '' }}"
+             data-min-stay="{{ $vacationRental->minimum_stay ?: 1 }}"
+             data-max-stay="{{ $vacationRental->maximum_stay ?: '' }}"
+             data-max-guests="{{ $vacationRental->maximum_guests ?: '' }}"
              data-is-logged-in="{{ auth('account')->check() ? 'true' : 'false' }}">
         </div>
 
-        {!! apply_filters('after_vacation_rental_booking_form', null, $property) !!}
+        {!! apply_filters('after_vacation_rental_booking_form', null, $vacationRental) !!}
 
     </div>
 @endif

@@ -1,10 +1,10 @@
 @php
-    $propertyId = $property && $property->exists ? $property->id : null;
+    $propertyId = $vacationRental && $vacationRental->exists ? $vacationRental->id : null;
 @endphp
 
 <div class="vacation-rental-availability-section" id="vacation-rental-availability-content">
-    <!-- Calendar Section - Always present, controlled by JavaScript -->
-    <div id="calendar-section" style="display: none;">
+    <!-- Calendar Section - Always visible for vacation rentals -->
+    <div id="calendar-section">
             <!-- Calendar Legend -->
             <div class="calendar-legend mb-3">
                 <div class="legend-item">
@@ -68,11 +68,11 @@
             </div>
         </div>
 
-    <!-- Info Message Section - Always present, controlled by JavaScript -->
+    <!-- Info Message Section - Hidden for vacation rentals since calendar is always shown -->
     <div class="alert alert-info" id="vacation-rental-info-message" style="display: none;">
         <x-core::icon name="ti ti-info-circle" class="me-2" />
         <span id="info-message-text">
-            {{ __('Select "Vacation Rental" as property type to enable availability calendar management.') }}
+            {{ __('Manage your vacation rental availability using the calendar below.') }}
         </span>
     </div>
 </div>
@@ -80,26 +80,47 @@
 <!-- Data script - placed outside Vue template to avoid warnings -->
 <script>
     // Pass existing availability data to JavaScript
-    @if(isset($property) && $property->id)
+    @if(isset($vacationRental) && $vacationRental->id)
         @php
-            $availabilityService = app(\Botble\RealEstate\Services\SavePropertyAvailabilityService::class);
-            $existingData = $availabilityService->getPropertyAvailabilityForForm($property);
+            $availabilityService = app(\Botble\RealEstate\Services\SaveVacationRentalAvailabilityService::class);
+            $existingData = $availabilityService->getVacationRentalAvailabilityForForm($vacationRental);
         @endphp
         window.propertyAvailabilityData = @json($existingData);
-        console.log('Property availability data loaded:', window.propertyAvailabilityData);
+        console.log('Vacation rental availability data loaded:', window.propertyAvailabilityData);
     @else
         window.propertyAvailabilityData = {};
-        console.log('No property data - new property');
+        console.log('No vacation rental data - new vacation rental');
     @endif
 </script>
 
     <!-- Include Flatpickr CSS and Vacation Rental Styles -->
     @push('header')
-        <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
-        <!-- <link rel="stylesheet" href="{{ asset('vendor/core/plugins/real-estate/css/calendar-backend.css') }}?v={{ time() }}"> -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <link rel="stylesheet" href="{{ asset('vendor/core/plugins/real-estate/css/calendar-backend.css') }}?v={{ time() }}">
     @endpush
 
     <!-- Include JavaScript -->
     @push('footer')
-        <!-- <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script>
+            // Initialize vacation rental calendar immediately since this is a vacation rental form
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('Initializing vacation rental calendar...');
+
+                // Show calendar section immediately for vacation rentals
+                const calendarSection = document.getElementById('calendar-section');
+                if (calendarSection) {
+                    calendarSection.style.display = 'block';
+                    console.log('Calendar section shown');
+                }
+
+                // Initialize the calendar if the function exists
+                if (typeof initializePropertyAvailabilityCalendar === 'function') {
+                    initializePropertyAvailabilityCalendar();
+                    console.log('Calendar initialized');
+                } else {
+                    console.log('Calendar initialization function not found');
+                }
+            });
+        </script>
     @endpush

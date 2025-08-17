@@ -4,9 +4,9 @@ namespace Botble\RealEstate\Http\Controllers\Fronts;
 
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\Models\VacationRentalBooking;
-use Botble\RealEstate\Services\AvailabilityService;
-use Botble\RealEstate\Enums\PropertyTypeEnum;
+use Botble\RealEstate\Services\SaveVacationRentalAvailabilityService;
 use Botble\Theme\Facades\Theme;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -14,9 +14,9 @@ use Botble\Base\Facades\Assets;
 
 class VacationRentalController extends BaseController
 {
-    protected AvailabilityService $availabilityService;
+    protected SaveVacationRentalAvailabilityService $availabilityService;
 
-    public function __construct(AvailabilityService $availabilityService)
+    public function __construct(SaveVacationRentalAvailabilityService $availabilityService)
     {
         $this->availabilityService = $availabilityService;
     }
@@ -35,19 +35,18 @@ class VacationRentalController extends BaseController
         $user = auth('account')->user();
         
         // Get vacation rental properties for this user
-        $vacationRentals = $user->properties()
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->with(['availability', 'vacationRentalBookings', 'calendarEvents'])
+        $vacationRentals = $user->vacationRentals()
+            ->with(['availability', 'bookings'])
             ->get();
 
         // Calculate summary statistics
         $totalProperties = $vacationRentals->count();
-        $totalBookings = VacationRentalBooking::whereIn('property_id', $vacationRentals->pluck('id'))
+        $totalBookings = VacationRentalBooking::whereIn('vacation_rental_id', $vacationRentals->pluck('id'))
             ->where('status', '!=', VacationRentalBooking::STATUS_CANCELLED)
             ->count();
         
         $currentMonth = Carbon::now();
-        $monthlyRevenue = VacationRentalBooking::whereIn('property_id', $vacationRentals->pluck('id'))
+        $monthlyRevenue = VacationRentalBooking::whereIn('vacation_rental_id', $vacationRentals->pluck('id'))
             ->where('status', VacationRentalBooking::STATUS_CONFIRMED)
             ->where('payment_status', VacationRentalBooking::PAYMENT_PAID)
             ->whereMonth('check_in_date', $currentMonth->month)
@@ -55,18 +54,18 @@ class VacationRentalController extends BaseController
             ->sum('total_amount');
 
         // Get recent bookings
-        $recentBookings = VacationRentalBooking::whereIn('property_id', $vacationRentals->pluck('id'))
-            ->with('property')
+        $recentBookings = VacationRentalBooking::whereIn('vacation_rental_id', $vacationRentals->pluck('id'))
+            ->with('vacationRental')
             ->latest()
             ->limit(5)
             ->get();
 
         // Get upcoming check-ins
-        $upcomingCheckIns = VacationRentalBooking::whereIn('property_id', $vacationRentals->pluck('id'))
+        $upcomingCheckIns = VacationRentalBooking::whereIn('vacation_rental_id', $vacationRentals->pluck('id'))
             ->where('status', VacationRentalBooking::STATUS_CONFIRMED)
             ->where('check_in_date', '>=', Carbon::today())
             ->where('check_in_date', '<=', Carbon::today()->addDays(7))
-            ->with('property')
+            ->with('vacationRental')
             ->orderBy('check_in_date')
             ->get();
 
@@ -89,12 +88,10 @@ class VacationRentalController extends BaseController
     public function bookings(Request $request)
     {
         $user = auth('account')->user();
-        $propertyIds = $user->properties()
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->pluck('id');
+        $vacationRentalIds = $user->vacationRentals()->pluck('id');
 
-        $query = VacationRentalBooking::whereIn('property_id', $propertyIds)
-            ->with(['property']);
+        $query = VacationRentalBooking::whereIn('vacation_rental_id', $vacationRentalIds)
+            ->with(['vacationRental']);
 
         // Filter by status
         if ($request->filled('status')) {
@@ -116,8 +113,7 @@ class VacationRentalController extends BaseController
 
         $bookings = $query->latest()->paginate(20);
 
-        $properties = $user->properties()
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
+        $properties = $user->vacationRentals()
             ->select('id', 'name')
             ->get();
 
@@ -132,9 +128,7 @@ class VacationRentalController extends BaseController
     public function availability(Request $request)
     {
         $user = auth('account')->user();
-        $properties = $user->properties()
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->get();
+        $properties = $user->vacationRentals()->get();
 
         $selectedProperty = null;
         $availabilityData = [];
@@ -177,9 +171,7 @@ class VacationRentalController extends BaseController
     public function calendar(Request $request)
     {
         $user = auth('account')->user();
-        $properties = $user->properties()
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->get();
+        $properties = $user->vacationRentals()->get();
 
         $selectedProperty = null;
         $monthlyData = [];
@@ -227,8 +219,7 @@ class VacationRentalController extends BaseController
         ]);
 
         $user = auth('account')->user();
-        $property = $user->properties()
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
+        $property = $user->vacationRentals()
             ->where('id', $request->property_id)
             ->firstOrFail();
 
@@ -252,8 +243,7 @@ class VacationRentalController extends BaseController
         ]);
 
         $user = auth('account')->user();
-        $property = $user->properties()
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
+        $property = $user->vacationRentals()
             ->where('id', $request->property_id)
             ->firstOrFail();
 
@@ -277,8 +267,7 @@ class VacationRentalController extends BaseController
         ]);
 
         $user = auth('account')->user();
-        $property = $user->properties()
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
+        $property = $user->vacationRentals()
             ->where('id', $request->property_id)
             ->firstOrFail();
 
@@ -300,11 +289,9 @@ class VacationRentalController extends BaseController
         ]);
 
         $user = auth('account')->user();
-        $propertyIds = $user->properties()
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->pluck('id');
+        $vacationRentalIds = $user->vacationRentals()->pluck('id');
 
-        $booking = VacationRentalBooking::whereIn('property_id', $propertyIds)
+        $booking = VacationRentalBooking::whereIn('vacation_rental_id', $vacationRentalIds)
             ->findOrFail($bookingId);
 
         $booking->update(['status' => $request->status]);
@@ -325,8 +312,7 @@ class VacationRentalController extends BaseController
         ]);
 
         $user = auth('account')->user();
-        $property = $user->properties()
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
+        $property = $user->vacationRentals()
             ->where('id', $request->property_id)
             ->firstOrFail();
 
@@ -353,9 +339,7 @@ class VacationRentalController extends BaseController
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        $property = Property::where('id', $request->property_id)
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->firstOrFail();
+        $property = VacationRental::findOrFail($request->property_id);
 
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
@@ -375,15 +359,13 @@ class VacationRentalController extends BaseController
     public function calculatePrice(Request $request)
     {
         $request->validate([
-            'property_id' => 'required|exists:re_properties,id',
+            'property_id' => 'required|exists:re_vacation_rentals,id',
             'check_in' => 'required|date|after_or_equal:today',
             'check_out' => 'required|date|after:check_in',
             'guests' => 'required|integer|min:1',
         ]);
 
-        $property = Property::where('id', $request->property_id)
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->firstOrFail();
+        $property = VacationRental::findOrFail($request->property_id);
 
         $checkIn = Carbon::parse($request->check_in);
         $checkOut = Carbon::parse($request->check_out);

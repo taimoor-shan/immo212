@@ -56,7 +56,7 @@ class PropertyForm extends FormAbstract
             ->addScriptsDirectly([
                 'vendor/core/plugins/real-estate/js/real-estate.js',
                 'vendor/core/plugins/real-estate/js/components.js',
-                'vendor/core/plugins/real-estate/js/vacation-rental-form.js',
+
                 'vendor/core/plugins/real-estate/js/conditional-floor-plans.js',
             ]);
 
@@ -350,131 +350,7 @@ class PropertyForm extends FormAbstract
                 ],
                 'choices' => PropertyPeriodEnum::labels(),
             ])
-            ->add('vacation_rental_fields_start', 'html', [
-                'html' => '<div class="vacation-rental-fields" style="display: none;">',
-            ])
-            ->add('rowOpen3', 'html', [
-                'html' => '<div class="row">',
-            ])
-            ->add('check_in_time', 'time', [
-                'label' => trans('plugins/real-estate::property.form.check_in_time'),
-                'wrapper' => [
-                    'class' => 'form-group mb-3 col-md-6',
-                ],
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-            ])
-            ->add('check_out_time', 'time', [
-                'label' => trans('plugins/real-estate::property.form.check_out_time'),
-                'wrapper' => [
-                    'class' => 'form-group mb-3 col-md-6',
-                ],
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-            ])
-            ->add('rowClose3', 'html', [
-                'html' => '</div>',
-            ])
-            ->add('rowOpen4', 'html', [
-                'html' => '<div class="row">',
-            ])
-            ->add('minimum_stay', 'number', [
-                'label' => trans('plugins/real-estate::property.form.minimum_stay'),
-                'wrapper' => [
-                    'class' => 'form-group mb-3 col-md-4',
-                ],
-                'attr' => [
-                    'class' => 'form-control',
-                    'min' => 1,
-                    'placeholder' => trans('plugins/real-estate::property.form.minimum_stay_placeholder'),
-                ],
-            ])
-            ->add('maximum_stay', 'number', [
-                'label' => trans('plugins/real-estate::property.form.maximum_stay'),
-                'wrapper' => [
-                    'class' => 'form-group mb-3 col-md-4',
-                ],
-                'attr' => [
-                    'class' => 'form-control',
-                    'min' => 0,
-                    'placeholder' => trans('plugins/real-estate::property.form.maximum_stay_placeholder'),
-                ],
-            ])
-            ->add('maximum_guests', 'number', [
-                'label' => trans('plugins/real-estate::property.form.maximum_guests'),
-                'wrapper' => [
-                    'class' => 'form-group mb-3 col-md-4',
-                ],
-                'attr' => [
-                    'class' => 'form-control',
-                    'min' => 1,
-                    'placeholder' => trans('plugins/real-estate::property.form.maximum_guests_placeholder'),
-                ],
-            ])
-            ->add('rowClose4', 'html', [
-                'html' => '</div>',
-            ])
-            ->add('rowOpen5', 'html', [
-                'html' => '<div class="row">',
-            ])
-            ->add('cleaning_fee', TextField::class, [
-                'label' => trans('plugins/real-estate::property.form.cleaning_fee'),
-                'wrapper' => [
-                    'class' => 'form-group mb-3 col-md-6 monetary-field',
-                ],
-                'attr' => [
-                    'class' => 'form-control input-mask-number',
-                    'placeholder' => trans('plugins/real-estate::property.form.cleaning_fee_placeholder'),
-                    'data-thousands-separator' => RealEstateHelper::getThousandSeparatorForInputMask(),
-                    'data-decimal-separator' => RealEstateHelper::getDecimalSeparatorForInputMask(),
-                ],
-            ])
-            ->add('security_deposit', TextField::class, [
-                'label' => trans('plugins/real-estate::property.form.security_deposit'),
-                'wrapper' => [
-                    'class' => 'form-group mb-3 col-md-6 monetary-field',
-                ],
-                'attr' => [
-                    'class' => 'form-control input-mask-number',
-                    'placeholder' => trans('plugins/real-estate::property.form.security_deposit_placeholder'),
-                    'data-thousands-separator' => RealEstateHelper::getThousandSeparatorForInputMask(),
-                    'data-decimal-separator' => RealEstateHelper::getDecimalSeparatorForInputMask(),
-                ],
-            ])
-            ->add('rowClose5', 'html', [
-                'html' => '</div>',
-            ])
-            ->add('house_rules', TextareaField::class, [
-                'label' => trans('plugins/real-estate::property.form.house_rules'),
-                'wrapper' => [
-                    'class' => 'form-group mb-3',
-                ],
-                'attr' => [
-                    'class' => 'form-control',
-                    'rows' => 3,
-                    'placeholder' => trans('plugins/real-estate::property.form.house_rules_placeholder'),
-                ],
-            ])
-            ->add('cancellation_policy', 'customSelect', [
-                'label' => trans('plugins/real-estate::property.form.cancellation_policy'),
-                'wrapper' => [
-                    'class' => 'form-group mb-3 policy-field',
-                ],
-                'attr' => [
-                    'class' => 'select-search-full',
-                ],
-                'choices' => [
-                    'flexible' => trans('plugins/real-estate::property.cancellation_policies.flexible'),
-                    'moderate' => trans('plugins/real-estate::property.cancellation_policies.moderate'),
-                    'strict' => trans('plugins/real-estate::property.cancellation_policies.strict'),
-                    'super_strict' => trans('plugins/real-estate::property.cancellation_policies.super_strict'),
-                ],
-            ])
-            ->add('vacation_rental_fields_end', 'html', [
-                'html' => '</div>',
-            ])
+
             ->add('rowClose2', 'html', [
                 'html' => '</div>',
             ])
@@ -662,18 +538,7 @@ class PropertyForm extends FormAbstract
                     ),
                     'priority' => 0,
                 ],
-                'vacation_rental_availability' => [
-                    'title' => trans('plugins/real-estate::vacation-rental.availability_calendar'),
-                    'content' => view(
-                        'plugins/real-estate::partials.form-vacation-rental-availability',
-                        ['property' => $this->getModel()]
-                    )->render(),
-                    'priority' => 2,
-                    'attributes' => [
-                        'style' => 'display: none;',
-                        'data-type' => 'vacation_rental',
-                    ],
-                ],
+
             ])
             ->add(
                 'status',

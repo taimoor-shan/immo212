@@ -51,6 +51,7 @@ use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
 use Botble\RealEstate\Models\Review;
 use Botble\RealEstate\Models\Transaction;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\PanelSections\SettingRealEstatePanelSetting;
 use Botble\RealEstate\Repositories\Eloquent\AccountActivityLogRepository;
 use Botble\RealEstate\Repositories\Eloquent\AccountRepository;
@@ -126,7 +127,7 @@ class RealEstateServiceProvider extends ServiceProvider
         });
 
         // Register vacation rental services
-        $this->app->singleton(\Botble\RealEstate\Services\AvailabilityService::class);
+        $this->app->singleton(\Botble\RealEstate\Services\SaveVacationRentalAvailabilityService::class);
 
         $this->app->bind(CategoryInterface::class, function () {
             return new CategoryRepository(new Category());
@@ -221,10 +222,12 @@ class RealEstateServiceProvider extends ServiceProvider
             SlugHelper::registerModule(Property::class, fn () => trans('plugins/real-estate::property.properties'));
             SlugHelper::registerModule(Category::class, fn () => trans('plugins/real-estate::category.property_categories'));
             SlugHelper::registerModule(Project::class, fn () => trans('plugins/real-estate::project.projects'));
+            SlugHelper::registerModule(VacationRental::class, fn () => trans('plugins/real-estate::vacation-rental.vacation_rentals'));
             SlugHelper::setPrefix(Project::class, 'projects', true);
 
             SlugHelper::setPrefix(Property::class, 'properties', true);
             SlugHelper::setPrefix(Category::class, 'property-category', true);
+            SlugHelper::setPrefix(VacationRental::class, 'vacation-rentals', true);
 
             if (! setting('real_estate_disabled_public_profile')) {
                 SlugHelper::registerModule(Account::class, fn () => trans('plugins/real-estate::account.agents'));
@@ -419,7 +422,7 @@ class RealEstateServiceProvider extends ServiceProvider
                     'parent_id' => 'cms-plugins-real-estate',
                     'name' => 'plugins/real-estate::vacation-rental.name',
                     'icon' => null,
-                    'url' => fn () => route('vacation-rental.overview'),
+                    'url' => fn () => route('vacation-rental.index'),
                     'permissions' => ['vacation-rental.index'],
                 ])
                 ->registerItem([
@@ -428,7 +431,7 @@ class RealEstateServiceProvider extends ServiceProvider
                     'parent_id' => 'cms-plugins-vacation-rental',
                     'name' => 'plugins/real-estate::vacation-rental.overview',
                     'icon' => null,
-                    'url' => fn () => route('vacation-rental.overview'),
+                    'url' => fn () => route('vacation-rental.admin.overview'),
                     'permissions' => ['vacation-rental.dashboard'],
                 ])
                 ->registerItem([
@@ -437,7 +440,7 @@ class RealEstateServiceProvider extends ServiceProvider
                     'parent_id' => 'cms-plugins-vacation-rental',
                     'name' => 'plugins/real-estate::vacation-rental.properties',
                     'icon' => null,
-                    'url' => fn () => route('vacation-rental.properties'),
+                    'url' => fn () => route('vacation-rental.index'),
                     'permissions' => ['vacation-rental.index'],
                 ])
                 ->registerItem([
@@ -446,7 +449,7 @@ class RealEstateServiceProvider extends ServiceProvider
                     'parent_id' => 'cms-plugins-vacation-rental',
                     'name' => 'plugins/real-estate::vacation-rental.bookings',
                     'icon' => null,
-                    'url' => fn () => route('vacation-rental.bookings'),
+                    'url' => fn () => route('vacation-rental.admin.bookings'),
                     'permissions' => ['vacation-rental.bookings'],
                 ]);
         });
@@ -554,10 +557,12 @@ class RealEstateServiceProvider extends ServiceProvider
         SiteMapManager::registerKey([
             'properties-((?:19|20|21|22)\d{2})-(0?[1-9]|1[012])',
             'projects-((?:19|20|21|22)\d{2})-(0?[1-9]|1[012])',
+            'vacation-rentals-((?:19|20|21|22)\d{2})-(0?[1-9]|1[012])',
             'property-categories',
             'agents',
             'properties-city',
             'projects-city',
+            'vacation-rentals-city',
         ]);
 
         if (defined('LANGUAGE_MODULE_SCREEN_NAME')) {
@@ -783,6 +788,7 @@ class RealEstateServiceProvider extends ServiceProvider
             SeoHelper::registerModule([
                 Property::class,
                 Project::class,
+                VacationRental::class,
             ]);
 
             EmailHandler::addTemplateSettings(REAL_ESTATE_MODULE_SCREEN_NAME, config('plugins.real-estate.email', []));

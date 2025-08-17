@@ -233,16 +233,16 @@
             
             {{-- Hidden fields for disabled options to ensure JS can still read them --}}
             @if(!$mcal_prop_tax_enable)
-                <input type="hidden" id="annualPropertyTaxRate" value="0">
+                <input type="hidden" id="annualPropertyTaxRateHidden" value="0">
             @endif
             @if(!$mcal_hi_enable)
-                <input type="hidden" id="annualHomeInsurance" value="0">
+                <input type="hidden" id="annualHomeInsuranceHidden" value="0">
             @endif
             @if(!$mcal_hoa_enable)
-                <input type="hidden" id="monthlyHOAFees" value="0">
+                <input type="hidden" id="monthlyHOAFeesHidden" value="0">
             @endif
             @if(!$mcal_pmi_enable)
-                <input type="hidden" id="pmi" value="0">
+                <input type="hidden" id="pmiHidden" value="0">
             @endif
         </form>
     </div>
@@ -272,8 +272,13 @@
         function parseNumberInput(selector) {
             var element = $(selector);
             if (!element.length) {
-                console.warn('Element not found:', selector);
-                return 0;
+                // Try hidden field alternative if main element not found
+                var hiddenSelector = selector + 'Hidden';
+                element = $(hiddenSelector);
+                if (!element.length) {
+                    console.warn('Element not found:', selector, 'and', hiddenSelector);
+                    return 0;
+                }
             }
             var value = element.val();
             var parsed = parseFloat((value + '').replace(/[^0-9.-]/g, ''));
@@ -314,9 +319,9 @@
                 $currencyDecimals = $current_currency ? $current_currency->decimals : 2;
             @endphp
 
-            var decimalPlaces = decimals ? {{ $currencyDecimals }} : 0;
-            var decimalSeparator = '{{ $decimalSeparator }}';
-            var thousandSeparator = '{{ $thousandSeparator }}';
+            var decimalPlaces = decimals === true ? {!! $currencyDecimals ?? 2 !!} : 0;
+            var decimalSeparator = {!! json_encode($decimalSeparator) !!};
+            var thousandSeparator = {!! json_encode($thousandSeparator) !!};
 
             // Format the number with proper decimals
             var formatted = number.toFixed(decimalPlaces);
@@ -342,12 +347,12 @@
                 @php
                     $space = setting('real_estate_add_space_between_price_and_currency', 0) == 1 ? ' ' : '';
                 @endphp
-                return '{{ $currency_symbol }}{{ $space }}' + value;
+                return {!! json_encode($currency_symbol . $space) !!} + value;
             @else
                 @php
                     $space = setting('real_estate_add_space_between_price_and_currency', 0) == 1 ? ' ' : '';
                 @endphp
-                return value + '{{ $space }}{{ $currency_symbol }}';
+                return value + {!! json_encode($space . $currency_symbol) !!};
             @endif
         }
         
@@ -610,14 +615,12 @@
 #houzez-calculator-form .input-group > .input-group-text:first-child {
     border-radius: 0.25rem 0 0 0.25rem;
     border-right: 0;
-    width: 86%;
 }
 
 #houzez-calculator-form .input-group > .input-group-text:last-child {
     border-radius: 0 0.25rem 0.25rem 0;
     border-left: 0;
-    width: 14%;
-    text-align:center;
+    text-align: center;
 }
 
 #houzez-calculator-form .input-group > .form-control:not(:first-child) {

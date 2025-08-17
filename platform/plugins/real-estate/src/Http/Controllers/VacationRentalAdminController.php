@@ -4,14 +4,13 @@ namespace Botble\RealEstate\Http\Controllers;
 
 use Botble\Base\Facades\Assets;
 use Botble\Base\Http\Controllers\BaseController;
-use Botble\RealEstate\Enums\PropertyTypeEnum;
-use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\Models\VacationRentalBooking;
-use Botble\RealEstate\Models\PropertyAvailability;
-use Botble\RealEstate\Models\PropertyCalendarEvent;
-use Botble\RealEstate\Services\AvailabilityService;
+use Botble\RealEstate\Models\VacationRentalAvailability;
+use Botble\RealEstate\Models\VacationRentalCalendarEvent;
+use Botble\RealEstate\Services\SaveVacationRentalAvailabilityService;
 use Botble\RealEstate\Tables\VacationRentalBookingTable;
-use Botble\RealEstate\Tables\VacationRentalPropertyTable;
+use Botble\RealEstate\Tables\VacationRentalTable;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -19,7 +18,7 @@ use Illuminate\Http\RedirectResponse;
 
 class VacationRentalAdminController extends BaseController
 {
-    public function __construct(protected AvailabilityService $availabilityService)
+    public function __construct(protected SaveVacationRentalAvailabilityService $availabilityService)
     {
         $this
             ->breadcrumb()
@@ -33,7 +32,7 @@ class VacationRentalAdminController extends BaseController
             ->add(trans('plugins/real-estate::vacation-rental.name'), route('vacation-rental.index'));
     }
 
-    public function index(VacationRentalPropertyTable $dataTable)
+    public function index(VacationRentalTable $dataTable)
     {
         $this->setupBreadcrumb();
         $this->pageTitle(trans('plugins/real-estate::vacation-rental.name'));
@@ -49,7 +48,7 @@ class VacationRentalAdminController extends BaseController
         $this->pageTitle(trans('plugins/real-estate::vacation-rental.overview'));
 
         // Get vacation rental statistics
-        $totalProperties = Property::where('type', PropertyTypeEnum::VACATION_RENTAL)->count();
+        $totalProperties = VacationRental::count();
         $totalBookings = VacationRentalBooking::count();
         $activeBookings = VacationRentalBooking::where('status', VacationRentalBooking::STATUS_CONFIRMED)
             ->where('check_in_date', '<=', Carbon::today())
@@ -63,13 +62,13 @@ class VacationRentalAdminController extends BaseController
             ->sum('total_amount');
 
         // Recent bookings
-        $recentBookings = VacationRentalBooking::with(['property'])
+        $recentBookings = VacationRentalBooking::with(['vacationRental'])
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
 
         // Upcoming check-ins
-        $upcomingCheckIns = VacationRentalBooking::with(['property'])
+        $upcomingCheckIns = VacationRentalBooking::with(['vacationRental'])
             ->where('status', VacationRentalBooking::STATUS_CONFIRMED)
             ->where('check_in_date', '>=', Carbon::today())
             ->where('check_in_date', '<=', Carbon::today()->addDays(7))
@@ -77,8 +76,7 @@ class VacationRentalAdminController extends BaseController
             ->get();
 
         // Properties needing attention
-        $propertiesNeedingAttention = Property::where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->whereDoesntHave('vacationRentalBookings', function ($query) {
+        $propertiesNeedingAttention = VacationRental::whereDoesntHave('bookings', function ($query) {
                 $query->where('check_in_date', '>=', Carbon::now()->subDays(30));
             })
             ->limit(5)
@@ -122,7 +120,7 @@ class VacationRentalAdminController extends BaseController
         $this->pageTitle(trans('plugins/real-estate::vacation-rental.dashboard'));
 
         // Get vacation rental statistics
-        $totalProperties = Property::where('type', PropertyTypeEnum::VACATION_RENTAL)->count();
+        $totalProperties = VacationRental::count();
         $totalBookings = VacationRentalBooking::count();
         $activeBookings = VacationRentalBooking::where('status', VacationRentalBooking::STATUS_CONFIRMED)
             ->where('check_in_date', '<=', Carbon::today())
@@ -150,8 +148,7 @@ class VacationRentalAdminController extends BaseController
             ->get();
 
         // Properties needing attention
-        $propertiesNeedingAttention = Property::where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->where(function ($query) {
+        $propertiesNeedingAttention = VacationRental::where(function ($query) {
                 $query->where('moderation_status', 'pending')
                     ->orWhereNull('check_in_time')
                     ->orWhereNull('check_out_time')
@@ -187,8 +184,7 @@ class VacationRentalAdminController extends BaseController
     {
         $this->pageTitle(trans('plugins/real-estate::vacation-rental.availability'));
 
-        $properties = Property::where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->select('id', 'name')
+        $properties = VacationRental::select('id', 'name')
             ->orderBy('name')
             ->get();
 
@@ -197,9 +193,9 @@ class VacationRentalAdminController extends BaseController
         $calendarEvents = [];
 
         if ($request->filled('property_id')) {
-            $selectedProperty = Property::find($request->property_id);
-            
-            if ($selectedProperty && $selectedProperty->type === PropertyTypeEnum::VACATION_RENTAL) {
+            $selectedProperty = VacationRental::find($request->property_id);
+
+            if ($selectedProperty) {
                 $startDate = Carbon::parse($request->get('month', Carbon::now()->format('Y-m')))->startOfMonth();
                 $endDate = $startDate->copy()->endOfMonth();
 
@@ -232,8 +228,7 @@ class VacationRentalAdminController extends BaseController
     {
         $this->pageTitle(trans('plugins/real-estate::vacation-rental.calendar'));
 
-        $properties = Property::where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->select('id', 'name')
+        $properties = VacationRental::select('id', 'name')
             ->orderBy('name')
             ->get();
 
@@ -241,9 +236,9 @@ class VacationRentalAdminController extends BaseController
         $monthlyData = [];
 
         if ($request->filled('property_id')) {
-            $selectedProperty = Property::find($request->property_id);
-            
-            if ($selectedProperty && $selectedProperty->type === PropertyTypeEnum::VACATION_RENTAL) {
+            $selectedProperty = VacationRental::find($request->property_id);
+
+            if ($selectedProperty) {
                 $year = $request->get('year', Carbon::now()->year);
                 $month = $request->get('month', Carbon::now()->month);
 
@@ -274,9 +269,7 @@ class VacationRentalAdminController extends BaseController
             'reason' => 'nullable|string|max:255',
         ]);
 
-        $property = Property::where('id', $request->property_id)
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->firstOrFail();
+        $property = VacationRental::findOrFail($request->property_id);
 
         $this->availabilityService->blockDates(
             $property->id,
@@ -297,9 +290,7 @@ class VacationRentalAdminController extends BaseController
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        $property = Property::where('id', $request->property_id)
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->firstOrFail();
+        $property = VacationRental::findOrFail($request->property_id);
 
         $this->availabilityService->unblockDates(
             $property->id,
@@ -320,9 +311,7 @@ class VacationRentalAdminController extends BaseController
             'reason' => 'nullable|string|max:255',
         ]);
 
-        $property = Property::where('id', $request->property_id)
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->firstOrFail();
+        $property = VacationRental::findOrFail($request->property_id);
 
         $this->availabilityService->maintenanceDates(
             $property->id,
@@ -343,9 +332,7 @@ class VacationRentalAdminController extends BaseController
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        $property = Property::where('id', $request->property_id)
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->firstOrFail();
+        $property = VacationRental::findOrFail($request->property_id);
 
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);

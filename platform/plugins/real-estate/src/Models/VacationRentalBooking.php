@@ -19,6 +19,7 @@ class VacationRentalBooking extends BaseModel
     protected $fillable = [
         'booking_number',
         'property_id',
+        'vacation_rental_id',
         'account_id',
         'guest_name',
         'guest_email',
@@ -104,6 +105,11 @@ class VacationRentalBooking extends BaseModel
         return $this->belongsTo(Property::class);
     }
 
+    public function vacationRental(): BelongsTo
+    {
+        return $this->belongsTo(VacationRental::class);
+    }
+
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
@@ -114,10 +120,31 @@ class VacationRentalBooking extends BaseModel
         return $this->hasMany(PropertyCalendarEvent::class, 'booking_id');
     }
 
+    public function vacationRentalCalendarEvents(): HasMany
+    {
+        return $this->hasMany(VacationRentalCalendarEvent::class, 'booking_id');
+    }
+
     // Scopes
     public function scopeForProperty(Builder $query, int $propertyId): Builder
     {
         return $query->where('property_id', $propertyId);
+    }
+
+    public function scopeForVacationRental(Builder $query, int $vacationRentalId): Builder
+    {
+        return $query->where('vacation_rental_id', $vacationRentalId);
+    }
+
+    // Helper methods
+    public function getRental()
+    {
+        return $this->vacation_rental_id ? $this->vacationRental : $this->property;
+    }
+
+    public function getRentalType(): string
+    {
+        return $this->vacation_rental_id ? 'vacation_rental' : 'property';
     }
 
     public function scopeActive(Builder $query): Builder
@@ -220,6 +247,26 @@ class VacationRentalBooking extends BaseModel
     public static function checkDateConflict(int $propertyId, Carbon $checkIn, Carbon $checkOut, ?int $excludeBookingId = null): bool
     {
         $query = self::forProperty($propertyId)
+            ->active()
+            ->where(function ($q) use ($checkIn, $checkOut) {
+                $q->whereBetween('check_in_date', [$checkIn, $checkOut->copy()->subDay()])
+                  ->orWhereBetween('check_out_date', [$checkIn->copy()->addDay(), $checkOut])
+                  ->orWhere(function ($q2) use ($checkIn, $checkOut) {
+                      $q2->where('check_in_date', '<=', $checkIn)
+                         ->where('check_out_date', '>=', $checkOut);
+                  });
+            });
+
+        if ($excludeBookingId) {
+            $query->where('id', '!=', $excludeBookingId);
+        }
+
+        return $query->exists();
+    }
+
+    public static function checkVacationRentalDateConflict(int $vacationRentalId, Carbon $checkIn, Carbon $checkOut, ?int $excludeBookingId = null): bool
+    {
+        $query = self::forVacationRental($vacationRentalId)
             ->active()
             ->where(function ($q) use ($checkIn, $checkOut) {
                 $q->whereBetween('check_in_date', [$checkIn, $checkOut->copy()->subDay()])

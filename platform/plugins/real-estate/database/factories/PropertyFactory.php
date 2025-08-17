@@ -53,22 +53,7 @@ class PropertyFactory extends Factory
         ];
     }
 
-    public function vacationRental(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'type' => PropertyTypeEnum::VACATION_RENTAL,
-            'status' => PropertyStatusEnum::RENTING,
-            'check_in_time' => '15:00',
-            'check_out_time' => '11:00',
-            'minimum_stay' => $this->faker->numberBetween(1, 7),
-            'maximum_stay' => $this->faker->numberBetween(14, 30),
-            'maximum_guests' => $this->faker->numberBetween(2, 8),
-            'cleaning_fee' => $this->faker->randomFloat(2, 25, 150),
-            'security_deposit' => $this->faker->randomFloat(2, 100, 500),
-            'house_rules' => $this->faker->paragraph(),
-            'cancellation_policy' => $this->faker->randomElement(['flexible', 'moderate', 'strict']),
-        ]);
-    }
+
 
     public function forSale(): static
     {

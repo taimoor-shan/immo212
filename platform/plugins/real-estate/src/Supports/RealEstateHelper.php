@@ -13,6 +13,7 @@ use Botble\RealEstate\Enums\PropertyTypeEnum;
 use Botble\RealEstate\Enums\ReviewStatusEnum;
 use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\Repositories\Interfaces\ProjectInterface;
 use Botble\RealEstate\Repositories\Interfaces\PropertyInterface;
 use Botble\Slug\Facades\SlugHelper;
@@ -82,6 +83,30 @@ class RealEstateHelper
     {
         $relations = [
             'slugable:id,key,prefix,reference_id',
+            'categories' => function (BelongsToMany|BaseQueryBuilder $query) {
+                return $query
+                    ->wherePublished()
+                    ->orderBy('created_at', 'DESC')->latest('is_default')->latest('order')
+                    ->select(['re_categories.id', 're_categories.name']);
+            },
+        ];
+
+        if (is_plugin_active('location')) {
+            $relations = [
+                ...$relations,
+                'state:id,name',
+                'city:id,name',
+            ];
+        }
+
+        return $relations;
+    }
+
+    public function getVacationRentalRelationsQuery(): array
+    {
+        $relations = [
+            'slugable:id,key,prefix,reference_id',
+            'currency:id,is_default,exchange_rate,symbol,title,is_prefix_symbol',
             'categories' => function (BelongsToMany|BaseQueryBuilder $query) {
                 return $query
                     ->wherePublished()
@@ -312,6 +337,54 @@ class RealEstateHelper
         ], $extra);
 
         return app(ProjectInterface::class)->getProjects($filters, $params);
+    }
+
+    public function getVacationRentalsFilter(?int $perPage = 12, array $extra = []): LengthAwarePaginator|Collection
+    {
+        $request = request();
+
+        $perPage = $request->integer('per_page') ?: ($perPage ?? 12);
+
+        try {
+            $filters = $request->validate(apply_filters('vacation_rentals_filter_validation_rules', [
+                'keyword' => 'nullable|string|max:255',
+                'location' => 'nullable|string',
+                'city_id' => 'nullable|numeric',
+                'city' => 'nullable|string',
+                'state' => 'nullable|string',
+                'state_id' => 'nullable|numeric',
+                'category_id' => 'nullable|numeric',
+                'min_price' => 'nullable|numeric',
+                'max_price' => 'nullable|numeric',
+                'minimum_stay' => 'nullable|numeric',
+                'maximum_guests' => 'nullable|numeric',
+                'sort_by' => 'nullable|string',
+                'locations' => 'nullable|array',
+                'category_ids' => 'nullable|array',
+                'features' => 'nullable|array',
+            ]));
+        } catch (Throwable) {
+            $filters = [];
+        }
+
+        $filters['keyword'] = $request->input('k');
+
+        $params = array_merge([
+            'paginate' => [
+                'per_page' => $perPage,
+                'current_paged' => $request->integer('page', 1),
+            ],
+            'order_by' => ['re_vacation_rentals.created_at' => 'DESC'],
+            'with' => self::getVacationRentalRelationsQuery(),
+        ], $extra);
+
+        // For now, return empty collection since we don't have VacationRentalInterface yet
+        // This will be implemented when we create the repository
+        return VacationRental::query()
+            ->wherePublished()
+            ->with($params['with'])
+            ->orderBy('created_at', 'DESC')
+            ->paginate($perPage);
     }
 
     public function getPropertiesPerPageList(): array

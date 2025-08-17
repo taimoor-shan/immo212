@@ -7,8 +7,7 @@
     Theme::asset()->usePath()->add('leaflet', 'plugins/leaflet/leaflet.css');
     Theme::asset()->container('footer')->usePath()->add('leaflet', 'plugins/leaflet/leaflet.js');
 
-    $style = theme_option('real_estate_property_detail_layout', 1);
-    $style = in_array($style, range(1, 4)) ? $style : 1;
+    $style = 4; // Always use style-4 layout
     Theme::set('pageTitle', $property->name);
 @endphp
 

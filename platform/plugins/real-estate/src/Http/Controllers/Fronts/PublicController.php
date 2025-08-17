@@ -20,6 +20,7 @@ use Botble\RealEstate\Models\ConsultCustomField;
 use Botble\RealEstate\Models\Currency;
 use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\SeoHelper\Facades\SeoHelper;
 use Botble\Theme\Facades\Theme;
 use Exception;
@@ -485,5 +486,102 @@ class PublicController extends BaseController
         Theme::breadcrumb()->add(__('Agents'), route('public.agents'));
 
         return Theme::scope('real-estate.agents', compact('accounts'), 'plugins/real-estate::themes.agents')->render();
+    }
+
+    public function getVacationRentals(Request $request)
+    {
+        SeoHelper::setTitle(__('Vacation Rentals'));
+
+        $vacationRentals = RealEstateHelper::getVacationRentalsFilter((int) theme_option('number_of_vacation_rentals_per_page') ?: 12, RealEstateHelper::getReviewExtraData());
+
+        if ($request->ajax()) {
+            if ($request->query('minimal')) {
+                return $this
+                    ->httpResponse()
+                    ->setData(Theme::partial('search-suggestion', ['items' => $vacationRentals]));
+            }
+
+            $view = Theme::getThemeNamespace('partials.real-estate.vacation-rentals.items');
+
+            if (! view()->exists($view)) {
+                $view = Theme::getThemeNamespace('views.real-estate.vacation-rentals.index');
+            }
+
+            return $this
+                ->httpResponse()
+                ->setData(view($view, compact('vacationRentals'))->render());
+        }
+
+        return Theme::scope('real-estate.vacation-rentals', compact('vacationRentals'), 'plugins/real-estate::themes.vacation-rentals')->render();
+    }
+
+    public function getVacationRentalsByCity(string $slug, Request $request)
+    {
+        $city = City::query()->wherePublished()->where('slug', $slug)->firstOrFail();
+
+        SeoHelper::setTitle(__('Vacation Rentals in :city', ['city' => $city->name]));
+
+        do_action(BASE_ACTION_PUBLIC_RENDER_SINGLE, CITY_MODULE_SCREEN_NAME, $city);
+
+        Theme::breadcrumb()
+            ->add(SeoHelper::getTitle(), route('public.vacation-rentals-by-city', $city->slug));
+
+        $vacationRentals = RealEstateHelper::getVacationRentalsFilter((int) theme_option('number_of_vacation_rentals_per_page') ?: 12, RealEstateHelper::getReviewExtraData(), [
+            'city_id' => $city->id,
+        ]);
+
+        if ($request->ajax()) {
+            $view = Theme::getThemeNamespace('partials.real-estate.vacation-rentals.items');
+
+            if (! view()->exists($view)) {
+                $view = Theme::getThemeNamespace('views.real-estate.vacation-rentals.index');
+            }
+
+            return $this
+                ->httpResponse()
+                ->setData(view($view, compact('vacationRentals'))->render());
+        }
+
+        return Theme::scope('real-estate.vacation-rentals', [
+            'vacationRentals' => $vacationRentals,
+            'ajaxUrl' => route('public.vacation-rentals-by-city', $city->slug),
+            'actionUrl' => route('public.vacation-rentals-by-city', $city->slug),
+        ], 'plugins/real-estate::themes.vacation-rentals')
+            ->render();
+    }
+
+    public function getVacationRentalsByState(string $slug, Request $request)
+    {
+        $state = State::query()->wherePublished()->where('slug', $slug)->firstOrFail();
+
+        SeoHelper::setTitle(__('Vacation Rentals in :state', ['state' => $state->name]));
+
+        do_action(BASE_ACTION_PUBLIC_RENDER_SINGLE, STATE_MODULE_SCREEN_NAME, $state);
+
+        Theme::breadcrumb()
+            ->add(SeoHelper::getTitle(), route('public.vacation-rentals-by-state', $state->slug));
+
+        $vacationRentals = RealEstateHelper::getVacationRentalsFilter((int) theme_option('number_of_vacation_rentals_per_page') ?: 12, RealEstateHelper::getReviewExtraData(), [
+            'state_id' => $state->id,
+        ]);
+
+        if ($request->ajax()) {
+            $view = Theme::getThemeNamespace('partials.real-estate.vacation-rentals.items');
+
+            if (! view()->exists($view)) {
+                $view = Theme::getThemeNamespace('views.real-estate.vacation-rentals.index');
+            }
+
+            return $this
+                ->httpResponse()
+                ->setData(view($view, compact('vacationRentals'))->render());
+        }
+
+        return Theme::scope('real-estate.vacation-rentals', [
+            'vacationRentals' => $vacationRentals,
+            'ajaxUrl' => route('public.vacation-rentals-by-state', $state->slug),
+            'actionUrl' => route('public.vacation-rentals-by-state', $state->slug),
+        ], 'plugins/real-estate::themes.vacation-rentals')
+            ->render();
     }
 }

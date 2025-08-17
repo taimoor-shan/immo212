@@ -29,4 +29,27 @@ return [
     'edit_booking' => 'Edit Booking',
     'booking_updated_successfully' => 'Booking updated successfully',
     'booking_deleted_successfully' => 'Booking deleted successfully',
+    'vacation_rentals' => 'Vacation Rentals',
+    'create' => 'Create Vacation Rental',
+    'statuses' => [
+        'draft' => 'Draft',
+        'not_available' => 'Not Available',
+        'renting' => 'Renting',
+    ],
+    'intro' => [
+        'title' => 'Vacation Rental Management',
+        'welcome' => 'Welcome to Vacation Rentals',
+        'description' => 'Manage your vacation rental properties, bookings, and availability calendar all in one place. Create stunning property listings and track your rental business performance.',
+        'feature_1_title' => 'Property Management',
+        'feature_1_desc' => 'Create and manage vacation rental listings with detailed information, photos, and amenities.',
+        'feature_2_title' => 'Booking Calendar',
+        'feature_2_desc' => 'Track availability, manage bookings, and set pricing for different seasons.',
+        'feature_3_title' => 'Analytics & Reports',
+        'feature_3_desc' => 'Monitor your rental performance with detailed analytics and booking reports.',
+        'create_first' => 'Create Your First Property',
+        'view_overview' => 'View Overview',
+    ],
+    'validation' => [
+        'time_format' => 'The :attribute field must be a valid time in HH:MM format (e.g., 14:30).',
+    ],
 ];

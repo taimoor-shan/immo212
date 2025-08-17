@@ -20,6 +20,7 @@ use Botble\RealEstate\Http\Middleware\LocaleMiddleware;
 use Botble\RealEstate\Models\Account;
 use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\Slug\Facades\SlugHelper;
 use Botble\Theme\Facades\Theme;
 use Illuminate\Support\Facades\Route;
@@ -31,11 +32,16 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
 
             $propertiesPrefix = SlugHelper::getPrefix(Property::class, 'properties') ?: 'properties';
 
+            $vacationRentalsPrefix = SlugHelper::getPrefix(VacationRental::class, 'vacation-rentals') ?: 'vacation-rentals';
+
             Route::match(theme_option('projects_list_page_id') ? ['POST'] : ['POST', 'GET'], $projectsPrefix, 'PublicController@getProjects')
                 ->name('public.projects');
 
             Route::match(theme_option('properties_list_page_id') ? ['POST'] : ['POST', 'GET'], $propertiesPrefix, 'PublicController@getProperties')
                 ->name('public.properties');
+
+            Route::match(theme_option('vacation_rentals_list_page_id') ? ['POST'] : ['POST', 'GET'], $vacationRentalsPrefix, 'PublicController@getVacationRentals')
+                ->name('public.vacation-rentals');
 
             if (is_plugin_active('location')) {
                 Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('projects_city') . '/{slug}', 'PublicController@getProjectsByCity')
@@ -44,11 +50,17 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
                 Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('properties_city') . '/{slug}', 'PublicController@getPropertiesByCity')
                     ->name('public.properties-by-city');
 
+                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('vacation_rentals_city') . '/{slug}', 'PublicController@getVacationRentalsByCity')
+                    ->name('public.vacation-rentals-by-city');
+
                 Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('projects_state') . '/{slug}', 'PublicController@getProjectsByState')
                     ->name('public.projects-by-state');
 
                 Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('properties_state') . '/{slug}', 'PublicController@getPropertiesByState')
                     ->name('public.properties-by-state');
+
+                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('vacation_rentals_state') . '/{slug}', 'PublicController@getVacationRentalsByState')
+                    ->name('public.vacation-rentals-by-state');
             }
 
             if (! RealEstateHelper::isDisabledPublicProfile()) {

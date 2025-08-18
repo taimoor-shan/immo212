@@ -375,30 +375,5 @@ Route::group(['namespace' => 'Botble\RealEstate\Http\Controllers', 'middleware' 
     });
 });
 
-Route::group([
-    'namespace' => 'Botble\RealEstate\Http\Controllers\Fronts',
-    'middleware' => ['web', 'core'],
-    'prefix' => 'vacation-rental',
-    'as' => 'public.vacation-rental.',
-], function () {
-    Route::get('booking/{vacationRentalSlug}', 'VacationRentalBookingController@showBookingForm')
-        ->name('booking.form');
-    Route::post('booking', 'VacationRentalBookingController@processBooking')
-        ->name('booking.process');
-    Route::get('booking/success/{bookingNumber}', 'VacationRentalBookingController@bookingSuccess')
-        ->name('booking.success');
-    Route::get('booking/details/{bookingNumber}', 'VacationRentalBookingController@bookingDetails')
-        ->name('booking.details');
-    Route::any('booking/callback', 'VacationRentalBookingController@paymentCallback')
-        ->name('booking.callback');
-
-    // Inquiry route
-    Route::post('inquiry', 'VacationRentalBookingController@sendInquiry')
-        ->name('inquiry');
-
-    // API routes for frontend calendar
-    Route::get('api/vacation-rentals/{vacation_rental_id}/availability', 'VacationRentalBookingController@getAvailability')
-        ->name('api.availability');
-    Route::post('api/vacation-rentals/{vacation_rental_id}/calculate-price', 'VacationRentalBookingController@calculatePrice')
-        ->name('api.calculate-price');
-});
+// Vacation rental booking routes moved to fronts.php to avoid duplication
+// This section was causing route conflicts and has been consolidated

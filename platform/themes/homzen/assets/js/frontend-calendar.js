@@ -52,7 +52,7 @@ class VacationRentalFrontendCalendar {
             const startDate = this.getApiDate(new Date());
             const endDate = this.getApiDate(new Date(), 12);
             const cacheBuster = Date.now();
-            const response = await fetch(`${this.options.availabilityEndpoint}?start=${startDate}&end=${endDate}&exceptions_only=true&_=${cacheBuster}`, {
+            const response = await fetch(`${this.options.availabilityEndpoint}?property_id=${this.options.vacationRentalId}&start_date=${startDate}&end_date=${endDate}`, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -555,6 +555,7 @@ class VacationRentalFrontendCalendar {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 },
                 body: JSON.stringify({
+                    property_id: this.options.vacationRentalId,
                     check_in: this.getApiDate(this.checkInDate),
                     check_out: this.getApiDate(this.checkOutDate),
                     guests: guestsCount
@@ -634,10 +635,8 @@ class VacationRentalFrontendCalendar {
             return;
         }
 
-        if (!this.options.isLoggedIn) {
-            window.location.href = this.options.loginUrl;
-            return;
-        }
+        // Allow both guest and logged-in user bookings
+        // No login requirement - guests can book directly
 
         const guestName = document.getElementById('guest_name').value;
         const guestEmail = document.getElementById('guest_email').value;

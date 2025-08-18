@@ -56,10 +56,11 @@ class VacationRental extends BaseModel
         'longitude',
         'unique_id',
         'private_notes',
-        'floor_plans',
-        'floor_name',
-        'floor_plan_image',
-        'floor_plan_document',
+        // Removed floor plan fields:
+        // 'floor_plans',
+        // 'floor_name',
+        // 'floor_plan_image',
+        // 'floor_plan_document',
         'reject_reason',
         'check_in_time',
         'check_out_time',
@@ -73,29 +74,39 @@ class VacationRental extends BaseModel
     ];
 
     protected $casts = [
+        // Enums
         'status' => VacationRentalStatusEnum::class,
         'moderation_status' => ModerationStatusEnum::class,
+
+        // Safe content
         'name' => SafeContent::class,
         'description' => SafeContent::class,
         'content' => SafeContent::class,
         'location' => SafeContent::class,
         'private_notes' => SafeContent::class,
         'house_rules' => SafeContent::class,
+
+        // Dates
         'expire_date' => 'datetime',
+
+        // JSON and arrays
         'images' => 'json',
+
+        // Numeric fields
         'price' => 'float',
         'square' => 'float',
         'number_bedroom' => 'int',
         'number_bathroom' => 'int',
         'number_floor' => 'int',
         'featured_priority' => 'int',
-        'floor_plans' => 'array',
         'minimum_stay' => 'int',
         'maximum_stay' => 'int',
         'maximum_guests' => 'int',
         'cleaning_fee' => 'float',
         'security_deposit' => 'float',
         'views' => 'int',
+
+        // Boolean fields
         'is_featured' => 'boolean',
         'auto_renew' => 'boolean',
     ];

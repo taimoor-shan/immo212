@@ -119,7 +119,7 @@ class VacationRentalBookingController extends BaseController
             'check_out_date_raw' => $request->check_out_date,
         ]);
 
-        $property = VacationRental::where('id', $request->property_id)
+        $property = VacationRental::where('id', $request->vacation_rental_id)
             ->where('moderation_status', 'approved')
             ->firstOrFail();
 
@@ -148,7 +148,7 @@ class VacationRentalBookingController extends BaseController
             // Create booking
             $booking = VacationRentalBooking::create([
                 'booking_number' => $this->generateBookingNumber(),
-                'property_id' => $property->id,
+                'vacation_rental_id' => $property->id,
                 'guest_name' => $request->guest_name,
                 'guest_email' => $request->guest_email,
                 'guest_phone' => $request->guest_phone,
@@ -419,7 +419,7 @@ class VacationRentalBookingController extends BaseController
     public function bookingSuccess($bookingNumber)
     {
         $booking = VacationRentalBooking::where('booking_number', $bookingNumber)
-            ->with('property')
+            ->with(['vacationRental.slugable'])
             ->firstOrFail();
 
         $this->pageTitle(__('Booking Confirmed'));
@@ -430,7 +430,7 @@ class VacationRentalBookingController extends BaseController
     public function bookingDetails($bookingNumber)
     {
         $booking = VacationRentalBooking::where('booking_number', $bookingNumber)
-            ->with('property')
+            ->with(['vacationRental.slugable'])
             ->firstOrFail();
 
         $this->pageTitle(__('Booking Details'));

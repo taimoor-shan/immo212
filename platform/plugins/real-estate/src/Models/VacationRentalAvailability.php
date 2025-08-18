@@ -78,7 +78,7 @@ class VacationRentalAvailability extends BaseModel
     {
         $startDate = Carbon::create($year, $month, 1);
         $endDate = $startDate->copy()->endOfMonth();
-        
+
         return $query->inDateRange($startDate, $endDate);
     }
 
@@ -161,7 +161,7 @@ class VacationRentalAvailability extends BaseModel
     public static function createMissingAvailabilityRecords(int $vacationRentalId, Carbon $startDate, Carbon $endDate): void
     {
         $currentDate = $startDate->copy();
-        
+
         while ($currentDate->lt($endDate)) {
             self::firstOrCreate([
                 'vacation_rental_id' => $vacationRentalId,
@@ -169,7 +169,7 @@ class VacationRentalAvailability extends BaseModel
             ], [
                 'status' => self::STATUS_AVAILABLE,
             ]);
-            
+
             $currentDate->addDay();
         }
     }
@@ -190,7 +190,9 @@ class VacationRentalAvailability extends BaseModel
             ->inDateRange($startDate, $endDate)
             ->orderBy('date')
             ->get()
-            ->keyBy('date');
+            ->keyBy(function ($item) {
+                return $item->date->format('Y-m-d');
+            });
 
         $result = [];
         $currentDate = $startDate->copy();

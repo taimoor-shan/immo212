@@ -47,7 +47,7 @@ class VacationRentalForm extends FormAbstract
             ->addScriptsDirectly([
                 'vendor/core/plugins/real-estate/js/real-estate.js',
                 'vendor/core/plugins/real-estate/js/components.js',
-                'vendor/core/plugins/real-estate/js/conditional-floor-plans.js',
+                // Removed conditional-floor-plans.js as floor plans are not used in vacation rentals
             ]);
 
         $currencies = Currency::query()->latest('is_default')->orderBy('id')->pluck('title', 'id')->all();

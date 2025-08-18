@@ -233,9 +233,9 @@ class VacationRentalController extends BaseController
                     ->map(fn($date) => Carbon::parse($date))
                     ->sort()
                     ->values();
-                
+
                 $ranges = $this->groupConsecutiveDates($dates);
-                
+
                 foreach ($ranges as $range) {
                     $this->availabilityService->blockDates(
                         $vacationRental->id,
@@ -257,7 +257,7 @@ class VacationRentalController extends BaseController
             return $this->httpResponse()
                 ->setMessage(__('Dates blocked successfully'))
                 ->setData(['success' => true]);
-                
+
         } catch (\Exception $e) {
             \Log::error('Failed to block dates', [
                 'property_id' => $request->property_id,
@@ -265,7 +265,7 @@ class VacationRentalController extends BaseController
                 'error' => $e->getMessage(),
                 'request_data' => $request->only(['dates', 'start_date', 'end_date', 'reason'])
             ]);
-            
+
             return $this->httpResponse()
                 ->setError()
                 ->setMessage(__('Failed to block dates. Please try again.'));
@@ -295,9 +295,9 @@ class VacationRentalController extends BaseController
                     ->map(fn($date) => Carbon::parse($date))
                     ->sort()
                     ->values();
-                
+
                 $ranges = $this->groupConsecutiveDates($dates);
-                
+
                 foreach ($ranges as $range) {
                     $this->availabilityService->unblockDates(
                         $vacationRental->id,
@@ -317,7 +317,7 @@ class VacationRentalController extends BaseController
             return $this->httpResponse()
                 ->setMessage(__('Dates unblocked successfully'))
                 ->setData(['success' => true]);
-                
+
         } catch (\Exception $e) {
             \Log::error('Failed to unblock dates', [
                 'property_id' => $request->property_id,
@@ -325,7 +325,7 @@ class VacationRentalController extends BaseController
                 'error' => $e->getMessage(),
                 'request_data' => $request->only(['dates', 'start_date', 'end_date'])
             ]);
-            
+
             return $this->httpResponse()
                 ->setError()
                 ->setMessage(__('Failed to unblock dates. Please try again.'));
@@ -356,9 +356,9 @@ class VacationRentalController extends BaseController
                     ->map(fn($date) => Carbon::parse($date))
                     ->sort()
                     ->values();
-                
+
                 $ranges = $this->groupConsecutiveDates($dates);
-                
+
                 foreach ($ranges as $range) {
                     $this->availabilityService->maintenanceDates(
                         $property->id,
@@ -380,7 +380,7 @@ class VacationRentalController extends BaseController
             return $this->httpResponse()
                 ->setMessage(__('Dates set to maintenance successfully'))
                 ->setData(['success' => true]);
-                
+
         } catch (\Exception $e) {
             \Log::error('Failed to set maintenance dates', [
                 'property_id' => $request->property_id,
@@ -388,7 +388,7 @@ class VacationRentalController extends BaseController
                 'error' => $e->getMessage(),
                 'request_data' => $request->only(['dates', 'start_date', 'end_date', 'reason'])
             ]);
-            
+
             return $this->httpResponse()
                 ->setError()
                 ->setMessage(__('Failed to set maintenance dates. Please try again.'));
@@ -510,16 +510,7 @@ class VacationRentalController extends BaseController
         try {
             $pricing = $this->availabilityService->calculateBookingPrice($property, $checkIn, $checkOut, $guests);
 
-            return $this->httpResponse()->setData([
-                'pricing' => $pricing,
-                'property' => [
-                    'name' => $property->name,
-                    'check_in_time' => $property->check_in_time,
-                    'check_out_time' => $property->check_out_time,
-                    'house_rules' => $property->house_rules,
-                    'cancellation_policy' => $property->cancellation_policy,
-                ]
-            ]);
+            return $this->httpResponse()->setData($pricing);
         } catch (\Exception $e) {
             return $this->httpResponse()
                 ->setError()
@@ -529,7 +520,7 @@ class VacationRentalController extends BaseController
 
     /**
      * Group consecutive dates into ranges for efficiency
-     * 
+     *
      * @param \Illuminate\Support\Collection $dates
      * @return array
      */

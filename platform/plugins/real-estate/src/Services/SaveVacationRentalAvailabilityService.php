@@ -5,6 +5,7 @@ namespace Botble\RealEstate\Services;
 use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\Models\VacationRentalAvailability;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class SaveVacationRentalAvailabilityService
 {

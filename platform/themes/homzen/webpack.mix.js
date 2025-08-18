@@ -17,7 +17,6 @@ mix
     .sass(`${source}/assets/sass/vacation-rental-calendar.scss`, `${dist}/css`)
     .js(`${source}/assets/js/script.js`, `${dist}/js`)
     .js(`${source}/assets/js/mortgage-calculator.js`, `${dist}/js`)
-    .js(`${source}/assets/js/vacation-rental-calendar.js`, `${dist}/js`)
     .js(`${source}/assets/js/frontend-calendar.js`, `${dist}/js`)
     .copy(`${source}/assets/css/mortgage-calculator.css`, `${dist}/css`)
     .copy('node_modules/flatpickr/dist/flatpickr.min.css', `${dist}/css/plugins`);
@@ -27,6 +26,5 @@ if (mix.inProduction()) {
         .copy(`${dist}/css/style.css`, `${source}/public/css`)
         .copy(`${dist}/css/vacation-rental-calendar.css`, `${source}/public/css`)
         .copy(`${dist}/js/script.js`, `${source}/public/js`)
-        .copy(`${dist}/js/vacation-rental-calendar.js`, `${source}/public/js`)
         .copy(`${dist}/js/frontend-calendar.js`, `${source}/public/js`)
 }

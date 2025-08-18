@@ -232,15 +232,22 @@ class SaveVacationRentalAvailabilityService
             $defaultMinStay = $vacationRental->minimum_stay ?? 1;
             $effectiveMinStay = $defaultMinStay; // For now, use default
 
+            // Calculate the actual price for this date
+            $actualPrice = $exception->price_per_night ?: $effectivePrice;
+
             $result[$dateKey] = [
                 'date' => $dateKey,
                 'status' => $exception->status,
-                'price' => $exception->price_per_night ?: $effectivePrice,
+                'price' => $actualPrice,
                 'minimum_stay' => $exception->minimum_stay ?: $effectiveMinStay,
                 'color' => $this->getStatusColor($exception->status),
                 'notes' => $exception->notes,
-                'base_price' => $basePrice,
-                'price_modifier' => $basePrice > 0 ? (($exception->price_per_night ?: $effectivePrice) / $basePrice) : 1,
+                // Only include base_price and price_modifier if they're different from the actual price
+                // This eliminates duplicate price fields when they're the same
+                ...(($actualPrice != $basePrice) ? [
+                    'base_price' => $basePrice,
+                    'price_modifier' => $basePrice > 0 ? ($actualPrice / $basePrice) : 1,
+                ] : [])
             ];
         }
 

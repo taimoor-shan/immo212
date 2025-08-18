@@ -344,7 +344,7 @@ class VacationRentalAdminController extends BaseController
             $startDate = Carbon::parse($request->start_date);
             $endDate = Carbon::parse($request->end_date);
 
-            $availabilityData = $this->availabilityService->getAvailabilityDetails(
+            $availabilityData = $this->availabilityService->getAvailabilityExceptions(
                 $vacationRental,
                 $startDate,
                 $endDate

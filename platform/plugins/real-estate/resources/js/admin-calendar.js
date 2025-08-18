@@ -67,6 +67,19 @@ class VacationRentalAdminCalendar {
                     if (availability.reason || availability.notes) {
                         dayElem.title += ` - ${availability.reason || availability.notes}`;
                     }
+
+                    // Apply color directly as backup if CSS classes don't work
+                    if (availability.color) {
+                        dayElem.style.backgroundColor = availability.color;
+                        dayElem.style.borderColor = availability.color;
+                        dayElem.style.color = 'white';
+                    }
+
+                    console.log(`Applied ${availability.status} styling to ${date}`, {
+                        classes: dayElem.className,
+                        color: availability.color,
+                        hasBackgroundColor: !!dayElem.style.backgroundColor
+                    });
                 } else {
                     dayElem.classList.add('available');
                     dayElem.title = 'Available';
@@ -149,12 +162,12 @@ class VacationRentalAdminCalendar {
                 xhr.setRequestHeader('Accept', 'application/json');
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                
+
                 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
                 if (csrfToken) {
                     xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
                 }
-                
+
                 xhr.onload = function() {
                     const mockResponse = {
                         ok: xhr.status >= 200 && xhr.status < 300,
@@ -164,11 +177,11 @@ class VacationRentalAdminCalendar {
                     };
                     resolve(mockResponse);
                 };
-                
+
                 xhr.onerror = function() {
                     reject(new Error('Network error'));
                 };
-                
+
                 xhr.send();
             });
 
@@ -351,7 +364,7 @@ class VacationRentalAdminCalendar {
 
     showSuccess(message) {
         console.log('✓ Success:', message);
-        
+
         // Try multiple notification systems in order of preference
         if (typeof Botble !== 'undefined' && Botble.showSuccess) {
             Botble.showSuccess(message);
@@ -365,7 +378,7 @@ class VacationRentalAdminCalendar {
 
     showError(message) {
         console.error('✗ Error:', message);
-        
+
         // Try multiple notification systems in order of preference
         if (typeof Botble !== 'undefined' && Botble.showError) {
             Botble.showError(message);
@@ -390,7 +403,7 @@ class VacationRentalAdminCalendar {
                 </button>
             </div>
         `;
-        
+
         // Apply styles
         notification.style.cssText = `
             position: fixed;
@@ -407,7 +420,7 @@ class VacationRentalAdminCalendar {
             background: ${type === 'success' ? '#28a745' : '#dc3545'};
             animation: slideInFromRight 0.3s ease-out;
         `;
-        
+
         // Add CSS animation if not exists
         if (!document.querySelector('#admin-notification-styles')) {
             const styles = document.createElement('style');
@@ -436,9 +449,9 @@ class VacationRentalAdminCalendar {
             `;
             document.head.appendChild(styles);
         }
-        
+
         document.body.appendChild(notification);
-        
+
         // Auto-remove after 5 seconds
         setTimeout(() => {
             if (notification.parentNode) {
@@ -560,6 +573,13 @@ class PropertyFormCalendar {
                 if (availability && availability.status) {
                     dayElem.classList.add(availability.status);
                     dayElem.title = availability.status.charAt(0).toUpperCase() + availability.status.slice(1);
+
+                    // Apply color directly as backup if CSS classes don't work
+                    if (availability.color) {
+                        dayElem.style.backgroundColor = availability.color;
+                        dayElem.style.borderColor = availability.color;
+                        dayElem.style.color = 'white';
+                    }
                 } else {
                     dayElem.classList.add('available');
                     dayElem.title = 'Available';
@@ -600,7 +620,7 @@ class PropertyFormCalendar {
         if (blockBtn) {
             blockBtn.addEventListener('click', () => {
                 console.log('Block button clicked');
-                this.blockSelectedDates();
+                this.handleBlockDates(); // Use API-based method instead of form-based
             });
             console.log('Block button event bound');
         } else {
@@ -612,7 +632,7 @@ class PropertyFormCalendar {
         if (unblockBtn) {
             unblockBtn.addEventListener('click', () => {
                 console.log('Unblock button clicked');
-                this.unblockSelectedDates();
+                this.handleUnblockDates(); // Use API-based method instead of form-based
             });
             console.log('Unblock button event bound');
         } else {
@@ -624,7 +644,7 @@ class PropertyFormCalendar {
         if (maintenanceBtn) {
             maintenanceBtn.addEventListener('click', () => {
                 console.log('Maintenance button clicked');
-                this.setMaintenanceDates();
+                this.handleMaintenanceDates(); // Use API-based method instead of form-based
             });
             console.log('Maintenance button event bound');
         } else {

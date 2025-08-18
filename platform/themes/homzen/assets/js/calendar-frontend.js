@@ -84,23 +84,27 @@ class VacationRentalFrontendCalendar {
         const notification = document.createElement('div');
         notification.className = 'calendar-api-warning';
         notification.innerHTML = `
-            <div class="alert alert-info alert-dismissible fade show" role="alert" style="margin-bottom: 10px; font-size: 0.875rem;">
-                <i class="fas fa-info-circle"></i>
-                Calendar is showing default availability. Some dates may have different status.
+            <div class="alert alert-warning alert-dismissible fade show" role="alert" style="margin-bottom: 15px; font-size: 0.875rem; border-left: 4px solid #ff6b35;">
+                <i class="fas fa-exclamation-triangle" style="color: #ff6b35; margin-right: 8px;"></i>
+                <strong>Connection Issue:</strong> Calendar is showing default availability. Some dates may have different status. Please refresh to try again.
                 <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         `;
 
         const container = document.querySelector(this.options.container);
         if (container) {
+            // Remove any existing notifications
+            const existingNotifications = container.querySelectorAll('.calendar-api-warning');
+            existingNotifications.forEach(n => n.remove());
+            
             container.insertBefore(notification, container.firstChild);
 
-            // Auto-remove after 5 seconds
+            // Auto-remove after 8 seconds
             setTimeout(() => {
                 if (notification.parentNode) {
                     notification.remove();
                 }
-            }, 5000);
+            }, 8000);
         }
     }
 

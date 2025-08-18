@@ -568,6 +568,7 @@ class RealEstateHelper
         if (is_plugin_active('location')) {
             $projectSlug = SlugHelper::getPrefix(Project::class, 'projects') ?: 'projects';
             $propertySlug = SlugHelper::getPrefix(Property::class, 'properties') ?: 'properties';
+            $vacationRentalSlug = SlugHelper::getPrefix(VacationRental::class, 'vacation-rentals') ?: 'vacation-rentals';
             $citySlug = SlugHelper::getPrefix(City::class, 'city') ?: 'city';
             $stateSlug = SlugHelper::getPrefix(State::class, 'state') ?: 'state';
 
@@ -576,6 +577,8 @@ class RealEstateHelper
                 'projects_state' => sprintf('%s/%s', $projectSlug, $stateSlug),
                 'properties_city' => sprintf('%s/%s', $propertySlug, $citySlug),
                 'properties_state' => sprintf('%s/%s', $propertySlug, $stateSlug),
+                'vacation_rentals_city' => sprintf('%s/%s', $vacationRentalSlug, $citySlug),
+                'vacation_rentals_state' => sprintf('%s/%s', $vacationRentalSlug, $stateSlug),
             ];
         }
 

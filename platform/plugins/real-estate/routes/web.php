@@ -188,6 +188,9 @@ Route::group(['namespace' => 'Botble\RealEstate\Http\Controllers', 'middleware' 
         });
 
         Route::group(['prefix' => 'vacation-rentals', 'as' => 'vacation-rental.'], function (): void {
+            // AJAX endpoint for vacation rental edit form calendar (must be before resource routes)
+            Route::get('availability-data', 'VacationRentalController@getAvailabilityData')->name('availability-data');
+
             // Main CRUD routes for vacation rentals
             Route::resource('', 'VacationRentalController')
                 ->parameters(['' => 'vacation_rental'])
@@ -219,12 +222,6 @@ Route::group(['namespace' => 'Botble\RealEstate\Http\Controllers', 'middleware' 
             Route::post('block-dates', 'VacationRentalAdminController@blockDates')->name('admin.block-dates');
             Route::post('unblock-dates', 'VacationRentalAdminController@unblockDates')->name('admin.unblock-dates');
             Route::post('maintenance-dates', 'VacationRentalAdminController@maintenanceDates')->name('admin.maintenance-dates');
-
-            // API routes for vacation rental calendar management
-            Route::get('availability-data', 'VacationRentalController@getAvailabilityData')->name('availability-data');
-            Route::post('block-dates', 'VacationRentalController@blockDates')->name('block-dates');
-            Route::post('unblock-dates', 'VacationRentalController@unblockDates')->name('unblock-dates');
-            Route::post('maintenance-dates', 'VacationRentalController@maintenanceDates')->name('maintenance-dates');
 
             // Booking management routes
             Route::group(['prefix' => 'bookings', 'as' => 'booking.'], function (): void {
@@ -381,9 +378,10 @@ Route::group(['namespace' => 'Botble\RealEstate\Http\Controllers', 'middleware' 
 Route::group([
     'namespace' => 'Botble\RealEstate\Http\Controllers\Fronts',
     'middleware' => ['web', 'core'],
+    'prefix' => 'vacation-rental',
     'as' => 'public.vacation-rental.',
 ], function () {
-    Route::get('booking/{propertySlug}', 'VacationRentalBookingController@showBookingForm')
+    Route::get('booking/{vacationRentalSlug}', 'VacationRentalBookingController@showBookingForm')
         ->name('booking.form');
     Route::post('booking', 'VacationRentalBookingController@processBooking')
         ->name('booking.process');
@@ -394,9 +392,13 @@ Route::group([
     Route::any('booking/callback', 'VacationRentalBookingController@paymentCallback')
         ->name('booking.callback');
 
+    // Inquiry route
+    Route::post('inquiry', 'VacationRentalBookingController@sendInquiry')
+        ->name('inquiry');
+
     // API routes for frontend calendar
-    Route::get('api/properties/{id}/availability', 'VacationRentalBookingController@getAvailability')
+    Route::get('api/vacation-rentals/{vacation_rental_id}/availability', 'VacationRentalBookingController@getAvailability')
         ->name('api.availability');
-    Route::post('api/properties/{id}/calculate-price', 'VacationRentalBookingController@calculatePrice')
+    Route::post('api/vacation-rentals/{vacation_rental_id}/calculate-price', 'VacationRentalBookingController@calculatePrice')
         ->name('api.calculate-price');
 });

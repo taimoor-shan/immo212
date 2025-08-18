@@ -199,7 +199,7 @@ class VacationRentalController extends BaseController
             'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css',
         ])->addScriptsDirectly([
             'https://cdn.jsdelivr.net/npm/flatpickr',
-            'vendor/core/plugins/real-estate/js/vacation-rental-form.js',
+            'themes/homzen/js/frontend-calendar.js',
         ]);
 
         return view($this->getViewFileName('dashboard.vacation-rentals.calendar-new'), compact(
@@ -213,8 +213,10 @@ class VacationRentalController extends BaseController
     {
         $request->validate([
             'property_id' => 'required|exists:re_vacation_rentals,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'dates' => 'required_without_all:start_date,end_date|array',           // Support both approaches
+            'dates.*' => 'required_with:dates|date',
+            'start_date' => 'required_without:dates|date',  // Alternative format
+            'end_date' => 'required_with:start_date|date|after_or_equal:start_date',
             'reason' => 'nullable|string|max:255',
         ]);
 
@@ -223,23 +225,61 @@ class VacationRentalController extends BaseController
             ->where('id', $request->property_id)
             ->firstOrFail();
 
-        $this->availabilityService->blockDates(
-            $vacationRental,
-            Carbon::parse($request->start_date),
-            Carbon::parse($request->end_date),
-            $request->reason ?? 'Blocked by owner'
-        );
+        try {
+            // Handle both date formats
+            if ($request->has('dates') && is_array($request->dates)) {
+                // Individual dates array - group consecutive dates into ranges for efficiency
+                $dates = collect($request->dates)
+                    ->map(fn($date) => Carbon::parse($date))
+                    ->sort()
+                    ->values();
+                
+                $ranges = $this->groupConsecutiveDates($dates);
+                
+                foreach ($ranges as $range) {
+                    $this->availabilityService->blockDates(
+                        $vacationRental->id,
+                        $range['start'],
+                        $range['end'],
+                        $request->reason ?? 'Blocked by owner'
+                    );
+                }
+            } else {
+                // Date range
+                $this->availabilityService->blockDates(
+                    $vacationRental->id,
+                    Carbon::parse($request->start_date),
+                    Carbon::parse($request->end_date),
+                    $request->reason ?? 'Blocked by owner'
+                );
+            }
 
-        return $this->httpResponse()
-            ->setMessage(__('Dates blocked successfully'));
+            return $this->httpResponse()
+                ->setMessage(__('Dates blocked successfully'))
+                ->setData(['success' => true]);
+                
+        } catch (\Exception $e) {
+            \Log::error('Failed to block dates', [
+                'property_id' => $request->property_id,
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'request_data' => $request->only(['dates', 'start_date', 'end_date', 'reason'])
+            ]);
+            
+            return $this->httpResponse()
+                ->setError()
+                ->setMessage(__('Failed to block dates. Please try again.'));
+        }
     }
 
     public function unblockDates(Request $request)
     {
         $request->validate([
             'property_id' => 'required|exists:re_vacation_rentals,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'dates' => 'required_without_all:start_date,end_date|array',
+            'dates.*' => 'required_with:dates|date',
+            'start_date' => 'required_without:dates|date',
+            'end_date' => 'required_with:start_date|date|after_or_equal:start_date',
         ]);
 
         $user = auth('account')->user();
@@ -247,22 +287,59 @@ class VacationRentalController extends BaseController
             ->where('id', $request->property_id)
             ->firstOrFail();
 
-        $this->availabilityService->unblockDates(
-            $vacationRental,
-            Carbon::parse($request->start_date),
-            Carbon::parse($request->end_date)
-        );
+        try {
+            // Handle both date formats
+            if ($request->has('dates') && is_array($request->dates)) {
+                // Individual dates array - group consecutive dates into ranges for efficiency
+                $dates = collect($request->dates)
+                    ->map(fn($date) => Carbon::parse($date))
+                    ->sort()
+                    ->values();
+                
+                $ranges = $this->groupConsecutiveDates($dates);
+                
+                foreach ($ranges as $range) {
+                    $this->availabilityService->unblockDates(
+                        $vacationRental->id,
+                        $range['start'],
+                        $range['end']
+                    );
+                }
+            } else {
+                // Date range
+                $this->availabilityService->unblockDates(
+                    $vacationRental->id,
+                    Carbon::parse($request->start_date),
+                    Carbon::parse($request->end_date)
+                );
+            }
 
-        return $this->httpResponse()
-            ->setMessage(__('Dates unblocked successfully'));
+            return $this->httpResponse()
+                ->setMessage(__('Dates unblocked successfully'))
+                ->setData(['success' => true]);
+                
+        } catch (\Exception $e) {
+            \Log::error('Failed to unblock dates', [
+                'property_id' => $request->property_id,
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'request_data' => $request->only(['dates', 'start_date', 'end_date'])
+            ]);
+            
+            return $this->httpResponse()
+                ->setError()
+                ->setMessage(__('Failed to unblock dates. Please try again.'));
+        }
     }
 
     public function maintenanceDates(Request $request)
     {
         $request->validate([
-            'property_id' => 'required|exists:re_properties,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'property_id' => 'required|exists:re_vacation_rentals,id',
+            'dates' => 'required_without_all:start_date,end_date|array',
+            'dates.*' => 'required_with:dates|date',
+            'start_date' => 'required_without:dates|date',
+            'end_date' => 'required_with:start_date|date|after_or_equal:start_date',
             'reason' => 'nullable|string|max:255',
         ]);
 
@@ -271,15 +348,51 @@ class VacationRentalController extends BaseController
             ->where('id', $request->property_id)
             ->firstOrFail();
 
-        $this->availabilityService->maintenanceDates(
-            $property->id,
-            Carbon::parse($request->start_date),
-            Carbon::parse($request->end_date),
-            $request->reason ?? 'Maintenance'
-        );
+        try {
+            // Handle both date formats
+            if ($request->has('dates') && is_array($request->dates)) {
+                // Individual dates array - group consecutive dates into ranges for efficiency
+                $dates = collect($request->dates)
+                    ->map(fn($date) => Carbon::parse($date))
+                    ->sort()
+                    ->values();
+                
+                $ranges = $this->groupConsecutiveDates($dates);
+                
+                foreach ($ranges as $range) {
+                    $this->availabilityService->maintenanceDates(
+                        $property->id,
+                        $range['start'],
+                        $range['end'],
+                        $request->reason ?? 'Maintenance'
+                    );
+                }
+            } else {
+                // Date range
+                $this->availabilityService->maintenanceDates(
+                    $property->id,
+                    Carbon::parse($request->start_date),
+                    Carbon::parse($request->end_date),
+                    $request->reason ?? 'Maintenance'
+                );
+            }
 
-        return $this->httpResponse()
-            ->setMessage(__('Dates set to maintenance successfully'));
+            return $this->httpResponse()
+                ->setMessage(__('Dates set to maintenance successfully'))
+                ->setData(['success' => true]);
+                
+        } catch (\Exception $e) {
+            \Log::error('Failed to set maintenance dates', [
+                'property_id' => $request->property_id,
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'request_data' => $request->only(['dates', 'start_date', 'end_date', 'reason'])
+            ]);
+            
+            return $this->httpResponse()
+                ->setError()
+                ->setMessage(__('Failed to set maintenance dates. Please try again.'));
+        }
     }
 
     public function updateBookingStatus(Request $request, $bookingId)
@@ -334,7 +447,7 @@ class VacationRentalController extends BaseController
     public function getAvailabilityData(Request $request)
     {
         $request->validate([
-            'property_id' => 'required|exists:re_properties,id',
+            'property_id' => 'required|exists:re_vacation_rentals,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
@@ -345,7 +458,7 @@ class VacationRentalController extends BaseController
         $endDate = Carbon::parse($request->end_date);
 
         $availabilityData = $this->availabilityService->getAvailabilityDetails(
-            $property->id,
+            $property,
             $startDate,
             $endDate
         );
@@ -372,18 +485,19 @@ class VacationRentalController extends BaseController
         $guests = $request->integer('guests');
 
         // Check availability
-        if (!$this->availabilityService->checkAvailability($property->id, $checkIn, $checkOut)) {
+        if (!$this->availabilityService->checkAvailability($property, $checkIn, $checkOut)) {
             return $this->httpResponse()
                 ->setError()
                 ->setMessage(__('Selected dates are not available'));
         }
 
         // Validate minimum stay
-        if (!$this->availabilityService->validateMinimumStay($property->id, $checkIn, $checkOut)) {
-            $effectiveMinimumStay = $this->availabilityService->getEffectiveMinimumStay($property->id, $checkIn);
+        $nights = $checkIn->diffInDays($checkOut);
+        $minimumStay = $property->minimum_stay ?? 1;
+        if ($nights < $minimumStay) {
             return $this->httpResponse()
                 ->setError()
-                ->setMessage(__('Minimum stay is :nights nights', ['nights' => $effectiveMinimumStay]));
+                ->setMessage(__('Minimum stay is :nights nights', ['nights' => $minimumStay]));
         }
 
         // Check maximum guests
@@ -394,7 +508,7 @@ class VacationRentalController extends BaseController
         }
 
         try {
-            $pricing = $this->availabilityService->calculateBookingPrice($property->id, $checkIn, $checkOut, $guests);
+            $pricing = $this->availabilityService->calculateBookingPrice($property, $checkIn, $checkOut, $guests);
 
             return $this->httpResponse()->setData([
                 'pricing' => $pricing,
@@ -411,5 +525,45 @@ class VacationRentalController extends BaseController
                 ->setError()
                 ->setMessage($e->getMessage());
         }
+    }
+
+    /**
+     * Group consecutive dates into ranges for efficiency
+     * 
+     * @param \Illuminate\Support\Collection $dates
+     * @return array
+     */
+    protected function groupConsecutiveDates($dates): array
+    {
+        if ($dates->isEmpty()) {
+            return [];
+        }
+
+        $ranges = [];
+        $currentStart = $dates->first();
+        $currentEnd = $dates->first();
+
+        foreach ($dates->skip(1) as $date) {
+            // Check if the date is consecutive (next day)
+            if ($date->diffInDays($currentEnd, false) === 1) {
+                $currentEnd = $date;
+            } else {
+                // End current range and start a new one
+                $ranges[] = [
+                    'start' => $currentStart,
+                    'end' => $currentEnd,
+                ];
+                $currentStart = $date;
+                $currentEnd = $date;
+            }
+        }
+
+        // Add the final range
+        $ranges[] = [
+            'start' => $currentStart,
+            'end' => $currentEnd,
+        ];
+
+        return $ranges;
     }
 }

@@ -29,12 +29,8 @@
 
         {!! apply_filters('before_vacation_rental_booking_form', null, $vacationRental) !!}
 
-        @include('plugins/real-estate::partials.components.vacation-rental-calendar', [
-            'context' => 'frontend',
-            'vacationRental' => $vacationRental,
-            'showActions' => false,
-            'showLegend' => true,
-            'showBookingForm' => true
+        @include('theme.homzen::partials.vacation-rental-calendar', [
+            'vacationRental' => $vacationRental
         ])
 
         {!! apply_filters('after_vacation_rental_booking_form', null, $vacationRental) !!}

@@ -82,8 +82,7 @@ class VacationRentalAdminController extends BaseController
             ->limit(5)
             ->get();
 
-        Assets::addStylesDirectly('vendor/core/plugins/real-estate/css/vacation-rental-admin.css')
-            ->addScriptsDirectly('vendor/core/plugins/real-estate/js/vacation-rental-admin.js');
+        Assets::addStylesDirectly('vendor/core/plugins/real-estate/css/vacation-rental-admin.css');
 
         return view('plugins/real-estate::vacation-rental.overview', compact(
             'totalProperties',
@@ -106,8 +105,7 @@ class VacationRentalAdminController extends BaseController
         $this->setupBreadcrumb();
         $this->pageTitle(trans('plugins/real-estate::vacation-rental.properties'));
 
-        Assets::addStylesDirectly('vendor/core/plugins/real-estate/css/vacation-rental-admin.css')
-            ->addScriptsDirectly('vendor/core/plugins/real-estate/js/vacation-rental-admin.js');
+        Assets::addStylesDirectly('vendor/core/plugins/real-estate/css/vacation-rental-admin.css');
 
         return $dataTable->render('plugins/real-estate::vacation-rental.properties');
     }
@@ -157,8 +155,7 @@ class VacationRentalAdminController extends BaseController
             ->limit(10)
             ->get();
 
-        Assets::addStylesDirectly('vendor/core/plugins/real-estate/css/vacation-rental-admin.css')
-            ->addScriptsDirectly('vendor/core/plugins/real-estate/js/vacation-rental-admin.js');
+        Assets::addStylesDirectly('vendor/core/plugins/real-estate/css/vacation-rental-admin.css');
 
         return view('plugins/real-estate::vacation-rental.dashboard', compact(
             'totalProperties',
@@ -200,21 +197,22 @@ class VacationRentalAdminController extends BaseController
                 $endDate = $startDate->copy()->endOfMonth();
 
                 $availabilityData = $this->availabilityService->getAvailabilityDetails(
-                    $selectedProperty->id,
+                    $selectedProperty,
                     $startDate,
                     $endDate
                 );
 
-                $calendarEvents = $this->availabilityService->getCalendarEvents(
-                    $selectedProperty->id,
-                    $startDate,
-                    $endDate
-                );
+                // Get calendar events directly from the vacation rental
+                $calendarEvents = $selectedProperty->calendarEvents()
+                    ->whereBetween('start_date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+                    ->get()
+                    ->map(fn($event) => $event->toFullCalendarEvent());
             }
         }
 
         Assets::addStylesDirectly('vendor/core/plugins/real-estate/css/vacation-rental-admin.css')
-            ->addScriptsDirectly('vendor/core/plugins/real-estate/js/vacation-rental-admin.js');
+            ->addStylesDirectly('vendor/core/plugins/real-estate/css/vacation-rental-calendar-admin.css')
+            ->addScriptsDirectly('vendor/core/plugins/real-estate/js/admin-calendar.js');
 
         return view('plugins/real-estate::vacation-rental.availability', compact(
             'properties',
@@ -243,7 +241,7 @@ class VacationRentalAdminController extends BaseController
                 $month = $request->get('month', Carbon::now()->month);
 
                 $monthlyData = $this->availabilityService->getMonthlyAvailabilitySummary(
-                    $selectedProperty->id,
+                    $selectedProperty,
                     $year,
                     $month
                 );
@@ -251,7 +249,8 @@ class VacationRentalAdminController extends BaseController
         }
 
         Assets::addStylesDirectly('vendor/core/plugins/real-estate/css/vacation-rental-admin.css')
-            ->addScriptsDirectly('vendor/core/plugins/real-estate/js/vacation-rental-admin.js');
+            ->addStylesDirectly('vendor/core/plugins/real-estate/css/vacation-rental-calendar-admin.css')
+            ->addScriptsDirectly('vendor/core/plugins/real-estate/js/admin-calendar.js');
 
         return view('plugins/real-estate::vacation-rental.calendar', compact(
             'properties',
@@ -323,24 +322,54 @@ class VacationRentalAdminController extends BaseController
 
     public function getAvailabilityData(Request $request)
     {
+        // Add debugging
+        \Log::info('VacationRentalAdminController::getAvailabilityData called', [
+            'property_id' => $request->property_id,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'user_id' => auth()->id(),
+            'is_authenticated' => auth()->check(),
+            'request_headers' => $request->headers->all(),
+        ]);
+
         $request->validate([
             'property_id' => 'required|exists:re_vacation_rentals,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        $vacationRental = VacationRental::findOrFail($request->property_id);
+        try {
+            $vacationRental = VacationRental::findOrFail($request->property_id);
 
-        $startDate = Carbon::parse($request->start_date);
-        $endDate = Carbon::parse($request->end_date);
+            $startDate = Carbon::parse($request->start_date);
+            $endDate = Carbon::parse($request->end_date);
 
-        $availabilityData = $this->availabilityService->getAvailabilityDetails(
-            $vacationRental,
-            $startDate,
-            $endDate
-        );
+            $availabilityData = $this->availabilityService->getAvailabilityDetails(
+                $vacationRental,
+                $startDate,
+                $endDate
+            );
 
-        return $this->httpResponse()->setData($availabilityData);
+            \Log::info('Availability data loaded successfully', [
+                'property_id' => $request->property_id,
+                'data_count' => count($availabilityData),
+            ]);
+
+            return $this->httpResponse()->setData($availabilityData);
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to load availability data', [
+                'property_id' => $request->property_id,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return $this->httpResponse()
+                ->setError()
+                ->setMessage(__('Failed to load availability data.'));
+        }
     }
 
     public function showBooking($id)

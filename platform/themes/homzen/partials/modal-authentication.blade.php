@@ -23,3 +23,7 @@
         </div>
     </div>
 @endif
+
+@push('footer')
+    <script src="{{ asset('vendor/core/plugins/real-estate/js/auth-modal.js') }}"></script>
+@endpush

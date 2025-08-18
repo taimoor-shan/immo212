@@ -38,26 +38,32 @@ class SaveVacationRentalAvailabilityService
     public function getVacationRentalAvailabilityForForm(VacationRental $vacationRental): array
     {
         if (!$vacationRental->exists) {
-            return [];
+            return [
+                'availability_by_date' => [],
+                'total_records' => 0
+            ];
         }
 
         $availability = $vacationRental->availability()
             ->orderBy('date')
             ->get();
 
-        $result = [];
+        $availabilityByDate = [];
         foreach ($availability as $item) {
-            $result[] = [
-                'date' => $item->date->format('Y-m-d'),
+            $availabilityByDate[$item->date->format('Y-m-d')] = [
                 'status' => $item->status,
                 'price_per_night' => $item->price_per_night,
                 'minimum_stay' => $item->minimum_stay,
                 'notes' => $item->notes,
+                'reason' => $item->notes, // Alias for JavaScript compatibility
                 'color' => $item->getStatusColor(),
             ];
         }
 
-        return $result;
+        return [
+            'availability_by_date' => $availabilityByDate,
+            'total_records' => count($availabilityByDate)
+        ];
     }
 
     public function bulkUpdateAvailability(VacationRental $vacationRental, array $dates, array $data): void
@@ -185,7 +191,7 @@ class SaveVacationRentalAvailabilityService
             $effectiveMinStay = $defaultMinStay; // For now, use default - can be enhanced with rules later
 
             // Update with calculated values
-            if (!$dayInfo['price']) {
+            if (!isset($dayInfo['price']) || !$dayInfo['price']) {
                 $dayInfo['price'] = $effectivePrice;
             }
             $dayInfo['minimum_stay'] = $effectiveMinStay;

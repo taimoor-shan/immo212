@@ -47,7 +47,6 @@ class VacationRentalForm extends FormAbstract
             ->addScriptsDirectly([
                 'vendor/core/plugins/real-estate/js/real-estate.js',
                 'vendor/core/plugins/real-estate/js/components.js',
-                'vendor/core/plugins/real-estate/js/vacation-rental-form.js',
                 'vendor/core/plugins/real-estate/js/conditional-floor-plans.js',
             ]);
 

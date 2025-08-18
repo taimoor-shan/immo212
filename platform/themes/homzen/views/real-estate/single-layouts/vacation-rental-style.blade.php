@@ -24,7 +24,6 @@
 
                     {!! apply_filters('after_single_content_detail', null, $vacationRental) !!}
 
-                    @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-reviews'), ['model' => $vacationRental, 'class' => 'single-vacation-rental-element'])
                 </div>
                 <div class="col-lg-4 col-xl-4">
                     <div class="widget-sidebar wrapper-sidebar-right">

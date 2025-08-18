@@ -247,99 +247,59 @@ class VacationRentalController extends BaseController
             ->setMessage(trans('plugins/real-estate::vacation-rental.status_moderation.rejected'));
     }
 
-    public function getAvailabilityData(Request $request)
+    /**
+     * Get availability data for vacation rental edit form (AJAX endpoint)
+     */
+    public function getAvailabilityData(Request $request, SaveVacationRentalAvailabilityService $availabilityService)
     {
-        $vacationRentalId = $request->input('vacation_rental_id');
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-
-        if (!$vacationRentalId || !$startDate || !$endDate) {
-            return response()->json(['error' => 'Missing required parameters'], 400);
-        }
-
-        $vacationRental = VacationRental::findOrFail($vacationRentalId);
-
-        $availability = $vacationRental->availability()
-            ->whereBetween('date', [$startDate, $endDate])
-            ->get()
-            ->keyBy('date');
-
-        $events = $vacationRental->calendarEvents()
-            ->whereBetween('start_date', [$startDate, $endDate])
-            ->get()
-            ->map(fn($event) => $event->toFullCalendarEvent());
-
-        return response()->json([
-            'availability' => $availability,
-            'events' => $events,
+        // Add debugging
+        \Log::info('VacationRentalController::getAvailabilityData called', [
+            'property_id' => $request->property_id,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'user_id' => auth()->id(),
+            'is_authenticated' => auth()->check(),
+            'request_headers' => $request->headers->all(),
         ]);
-    }
 
-    public function blockDates(Request $request)
-    {
         $request->validate([
-            'vacation_rental_id' => 'required|exists:re_vacation_rentals,id',
-            'dates' => 'required|array',
-            'dates.*' => 'required|date',
-            'reason' => 'nullable|string|max:255',
+            'property_id' => 'required|exists:re_vacation_rentals,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        $vacationRental = VacationRental::findOrFail($request->input('vacation_rental_id'));
+        try {
+            $vacationRental = VacationRental::findOrFail($request->property_id);
 
-        foreach ($request->input('dates') as $date) {
-            $vacationRental->availability()->updateOrCreate([
-                'date' => $date,
-            ], [
-                'status' => 'blocked',
-                'notes' => $request->input('reason'),
+            $startDate = Carbon::parse($request->start_date);
+            $endDate = Carbon::parse($request->end_date);
+
+            $availabilityData = $availabilityService->getAvailabilityDetails(
+                $vacationRental,
+                $startDate,
+                $endDate
+            );
+
+            \Log::info('Availability data loaded successfully', [
+                'property_id' => $request->property_id,
+                'data_count' => count($availabilityData),
             ]);
-        }
 
-        return response()->json(['success' => true]);
+            return $this->httpResponse()->setData($availabilityData);
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to load availability data', [
+                'property_id' => $request->property_id,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return $this->httpResponse()
+                ->setError()
+                ->setMessage($e->getMessage());
+        }
     }
 
-    public function unblockDates(Request $request)
-    {
-        $request->validate([
-            'vacation_rental_id' => 'required|exists:re_vacation_rentals,id',
-            'dates' => 'required|array',
-            'dates.*' => 'required|date',
-        ]);
-
-        $vacationRental = VacationRental::findOrFail($request->input('vacation_rental_id'));
-
-        foreach ($request->input('dates') as $date) {
-            $vacationRental->availability()->updateOrCreate([
-                'date' => $date,
-            ], [
-                'status' => 'available',
-                'notes' => null,
-            ]);
-        }
-
-        return response()->json(['success' => true]);
-    }
-
-    public function maintenanceDates(Request $request)
-    {
-        $request->validate([
-            'vacation_rental_id' => 'required|exists:re_vacation_rentals,id',
-            'dates' => 'required|array',
-            'dates.*' => 'required|date',
-            'reason' => 'nullable|string|max:255',
-        ]);
-
-        $vacationRental = VacationRental::findOrFail($request->input('vacation_rental_id'));
-
-        foreach ($request->input('dates') as $date) {
-            $vacationRental->availability()->updateOrCreate([
-                'date' => $date,
-            ], [
-                'status' => 'maintenance',
-                'notes' => $request->input('reason'),
-            ]);
-        }
-
-        return response()->json(['success' => true]);
-    }
 }

@@ -14,7 +14,7 @@ class VacationRentalInquiryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'property_id' => ['required', 'integer', 'exists:re_properties,id'],
+            'vacation_rental_id' => ['required', 'integer', 'exists:re_vacation_rentals,id'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20'],
@@ -28,8 +28,8 @@ class VacationRentalInquiryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'property_id.required' => __('Property is required.'),
-            'property_id.exists' => __('Selected property does not exist.'),
+            'vacation_rental_id.required' => __('Vacation rental is required.'),
+            'vacation_rental_id.exists' => __('Selected vacation rental does not exist.'),
             'name.required' => __('Name is required.'),
             'email.required' => __('Email is required.'),
             'email.email' => __('Please enter a valid email address.'),

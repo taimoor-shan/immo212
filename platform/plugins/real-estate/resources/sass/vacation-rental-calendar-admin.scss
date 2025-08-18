@@ -1,0 +1,263 @@
+/**
+ * Admin Calendar Styles for Vacation Rental Management
+ * Following established admin styling patterns
+ */
+
+.vacation-rental-admin-calendar {
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+
+        .calendar-controls {
+            display: flex;
+            gap: 10px;
+
+            .btn {
+                transition: all 0.3s ease;
+                border-radius: 6px;
+                font-weight: 500;
+
+                &.active {
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                }
+
+                i {
+                    margin-right: 5px;
+                }
+            }
+        }
+    }
+
+    .calendar-legend {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1px solid #dee2e6;
+
+            &.available {
+                background-color: #d4edda;
+                border-color: #28a745;
+            }
+
+            &.booked {
+                background-color: #f8d7da;
+                border-color: #dc3545;
+            }
+
+            &.blocked {
+                background-color: #fff3cd;
+                border-color: #ffc107;
+            }
+
+            &.maintenance {
+                background-color: #e2e3e5;
+                border-color: #6c757d;
+            }
+        }
+    }
+
+    .calendar-container {
+        min-height: 400px;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 20px;
+        background: #fff;
+
+        .flatpickr-calendar {
+            width: 100%;
+            box-shadow: none;
+            border: none;
+
+            .flatpickr-months {
+                padding: 10px 20px;
+                background: #f8f9fa;
+                border-bottom: 1px solid #e9ecef;
+
+                .flatpickr-month {
+                    color: #495057;
+                    font-weight: 600;
+                }
+
+                .flatpickr-prev-month,
+                .flatpickr-next-month {
+                    color: #6c757d;
+                    
+                    &:hover {
+                        color: #495057;
+                    }
+                }
+            }
+
+            .flatpickr-weekdays {
+                background: #f8f9fa;
+                padding: 10px 0;
+
+                .flatpickr-weekday {
+                    color: #6c757d;
+                    font-weight: 600;
+                    font-size: 12px;
+                    text-transform: uppercase;
+                }
+            }
+
+            .flatpickr-days {
+                .flatpickr-day {
+                    border: 1px solid #f1f3f4;
+                    margin: 1px;
+                    color: #495057;
+                    font-weight: 500;
+                    position: relative;
+
+                    &:hover {
+                        background: #e9ecef;
+                        border-color: #adb5bd;
+                    }
+
+                    &.selected {
+                        background: #007bff;
+                        border-color: #007bff;
+                        color: white;
+                    }
+
+                    &.available {
+                        background-color: #d4edda;
+                        border-color: #28a745;
+                        color: #155724;
+                    }
+
+                    &.booked {
+                        background-color: #f8d7da;
+                        border-color: #dc3545;
+                        color: #721c24;
+                    }
+
+                    &.blocked {
+                        background-color: #fff3cd;
+                        border-color: #ffc107;
+                        color: #856404;
+                    }
+
+                    &.maintenance {
+                        background-color: #e2e3e5;
+                        border-color: #6c757d;
+                        color: #383d41;
+                    }
+
+                    &.today {
+                        border-color: #007bff;
+                        font-weight: 700;
+                    }
+                }
+            }
+        }
+    }
+
+    .calendar-actions {
+        margin-top: 20px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+
+            .btn {
+                flex: 1;
+                font-weight: 500;
+            }
+        }
+
+        .reason-input {
+            display: none;
+
+            &.show {
+                display: block;
+            }
+
+            .form-control {
+                border-radius: 6px;
+                border: 1px solid #ced4da;
+                
+                &:focus {
+                    border-color: #80bdff;
+                    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+                }
+            }
+        }
+    }
+
+    .selected-dates-info {
+        margin-top: 15px;
+        padding: 15px;
+        background: #e7f3ff;
+        border: 1px solid #b3d7ff;
+        border-radius: 6px;
+        display: none;
+
+        &.show {
+            display: block;
+        }
+
+        h6 {
+            margin-bottom: 10px;
+            color: #0056b3;
+        }
+
+        .selected-dates-list {
+            font-size: 14px;
+            color: #495057;
+        }
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .vacation-rental-admin-calendar {
+        .calendar-header {
+            flex-direction: column;
+            gap: 15px;
+
+            .calendar-controls {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        .calendar-legend {
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .calendar-actions .action-buttons {
+            flex-direction: column;
+        }
+    }
+}

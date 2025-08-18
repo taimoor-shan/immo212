@@ -1,5 +1,6 @@
 @php
     $propertyId = $vacationRental && $vacationRental->exists ? $vacationRental->id : null;
+    Botble\Base\Facades\Assets::addScriptsDirectly('vendor/core/plugins/real-estate/js/admin-calendar.js');
 @endphp
 
 <div class="vacation-rental-availability-section" id="vacation-rental-availability-content">
@@ -28,9 +29,14 @@
             <!-- Calendar Container -->
             <div class="row">
                 <div class="col-lg-9">
-                    <div class="property-availability-calendar">
-                        <div id="property-availability-calendar"
-                             data-property-id="{{ $propertyId }}">
+            <div class="property-availability-calendar">
+                <div id="property-availability-calendar" class="vacation-rental-admin-calendar"
+                     data-property-id="{{ $propertyId }}"
+                     data-vacation-rental-id="{{ $propertyId }}"
+                     data-availability-url="{{ route('vacation-rental.admin.availability-data') }}"
+                     data-block-url="{{ route('vacation-rental.admin.block-dates') }}"
+                     data-unblock-url="{{ route('vacation-rental.admin.unblock-dates') }}"
+                     data-maintenance-url="{{ route('vacation-rental.admin.maintenance-dates') }}">
                             <!-- Calendar will be rendered here -->
                         </div>
                     </div>
@@ -44,23 +50,34 @@
                         </div>
                         <div class="card-body">
                             <div class="d-grid gap-2">
-                                <button type="button" class="btn btn-danger" id="block-selected-dates">
+                                <button type="button" class="btn btn-danger" id="admin-block-dates" disabled>
                                     <x-core::icon name="ti ti-ban" class="me-2" />
                                     {{ __('Block Dates') }}
                                 </button>
-                                <button type="button" class="btn btn-success" id="unblock-selected-dates">
+                                <button type="button" class="btn btn-success" id="admin-unblock-dates" disabled>
                                     <x-core::icon name="ti ti-check" class="me-2" />
                                     {{ __('Unblock Dates') }}
                                 </button>
-                                <button type="button" class="btn btn-secondary" id="set-maintenance-dates">
+                                <button type="button" class="btn btn-secondary" id="admin-maintenance-dates" disabled>
                                     <x-core::icon name="ti ti-tools" class="me-2" />
                                     {{ __('Maintenance') }}
                                 </button>
+
                             </div>
                             <!-- Block Reason Input -->
-                            <div class="mt-3" id="block-reason-container" style="display: none;">
-                                <label for="block-reason" class="form-label">{{ __('Reason (Optional)') }}</label>
-                                <textarea id="block-reason" class="form-control" rows="2" placeholder="{{ __('Enter reason for blocking dates...') }}"></textarea>
+                            <div class="mt-3" id="admin-reason-container" style="display: none;">
+                                <label for="admin-reason" class="form-label">{{ __('Reason (Optional)') }}</label>
+                                <textarea id="admin-reason" class="form-control" rows="2" placeholder="{{ __('Enter reason for blocking dates...') }}"></textarea>
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-primary btn-sm" id="admin-apply-reason">
+                                        <x-core::icon name="ti ti-check" class="me-1" />
+                                        {{ __('Apply') }}
+                                    </button>
+                                    <button type="button" class="btn btn-secondary btn-sm" id="admin-cancel-reason">
+                                        <x-core::icon name="ti ti-x" class="me-1" />
+                                        {{ __('Cancel') }}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -75,6 +92,11 @@
             {{ __('Manage your vacation rental availability using the calendar below.') }}
         </span>
     </div>
+
+    <!-- Hidden Form Fields for Calendar Data -->
+    <input type="hidden" name="availability_data[blocked_dates]" id="blocked-dates-input" value="">
+    <input type="hidden" name="availability_data[maintenance_dates]" id="maintenance-dates-input" value="">
+    <input type="hidden" name="availability_data[unblocked_dates]" id="unblocked-dates-input" value="">
 </div>
 
 <!-- Data script - placed outside Vue template to avoid warnings -->
@@ -103,24 +125,13 @@
     @push('footer')
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <script>
-            // Initialize vacation rental calendar immediately since this is a vacation rental form
+            // Show calendar section immediately for vacation rentals
             document.addEventListener('DOMContentLoaded', function() {
-                console.log('Initializing vacation rental calendar...');
-
-                // Show calendar section immediately for vacation rentals
                 const calendarSection = document.getElementById('calendar-section');
                 if (calendarSection) {
                     calendarSection.style.display = 'block';
-                    console.log('Calendar section shown');
-                }
-
-                // Initialize the calendar if the function exists
-                if (typeof initializePropertyAvailabilityCalendar === 'function') {
-                    initializePropertyAvailabilityCalendar();
-                    console.log('Calendar initialized');
-                } else {
-                    console.log('Calendar initialization function not found');
                 }
             });
         </script>
     @endpush
+

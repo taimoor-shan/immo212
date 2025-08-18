@@ -172,11 +172,6 @@ class VacationRental extends BaseModel
         return $this->hasMany(VacationRentalBooking::class);
     }
 
-    public function vacationRentalBookings(): HasMany
-    {
-        return $this->hasMany(VacationRentalBooking::class);
-    }
-
     public function calendarEvents(): HasMany
     {
         return $this->hasMany(VacationRentalCalendarEvent::class);

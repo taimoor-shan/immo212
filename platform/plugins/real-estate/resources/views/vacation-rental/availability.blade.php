@@ -50,10 +50,10 @@
                                                 <span class="badge bg-success text-success-fg me-2">{{ __('Available') }}</span>
                                             </div>
                                             <div class="col-auto">
-                                                <span class="badge bg-danger me-2">{{ __('Booked') }}</span>
+                                                <span class="badge bg-danger text-success-fg me-2">{{ __('Booked') }}</span>
                                             </div>
                                             <div class="col-auto">
-                                                <span class="badge bg-warning me-2">{{ __('Blocked') }}</span>
+                                                <span class="badge bg-warning text-success-fg me-2">{{ __('Blocked') }}</span>
                                             </div>
                                             <div class="col-auto">
                                                 <span class="badge bg-secondary me-2">{{ __('Maintenance') }}</span>

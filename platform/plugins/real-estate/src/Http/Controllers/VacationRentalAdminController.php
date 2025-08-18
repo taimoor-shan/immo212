@@ -374,7 +374,7 @@ class VacationRentalAdminController extends BaseController
 
     public function showBooking($id)
     {
-        $booking = VacationRentalBooking::with(['property', 'property.currency'])
+        $booking = VacationRentalBooking::with(['vacationRental', 'vacationRental.currency'])
             ->findOrFail($id);
 
         $this->setupBreadcrumb();
@@ -387,7 +387,7 @@ class VacationRentalAdminController extends BaseController
 
     public function editBooking($id)
     {
-        $booking = VacationRentalBooking::with(['property', 'property.currency'])
+        $booking = VacationRentalBooking::with(['vacationRental', 'vacationRental.currency'])
             ->findOrFail($id);
 
         $this->setupBreadcrumb();
@@ -419,7 +419,7 @@ class VacationRentalAdminController extends BaseController
         ]);
 
         return redirect()
-            ->route('vacation-rental.bookings')
+            ->route('vacation-rental.admin.bookings')
             ->with('success_msg', trans('plugins/real-estate::vacation-rental.booking_updated_successfully'));
     }
 

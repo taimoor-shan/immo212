@@ -67,12 +67,12 @@ class VacationRentalTable extends TableAbstract
                 $upcomingBookings = $item->bookings()->active()
                     ->where('check_in_date', '>=', now())
                     ->count();
-                
+
                 if ($upcomingBookings > 0) {
-                    return Html::tag('span', __('Booked (:count)', ['count' => $upcomingBookings]), ['class' => 'badge bg-warning']);
+                    return Html::tag('span', __('Booked (:count)', ['count' => $upcomingBookings]), ['class' => 'badge bg-warning text-success-fg']);
                 }
-                
-                return Html::tag('span', __('Available'), ['class' => 'badge bg-success']);
+
+                return Html::tag('span', __('Available'), ['class' => 'badge bg-success text-success-fg']);
             })
             ->editColumn('unique_id', function (VacationRental $item) {
                 return $item->unique_id ?: '—';

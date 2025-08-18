@@ -4,6 +4,7 @@ use Botble\Base\Http\Middleware\RequiresJsonRequestMiddleware;
 use Botble\RealEstate\Facades\RealEstateHelper;
 use Botble\RealEstate\Http\Controllers\CustomFieldController;
 use Botble\RealEstate\Http\Controllers\Fronts\AccountPropertyController;
+use Botble\RealEstate\Http\Controllers\Fronts\AccountVacationRentalController;
 use Botble\RealEstate\Http\Controllers\Fronts\ConsultController;
 use Botble\RealEstate\Http\Controllers\Fronts\CouponController;
 use Botble\RealEstate\Http\Controllers\Fronts\ForgotPasswordController;
@@ -157,8 +158,23 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
 
                 // Vacation rental management routes
                 Route::prefix('vacation-rentals')->name('vacation-rentals.')->group(function (): void {
+                    // Dashboard and overview
                     Route::get('dashboard', [VacationRentalController::class, 'dashboard'])->name('dashboard');
+
+                    // CRUD operations
+                    Route::get('/', [AccountVacationRentalController::class, 'index'])->name('index');
+                    Route::get('create', [AccountVacationRentalController::class, 'create'])->name('create');
+                    Route::post('create', [AccountVacationRentalController::class, 'store'])->name('store');
+                    Route::get('edit/{id}', [AccountVacationRentalController::class, 'edit'])->name('edit')->wherePrimaryKey();
+                    Route::post('edit/{id}', [AccountVacationRentalController::class, 'update'])->name('update')->wherePrimaryKey();
+                    Route::delete('{id}', [AccountVacationRentalController::class, 'destroy'])->name('destroy')->wherePrimaryKey();
+                    Route::post('renew/{id}', [AccountVacationRentalController::class, 'renew'])->name('renew')->wherePrimaryKey();
+
+                    // Booking management
                     Route::get('bookings', [VacationRentalController::class, 'bookings'])->name('bookings');
+                    Route::put('bookings/{booking}/status', [VacationRentalController::class, 'updateBookingStatus'])->name('bookings.update-status');
+
+                    // Availability management
                     Route::get('availability', function() {
                         return redirect()->route('public.account.vacation-rentals.calendar');
                     })->name('availability');
@@ -167,7 +183,6 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
                     Route::post('block-dates', [VacationRentalController::class, 'blockDates'])->name('block-dates');
                     Route::post('unblock-dates', [VacationRentalController::class, 'unblockDates'])->name('unblock-dates');
                     Route::post('maintenance-dates', [VacationRentalController::class, 'maintenanceDates'])->name('maintenance-dates');
-                    Route::put('bookings/{booking}/status', [VacationRentalController::class, 'updateBookingStatus'])->name('bookings.update-status');
                 });
 
                 Route::prefix('ajax')->group(function (): void {

@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         // Check what foreign keys exist
@@ -43,14 +46,22 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('re_vacation_rental_bookings', function (Blueprint $table) {
-            // Add back property_id column
-            $table->foreignId('property_id')->nullable()->after('booking_number')->constrained('re_properties')->nullOnDelete();
+            // Add back property_id column if it doesn't exist
+            if (!Schema::hasColumn('re_vacation_rental_bookings', 'property_id')) {
+                $table->foreignId('property_id')->nullable()->after('booking_number')->constrained('re_properties')->nullOnDelete();
+            }
 
             // Make vacation_rental_id nullable again
-            $table->foreignId('vacation_rental_id')->nullable()->change();
+            if (Schema::hasColumn('re_vacation_rental_bookings', 'vacation_rental_id')) {
+                $table->dropForeign(['vacation_rental_id']);
+                $table->unsignedBigInteger('vacation_rental_id')->nullable()->change();
+            }
         });
     }
 };

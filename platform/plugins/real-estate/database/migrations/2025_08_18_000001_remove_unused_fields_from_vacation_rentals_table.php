@@ -16,12 +16,24 @@ return new class extends Migration
     {
         Schema::table('re_vacation_rentals', function (Blueprint $table) {
             // Remove floor plan related fields (not used in vacation rentals)
-            $table->dropColumn([
-                'floor_plans',
-                'floor_name',
-                'floor_plan_image',
-                'floor_plan_document',
-            ]);
+            $columnsToRemove = [];
+
+            if (Schema::hasColumn('re_vacation_rentals', 'floor_plans')) {
+                $columnsToRemove[] = 'floor_plans';
+            }
+            if (Schema::hasColumn('re_vacation_rentals', 'floor_name')) {
+                $columnsToRemove[] = 'floor_name';
+            }
+            if (Schema::hasColumn('re_vacation_rentals', 'floor_plan_image')) {
+                $columnsToRemove[] = 'floor_plan_image';
+            }
+            if (Schema::hasColumn('re_vacation_rentals', 'floor_plan_document')) {
+                $columnsToRemove[] = 'floor_plan_document';
+            }
+
+            if (!empty($columnsToRemove)) {
+                $table->dropColumn($columnsToRemove);
+            }
         });
     }
 

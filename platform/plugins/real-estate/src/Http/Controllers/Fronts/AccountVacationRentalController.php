@@ -22,7 +22,7 @@ use Botble\RealEstate\Models\AccountActivityLog;
 use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\Services\SaveFacilitiesService;
 use Botble\RealEstate\Services\SaveVacationRentalAvailabilityService;
-use Botble\RealEstate\Services\StorePropertyCategoryService;
+use Botble\RealEstate\Services\StoreVacationRentalCategoryService;
 use Botble\RealEstate\Tables\AccountVacationRentalTable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -58,7 +58,7 @@ class AccountVacationRentalController extends BaseController
 
     public function store(
         AccountVacationRentalRequest $request,
-        StorePropertyCategoryService $propertyCategoryService,
+        StoreVacationRentalCategoryService $vacationRentalCategoryService,
         SaveFacilitiesService $saveFacilitiesService,
         SaveVacationRentalAvailabilityService $saveVacationRentalAvailabilityService
     ) {
@@ -69,7 +69,7 @@ class AccountVacationRentalController extends BaseController
         $vacationRentalForm = AccountVacationRentalForm::create()->setRequest($request);
 
         $vacationRentalForm->saving(function (AccountVacationRentalForm $form) use (
-            $propertyCategoryService,
+            $vacationRentalCategoryService,
             $saveFacilitiesService,
             $saveVacationRentalAvailabilityService
         ): void {
@@ -102,7 +102,7 @@ class AccountVacationRentalController extends BaseController
 
             $saveVacationRentalAvailabilityService->execute($vacationRental, $request->input('availability_data', []));
 
-            $propertyCategoryService->execute($request, $vacationRental);
+            $vacationRentalCategoryService->execute($request, $vacationRental);
 
             $form->fireModelEvents($vacationRental);
 
@@ -167,7 +167,7 @@ class AccountVacationRentalController extends BaseController
     public function update(
         int|string $id,
         AccountVacationRentalRequest $request,
-        StorePropertyCategoryService $propertyCategoryService,
+        StoreVacationRentalCategoryService $vacationRentalCategoryService,
         SaveFacilitiesService $saveFacilitiesService,
         SaveVacationRentalAvailabilityService $saveVacationRentalAvailabilityService
     ) {
@@ -182,7 +182,7 @@ class AccountVacationRentalController extends BaseController
         $vacationRentalForm = AccountVacationRentalForm::createFromModel($vacationRental)->setRequest($request);
 
         $vacationRentalForm->saving(function (AccountVacationRentalForm $form) use (
-            $propertyCategoryService,
+            $vacationRentalCategoryService,
             $saveFacilitiesService,
             $saveVacationRentalAvailabilityService
         ): void {
@@ -212,7 +212,7 @@ class AccountVacationRentalController extends BaseController
 
             $saveVacationRentalAvailabilityService->execute($vacationRental, $request->input('availability_data', []));
 
-            $propertyCategoryService->execute($request, $vacationRental);
+            $vacationRentalCategoryService->execute($request, $vacationRental);
 
             AccountActivityLog::query()->create([
                 'action' => 'update_vacation_rental',

@@ -14,8 +14,8 @@ use Botble\RealEstate\Http\Controllers\Fronts\PublicAccountController;
 use Botble\RealEstate\Http\Controllers\Fronts\RegisterController;
 use Botble\RealEstate\Http\Controllers\Fronts\ResetPasswordController;
 use Botble\RealEstate\Http\Controllers\Fronts\ReviewController;
-use Botble\RealEstate\Http\Controllers\Fronts\VacationRentalController;
 use Botble\RealEstate\Http\Controllers\Fronts\VacationRentalBookingController;
+use Botble\RealEstate\Http\Controllers\Fronts\VacationRentalController;
 use Botble\RealEstate\Http\Middleware\EnsureAccountIsApproved;
 use Botble\RealEstate\Http\Middleware\LocaleMiddleware;
 use Botble\RealEstate\Models\Account;
@@ -45,22 +45,22 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
                 ->name('public.vacation-rentals');
 
             if (is_plugin_active('location')) {
-                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('projects_city') . '/{slug}', 'PublicController@getProjectsByCity')
+                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('projects_city').'/{slug}', 'PublicController@getProjectsByCity')
                     ->name('public.projects-by-city');
 
-                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('properties_city') . '/{slug}', 'PublicController@getPropertiesByCity')
+                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('properties_city').'/{slug}', 'PublicController@getPropertiesByCity')
                     ->name('public.properties-by-city');
 
-                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('vacation_rentals_city') . '/{slug}', 'PublicController@getVacationRentalsByCity')
+                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('vacation_rentals_city').'/{slug}', 'PublicController@getVacationRentalsByCity')
                     ->name('public.vacation-rentals-by-city');
 
-                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('projects_state') . '/{slug}', 'PublicController@getProjectsByState')
+                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('projects_state').'/{slug}', 'PublicController@getProjectsByState')
                     ->name('public.projects-by-state');
 
-                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('properties_state') . '/{slug}', 'PublicController@getPropertiesByState')
+                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('properties_state').'/{slug}', 'PublicController@getPropertiesByState')
                     ->name('public.properties-by-state');
 
-                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('vacation_rentals_state') . '/{slug}', 'PublicController@getVacationRentalsByState')
+                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('vacation_rentals_state').'/{slug}', 'PublicController@getVacationRentalsByState')
                     ->name('public.vacation-rentals-by-state');
             }
 
@@ -158,31 +158,17 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
 
                 // Vacation rental management routes
                 Route::prefix('vacation-rentals')->name('vacation-rentals.')->group(function (): void {
-                    // Dashboard and overview
-                    Route::get('dashboard', [VacationRentalController::class, 'dashboard'])->name('dashboard');
-
-                    // CRUD operations
-                    Route::get('/', [AccountVacationRentalController::class, 'index'])->name('index');
-                    Route::get('create', [AccountVacationRentalController::class, 'create'])->name('create');
-                    Route::post('create', [AccountVacationRentalController::class, 'store'])->name('store');
-                    Route::get('edit/{id}', [AccountVacationRentalController::class, 'edit'])->name('edit')->wherePrimaryKey();
-                    Route::post('edit/{id}', [AccountVacationRentalController::class, 'update'])->name('update')->wherePrimaryKey();
-                    Route::delete('{id}', [AccountVacationRentalController::class, 'destroy'])->name('destroy')->wherePrimaryKey();
+                    Route::resource('', AccountVacationRentalController::class)->parameters(['' => 'vacation-rental']);
                     Route::post('renew/{id}', [AccountVacationRentalController::class, 'renew'])->name('renew')->wherePrimaryKey();
-
                     // Booking management
-                    Route::get('bookings', [VacationRentalController::class, 'bookings'])->name('bookings');
-                    Route::put('bookings/{booking}/status', [VacationRentalController::class, 'updateBookingStatus'])->name('bookings.update-status');
+                    Route::get('bookings', [AccountVacationRentalController::class, 'bookings'])->name('bookings');
+                    Route::put('bookings/{booking}/status', [AccountVacationRentalController::class, 'updateBookingStatus'])->name('bookings.update-status');
 
-                    // Availability management
-                    Route::get('availability', function() {
-                        return redirect()->route('public.account.vacation-rentals.calendar');
-                    })->name('availability');
-                    Route::get('availability-data', [VacationRentalController::class, 'getAvailabilityDataForEdit'])->name('availability-data');
-                    Route::get('calendar', [VacationRentalController::class, 'calendar'])->name('calendar');
-                    Route::post('block-dates', [VacationRentalController::class, 'blockDates'])->name('block-dates');
-                    Route::post('unblock-dates', [VacationRentalController::class, 'unblockDates'])->name('unblock-dates');
-                    Route::post('maintenance-dates', [VacationRentalController::class, 'maintenanceDates'])->name('maintenance-dates');
+                    // Availability management (for AJAX calls from edit page)
+                    Route::get('availability-data', [AccountVacationRentalController::class, 'getAvailabilityDataForEdit'])->name('availability-data');
+                    Route::post('block-dates', [AccountVacationRentalController::class, 'blockDates'])->name('block-dates');
+                    Route::post('unblock-dates', [AccountVacationRentalController::class, 'unblockDates'])->name('unblock-dates');
+                    Route::post('maintenance-dates', [AccountVacationRentalController::class, 'maintenanceDates'])->name('maintenance-dates');
                 });
 
                 Route::prefix('ajax')->group(function (): void {

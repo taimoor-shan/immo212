@@ -103,66 +103,66 @@ class RealEstateServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(PropertyInterface::class, function () {
-            return new PropertyRepository(new Property());
+            return new PropertyRepository(new Property);
         });
 
         $this->app->singleton(ProjectInterface::class, function () {
-            return new ProjectRepository(new Project());
+            return new ProjectRepository(new Project);
         });
 
         $this->app->singleton(FeatureInterface::class, function () {
-            return new FeatureRepository(new Feature());
+            return new FeatureRepository(new Feature);
         });
 
         $this->app->bind(InvestorInterface::class, function () {
-            return new InvestorRepository(new Investor());
+            return new InvestorRepository(new Investor);
         });
 
         $this->app->bind(CurrencyInterface::class, function () {
-            return new CurrencyRepository(new Currency());
+            return new CurrencyRepository(new Currency);
         });
 
         $this->app->bind(ConsultInterface::class, function () {
-            return new ConsultRepository(new Consult());
+            return new ConsultRepository(new Consult);
         });
 
         // Register vacation rental services
         $this->app->singleton(\Botble\RealEstate\Services\SaveVacationRentalAvailabilityService::class);
 
         $this->app->bind(CategoryInterface::class, function () {
-            return new CategoryRepository(new Category());
+            return new CategoryRepository(new Category);
         });
 
         $this->app->bind(FacilityInterface::class, function () {
-            return new FacilityRepository(new Facility());
+            return new FacilityRepository(new Facility);
         });
 
         $this->app->bind(CustomFieldInterface::class, function () {
-            return new CustomFieldRepository(new CustomField());
+            return new CustomFieldRepository(new CustomField);
         });
 
         $this->app->bind(ReviewInterface::class, function () {
-            return new ReviewRepository(new Review());
+            return new ReviewRepository(new Review);
         });
 
         $this->app->bind(InvoiceInterface::class, function () {
-            return new InvoiceRepository(new Invoice());
+            return new InvoiceRepository(new Invoice);
         });
 
         $this->app->bind(AccountInterface::class, function () {
-            return new AccountRepository(new Account());
+            return new AccountRepository(new Account);
         });
 
         $this->app->bind(AccountActivityLogInterface::class, function () {
-            return new AccountActivityLogRepository(new AccountActivityLog());
+            return new AccountActivityLogRepository(new AccountActivityLog);
         });
 
         $this->app->bind(PackageInterface::class, function () {
-            return new PackageRepository(new Package());
+            return new PackageRepository(new Package);
         });
 
         $this->app->singleton(TransactionInterface::class, function () {
-            return new TransactionRepository(new Transaction());
+            return new TransactionRepository(new Transaction);
         });
 
         config([
@@ -494,8 +494,8 @@ class RealEstateServiceProvider extends ServiceProvider
                     'id' => 'cms-account-vacation-rentals',
                     'priority' => 2.5,
                     'name' => 'Vacation Rentals',
-                    'url' => fn () => route('public.account.vacation-rentals.dashboard'),
-                    'icon' => 'ti ti-calendar-event',
+                    'url' => fn () => route('public.account.vacation-rentals.index'),
+                    'icon' => 'ti ti-home-star',
                 ])
                 ->registerItem([
                     'id' => 'cms-account-vacation-rental-bookings',
@@ -503,13 +503,6 @@ class RealEstateServiceProvider extends ServiceProvider
                     'name' => 'Bookings',
                     'url' => fn () => route('public.account.vacation-rentals.bookings'),
                     'icon' => 'ti ti-calendar-check',
-                ])
-                ->registerItem([
-                    'id' => 'cms-account-vacation-rental-calendar',
-                    'priority' => 2.7,
-                    'name' => 'Availability Calendar',
-                    'url' => fn () => route('public.account.vacation-rentals.calendar'),
-                    'icon' => 'ti ti-calendar',
                 ])
                 ->registerItem([
                     'id' => 'cms-account-settings',
@@ -655,7 +648,7 @@ class RealEstateServiceProvider extends ServiceProvider
                             }
 
                             foreach ($options as $value) {
-                                $newRequest = new Request();
+                                $newRequest = new Request;
 
                                 $newRequest->replace([
                                     'language' => $request->input('language'),
@@ -687,7 +680,7 @@ class RealEstateServiceProvider extends ServiceProvider
                                 return;
                             }
 
-                            $newRequest = new Request();
+                            $newRequest = new Request;
 
                             $newRequest->replace([
                                 'language' => $request->input('language'),
@@ -720,7 +713,7 @@ class RealEstateServiceProvider extends ServiceProvider
                                 return;
                             }
 
-                            $newRequest = new Request();
+                            $newRequest = new Request;
 
                             $newRequest->replace([
                                 'language' => $request->input('language'),

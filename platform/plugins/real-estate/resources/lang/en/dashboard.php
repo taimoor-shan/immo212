@@ -109,4 +109,10 @@ return [
     'number_posts_free' => 'Free :posts post(s)',
     'total_package_price' => ':total Total (Save :percent%)',
     'dashboard' => 'Dashboard',
+    'approved_vacation_rentals' => 'Approved vacation rentals',
+    'pending_approve_vacation_rentals' => 'Pending approve vacation rentals',
+    'rejected_vacation_rentals' => 'Rejected vacation rentals',
+    'active_bookings' => 'Active bookings',
+    'upcoming_bookings' => 'Upcoming bookings (7 days)',
+    'monthly_revenue' => 'Monthly revenue',
 ];

@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
 /**
  * @method static \Botble\RealEstate\QueryBuilders\VacationRentalBuilder<static> query()
@@ -51,6 +50,7 @@ class VacationRental extends BaseModel
         'author_id',
         'author_type',
         'expire_date',
+        'never_expired',
         'auto_renew',
         'latitude',
         'longitude',
@@ -108,6 +108,7 @@ class VacationRental extends BaseModel
 
         // Boolean fields
         'is_featured' => 'boolean',
+        'never_expired' => 'boolean',
         'auto_renew' => 'boolean',
     ];
 
@@ -204,6 +205,7 @@ class VacationRental extends BaseModel
         return Attribute::get(function () {
             $square = $this->square;
             $unit = setting('real_estate_square_unit', 'm²');
+
             return apply_filters('real_estate_vacation_rental_square_text', sprintf('%s %s', number_format($square), __($unit)), $square);
         });
     }
@@ -215,7 +217,7 @@ class VacationRental extends BaseModel
 
     protected function category(): Attribute
     {
-        return Attribute::get(fn () => $this->categories->first() ?: new Category());
+        return Attribute::get(fn () => $this->categories->first() ?: new Category);
     }
 
     protected function cityName(): Attribute
@@ -224,7 +226,8 @@ class VacationRental extends BaseModel
             if (! is_plugin_active('location')) {
                 return $this->location;
             }
-            return ($this->city->name ? $this->city->name . ', ' : null) . $this->state->name;
+
+            return ($this->city->name ? $this->city->name.', ' : null).$this->state->name;
         });
     }
 
@@ -254,7 +257,8 @@ class VacationRental extends BaseModel
             if (! $this->price) {
                 return __('Contact');
             }
-            return $this->price_format . ' / ' . __('night');
+
+            return $this->price_format.' / '.__('night');
         });
     }
 
@@ -280,7 +284,7 @@ class VacationRental extends BaseModel
 
     protected function mapIcon(): Attribute
     {
-        return Attribute::get(fn () => __('Vacation Rental') . ': ' . $this->price_format);
+        return Attribute::get(fn () => __('Vacation Rental').': '.$this->price_format);
     }
 
     protected function customFieldsArray(): Attribute
@@ -322,6 +326,7 @@ class VacationRental extends BaseModel
             if (! $this->exists) {
                 return false;
             }
+
             return ! in_array($this->moderation_status, [ModerationStatusEnum::APPROVED, ModerationStatusEnum::REJECTED]);
         });
     }

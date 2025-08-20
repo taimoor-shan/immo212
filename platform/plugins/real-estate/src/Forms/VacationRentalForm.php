@@ -380,6 +380,17 @@ class VacationRentalForm extends FormAbstract
                 StatusFieldOption::make()
                     ->choices(VacationRentalStatusEnum::labels())
                     ->selected((string) $this->model->status ?: VacationRentalStatusEnum::DRAFT)
-            );
+            )
+            ->when($this->getModel()->exists, function (FormAbstract $form): void {
+                $form->add(
+                    'moderation_status',
+                    HtmlField::class,
+                    HtmlFieldOption::make()
+                        ->label(trans('plugins/real-estate::property.moderation_status'))
+                        ->content(view('plugins/real-estate::partials.vacation-rental-moderation-status', [
+                            'model' => $this->getModel(),
+                        ])->render())
+                );
+            });
     }
 }

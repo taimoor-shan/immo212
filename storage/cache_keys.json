@@ -6,6 +6,7 @@
         "91ca94b722506f03892a158294e61ceb@admin-notifications-count"
     ],
     "Botble\\Contact\\Models\\Contact": [
-        "0c175e4a57799ccc0d2967044852a2f8@unread-contacts"
+        "0c175e4a57799ccc0d2967044852a2f8@unread-contacts",
+        "0c175e4a57799ccc0d2967044852a2f8@unread-contacts-count"
     ]
 }

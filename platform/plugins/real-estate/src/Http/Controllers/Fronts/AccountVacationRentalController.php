@@ -24,6 +24,8 @@ use Botble\RealEstate\Services\SaveFacilitiesService;
 use Botble\RealEstate\Services\SaveVacationRentalAvailabilityService;
 use Botble\RealEstate\Services\StoreVacationRentalCategoryService;
 use Botble\RealEstate\Tables\AccountVacationRentalTable;
+use Botble\RealEstate\Tables\AccountVacationRentalBookingTable;
+use Botble\RealEstate\Models\VacationRentalBooking;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -85,6 +87,7 @@ class AccountVacationRentalController extends BaseController
                 'author_type' => Account::class,
             ]));
 
+            $vacationRental->images = array_filter($request->input('images', []));
             $vacationRental->expire_date = Carbon::now()->addDays(RealEstateHelper::propertyExpiredDays());
             $vacationRental->never_expired = false; // Users cannot create never-expiring properties
 
@@ -194,6 +197,7 @@ class AccountVacationRentalController extends BaseController
             $vacationRental = $form->getModel();
 
             $vacationRental->fill($this->processRequestData($request));
+            $vacationRental->images = array_filter($request->input('images', []));
             $vacationRental->never_expired = false; // Users cannot create never-expiring properties
 
             $enabledPostApproval = (bool) setting('enable_post_approval', 1);
@@ -304,5 +308,33 @@ class AccountVacationRentalController extends BaseController
         return $this
             ->httpResponse()
             ->setMessage(__('Renew vacation rental successfully'));
+    }
+
+    public function bookings(AccountVacationRentalBookingTable $bookingTable)
+    {
+        $this->pageTitle(trans('plugins/real-estate::vacation-rental.bookings'));
+
+        return $bookingTable->render('plugins/real-estate::account.table.base');
+    }
+
+    public function updateBookingStatus(int|string $bookingId, Request $request)
+    {
+        $booking = VacationRentalBooking::query()
+            ->whereHas('vacationRental', function ($query) {
+                $query->where('author_id', auth('account')->id())
+                      ->where('author_type', Account::class);
+            })
+            ->findOrFail($bookingId);
+
+        $request->validate([
+            'status' => 'required|in:' . implode(',', array_keys($booking->getStatuses())),
+        ]);
+
+        $booking->status = $request->input('status');
+        $booking->save();
+
+        return $this
+            ->httpResponse()
+            ->setMessage(__('Booking status updated successfully'));
     }
 }

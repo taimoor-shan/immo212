@@ -56,11 +56,10 @@ class VacationRental extends BaseModel
         'longitude',
         'unique_id',
         'private_notes',
-        // Removed floor plan fields:
-        // 'floor_plans',
-        // 'floor_name',
-        // 'floor_plan_image',
-        // 'floor_plan_document',
+        'floor_plans',
+        'floor_name',
+        'floor_plan_image',
+        'floor_plan_document',
         'reject_reason',
         'check_in_time',
         'check_out_time',
@@ -91,6 +90,7 @@ class VacationRental extends BaseModel
 
         // JSON and arrays
         'images' => 'json',
+        'floor_plans' => 'array',
 
         // Numeric fields
         'price' => 'float',

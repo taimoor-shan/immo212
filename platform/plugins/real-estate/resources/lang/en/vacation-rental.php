@@ -62,4 +62,16 @@ return [
     'validation' => [
         'time_format' => 'The :attribute field must be a valid time in HH:MM format (e.g., 14:30).',
     ],
+    'form' => [
+        'content' => 'Content',
+        'images' => 'Images',
+    ],
+    'renew_notice' => 'Auto renew vacation rental after :days days',
+    'status_moderation' => [
+        'approve' => 'Approve',
+        'reject' => 'Reject',
+        'approved' => 'Vacation rental has been approved successfully!',
+        'rejected' => 'Vacation rental has been rejected.',
+        'reason_rejected' => 'Reason for rejection',
+    ],
 ];

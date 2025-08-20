@@ -81,10 +81,6 @@ class VacationRentalController extends BaseController
                 'author_type' => $request->input('author_type') ?: Account::class,
                 'expire_date' => $request->input('never_expired') ? null : $request->input('expire_date'),
                 'moderation_status' => $request->input('moderation_status') ?: ModerationStatusEnum::APPROVED,
-                // Ensure numeric fields have proper defaults to prevent constraint violations
-                'number_bedroom' => $request->input('number_bedroom') ?? 0,
-                'number_bathroom' => $request->input('number_bathroom') ?? 0,
-                'number_floor' => $request->input('number_floor') ?? 0,
             ]);
 
             $vacationRental->fill($data);
@@ -162,10 +158,6 @@ class VacationRentalController extends BaseController
                     'author_id' => $authorId,
                     'author_type' => Account::class,
                     'expire_date' => $request->input('never_expired') ? null : $request->input('expire_date'),
-                    // Ensure numeric fields have proper defaults to prevent constraint violations
-                    'number_bedroom' => $request->input('number_bedroom') ?? 0,
-                    'number_bathroom' => $request->input('number_bathroom') ?? 0,
-                    'number_floor' => $request->input('number_floor') ?? 0,
                 ]);
 
                 $vacationRental->fill($data);

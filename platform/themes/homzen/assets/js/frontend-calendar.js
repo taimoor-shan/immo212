@@ -52,7 +52,7 @@ class VacationRentalFrontendCalendar {
             const startDate = this.getApiDate(new Date());
             const endDate = this.getApiDate(new Date(), 12);
             const cacheBuster = Date.now();
-            const response = await fetch(`${this.options.availabilityEndpoint}?property_id=${this.options.vacationRentalId}&start_date=${startDate}&end_date=${endDate}`, {
+            const response = await fetch(`${this.options.availabilityEndpoint}?start=${startDate}&end=${endDate}&exceptions_only=true&_=${cacheBuster}`, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -555,7 +555,6 @@ class VacationRentalFrontendCalendar {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 },
                 body: JSON.stringify({
-                    property_id: this.options.vacationRentalId,
                     check_in: this.getApiDate(this.checkInDate),
                     check_out: this.getApiDate(this.checkOutDate),
                     guests: guestsCount
@@ -576,10 +575,17 @@ class VacationRentalFrontendCalendar {
     }
 
     displayPricingBreakdown(pricing) {
+        console.log('Pricing data received:', pricing);
+
         const breakdown = document.getElementById('pricing-breakdown');
         const totalPrice = document.getElementById('total-price');
 
         let html = '';
+
+        if (!pricing) {
+            console.error('Pricing data is undefined or null');
+            return;
+        }
 
         if (pricing.total_nights_cost) {
             html += `<div class="price-item">
@@ -658,6 +664,14 @@ class VacationRentalFrontendCalendar {
             const checkInDateFormatted = this.getApiDate(this.checkInDate);
             const checkOutDateFormatted = this.getApiDate(this.checkOutDate);
 
+            console.log('Booking request data:', {
+                vacation_rental_id: this.options.vacationRentalId,
+                vacation_rental_id_type: typeof this.options.vacationRentalId,
+                check_in_date: checkInDateFormatted,
+                check_out_date: checkOutDateFormatted,
+                guests_count: parseInt(guestsCount)
+            });
+
             const response = await fetch(this.options.bookingEndpoint, {
                 method: 'POST',
                 headers: {
@@ -666,7 +680,7 @@ class VacationRentalFrontendCalendar {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 },
                 body: JSON.stringify({
-                    vacation_rental_id: this.options.vacationRentalId,
+                    vacation_rental_id: parseInt(this.options.vacationRentalId),
                     check_in_date: checkInDateFormatted,
                     check_out_date: checkOutDateFormatted,
                     guests_count: parseInt(guestsCount),

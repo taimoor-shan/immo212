@@ -5,9 +5,9 @@
 @if($vacationRental)
 <div id="vacation-rental-calendar"
      data-vacation-rental-id="{{ $vacationRental->id }}"
-     data-availability-url="{{ route('public.ajax.vacation-rentals.availability') }}"
-     data-pricing-url="{{ route('public.ajax.vacation-rentals.calculate-price') }}"
-     data-booking-url="{{ url('vacation-rental/book') }}"
+     data-availability-url="{{ route('public.vacation-rental.availability', $vacationRental->id) }}"
+     data-pricing-url="{{ route('public.ajax.vacation-rentals.calculate-price', $vacationRental->id) }}"
+     data-booking-url="{{ route('public.vacation-rental.booking.process') }}"
      data-login-url="{{ route('public.account.login') }}"
      data-min-stay="{{ $vacationRental->minimum_stay ?? 1 }}"
      data-max-stay="{{ $vacationRental->maximum_stay ?? '' }}"

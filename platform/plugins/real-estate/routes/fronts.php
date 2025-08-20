@@ -114,15 +114,20 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
                 Route::get('availability', [VacationRentalController::class, 'getAvailabilityData'])
                     ->middleware(RequiresJsonRequestMiddleware::class)
                     ->name('availability');
-                Route::post('calculate-price', [VacationRentalController::class, 'calculatePrice'])
+                Route::post('{vacationRental}/calculate-price', [VacationRentalBookingController::class, 'calculatePrice'])
                     ->middleware(RequiresJsonRequestMiddleware::class)
-                    ->name('calculate-price');
+                    ->name('calculate-price')
+                    ->wherePrimaryKey();
             });
 
             // Frontend calendar API endpoints
             Route::prefix('vacation-rental')->name('public.vacation-rental.')->group(function (): void {
-                Route::get('availability', [VacationRentalBookingController::class, 'getAvailability'])->name('availability');
-                Route::post('pricing', [VacationRentalBookingController::class, 'calculatePricing'])->name('pricing');
+                Route::get('{vacationRental}/availability', [VacationRentalBookingController::class, 'getAvailability'])
+                    ->name('availability')
+                    ->wherePrimaryKey();
+                Route::post('{vacationRental}/pricing', [VacationRentalBookingController::class, 'calculatePricing'])
+                    ->name('pricing')
+                    ->wherePrimaryKey();
             });
         });
 

@@ -49,7 +49,7 @@ class AccountVacationRentalForm extends VacationRentalForm
             )
             ->addAfter(
                 'content',
-                'images[]',
+                'images',
                 MultipleUploadField::class,
                 [
                     'label' => trans('plugins/real-estate::vacation-rental.form.images'),

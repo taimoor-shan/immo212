@@ -115,6 +115,15 @@ app('events')->listen(RenderingThemeOptionSettings::class, function (): void {
                 ->options($listingLayouts)
         )
         ->setField(
+            UiSelectorField::make()
+                ->sectionId('opt-text-subsection-real-estate')
+                ->name('real_estate_vacation_rental_listing_layout')
+                ->label(__('Vacation rental listing page layout'))
+                ->numberItemsPerRow(2)
+                ->defaultValue('top-map')
+                ->options($listingLayouts)
+        )
+        ->setField(
             TextField::make()
                 ->name('hotline')
                 ->label(__('Hotline'))

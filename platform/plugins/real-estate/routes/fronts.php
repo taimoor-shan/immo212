@@ -166,7 +166,8 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
                     Route::resource('', AccountVacationRentalController::class)->parameters(['' => 'vacation-rental']);
                     Route::post('renew/{id}', [AccountVacationRentalController::class, 'renew'])->name('renew')->wherePrimaryKey();
                     // Booking management
-                    Route::get('bookings', [AccountVacationRentalController::class, 'bookings'])->name('bookings');
+                    Route::match(['GET', 'POST'], 'bookings', [AccountVacationRentalController::class, 'bookings'])->name('bookings');
+                    Route::get('bookings/{booking}', [AccountVacationRentalController::class, 'showBooking'])->name('bookings.show')->wherePrimaryKey();
                     Route::put('bookings/{booking}/status', [AccountVacationRentalController::class, 'updateBookingStatus'])->name('bookings.update-status');
 
                     // Availability management (for AJAX calls from edit page)

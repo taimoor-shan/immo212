@@ -37,13 +37,13 @@
         <div class="container">
         <div class="row justify-content-between">
         <div class="col-lg-7">
-            
+
             @include(Theme::getThemeNamespace('views.real-estate.partials.listing-top'))
 
             {!! apply_filters('ads_render', null, 'listing_page_before') !!}
 
             <div class="position-relative" data-bb-toggle="data-listing">
-                @include($itemsViewPath, compact('itemLayout'))
+                @include($itemsViewPath, array_merge(compact('itemLayout'), get_defined_vars()))
             </div>
 
             {!! apply_filters('ads_render', null, 'listing_page_after') !!}

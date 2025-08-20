@@ -68,6 +68,7 @@ use Botble\RealEstate\Repositories\Eloquent\ProjectRepository;
 use Botble\RealEstate\Repositories\Eloquent\PropertyRepository;
 use Botble\RealEstate\Repositories\Eloquent\ReviewRepository;
 use Botble\RealEstate\Repositories\Eloquent\TransactionRepository;
+use Botble\RealEstate\Repositories\Eloquent\VacationRentalRepository;
 use Botble\RealEstate\Repositories\Interfaces\AccountActivityLogInterface;
 use Botble\RealEstate\Repositories\Interfaces\AccountInterface;
 use Botble\RealEstate\Repositories\Interfaces\CategoryInterface;
@@ -83,6 +84,7 @@ use Botble\RealEstate\Repositories\Interfaces\ProjectInterface;
 use Botble\RealEstate\Repositories\Interfaces\PropertyInterface;
 use Botble\RealEstate\Repositories\Interfaces\ReviewInterface;
 use Botble\RealEstate\Repositories\Interfaces\TransactionInterface;
+use Botble\RealEstate\Repositories\Interfaces\VacationRentalInterface;
 use Botble\RssFeed\Facades\RssFeed;
 use Botble\SeoHelper\Facades\SeoHelper;
 use Botble\Slug\Facades\SlugHelper;
@@ -108,6 +110,10 @@ class RealEstateServiceProvider extends ServiceProvider
 
         $this->app->singleton(ProjectInterface::class, function () {
             return new ProjectRepository(new Project);
+        });
+
+        $this->app->singleton(VacationRentalInterface::class, function () {
+            return new VacationRentalRepository(new VacationRental);
         });
 
         $this->app->singleton(FeatureInterface::class, function () {

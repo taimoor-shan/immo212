@@ -45,7 +45,7 @@
             {!! apply_filters('ads_render', null, 'listing_page_before') !!}
 
             <div class="position-relative" data-bb-toggle="data-listing">
-                @include($itemsViewPath, compact('itemLayout'))
+                @include($itemsViewPath, array_merge(compact('itemLayout'), get_defined_vars()))
             </div>
 
             {!! apply_filters('ads_render', null, 'listing_page_after') !!}

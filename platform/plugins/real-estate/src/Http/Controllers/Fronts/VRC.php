@@ -1,7 +1,5 @@
 <?php
-
 namespace Botble\RealEstate\Http\Controllers\Fronts;
-
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\RealEstate\Models\Property;
 use Botble\RealEstate\Models\VacationRental;

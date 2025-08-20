@@ -16,6 +16,7 @@ use Botble\RealEstate\Models\Property;
 use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\Repositories\Interfaces\ProjectInterface;
 use Botble\RealEstate\Repositories\Interfaces\PropertyInterface;
+use Botble\RealEstate\Repositories\Interfaces\VacationRentalInterface;
 use Botble\Slug\Facades\SlugHelper;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
@@ -362,6 +363,11 @@ class RealEstateHelper
                 'locations' => 'nullable|array',
                 'category_ids' => 'nullable|array',
                 'features' => 'nullable|array',
+                'bedroom' => 'nullable|numeric',
+                'bathroom' => 'nullable|numeric',
+                'floor' => 'nullable|numeric',
+                'min_square' => 'nullable|numeric',
+                'max_square' => 'nullable|numeric',
             ]));
         } catch (Throwable) {
             $filters = [];
@@ -375,16 +381,10 @@ class RealEstateHelper
                 'current_paged' => $request->integer('page', 1),
             ],
             'order_by' => ['re_vacation_rentals.created_at' => 'DESC'],
-            'with' => self::getVacationRentalRelationsQuery(),
+            'with' => RealEstateHelper::getVacationRentalRelationsQuery(),
         ], $extra);
 
-        // For now, return empty collection since we don't have VacationRentalInterface yet
-        // This will be implemented when we create the repository
-        return VacationRental::query()
-            ->wherePublished()
-            ->with($params['with'])
-            ->orderBy('created_at', 'DESC')
-            ->paginate($perPage);
+        return app(VacationRentalInterface::class)->getVacationRentals($filters, $params);
     }
 
     public function getPropertiesPerPageList(): array
@@ -397,6 +397,19 @@ class RealEstateHelper
             45 => 45,
             60 => 60,
             120 => 120,
+        ]);
+    }
+
+    public function getVacationRentalsPerPageList(): array
+    {
+        return apply_filters('vacation_rentals_per_page_list', [
+            6 => 6,
+            9 => 9,
+            12 => 12,
+            15 => 15,
+            24 => 24,
+            36 => 36,
+            48 => 48,
         ]);
     }
 

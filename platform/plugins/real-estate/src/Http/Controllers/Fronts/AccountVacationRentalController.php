@@ -310,11 +310,31 @@ class AccountVacationRentalController extends BaseController
             ->setMessage(__('Renew vacation rental successfully'));
     }
 
-    public function bookings(AccountVacationRentalBookingTable $bookingTable)
+    public function bookings(AccountVacationRentalBookingTable $bookingTable, Request $request)
     {
+        // Handle DataTable Ajax requests
+        if ($request->ajax()) {
+            return $bookingTable->ajax();
+        }
+
         $this->pageTitle(trans('plugins/real-estate::vacation-rental.bookings'));
 
         return $bookingTable->render('plugins/real-estate::account.table.base');
+    }
+
+    public function showBooking(int|string $bookingId)
+    {
+        $booking = VacationRentalBooking::query()
+            ->with(['vacationRental', 'vacationRental.currency'])
+            ->whereHas('vacationRental', function ($query) {
+                $query->where('author_id', auth('account')->id())
+                      ->where('author_type', Account::class);
+            })
+            ->findOrFail($bookingId);
+
+        $this->pageTitle(trans('plugins/real-estate::vacation-rental.booking_details'));
+
+        return view('plugins/real-estate::account.vacation-rentals.booking-details', compact('booking'));
     }
 
     public function updateBookingStatus(int|string $bookingId, Request $request)

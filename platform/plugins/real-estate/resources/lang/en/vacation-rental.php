@@ -74,4 +74,11 @@ return [
         'rejected' => 'Vacation rental has been rejected.',
         'reason_rejected' => 'Reason for rejection',
     ],
+    'booking_details' => 'Booking Details',
+    'booking_information' => 'Booking Information',
+    'guest_information' => 'Guest Information',
+    'pricing_details' => 'Pricing Details',
+    'guest_email' => 'Guest Email',
+    'guest_phone' => 'Guest Phone',
+    'special_requests' => 'Special Requests',
 ];

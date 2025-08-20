@@ -2147,9 +2147,19 @@ $(function () {
                 return;
               }
               var isProperty = typeof item.square !== 'undefined';
-              var content = isProperty ? $('#property-map-content').html() : $('#project-map-content').html();
+              var isVacationRental = typeof item.minimum_stay !== 'undefined';
+              var content;
+              if (isVacationRental) {
+                content = $('#vacation-rental-map-content').html();
+              } else if (isProperty) {
+                content = $('#property-map-content').html();
+              } else {
+                content = $('#project-map-content').html();
+              }
               content = content.replace(new RegExp('__name__', 'gi'), item.name).replace(new RegExp('__location__', 'gi'), item.location).replace(new RegExp('__image__', 'gi'), item.image_thumb).replace(new RegExp('__price__', 'gi'), item.formatted_price).replace(new RegExp('__url__', 'gi'), item.url).replace(new RegExp('__status__', 'gi'), item.status_html);
-              if (isProperty) {
+              if (isVacationRental) {
+                content = content.replace(new RegExp('__minimum_stay__', 'gi'), item.minimum_stay || '').replace(new RegExp('__maximum_guests__', 'gi'), item.maximum_guests || '').replace(new RegExp('__category__', 'gi'), item.category_name || '');
+              } else if (isProperty) {
                 content = content.replace(new RegExp('__bedroom__', 'gi'), item.number_bedroom).replace(new RegExp('__bathroom__', 'gi'), item.number_bathroom).replace(new RegExp('__square__', 'gi'), item.square_text).replace(new RegExp('__category__', 'gi'), item.category_name || '');
               }
               var marker = L.marker(L.latLng(item.latitude, item.longitude), {
@@ -2731,7 +2741,7 @@ __webpack_require__.r(__webpack_exports__);
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
-/******/ 	
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
 /******/ 		// Check if module is in cache
@@ -2745,17 +2755,17 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
-/******/ 	
+/******/
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/ 	
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = __webpack_modules__;
-/******/ 	
+/******/
 /************************************************************************/
 /******/ 	/* webpack/runtime/chunk loaded */
 /******/ 	(() => {
@@ -2788,12 +2798,12 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 			return result;
 /******/ 		};
 /******/ 	})();
-/******/ 	
+/******/
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
-/******/ 	
+/******/
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -2804,11 +2814,11 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
 /******/ 	})();
-/******/ 	
+/******/
 /******/ 	/* webpack/runtime/jsonp chunk loading */
 /******/ 	(() => {
 /******/ 		// no baseURI
-/******/ 		
+/******/
 /******/ 		// object to store loaded and loading chunks
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
@@ -2860,19 +2870,19 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 			"vendor/core/plugins/real-estate/css/dashboard/style-rtl": 0,
 /******/ 			"vendor/core/plugins/real-estate/css/dashboard/style": 0
 /******/ 		};
-/******/ 		
+/******/
 /******/ 		// no chunk on demand loading
-/******/ 		
+/******/
 /******/ 		// no prefetching
-/******/ 		
+/******/
 /******/ 		// no preloaded
-/******/ 		
+/******/
 /******/ 		// no HMR
-/******/ 		
+/******/
 /******/ 		// no HMR manifest
-/******/ 		
+/******/
 /******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
-/******/ 		
+/******/
 /******/ 		// install a JSONP callback for chunk loading
 /******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
 /******/ 			var [chunkIds, moreModules, runtime] = data;
@@ -2897,14 +2907,14 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 			}
 /******/ 			return __webpack_require__.O(result);
 /******/ 		}
-/******/ 		
+/******/
 /******/ 		var chunkLoadingGlobal = self["webpackChunk"] = self["webpackChunk"] || [];
 /******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
 /******/ 	})();
-/******/ 	
+/******/
 /************************************************************************/
-/******/ 	
+/******/
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
@@ -2955,7 +2965,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	__webpack_require__.O(undefined, ["vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/vacation-rental-calendar","themes/homzen/css/style","vendor/core/core/base/css/libraries/select2.rtl","vendor/core/core/base/css/core.rtl","vendor/core/core/base/css/crop-image","vendor/core/core/base/css/tree-category","vendor/core/core/base/css/error-pages","vendor/core/core/base/css/libraries/select2","vendor/core/core/base/css/core","vendor/core/core/media/css/media","vendor/core/core/setting/css/admin-email","vendor/core/core/table/css/table","vendor/core/packages/get-started/css/get-started","vendor/core/packages/installer/css/style","vendor/core/packages/menu/css/menu","vendor/core/packages/revision/css/revision","vendor/core/packages/seo-helper/css/seo-helper","vendor/core/packages/shortcode/css/shortcode","vendor/core/packages/slug/css/slug","vendor/core/packages/theme/css/guideline","vendor/core/packages/theme/css/admin-bar","vendor/core/packages/theme/css/theme-options","vendor/core/packages/widget/css/widget","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/vacation-rental-calendar-admin","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl","vendor/core/plugins/real-estate/css/dashboard/style"], () => (__webpack_require__("./public/vendor/core/core/base/css/core.css")))
 /******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["vendor/core/plugins/social-login/css/social-login","vendor/core/plugins/translation/css/translation","themes/homzen/css/vacation-rental-calendar","themes/homzen/css/style","vendor/core/core/base/css/libraries/select2.rtl","vendor/core/core/base/css/core.rtl","vendor/core/core/base/css/crop-image","vendor/core/core/base/css/tree-category","vendor/core/core/base/css/error-pages","vendor/core/core/base/css/libraries/select2","vendor/core/core/base/css/core","vendor/core/core/media/css/media","vendor/core/core/setting/css/admin-email","vendor/core/core/table/css/table","vendor/core/packages/get-started/css/get-started","vendor/core/packages/installer/css/style","vendor/core/packages/menu/css/menu","vendor/core/packages/revision/css/revision","vendor/core/packages/seo-helper/css/seo-helper","vendor/core/packages/shortcode/css/shortcode","vendor/core/packages/slug/css/slug","vendor/core/packages/theme/css/guideline","vendor/core/packages/theme/css/admin-bar","vendor/core/packages/theme/css/theme-options","vendor/core/packages/widget/css/widget","vendor/core/plugins/announcement/css/announcement","vendor/core/plugins/backup/css/backup","vendor/core/plugins/contact/css/contact-public","vendor/core/plugins/contact/css/contact","vendor/core/plugins/cookie-consent/css/cookie-consent","vendor/core/plugins/faq/css/faq","vendor/core/plugins/language/css/language-public","vendor/core/plugins/language/css/language","vendor/core/plugins/newsletter/css/newsletter","vendor/core/plugins/payment/css/payment-setting","vendor/core/plugins/payment/css/payment","vendor/core/plugins/real-estate/css/vacation-rental-calendar-admin","vendor/core/plugins/real-estate/css/calendar-backend","vendor/core/plugins/real-estate/css/front-auth","vendor/core/plugins/real-estate/css/account-admin","vendor/core/plugins/real-estate/css/currencies","vendor/core/plugins/real-estate/css/review","vendor/core/plugins/real-estate/css/real-estate","vendor/core/plugins/real-estate/css/dashboard/style-rtl","vendor/core/plugins/real-estate/css/dashboard/style"], () => (__webpack_require__("./public/vendor/core/core/base/css/libraries/select2.css")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
-/******/ 	
+/******/
 /******/ })()
 ;
 //# sourceMappingURL=script.js.map

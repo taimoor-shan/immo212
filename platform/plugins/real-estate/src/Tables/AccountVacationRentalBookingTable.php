@@ -21,6 +21,7 @@ class AccountVacationRentalBookingTable extends TableAbstract
     {
         $this
             ->model(VacationRentalBooking::class)
+            ->setAjaxUrl(route('public.account.vacation-rentals.bookings'))
             ->addActions([
                 Action::make('view')
                     ->route('public.account.vacation-rentals.bookings.show')
@@ -62,7 +63,7 @@ class AccountVacationRentalBookingTable extends TableAbstract
                 $statuses = $item->getStatuses();
                 $status = $statuses[$item->status] ?? $item->status;
                 $color = $item->getStatusColor();
-                
+
                 return Html::tag('span', $status, [
                     'class' => 'badge',
                     'style' => "background-color: {$color}; color: white;"

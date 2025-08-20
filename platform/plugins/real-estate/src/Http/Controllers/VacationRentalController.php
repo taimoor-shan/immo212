@@ -1,7 +1,5 @@
 <?php
-
 namespace Botble\RealEstate\Http\Controllers;
-
 use Botble\Base\Facades\Assets;
 use Botble\Base\Facades\EmailHandler;
 use Botble\Base\Http\Actions\DeleteResourceAction;

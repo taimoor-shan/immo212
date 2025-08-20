@@ -1774,10 +1774,16 @@ $(() => {
                             }
 
                             const isProperty = typeof item.square !== 'undefined'
+                            const isVacationRental = typeof item.minimum_stay !== 'undefined'
 
-                            let content = isProperty
-                                ? $('#property-map-content').html()
-                                : $('#project-map-content').html()
+                            let content
+                            if (isVacationRental) {
+                                content = $('#vacation-rental-map-content').html()
+                            } else if (isProperty) {
+                                content = $('#property-map-content').html()
+                            } else {
+                                content = $('#project-map-content').html()
+                            }
 
                             content = content
                                 .replace(new RegExp('__name__', 'gi'), item.name)
@@ -1787,7 +1793,12 @@ $(() => {
                                 .replace(new RegExp('__url__', 'gi'), item.url)
                                 .replace(new RegExp('__status__', 'gi'), item.status_html)
 
-                            if (isProperty) {
+                            if (isVacationRental) {
+                                content = content
+                                    .replace(new RegExp('__minimum_stay__', 'gi'), item.minimum_stay || '')
+                                    .replace(new RegExp('__maximum_guests__', 'gi'), item.maximum_guests || '')
+                                    .replace(new RegExp('__category__', 'gi'), item.category_name || '')
+                            } else if (isProperty) {
                                 content = content
                                     .replace(new RegExp('__bedroom__', 'gi'), item.number_bedroom)
                                     .replace(new RegExp('__bathroom__', 'gi'), item.number_bathroom)

@@ -378,8 +378,11 @@ class VacationRentalForm extends FormAbstract
                 'status',
                 SelectField::class,
                 StatusFieldOption::make()
-                    ->choices(VacationRentalStatusEnum::labels())
-                    ->selected((string) $this->model->status ?: VacationRentalStatusEnum::DRAFT)
+                    ->choices([
+                        VacationRentalStatusEnum::DRAFT => trans('plugins/real-estate::vacation-rental.statuses.draft'),
+                        VacationRentalStatusEnum::RENTING => trans('plugins/real-estate::vacation-rental.statuses.renting'),
+                    ])
+                    ->selected((string) $this->model->ui_status ?: VacationRentalStatusEnum::DRAFT)
             )
             ->when($this->getModel()->exists, function (FormAbstract $form): void {
                 $form->add(

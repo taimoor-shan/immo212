@@ -4,14 +4,15 @@ namespace Botble\RealEstate\QueryBuilders;
 
 use Botble\Base\Models\BaseQueryBuilder;
 use Botble\RealEstate\Enums\ModerationStatusEnum;
-use Botble\RealEstate\Enums\PropertyStatusEnum;
+use Botble\RealEstate\Enums\VacationRentalStatusEnum;
+use Botble\RealEstate\Facades\RealEstateHelper;
 use Illuminate\Database\Eloquent\Builder;
 
 class VacationRentalBuilder extends BaseQueryBuilder
 {
     public function active(): static
     {
-        return $this->where('status', PropertyStatusEnum::SELLING);
+        return $this->wherePublished()->approved()->notExpired();
     }
 
     public function notExpired(): static
@@ -51,11 +52,11 @@ class VacationRentalBuilder extends BaseQueryBuilder
     public function byAuthor(int $authorId, ?string $authorType = null): static
     {
         $query = $this->where('author_id', $authorId);
-        
+
         if ($authorType) {
             $query->where('author_type', $authorType);
         }
-        
+
         return $query;
     }
 

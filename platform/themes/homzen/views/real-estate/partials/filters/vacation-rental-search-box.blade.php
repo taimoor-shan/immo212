@@ -20,9 +20,10 @@
 
                     {{-- Advanced filters section --}}
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-stay'), ['class' => 'form-style'])
+                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-checkin'), ['class' => 'form-style'])
+                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-checkout'), ['class' => 'form-style'])
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bedroom'), ['class' => 'form-style'])
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bathroom'), ['class' => 'form-style'])
-                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.square'), ['class' => 'form-style wd-price-2'])
 
                     <div class="form-style btn-show-advanced">
                         <a class="filter-advanced pull-right" href="#">
@@ -60,7 +61,10 @@
                         @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-stay'))
                         @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bedroom'))
                         @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bathroom'))
-                        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.square'))
+                    </div>
+                    <div class="group-select grid-2">
+                        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-checkin'))
+                        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-checkout'))
                     </div>
                 </div>
                 @include(Theme::getThemeNamespace('views.real-estate.partials.filters.features'))

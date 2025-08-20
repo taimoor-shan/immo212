@@ -12,9 +12,6 @@
     'perPages' => RealEstateHelper::getVacationRentalsPerPageList(),
     'filterViewPath' => Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-search-box'),
     'itemsViewPath' => Theme::getThemeNamespace('views.real-estate.vacation-rentals.index'),
-    'vacationRentals' => $vacationRentals,
 ])
 
 @include(Theme::getThemeNamespace('views.real-estate.partials.vacation-rental-map-content'))
-
-@include(Theme::getThemeNamespace('views.real-estate.partials.property-map-content'))

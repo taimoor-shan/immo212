@@ -239,4 +239,23 @@ class VacationRentalRequest extends Request
 
         return $time; // Return as-is if can't parse
     }
+
+    /**
+     * Map UI status values to database values for core system compatibility
+     */
+    public function getProcessedData(): array
+    {
+        $data = $this->validated();
+
+        // Map UI status to database status for core system compatibility
+        if (isset($data['status'])) {
+            if ($data['status'] === VacationRentalStatusEnum::RENTING) {
+                // Map "renting" from UI to "published" in database for core system compatibility
+                $data['status'] = VacationRentalStatusEnum::PUBLISHED;
+            }
+            // Keep 'draft' as 'draft'
+        }
+
+        return $data;
+    }
 }

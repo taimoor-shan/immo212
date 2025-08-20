@@ -9,7 +9,6 @@ use Illuminate\Support\HtmlString;
 
 /**
  * @method static VacationRentalStatusEnum DRAFT()
- * @method static VacationRentalStatusEnum NOT_AVAILABLE()
  * @method static VacationRentalStatusEnum RENTING()
  * @method static VacationRentalStatusEnum PUBLISHED()
  */
@@ -17,30 +16,27 @@ class VacationRentalStatusEnum extends Enum
 {
     public const DRAFT = 'draft';
 
-    public const NOT_AVAILABLE = 'not_available';
-
     public const RENTING = 'renting';
 
     public const PUBLISHED = 'published';
 
     public static $langPath = 'plugins/real-estate::vacation-rental.statuses';
 
+    /**
+     * Get statuses that should be considered active/visible on frontend
+     */
+    public static function getActiveStatuses(): array
+    {
+        return [self::RENTING, self::PUBLISHED];
+    }
+
     public function toHtml(): HtmlString|string|null
     {
         if (! is_in_admin()) {
             $html = match ($this->value) {
-                self::DRAFT => Html::tag('span', self::DRAFT()->label(), ['class' => 'label-default status-label'])
-                    ->toHtml(),
-                self::NOT_AVAILABLE => Html::tag(
-                    'span',
-                    self::NOT_AVAILABLE()->label(),
-                    ['class' => 'label-default status-label']
-                )
-                    ->toHtml(),
-                self::RENTING => Html::tag('span', self::RENTING()->label(), ['class' => 'label-success status-label'])
-                    ->toHtml(),
-                self::PUBLISHED => Html::tag('span', self::PUBLISHED()->label(), ['class' => 'label-success status-label'])
-                    ->toHtml(),
+                self::DRAFT => Html::tag('span', self::DRAFT()->label(), ['class' => 'label-default status-label'])->toHtml(),
+                self::RENTING => Html::tag('span', self::RENTING()->label(), ['class' => 'label-success status-label'])->toHtml(),
+                self::PUBLISHED => Html::tag('span', self::PUBLISHED()->label(), ['class' => 'label-success status-label'])->toHtml(),
                 default => Html::tag('span', $this->label(), ['class' => 'label-default status-label'])->toHtml(),
             };
 
@@ -48,8 +44,7 @@ class VacationRentalStatusEnum extends Enum
         }
 
         $color = match ($this->value) {
-            self::NOT_AVAILABLE => 'secondary',
-            self::RENTING => 'success',
+            self::RENTING, self::PUBLISHED => 'success',
             self::DRAFT => 'warning',
             default => 'primary',
         };

@@ -36,7 +36,7 @@ class VacationRentalFactory extends Factory
             'number_floor' => $this->faker->numberBetween(1, 3),
             'square' => $this->faker->numberBetween(50, 500),
             'price' => $this->faker->numberBetween(50, 500), // Price per night
-            'status' => VacationRentalStatusEnum::RENTING,
+            'status' => VacationRentalStatusEnum::PUBLISHED,
             'moderation_status' => ModerationStatusEnum::APPROVED,
             'is_featured' => $this->faker->boolean(20), // 20% chance of being featured
             'featured_priority' => $this->faker->optional(0.2)->numberBetween(1, 10),

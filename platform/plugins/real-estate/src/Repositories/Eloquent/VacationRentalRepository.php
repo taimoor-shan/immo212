@@ -76,6 +76,8 @@ class VacationRentalRepository extends RepositoriesAbstract implements VacationR
             'maximum_guests' => null,
             'locations' => null,
             'category_ids' => null,
+            'check_in_date' => null,
+            'check_out_date' => null,
         ], $filters);
 
         $orderBy = match ($filters['sort_by']) {
@@ -115,7 +117,7 @@ class VacationRentalRepository extends RepositoriesAbstract implements VacationR
             'with' => [],
         ], $params);
 
-        // Initialize the model with active vacation rentals
+        // Initialize the model with published vacation rentals
         $this->model = $this->originalModel
             ->wherePublished()
             ->approved()
@@ -284,6 +286,27 @@ class VacationRentalRepository extends RepositoriesAbstract implements VacationR
 
         if ($filters['maximum_guests'] !== null) {
             $this->model = $this->model->where('maximum_guests', '>=', $filters['maximum_guests']);
+        }
+
+        // Date availability filtering
+        if ($filters['check_in_date'] !== null || $filters['check_out_date'] !== null) {
+            $checkInDate = $filters['check_in_date'];
+            $checkOutDate = $filters['check_out_date'];
+
+            if ($checkInDate && $checkOutDate) {
+                // Filter out vacation rentals that have conflicting bookings
+                $this->model = $this->model->whereDoesntHave('bookings', function ($query) use ($checkInDate, $checkOutDate) {
+                    $query->where('status', 'confirmed')
+                          ->where(function ($q) use ($checkInDate, $checkOutDate) {
+                              $q->whereBetween('check_in_date', [$checkInDate, $checkOutDate])
+                                ->orWhereBetween('check_out_date', [$checkInDate, $checkOutDate])
+                                ->orWhere(function ($q2) use ($checkInDate, $checkOutDate) {
+                                    $q2->where('check_in_date', '<=', $checkInDate)
+                                       ->where('check_out_date', '>=', $checkOutDate);
+                                });
+                          });
+                });
+            }
         }
 
         if ($filters['features'] !== null) {

@@ -3,6 +3,7 @@
 namespace Botble\RealEstate\Models;
 
 use Botble\Base\Casts\SafeContent;
+use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Base\Models\BaseModel;
 use Botble\Media\Facades\RvMedia;
 use Botble\RealEstate\Database\Factories\VacationRentalFactory;
@@ -198,6 +199,19 @@ class VacationRental extends BaseModel
     protected function image(): Attribute
     {
         return Attribute::get(fn () => Arr::first($this->images) ?? null);
+    }
+
+    /**
+     * Get the UI-friendly status for forms (maps 'published' back to 'renting' for display)
+     */
+    protected function uiStatus(): Attribute
+    {
+        return Attribute::get(function () {
+            if ($this->status === VacationRentalStatusEnum::PUBLISHED) {
+                return VacationRentalStatusEnum::RENTING;
+            }
+            return $this->status;
+        });
     }
 
     protected function squareText(): Attribute

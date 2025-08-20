@@ -15,7 +15,7 @@ use Botble\RealEstate\Http\Controllers\Fronts\RegisterController;
 use Botble\RealEstate\Http\Controllers\Fronts\ResetPasswordController;
 use Botble\RealEstate\Http\Controllers\Fronts\ReviewController;
 use Botble\RealEstate\Http\Controllers\Fronts\VacationRentalBookingController;
-use Botble\RealEstate\Http\Controllers\Fronts\VacationRentalController;
+
 use Botble\RealEstate\Http\Middleware\EnsureAccountIsApproved;
 use Botble\RealEstate\Http\Middleware\LocaleMiddleware;
 use Botble\RealEstate\Models\Account;
@@ -111,7 +111,7 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
 
             // Vacation rental public API endpoints
             Route::prefix('ajax/vacation-rentals')->name('public.ajax.vacation-rentals.')->group(function (): void {
-                Route::get('availability', [VacationRentalController::class, 'getAvailabilityData'])
+                Route::get('availability', 'PublicController@getVacationRentalAvailabilityData')
                     ->middleware(RequiresJsonRequestMiddleware::class)
                     ->name('availability');
                 Route::post('{vacationRental}/calculate-price', [VacationRentalBookingController::class, 'calculatePrice'])

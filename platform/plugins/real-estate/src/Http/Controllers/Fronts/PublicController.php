@@ -21,8 +21,10 @@ use Botble\RealEstate\Models\Currency;
 use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
 use Botble\RealEstate\Models\VacationRental;
+use Botble\RealEstate\Services\SaveVacationRentalAvailabilityService;
 use Botble\SeoHelper\Facades\SeoHelper;
 use Botble\Theme\Facades\Theme;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -526,20 +528,22 @@ class PublicController extends BaseController
         Theme::breadcrumb()
             ->add(SeoHelper::getTitle(), route('public.vacation-rentals-by-city', $city->slug));
 
-        $vacationRentals = RealEstateHelper::getVacationRentalsFilter((int) theme_option('number_of_vacation_rentals_per_page') ?: 12, RealEstateHelper::getReviewExtraData(), [
-            'city_id' => $city->id,
-        ]);
+        $perPage = $request->integer('per_page') ?: (int) theme_option('number_of_vacation_rentals_per_page', 12);
+
+        $request->merge(['city' => $slug, 'city_id' => $city->id]);
+
+        $vacationRentals = RealEstateHelper::getVacationRentalsFilter($perPage, RealEstateHelper::getReviewExtraData());
 
         if ($request->ajax()) {
-            $view = Theme::getThemeNamespace('partials.real-estate.vacation-rentals.items');
-
-            if (! view()->exists($view)) {
-                $view = Theme::getThemeNamespace('views.real-estate.vacation-rentals.index');
+            if ($request->input('minimal')) {
+                return $this
+                    ->httpResponse()
+                    ->setData(Theme::partial('search-suggestion', ['items' => $vacationRentals]));
             }
 
             return $this
                 ->httpResponse()
-                ->setData(view($view, compact('vacationRentals'))->render());
+                ->setData(Theme::partial('real-estate.vacation-rentals.items', ['vacationRentals' => $vacationRentals]));
         }
 
         return Theme::scope('real-estate.vacation-rentals', [
@@ -561,20 +565,22 @@ class PublicController extends BaseController
         Theme::breadcrumb()
             ->add(SeoHelper::getTitle(), route('public.vacation-rentals-by-state', $state->slug));
 
-        $vacationRentals = RealEstateHelper::getVacationRentalsFilter((int) theme_option('number_of_vacation_rentals_per_page') ?: 12, RealEstateHelper::getReviewExtraData(), [
-            'state_id' => $state->id,
-        ]);
+        $perPage = $request->integer('per_page') ?: (int) theme_option('number_of_vacation_rentals_per_page', 12);
+
+        $request->merge(['state' => $slug, 'state_id' => $state->id]);
+
+        $vacationRentals = RealEstateHelper::getVacationRentalsFilter($perPage, RealEstateHelper::getReviewExtraData());
 
         if ($request->ajax()) {
-            $view = Theme::getThemeNamespace('partials.real-estate.vacation-rentals.items');
-
-            if (! view()->exists($view)) {
-                $view = Theme::getThemeNamespace('views.real-estate.vacation-rentals.index');
+            if ($request->input('minimal')) {
+                return $this
+                    ->httpResponse()
+                    ->setData(Theme::partial('search-suggestion', ['items' => $vacationRentals]));
             }
 
             return $this
                 ->httpResponse()
-                ->setData(view($view, compact('vacationRentals'))->render());
+                ->setData(Theme::partial('real-estate.vacation-rentals.items', ['vacationRentals' => $vacationRentals]));
         }
 
         return Theme::scope('real-estate.vacation-rentals', [
@@ -583,5 +589,36 @@ class PublicController extends BaseController
             'actionUrl' => route('public.vacation-rentals-by-state', $state->slug),
         ], 'plugins/real-estate::themes.vacation-rentals')
             ->render();
+    }
+
+    /**
+     * Get availability data for vacation rental (AJAX endpoint)
+     */
+    public function getVacationRentalAvailabilityData(Request $request, SaveVacationRentalAvailabilityService $availabilityService)
+    {
+        $request->validate([
+            'property_id' => 'required|exists:re_vacation_rentals,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        try {
+            $vacationRental = VacationRental::findOrFail($request->property_id);
+
+            $startDate = Carbon::parse($request->start_date);
+            $endDate = Carbon::parse($request->end_date);
+
+            $availabilityData = $availabilityService->getAvailabilityDetails(
+                $vacationRental,
+                $startDate,
+                $endDate
+            );
+
+            return $this->httpResponse()->setData($availabilityData);
+        } catch (Exception $e) {
+            return $this->httpResponse()
+                ->setError()
+                ->setMessage(__('Error fetching availability: :error', ['error' => $e->getMessage()]));
+        }
     }
 }

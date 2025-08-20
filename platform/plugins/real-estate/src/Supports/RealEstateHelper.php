@@ -11,6 +11,7 @@ use Botble\RealEstate\Enums\ProjectStatusEnum;
 use Botble\RealEstate\Enums\PropertyStatusEnum;
 use Botble\RealEstate\Enums\PropertyTypeEnum;
 use Botble\RealEstate\Enums\ReviewStatusEnum;
+use Botble\RealEstate\Enums\VacationRentalStatusEnum;
 use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
 use Botble\RealEstate\Models\VacationRental;
@@ -168,6 +169,19 @@ class RealEstateHelper
         return $conditions;
     }
 
+    public function getVacationRentalDisplayQueryConditions(): array
+    {
+        $conditions = [
+            're_vacation_rentals.moderation_status' => ModerationStatusEnum::APPROVED,
+        ];
+
+        foreach ($this->exceptedVacationRentalStatuses() as $status) {
+            $conditions[] = ['re_vacation_rentals.status', '!=', $status];
+        }
+
+        return $conditions;
+    }
+
     public function exceptedPropertyStatuses(): array
     {
         $statuses = setting('real_estate_hide_properties_in_statuses');
@@ -188,6 +202,17 @@ class RealEstateHelper
         }
 
         return [ProjectStatusEnum::NOT_AVAILABLE];
+    }
+
+    public function exceptedVacationRentalStatuses(): array
+    {
+        $statuses = setting('real_estate_hide_vacation_rentals_in_statuses');
+
+        if ($statuses) {
+            return json_decode($statuses, true);
+        }
+
+        return [VacationRentalStatusEnum::DRAFT];
     }
 
     public function isEnabledWishlist(): bool
@@ -368,6 +393,8 @@ class RealEstateHelper
                 'floor' => 'nullable|numeric',
                 'min_square' => 'nullable|numeric',
                 'max_square' => 'nullable|numeric',
+                'check_in_date' => 'nullable|date|after_or_equal:today',
+                'check_out_date' => 'nullable|date|after:check_in_date',
             ]));
         } catch (Throwable) {
             $filters = [];

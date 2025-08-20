@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::table('re_vacation_rentals', function (Blueprint $table) {
             // Check if status column exists, if not add it
             if (! Schema::hasColumn('re_vacation_rentals', 'status')) {
-                $table->string('status', 60)->default('selling')->after('price');
+                $table->string('status', 60)->default('draft')->after('price');
             }
         });
     }

@@ -1,0 +1,11 @@
+<div @class(['form-group-1 form-style', $class ?? null])>
+    <label class="title-user fw-6">{{ __('Check-out Date') }}</label>
+    <div class="group-select">
+        <input type="date" 
+               name="check_out_date" 
+               class="form-control" 
+               value="{{ request()->input('check_out_date') }}"
+               min="{{ date('Y-m-d', strtotime('+1 day')) }}"
+               placeholder="{{ __('Select check-out date') }}">
+    </div>
+</div>

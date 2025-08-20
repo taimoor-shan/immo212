@@ -43,8 +43,8 @@ return [
     'check_time_error' => 'Check-in time must be before check-out time.',
     'statuses' => [
         'draft' => 'Draft',
-        'not_available' => 'Not Available',
         'renting' => 'Renting',
+        'published' => 'Published',
     ],
     'intro' => [
         'title' => 'Vacation Rental Management',

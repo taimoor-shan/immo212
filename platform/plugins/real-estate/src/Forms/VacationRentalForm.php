@@ -348,6 +348,18 @@ class VacationRentalForm extends FormAbstract
                 ->rows(4)
             )
             ->setBreakFieldPoint('auto_renew')
+            ->add(
+                'author_id',
+                AutocompleteField::class,
+                AutocompleteFieldOption::make()
+                    ->label(trans('plugins/real-estate::property.account'))
+                    ->ajaxUrl(route('account.list'))
+                    ->when($this->getModel()->author_id, function (AutocompleteFieldOption $option): void {
+                        $option->choices([$this->model->author->id => $this->model->author->name]);
+                    })
+                    ->emptyValue(trans('plugins/real-estate::property.select_account'))
+                    ->allowClear()
+            )
             ->addMetaBoxes([
                 'features' => [
                     'title' => trans('plugins/real-estate::property.form.features'),

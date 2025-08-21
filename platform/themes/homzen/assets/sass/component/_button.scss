@@ -1,3 +1,14 @@
+.roundBtn {
+    /* padding: 4px; */
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    outline: none;
+    border: 1px solid #888888;
+}
+
+.roundBtn.active i.fa-regular::before { font-weight: 900 !important;color: $primary; }
+
 .tf-btn {
     font-size: 1rem;
     line-height: 1;
@@ -122,17 +133,17 @@
         font-size: 18px;
         color: $primary;
     }
- 
+
 
     display: inline-flex;
     align-items: center;
     gap: 8px;
-  
+
 
     &:hover {
         .text {
             color: $on-surface;
-         
+
         }
         .icon {
             animation: 0.3s link-icon linear;

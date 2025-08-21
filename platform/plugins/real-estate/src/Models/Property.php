@@ -1,7 +1,6 @@
 <?php
 
 namespace Botble\RealEstate\Models;
-
 use Botble\Base\Casts\SafeContent;
 use Botble\Base\Models\BaseModel;
 use Botble\Media\Facades\RvMedia;

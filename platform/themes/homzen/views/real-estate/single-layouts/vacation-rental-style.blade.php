@@ -1,4 +1,4 @@
-<section class="pb-5 flat-vacation-rental-detail-v4">
+<section class="pb-5 flat-vacation-rental-detail-v4 flat-property-detail-v4">
     <div class="container-fluid bg-surface stickyVacationRentalHeader">
         <div class="container">
             {!! apply_filters('ads_render', null, 'vacation_rental_detail_page_before') !!}

@@ -759,7 +759,7 @@ $border: 6px;
     background-color: $primary;
     color: $white;
     text-transform: uppercase;
-   
+
     @include transition3;
 
     &.style-1 {
@@ -1010,21 +1010,18 @@ $border: 6px;
         .desc {
             display: flex;
             gap: 4px;
-            margin-top: 8px;
-            color: $dull;
-
-            .icon {
-                margin-top: 4px;
-            }
+               margin-top: 4px;
+            margin-bottom: 6px;
 
             p {
-                font-size: 16px;
+                font-size: 15px;
                 line-height: 26px;
             }
         }
 
         .meta-list {
             margin-top: 0;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             column-gap: 14px;
@@ -1711,14 +1708,14 @@ $border: 6px;
         width: 100%;
         height: 100%;
         margin: 0;
-       
+
         img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             border-radius :$radius;
             @include transition5;
-         
+
         }
     }
 
@@ -3247,12 +3244,12 @@ $border: 6px;
                     border-radius: .5rem;
                     list-style-type: none;
                     -webkit-box-shadow:none;
-                    box-shadow:none; 
+                    box-shadow:none;
                 }
             }
 
         }
-    
+
     }
 }
 
@@ -5147,7 +5144,7 @@ $border: 6px;
 
 // Bento Grid
 .bGrid {
-    display: grid;     
+    display: grid;
     gap: 16px;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: 325px 235px;
@@ -5185,7 +5182,7 @@ $border: 6px;
 
 // Blog Bento Grid Specific Styles
 .blog-bento-grid {
-    
+
     @extend .bGrid;
 
     .bento-blog-item {
@@ -5415,7 +5412,7 @@ $border: 6px;
                     transition: all 0.3s ease;
 
                     &:hover {
-                        
+
                         gap: 12px;
                     }
 

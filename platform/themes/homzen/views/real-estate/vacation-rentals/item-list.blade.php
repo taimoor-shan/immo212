@@ -8,9 +8,8 @@
             {{ RvMedia::image($vacationRental->image, $vacationRental->name, 'medium-square') }}
         </div>
         <div class="top">
-            <ul class="d-flex gap-4 flex-column">
-                {!! BaseHelper::clean($vacationRental->status->toHtml()) !!}
-            </ul>
+            <span class="flag-tag primary">{{ $vacationRental->category->name }}</span>
+
             @if (RealEstateHelper::isEnabledWishlist())
                 <div class="d-flex gap-4">
                     <button type="button" class="box-icon w-32"
@@ -28,11 +27,11 @@
     </a>
     <div class="content">
         <div class="archive-top">
-            @if($vacationRental->category)
+            {{-- @if($vacationRental->category)
                 <div class="bottom">
                     <span class="textMuted">{{ $vacationRental->category->name }}</span>
                 </div>
-            @endif
+            @endif --}}
             <div class="h7 text-capitalize fw-5">
                 <a href="{{ $vacationRental->url }}" class="link line-clamp-1" title="{{ $vacationRental->name }}">{!! BaseHelper::clean($vacationRental->name) !!}</a>
             </div>
@@ -61,18 +60,18 @@
                         <span>{{ $vacationRental->number_bedroom }}</span>
                     </li>
                 @endif
-                @if($vacationRental->number_bathroom)
+                {{-- @if($vacationRental->number_bathroom)
                     <li class="item">
                         <i class="icon icon-bathtub"></i>
                         <span>{{ $vacationRental->number_bathroom }}</span>
                     </li>
-                @endif
-                @if($vacationRental->square)
+                @endif --}}
+                {{-- @if($vacationRental->square)
                     <li class="item">
                         <i class="icon icon-ruler"></i>
                         <span>{{ $vacationRental->square_text }}</span>
                     </li>
-                @endif
+                @endif --}}
             </ul>
             <div class="bot">
                 <div class="price">

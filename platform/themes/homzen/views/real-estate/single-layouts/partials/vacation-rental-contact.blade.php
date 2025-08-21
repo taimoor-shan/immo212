@@ -9,23 +9,23 @@
                 </a>
             </div>
             <div class="host-details">
-                <div class="text-1 name text-center">
+                <h5 class="mb-4 name text-center">
                     {{-- Host Name --}}
                     <a href="{{ $account->url }}">{{ $account->name }}</a>
-                </div>
-                <div class="contact d-flex flex-wrap gap-2">
+                </h5>
+                <div class="contact align-items-center justify-content-center d-flex flex-wrap gap-2">
                     {{-- Phone Contact --}}
                     @php $showPhone = $account->phone && !setting('real_estate_hide_agency_phone', false); @endphp
                     @if ($showPhone)
                         <div class="contact-item">
-                            <a href="tel:{{ $account->phone }}" class="info-item phone-link"
+                            <a href="tel:{{ $account->phone }}" class="contact-btn phone-link"
                                 data-phone="{{ $account->phone }}">
                                 {{ __('Contact by phone') }}
                             </a>
                         </div>
                     @elseif($hotline = theme_option('hotline'))
                         <div class="contact-item">
-                            <a href="tel:{{ $hotline }}" class="info-item phone-link"
+                            <a href="tel:{{ $hotline }}" class="contact-btn phone-link"
                                 data-phone="{{ $hotline }}">
                                 {{ __('Contact by phone') }}
                             </a>
@@ -36,7 +36,7 @@
                     @php $showEmail = $account->email && !setting('real_estate_hide_agency_email', false); @endphp
                     @if ($showEmail)
                         <div class="contact-item">
-                            <a href="#" class="contact-btn message-btn" data-bs-toggle="modal"
+                            <a href="#" class="contact-btn outline message-btn" data-bs-toggle="modal"
                                 data-bs-target="#vacationRentalContactModal">
                                 {{ __('Contact by email') }}
                             </a>
@@ -265,103 +265,10 @@
         color: #007bff;
     }
 
-    .contact-actions {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-        gap: 8px;
-        margin: 20px 0;
-    }
 
-    .contact-btn {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        padding: 12px 8px;
-        border: 1px solid #e9ecef;
-        border-radius: 6px;
-        background: white;
-        color: #6c757d;
-        text-decoration: none;
-        font-size: 12px;
-        font-weight: 500;
-        transition: all 0.2s ease;
-    }
 
-    .contact-btn:hover {
-        background: #f8f9fa;
-        border-color: #007bff;
-        color: #007bff;
-    }
 
-    .contact-btn x-core\\:icon {
-        font-size: 18px;
-    }
 
-    .phone-btn:hover {
-        background: #e8f5e8;
-        border-color: #28a745;
-        color: #28a745;
-    }
-
-    .email-btn:hover {
-        background: #fff3cd;
-        border-color: #ffc107;
-        color: #856404;
-    }
-
-    .message-btn:hover {
-        background: #e7f3ff;
-        border-color: #007bff;
-        color: #007bff;
-    }
-
-    .phone-display {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px;
-        background: #f8f9fa;
-        border-radius: 6px;
-        font-weight: 500;
-        color: #212529;
-    }
-
-    .phone-display x-core\\:icon {
-        color: #28a745;
-        font-size: 16px;
-    }
-
-    /* Contact items styling */
-    .contact-item {
-        margin: 8px 0;
-    }
-
-    .contact-item a {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 12px;
-        background: #f8f9fa;
-        border: 1px solid #e9ecef;
-        border-radius: 6px;
-        text-decoration: none;
-        color: #495057;
-        font-size: 14px;
-        transition: all 0.2s ease;
-    }
-
-    .contact-item a:hover {
-        background: #e9ecef;
-        border-color: #007bff;
-        color: #007bff;
-    }
-
-    .contact-item .fas {
-        font-size: 14px;
-        width: 16px;
-        text-align: center;
-    }
 
     /* Use existing theme form styling with minimal overrides */
     .contact-form .ip-group {
@@ -392,10 +299,6 @@
         .modal-dialog {
             margin: 1rem 0.5rem;
             max-width: calc(100% - 1rem);
-        }
-
-        .property-summary .col-6 {
-            margin-bottom: 1rem;
         }
     }
 

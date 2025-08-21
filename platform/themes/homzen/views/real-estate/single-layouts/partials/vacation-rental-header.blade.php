@@ -26,12 +26,12 @@
                         {{ $vacationRental->maximum_guests }} {{ __('guests max') }}
                     </li>
                 @endif
-                @if ($vacationRental->price)
+                @if ($vacationRental->number_bedroom)
                     <li class="meta-item">
                         |
                     </li>
                     <li class="meta-item">
-                        {{ $vacationRental->price_format }} {{ __('per night') }}
+                        {{ $vacationRental->number_bedroom }} {{ __('beds.') }}
                     </li>
                 @endif
             </ul>
@@ -42,18 +42,18 @@
             <div class="d-flex align-items-center">
 
                 <h4 class="price">{{ $vacationRental->price_format }}</h4>
-                <span class="text-variant-1">{{ __('per night') }}</span>
+                <span class="text-variant-1">/{{ __('per night') }}</span>
             </div>
 
             <ul class="iconText d-flex gap-3">
                 @if (RealEstateHelper::isEnabledWishlist())
                     <li>
-                        <button type="button" class="tf-btn secondary sm"
-                            data-type="vacationRental"
+                        <button type="button" class="roundBtn" data-type="vacation_rental"
                             data-bb-toggle="add-to-wishlist" data-id="{{ $vacationRental->getKey() }}"
                             data-add-message="{{ __('Added ":name" to wishlist successfully!', ['name' => $vacationRental->name]) }}"
                             data-remove-message="{{ __('Removed ":name" from wishlist successfully!', ['name' => $vacationRental->name]) }}">
                             <i class="fa-regular fa-heart"></i>
+
                         </button>
                     </li>
                 @endif

@@ -1985,19 +1985,24 @@ $(() => {
     const initWishlistCount = () => {
         const wishlist = decodeURIComponent(getCookie('wishlist') || '')
         const projectWishlist = decodeURIComponent(getCookie('project_wishlist') || '')
+        const vacationRentalWishlist = decodeURIComponent(getCookie('vacation_rental_wishlist') || '')
 
         const wishlistArray = wishlist ? wishlist.split(',') : []
         const projectWishlistArray = projectWishlist ? projectWishlist.split(',') : []
+        const vacationRentalWishlistArray = vacationRentalWishlist ? vacationRentalWishlist.split(',') : []
 
-        $('[data-bb-toggle="wishlist-count"]').text(wishlistArray.length + projectWishlistArray.length)
+        $('[data-bb-toggle="wishlist-count"]').text(wishlistArray.length + projectWishlistArray.length + vacationRentalWishlistArray.length)
+    }
 
 
     const initWishlist = () => {
         const wishlist = decodeURIComponent(getCookie('wishlist') || '')
         const projectWishlist = decodeURIComponent(getCookie('project_wishlist') || '')
+        const vacationRentalWishlist = decodeURIComponent(getCookie('vacation_rental_wishlist') || '')
 
         const wishlistArray = wishlist ? wishlist.split(',') : []
         const projectWishlistArray = projectWishlist ? projectWishlist.split(',') : []
+        const vacationRentalWishlistArray = vacationRentalWishlist ? vacationRentalWishlist.split(',') : []
 
     wishlistArray.forEach((id) => {
       const $button = $(
@@ -2026,6 +2031,30 @@ $(() => {
     projectWishlistArray.forEach((id) => {
       const $button = $(
         `[data-bb-toggle="add-to-wishlist"][data-type="project"][data-id="${id}"]`,
+      );
+      $button.addClass("active");
+
+      // Update the icon
+      const $icon = $button.find(".icon, svg");
+      if ($icon.length) {
+        $icon.replaceWith(`
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />
+                    </svg>
+                `);
+      }
+
+      // Update the text to "Remove"
+      const $text = $button.find("span");
+      if ($text.length) {
+        $text.text("Remove");
+      }
+    });
+
+    vacationRentalWishlistArray.forEach((id) => {
+      const $button = $(
+        `[data-bb-toggle="add-to-wishlist"][data-type="vacation_rental"][data-id="${id}"]`,
       );
       $button.addClass("active");
 
@@ -2285,7 +2314,14 @@ $(() => {
 
             const $currentTarget = $(e.currentTarget)
             const id = $currentTarget.data('id')
-            const cookieName = $currentTarget.data('type') === 'property' ? 'wishlist' : 'project_wishlist'
+            const dataType = $currentTarget.data('type')
+            let cookieName = 'project_wishlist'
+            
+            if (dataType === 'property') {
+                cookieName = 'wishlist'
+            } else if (dataType === 'vacation_rental') {
+                cookieName = 'vacation_rental_wishlist'
+            }
 
       const wishlist = decodeURIComponent(getCookie(cookieName) || "");
       const wishlistArray = wishlist ? wishlist.split(",") : [];

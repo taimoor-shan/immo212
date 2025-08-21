@@ -36,14 +36,14 @@
             <ul class="iconText d-flex gap-3">
                  @if (RealEstateHelper::isEnabledWishlist())
                 <li>
-                    <button type="button" class="tf-btn secondary sm" data-type="property"
+                    <button type="button" class="roundBtn" data-type="property"
                             data-bb-toggle="add-to-wishlist"
                             data-id="{{ $property->getKey() }}"
                             data-add-message="{{ __('Added ":name" to wishlist successfully!', ['name' => $property->name]) }}"
                             data-remove-message="{{ __('Removed ":name" from wishlist successfully!', ['name' => $property->name]) }}"
                     >
-                        <x-core::icon name="ti ti-heart" />
-                        <span>Save</span>
+                        <i class="fa-regular fa-heart"></i>
+
                     </button>
                 </li>
                         @endif
@@ -55,36 +55,3 @@
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const shareBtn = document.getElementById('shareDropdownBtn');
-    const shareMenu = document.getElementById('shareDropdownMenu');
-
-    if (shareBtn && shareMenu) {
-        // Toggle dropdown on button click
-        shareBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            if (shareMenu.style.display === 'none' || shareMenu.style.display === '') {
-                shareMenu.style.display = 'block';
-            } else {
-                shareMenu.style.display = 'none';
-            }
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!shareBtn.contains(e.target) && !shareMenu.contains(e.target)) {
-                shareMenu.style.display = 'none';
-            }
-        });
-
-        // Prevent dropdown from closing when clicking inside menu
-        shareMenu.addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
-    }
-});
-</script>

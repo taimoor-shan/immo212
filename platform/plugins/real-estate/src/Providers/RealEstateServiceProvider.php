@@ -424,7 +424,7 @@ class RealEstateServiceProvider extends ServiceProvider
                 })
                 ->registerItem([
                     'id' => 'cms-plugins-vacation-rental',
-                    'priority' => 6,
+                    'priority' => 0,
                     'parent_id' => null,
                     'name' => 'plugins/real-estate::vacation-rental.name',
                     'icon' => 'ti ti-bed',

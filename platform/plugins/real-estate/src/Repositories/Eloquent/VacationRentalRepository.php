@@ -117,11 +117,12 @@ class VacationRentalRepository extends RepositoriesAbstract implements VacationR
             'with' => [],
         ], $params);
 
-        // Initialize the model with published vacation rentals
+        // Initialize the model with active vacation rentals
         $this->model = $this->originalModel
-            ->wherePublished()
-            ->approved()
-            ->notExpired();
+            ->where('status', '!=', BaseStatusEnum::DRAFT)
+            ->where('moderation_status', ModerationStatusEnum::APPROVED)
+            ->notExpired()
+            ;
 
         // Always sort by featured status first, then by featured_priority, then by the regular ordering
         $this->model = $this->model
@@ -134,6 +135,7 @@ class VacationRentalRepository extends RepositoriesAbstract implements VacationR
         foreach ($orderBy as $column => $direction) {
             $this->model = $this->model->orderBy($column, $direction);
         }
+
 
         // @phpstan-ignore-next-line
 
@@ -329,6 +331,8 @@ class VacationRentalRepository extends RepositoriesAbstract implements VacationR
         }
 
         $this->model = apply_filters('vacation_rentals_filter_query', $this->model, $filters, $params);
+
+        //  dd($filters);
 
         return $this->advancedGet($params);
     }

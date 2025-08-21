@@ -40,6 +40,11 @@ class Category extends BaseModel implements HasTreeCategoryContract
         return $this->belongsToMany(Property::class, 're_property_categories')->with('slugable');
     }
 
+    public function vacationRentals(): BelongsToMany
+    {
+        return $this->belongsToMany(VacationRental::class, 're_vacation_rental_categories')->with('slugable');
+    }
+
     public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, 're_project_categories')->with('slugable');
@@ -99,6 +104,7 @@ class Category extends BaseModel implements HasTreeCategoryContract
             }
 
             $category->properties()->detach();
+            $category->vacationRentals()->detach();
             $category->projects()->detach();
         });
     }

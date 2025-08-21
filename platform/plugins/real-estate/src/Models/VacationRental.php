@@ -308,29 +308,12 @@ class VacationRental extends BaseModel
 
     protected function shortAddress(): Attribute
     {
-        return Attribute::get(function () {
+       return Attribute::get(function () {
             if (! is_plugin_active('location')) {
                 return $this->location;
             }
 
-            $addressParts = [];
-
-            // Safely get city name
-            if ($this->city && $this->city->name) {
-                $addressParts[] = $this->city->name;
-            }
-
-            // Safely get state name
-            if ($this->state && $this->state->name) {
-                $addressParts[] = $this->state->name;
-            }
-
-            // If no city/state found, fallback to location field
-            if (empty($addressParts)) {
-                return $this->location;
-            }
-
-            return implode(', ', $addressParts);
+            return implode(', ', array_filter([$this->city->name, $this->state->name]));
         });
     }
 

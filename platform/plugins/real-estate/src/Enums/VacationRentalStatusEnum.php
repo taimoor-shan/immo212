@@ -22,13 +22,6 @@ class VacationRentalStatusEnum extends Enum
 
     public static $langPath = 'plugins/real-estate::vacation-rental.statuses';
 
-    /**
-     * Get statuses that should be considered active/visible on frontend
-     */
-    public static function getActiveStatuses(): array
-    {
-        return [self::RENTING, self::PUBLISHED];
-    }
 
     public function toHtml(): HtmlString|string|null
     {

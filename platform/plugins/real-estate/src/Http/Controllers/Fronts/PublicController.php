@@ -494,7 +494,7 @@ class PublicController extends BaseController
     {
         SeoHelper::setTitle(__('Vacation Rentals'));
 
-        $vacationRentals = RealEstateHelper::getVacationRentalsFilter((int) theme_option('number_of_vacation_rentals_per_page') ?: 12, RealEstateHelper::getReviewExtraData());
+        $vacationRentals = RealEstateHelper::getVacationRentalsFilter((int) theme_option('number_of_vacation_rentals_per_page') ?: 12);
 
         if ($request->ajax()) {
             if ($request->query('minimal')) {

@@ -425,9 +425,9 @@ class RealEstateServiceProvider extends ServiceProvider
                 ->registerItem([
                     'id' => 'cms-plugins-vacation-rental',
                     'priority' => 6,
-                    'parent_id' => 'cms-plugins-real-estate',
+                    'parent_id' => null,
                     'name' => 'plugins/real-estate::vacation-rental.name',
-                    'icon' => null,
+                    'icon' => 'ti ti-bed',
                     'url' => fn () => route('vacation-rental.index'),
                     'permissions' => ['vacation-rental.index'],
                 ])
@@ -458,6 +458,8 @@ class RealEstateServiceProvider extends ServiceProvider
                     'url' => fn () => route('vacation-rental.admin.bookings'),
                     'permissions' => ['vacation-rental.bookings'],
                 ]);
+
+
         });
 
         DashboardMenu::for('account')->beforeRetrieving(function (DashboardMenuSupport $dashboardMenu): void {
@@ -760,6 +762,7 @@ class RealEstateServiceProvider extends ServiceProvider
 
         if (is_plugin_active('location')) {
             Location::registerModule(Property::class);
+            Location::registerModule(VacationRental::class);
             Location::registerModule(Project::class);
             Location::registerModule(Account::class);
         } else {

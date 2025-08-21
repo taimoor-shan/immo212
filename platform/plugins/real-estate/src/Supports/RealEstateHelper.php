@@ -104,29 +104,32 @@ class RealEstateHelper
         return $relations;
     }
 
-    public function getVacationRentalRelationsQuery(): array
-    {
+public function getVacationRentalRelationsQuery(): array
+{
+    $relations = [
+        'slugable:id,key,prefix,reference_id',
+        'currency:id,is_default,exchange_rate,symbol,title,is_prefix_symbol',
+        'categories' => function (BelongsToMany|BaseQueryBuilder $query) {
+            return $query
+                ->wherePublished()
+                ->orderBy('re_categories.created_at', 'DESC') // ✅ specify table
+                ->orderByDesc('re_categories.is_default')
+                ->orderByDesc('re_categories.order')
+                ->select(['re_categories.id', 're_categories.name']);
+        },
+    ];
+
+    if (is_plugin_active('location')) {
         $relations = [
-            'slugable:id,key,prefix,reference_id',
-            'currency:id,is_default,exchange_rate,symbol,title,is_prefix_symbol',
-            'categories' => function (BelongsToMany|BaseQueryBuilder $query) {
-                return $query
-                    ->wherePublished()
-                    ->orderBy('created_at', 'DESC')->latest('is_default')->latest('order')
-                    ->select(['re_categories.id', 're_categories.name']);
-            },
+            ...$relations,
+            'state:id,name',
+            'city:id,name',
         ];
-
-        if (is_plugin_active('location')) {
-            $relations = [
-                ...$relations,
-                'state:id,name',
-                'city:id,name',
-            ];
-        }
-
-        return $relations;
     }
+
+    return $relations;
+}
+
 
     public function isEnabledCreditsSystem(): bool
     {

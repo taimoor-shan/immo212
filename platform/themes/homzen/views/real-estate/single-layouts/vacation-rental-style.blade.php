@@ -11,14 +11,15 @@
                 <div class="col-lg-8 col-xl-8">
                     @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-gallery'))
                     {!! apply_filters('before_single_content_detail', null, $vacationRental) !!}
+                    @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-features'), ['class' => 'single-vacation-rental-element'])
 
                     @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-description'), ['class' => 'single-vacation-rental-element'])
+                    {{-- @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-info'), ['class' => 'single-vacation-rental-element']) --}}
+                    @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-info'), ['class' => 'single-vacation-rental-element'])
 
-                    @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-features'), ['class' => 'single-vacation-rental-element'])
 
                     @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-facilities'), ['class' => 'single-vacation-rental-element'])
 
-                    @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-info'), ['class' => 'single-vacation-rental-element'])
 
                     @include(Theme::getThemeNamespace('views.real-estate.single-layouts.partials.vacation-rental-map'), ['class' => 'single-vacation-rental-element'])
 

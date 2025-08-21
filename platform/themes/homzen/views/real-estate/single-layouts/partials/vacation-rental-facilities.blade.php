@@ -1,5 +1,5 @@
 @if ($vacationRental->facilities->isNotEmpty())
-    <div @class(['single-vacation-rental-facilities', $class ?? null])>
+    <div @class(['widget-box', $class ?? null])>
         <div class="h7 title fw-6">{{ __('Nearby Facilities') }}</div>
         <div class="facilities-grid">
             @foreach($vacationRental->facilities as $facility)
@@ -100,16 +100,16 @@
         padding: 16px;
         margin-bottom: 20px;
     }
-    
+
     .facilities-grid {
         grid-template-columns: 1fr;
         gap: 12px;
     }
-    
+
     .facility-item {
         padding: 12px;
     }
-    
+
     .facility-icon {
         width: 28px;
         height: 28px;

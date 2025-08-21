@@ -8,7 +8,14 @@
 }
 
 .roundBtn.active i.fa-regular::before { font-weight: 900 !important;color: $primary; }
-
+.readMore{
+    outline: none;
+    border: none;
+    background: transparent;
+    color: $primary;
+    font-size: 16px;
+    text-decoration: underline;
+}
 .tf-btn {
     font-size: 1rem;
     line-height: 1;

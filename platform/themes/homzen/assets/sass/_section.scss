@@ -66,7 +66,11 @@ $border: 6px;
 .widget-box {
     padding: 24px;
     border-radius: $border;
+    margin-bottom: 30px;
+    padding: 24px;
+    border: 1px solid #e9ecef;
 }
+
 
 .flat-blog-item {
     margin-bottom: 40px;
@@ -3622,8 +3626,6 @@ $border: 6px;
         padding-bottom: 23px;
         margin-bottom: 23px;
         border-bottom: none;
-        flex-wrap: wrap;
-        gap: 10px;
 
         .title {
             margin-top: 8px;

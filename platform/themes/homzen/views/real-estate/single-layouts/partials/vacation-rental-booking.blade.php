@@ -1,5 +1,5 @@
 @if($vacationRental)
-    <div @class(['widget-box single-vacation-rental-booking single-property-contact', $class ?? null])>
+    <div id="bookingForm" @class(['single-vacation-rental-booking single-property-contact mb-5 bg-white', $class ?? null])>
         <div class="h7 title fw-6">{{ __('Book This Vacation Rental') }}</div>
 
         {!! apply_filters('vacation_rental_right_details_info', null, $vacationRental) !!}

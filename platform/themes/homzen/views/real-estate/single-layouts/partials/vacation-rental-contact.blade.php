@@ -1,8 +1,8 @@
 @if ($vacationRental->author)
     <div @class(['widget-box single-vacation-rental-contact', $class ?? null])>
         <div class="h7 title fw-6">{{ __('Contact Host') }}</div>
-        
-        <div class="host-info">
+
+        {{-- <div class="host-info">
             <div class="host-avatar">
                 @if ($vacationRental->author->avatar)
                     {{ RvMedia::image($vacationRental->author->avatar, $vacationRental->author->name, 'thumb') }}
@@ -12,13 +12,13 @@
                     </div>
                 @endif
             </div>
-            
+
             <div class="host-details">
                 <div class="host-name">{{ $vacationRental->author->name }}</div>
                 @if ($vacationRental->author->description)
                     <div class="host-description">{{ Str::limit($vacationRental->author->description, 100) }}</div>
                 @endif
-                
+
                 <div class="host-stats">
                     @if ($vacationRental->author->vacationRentals)
                         <div class="stat-item">
@@ -34,8 +34,29 @@
                     @endif
                 </div>
             </div>
+        </div> --}}
+
+        <div class="box-avatar">
+            <div class="avatar avt-100 round">
+                <a href="{{ $account->url }}" class="d-block">
+                    {{ RvMedia::image($account->avatar?->url ?: $account->avatar_url, $account->name) }}
+                </a>
+            </div>
+            <div class="info line-clamp-1">
+                <div class="text-1 name">
+                    <a href="{{ $account->url }}">{{ $account->name }}</a>
+                </div>
+                @if ($account->phone && ! setting('real_estate_hide_agency_phone', false))
+                    <a href="tel:{{ $account->phone }}" class="info-item">{{ $account->phone }}</a>
+                @elseif($hotline = theme_option('hotline'))
+                    <a href="tel:{{ $hotline }}" class="info-item">{{ $hotline }}</a>
+                @endif
+                @if ($account->email && ! setting('real_estate_hide_agency_email', false))
+                    <a href="mailto:{{ $account->email }}" class="info-item">{{ $account->email }}</a>
+                @endif
+            </div>
         </div>
-        
+
         <div class="contact-actions">
             @if ($vacationRental->author->phone)
                 <a href="tel:{{ $vacationRental->author->phone }}" class="contact-btn phone-btn">
@@ -43,20 +64,20 @@
                     <span>{{ __('Call') }}</span>
                 </a>
             @endif
-            
+
             @if ($vacationRental->author->email)
                 <a href="mailto:{{ $vacationRental->author->email }}" class="contact-btn email-btn">
                     <x-core::icon name="ti ti-mail" />
                     <span>{{ __('Email') }}</span>
                 </a>
             @endif
-            
+
             <button type="button" class="contact-btn message-btn" data-bs-toggle="modal" data-bs-target="#contactHostModal">
                 <x-core::icon name="ti ti-message" />
                 <span>{{ __('Message') }}</span>
             </button>
         </div>
-        
+
         @if ($vacationRental->author->phone)
             <div class="phone-display">
                 <x-core::icon name="ti ti-phone" />
@@ -64,7 +85,7 @@
             </div>
         @endif
     </div>
-    
+
     <!-- Contact Host Modal -->
     <div class="modal fade" id="contactHostModal" tabindex="-1" aria-labelledby="contactHostModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -77,22 +98,22 @@
                     <form id="contactHostForm" action="{{ route('public.vacation-rental.inquiry') }}" method="POST">
                         @csrf
                         <input type="hidden" name="vacation_rental_id" value="{{ $vacationRental->id }}">
-                        
+
                         <div class="mb-3">
                             <label for="contact_name" class="form-label">{{ __('Your Name') }}</label>
                             <input type="text" class="form-control" id="contact_name" name="name" required>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="contact_email" class="form-label">{{ __('Your Email') }}</label>
                             <input type="email" class="form-control" id="contact_email" name="email" required>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="contact_phone" class="form-label">{{ __('Your Phone') }}</label>
                             <input type="tel" class="form-control" id="contact_phone" name="phone">
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="contact_message" class="form-label">{{ __('Message') }}</label>
                             <textarea class="form-control" id="contact_message" name="message" rows="4" required placeholder="{{ __('I am interested in this vacation rental...') }}"></textarea>
@@ -257,16 +278,16 @@
     .single-vacation-rental-contact {
         padding: 16px;
     }
-    
+
     .host-info {
         gap: 12px;
     }
-    
+
     .host-avatar {
         width: 50px;
         height: 50px;
     }
-    
+
     .contact-actions {
         grid-template-columns: repeat(3, 1fr);
     }

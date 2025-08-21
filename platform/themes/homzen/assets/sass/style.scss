@@ -30,13 +30,13 @@
     * Responsive
  ------------------------------------------------------------------------------ */
 
-@import 'icons';
+@import "icons";
 
 /*--------- Abstracts variable ---------- */
-@import './abstracts/index';
+@import "./abstracts/index";
 
 /*---------- Reset css styles ----------- */
-@import 'reset';
+@import "reset";
 
 /*------------ Calendar ---------------- */
 // Frontend Calendar Styles
@@ -77,8 +77,6 @@
                     height: 12px;
                     border-radius: 2px;
                     border: 1px solid #ddd;
-
-
                 }
 
                 span {
@@ -128,16 +126,17 @@
 
             .flatpickr-prev-month,
             .flatpickr-next-month {
-
                 top: 5px;
-
+            }
+            .flatpickr-month {
+                color: #495057;
+                font-weight: 500;
             }
         }
 
-
-        .flatpickr-month {
-            color: #495057;
-            font-weight: 500;
+        .flatpickr-innerContainer {
+            justify-content: center;
+            padding-bottom: 1rem;
         }
 
         .flatpickr-days {
@@ -185,7 +184,6 @@
                         background-color: #28a745;
                         border-color: #28a745;
                         color: white;
-
                     }
                 }
 
@@ -199,7 +197,6 @@
                         cursor: not-allowed;
                         color: rgba(57, 57, 57, 0.1);
                     }
-
                 }
 
                 &.calendar-booked {
@@ -263,7 +260,9 @@
         pointer-events: none !important;
         opacity: 0 !important;
         transform: translateY(-5px) !important;
-        transition: opacity 0.2s ease, transform 0.2s ease !important;
+        transition:
+            opacity 0.2s ease,
+            transform 0.2s ease !important;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
         display: block !important;
         visibility: visible !important;
@@ -279,7 +278,7 @@
 
         // Arrow pointing down to the date
         &::after {
-            content: '' !important;
+            content: "" !important;
             position: absolute !important;
             top: 100% !important;
             left: 50% !important;
@@ -408,7 +407,7 @@
 }
 
 .booking-number {
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     background-color: #e9ecef;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
@@ -446,7 +445,6 @@
                 margin-bottom: 0;
             }
         }
-
     }
 }
 
@@ -467,13 +465,13 @@
 }
 
 /*------------ Components ---------------- */
-@import './component/index';
+@import "./component/index";
 
 /*-------------- section ----------------- */
-@import './section';
+@import "./section";
 
 /*-------------- custom ----------------- */
-@import 'custom';
+@import "custom";
 
 /*-------------- responsive (highest priority) ----------------- */
-@import 'responsive';
+@import "responsive";

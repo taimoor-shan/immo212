@@ -1,29 +1,19 @@
 @if ($vacationRental->description)
-    <div @class(['single-vacation-rental-description', $class ?? null])>
+    <div @class(['widget-box', $class ?? null])>
         <div class="h7 title fw-6">{{ __('About This Vacation Rental') }}</div>
-        <div class="description-content">
-            <div class="text-variant-1">
-                {!! BaseHelper::clean($vacationRental->description) !!}
-            </div>
-        </div>
-        
+     <div class="description-content" id="desc">
+    <div class="desc-text">
+        {!! BaseHelper::clean($vacationRental->content) !!}
+    </div>
+    <button id="toggleBtn" class="readMore mt-2">Show more</button>
+</div>
+
         @if ($vacationRental->house_rules)
             <div class="house-rules mt-4">
                 <div class="h7 title fw-6 mb-3">{{ __('House Rules') }}</div>
                 <div class="house-rules-content">
-                    <div class="text-variant-1">
+                    <div class="">
                         {!! nl2br(e($vacationRental->house_rules)) !!}
-                    </div>
-                </div>
-            </div>
-        @endif
-        
-        @if ($vacationRental->cancellation_policy)
-            <div class="cancellation-policy mt-4">
-                <div class="h7 title fw-6 mb-3">{{ __('Cancellation Policy') }}</div>
-                <div class="policy-content">
-                    <div class="text-variant-1">
-                        <span class="policy-type">{{ ucfirst(str_replace('_', ' ', $vacationRental->cancellation_policy)) }}</span>
                     </div>
                 </div>
             </div>
@@ -32,16 +22,10 @@
 @endif
 
 <style>
-.single-vacation-rental-description {
-    margin-bottom: 30px;
-    padding: 24px;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
 
 .description-content {
     margin-top: 16px;
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
 .house-rules {
@@ -50,10 +34,9 @@
 }
 
 .house-rules-content {
-    background: #fff5f5;
+    background: #f3f5fa;
     padding: 16px;
-    border-radius: 6px;
-    border-left: 4px solid #dc3545;
+    border-left: 1px solid #dc3545;
 }
 
 .cancellation-policy {
@@ -80,4 +63,41 @@
         margin-bottom: 20px;
     }
 }
+
+.desc-text {
+  max-height: 170px; /* around 3 lines */
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.desc-text.expanded {
+  max-height: none;
+}
+.desc-text  strong{
+    font-size: 18px;
+    font-weight: 500;
+        display: inline-block;
+}
+.desc-text  p{
+    margin-bottom: 0.5rem;
+}
+.desc-text  ul{
+    margin-bottom: 0.5rem;
+    list-style-type: disc!important;
+}
+.desc-text  li{
+    margin-bottom: 0.25rem;
+}
+
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const text = document.querySelector("#desc .desc-text");
+  const btn = document.getElementById("toggleBtn");
+
+  btn.addEventListener("click", function () {
+    text.classList.toggle("expanded");
+    btn.textContent = text.classList.contains("expanded") ? "Show less" : "Show more";
+  });
+});
+</script>

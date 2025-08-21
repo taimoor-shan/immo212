@@ -1,5 +1,5 @@
 @if ($vacationRental->features->isNotEmpty())
-    <div @class(['single-vacation-rental-features', $class ?? null])>
+    <div @class(['widget-box', $class ?? null])>
         <div class="h7 title fw-6">{{ __('Amenities & Features') }}</div>
         <div class="features-grid">
             @foreach($vacationRental->features as $feature)
@@ -34,7 +34,7 @@
 
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 16px;
     margin-top: 20px;
 }
@@ -86,12 +86,12 @@
         padding: 16px;
         margin-bottom: 20px;
     }
-    
+
     .features-grid {
         grid-template-columns: 1fr;
         gap: 12px;
     }
-    
+
     .feature-item {
         padding: 10px;
     }

@@ -1,5 +1,5 @@
 @if($vacationRental)
-    <div @class(['single-vacation-rental-info', $class ?? null])>
+    <div @class(['widget-box', $class ?? null])>
         <div class="h7 title fw-6">{{ __('Vacation Rental Information') }}</div>
 
         <div class="vacation-rental-details mt-3">
@@ -113,53 +113,7 @@
             </div>
 
             <!-- House Rules -->
-            @if($vacationRental->house_rules)
-                <div class="house-rules mt-4">
-                    <div class="info-header mb-3">
-                        <x-core::icon name="ti ti-list-check" class="text-danger" />
-                        <span class="fw-6">{{ __('House Rules') }}</span>
-                    </div>
-                    <div class="house-rules-content">
-                        <div class="text-variant-1">
-                            {!! nl2br(e($vacationRental->house_rules)) !!}
-                        </div>
-                    </div>
-                </div>
-            @endif
 
-            <!-- Booking Summary -->
-            <div class="booking-summary mt-4">
-                <div class="info-header mb-3">
-                    <x-core::icon name="ti ti-info-circle" class="text-primary" />
-                    <span class="fw-6">{{ __('Booking Information') }}</span>
-                </div>
-                <div class="booking-info-grid">
-                    <div class="row g-2 text-sm">
-                        <div class="col-md-4">
-                            <div class="booking-info-item">
-                                <x-core::icon name="ti ti-currency-dollar" class="me-1" />
-                                <span>{{ __('Base price: :price/night', ['price' => $vacationRental->price_format]) }}</span>
-                            </div>
-                        </div>
-                        @if($vacationRental->minimum_stay)
-                            <div class="col-md-4">
-                                <div class="booking-info-item">
-                                    <x-core::icon name="ti ti-calendar" class="me-1" />
-                                    <span>{{ __('Min :nights nights', ['nights' => $vacationRental->minimum_stay]) }}</span>
-                                </div>
-                            </div>
-                        @endif
-                        @if($vacationRental->maximum_guests)
-                            <div class="col-md-4">
-                                <div class="booking-info-item">
-                                    <x-core::icon name="ti ti-users" class="me-1" />
-                                    <span>{{ __('Max :guests guests', ['guests' => $vacationRental->maximum_guests]) }}</span>
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -168,7 +122,7 @@
             border: 1px solid #e9ecef;
             border-radius: 6px;
             padding: 1rem;
-            background-color: #f8f9fa;
+            background-color: #f3f5fa;
             height: 100%;
         }
 

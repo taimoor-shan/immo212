@@ -13,7 +13,6 @@ use Botble\RealEstate\Enums\ConsultStatusEnum;
 use Botble\RealEstate\Facades\RealEstateHelper;
 use Botble\RealEstate\Forms\Fronts\ConsultForm;
 use Botble\RealEstate\Http\Requests\SendConsultRequest;
-use Botble\RealEstate\Http\Requests\VacationRentalBookingInquiryRequest;
 use Botble\RealEstate\Models\Account;
 use Botble\RealEstate\Models\Consult;
 use Botble\RealEstate\Models\ConsultCustomField;
@@ -132,108 +131,6 @@ class PublicController extends BaseController
         }
     }
 
-    public function sendVacationRentalBookingInquiry(VacationRentalBookingInquiryRequest $request)
-    {
-        try {
-            $property = Property::findOrFail($request->property_id);
-
-            // Prepare data for consult record
-            $data = [
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'content' => $request->content,
-                'property_id' => $property->id,
-                'ip_address' => $request->ip(),
-                'status' => ConsultStatusEnum::UNREAD,
-            ];
-
-            // Add vacation rental specific data to content
-            $bookingDetails = [
-                'Check-in Date' => $request->check_in_date,
-                'Check-out Date' => $request->check_out_date,
-                'Number of Guests' => $request->guests_count,
-            ];
-
-            $bookingDetailsText = "\n\n--- Booking Details ---\n";
-            foreach ($bookingDetails as $label => $value) {
-                $bookingDetailsText .= "{$label}: {$value}\n";
-            }
-
-            $data['content'] .= $bookingDetailsText;
-
-            // Handle custom fields
-            if ($request->has('consult_custom_fields')) {
-                $customFields = ConsultCustomField::query()
-                    ->wherePublished()
-                    ->with('options')
-                    ->get()
-                    ->keyBy('id');
-
-                $data['custom_fields'] = collect($request->input('consult_custom_fields'))
-                    ->filter()
-                    ->map(function ($item, $fieldId) use ($customFields) {
-                        $field = $customFields->get($fieldId);
-
-                        if (! $field) {
-                            return null;
-                        }
-
-                        $option = $field->options()->where('value', $item)->first();
-
-                        if (! $option && in_array($field->type->getValue(), [
-                            ConsultCustomFieldTypeEnum::DROPDOWN,
-                            ConsultCustomFieldTypeEnum::RADIO,
-                        ])) {
-                            return null;
-                        }
-
-                        $value = match ($field->type->getValue()) {
-                            ConsultCustomFieldTypeEnum::CHECKBOX => $item ? __('Yes') : __('No'),
-                            ConsultCustomFieldTypeEnum::RADIO, ConsultCustomFieldTypeEnum::DROPDOWN => $option?->label,
-                            default => $item,
-                        };
-
-                        return [$field->name => $value];
-                    })->all();
-            }
-
-            $consult = Consult::query()->create($data);
-
-            // Prepare email variables
-            $sendTo = RealEstateHelper::getConsultReceiveEmailsFromProperty($property);
-            $link = route('consult.edit', $consult->id);
-            $subject = 'Vacation Rental Booking Inquiry - ' . $property->name;
-
-            EmailHandler::setModule(REAL_ESTATE_MODULE_SCREEN_NAME)
-                ->setVariableValues([
-                    'consult_name' => $consult->name,
-                    'consult_email' => $consult->email,
-                    'consult_phone' => $consult->phone,
-                    'consult_content' => $consult->content,
-                    'consult_link' => $link,
-                    'consult_subject' => $subject,
-                    'consult_ip_address' => $consult->ip_address,
-                    'consult_custom_fields' => $data['custom_fields'] ?? [],
-                    'property_name' => $property->name,
-                    'check_in_date' => $request->check_in_date,
-                    'check_out_date' => $request->check_out_date,
-                    'guests_count' => $request->guests_count,
-                ])
-                ->sendUsingTemplate('vacation_rental_booking_inquiry', $sendTo);
-
-            return $this
-                ->httpResponse()
-                ->setMessage(__('Your booking inquiry has been sent successfully. We will contact you soon.'));
-        } catch (Exception $exception) {
-            BaseHelper::logError($exception);
-
-            return $this
-                ->httpResponse()
-                ->setError()
-                ->setMessage(__('An error occurred while sending your booking inquiry. Please try again.'));
-        }
-    }
 
     public function getProjects(Request $request)
     {

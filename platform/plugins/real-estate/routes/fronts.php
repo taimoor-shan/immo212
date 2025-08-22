@@ -72,8 +72,6 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
             Route::post('send-consult', 'PublicController@postSendConsult')
                 ->name('public.send.consult');
 
-            Route::post('vacation-rental/booking-inquiry', 'PublicController@sendVacationRentalBookingInquiry')
-                ->name('public.vacation-rental.booking-inquiry');
 
             Route::get('currency/switch/{code?}', [
                 'as' => 'public.change-currency',

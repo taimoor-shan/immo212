@@ -495,10 +495,10 @@ class VacationRentalBookingController extends BaseController
                     'consult_email' => $request->email,
                     'consult_phone' => $request->phone ?: 'Not provided',
                     'consult_content' => $request->message ?: 'Vacation rental inquiry',
-                    'consult_link' => $property->url,
-                    'consult_subject' => 'Vacation Rental Inquiry - ' . $property->name,
+                    'consult_link' => $vacationRental->url,
+                    'consult_subject' => 'Vacation Rental Inquiry - ' . $vacationRental->name,
                     'consult_ip_address' => $request->ip(),
-                    'property_name' => $property->name,
+                    'property_name' => $vacationRental->name,
                     'check_in_date' => $request->check_in_date,
                     'check_out_date' => $request->check_out_date,
                     'guests_count' => $request->guests_count,
@@ -506,19 +506,17 @@ class VacationRentalBookingController extends BaseController
                 ->sendUsingTemplate('vacation_rental_booking_inquiry', $sendTo);
 
             Log::info('Inquiry email sent successfully', [
-                'property_id' => $property->id,
+                'vacation_rental_id' => $vacationRental->id,
                 'customer_email' => $request->email,
                 'sent_to' => $sendTo ?: 'admin fallback',
             ]);
-
-
 
             return $this->httpResponse()
                 ->setMessage(__('Your inquiry has been sent successfully! The property owner will contact you soon.'));
 
         } catch (\Exception $e) {
             Log::error('Failed to send vacation rental inquiry: ' . $e->getMessage(), [
-                'property_id' => $request->property_id,
+                'vacation_rental_id' => $request->vacation_rental_id,
                 'customer_email' => $request->email,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),

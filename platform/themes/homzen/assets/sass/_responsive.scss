@@ -1457,6 +1457,23 @@
             'item2 item3'
             'item4 item5';
     }
+
+    .widget-box {
+    border-radius: 6px;
+    margin-bottom: 30px;
+    padding: 0;
+    border: none;
+}
+.calendar-wrapper {
+    border: none;
+    border-radius: 4px;
+    padding: 0;
+    background: #fff;
+}
+div#shareDropdownMenu-2 {
+    right: auto !important;
+    left: 0 !important;
+}
 }
 
 @media only screen and (max-width: 655px) {
@@ -1768,6 +1785,20 @@
     .homeya-box.list-style-1 .images-style {
         height: 220px;
     }
+
+    @media (max-width: 768px) {
+  .bGrid {
+        display: flex;
+    flex-direction: column;
+  }
+
+  .bGrid .image1,
+  .bGrid .image2,
+  .bGrid .image3,
+  .bGrid .image4 {
+    display: none; /* hide all images */
+  }
+}
 }
 
 @media only screen and (max-width: 500px) {

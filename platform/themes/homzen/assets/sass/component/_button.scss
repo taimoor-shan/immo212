@@ -4,7 +4,8 @@
     height: 40px;
     border-radius: 50px;
     outline: none;
-    border: 1px solid #888888;
+    border: 1px solid $primary;
+    color: $primary;
 }
 
 .roundBtn.active i.fa-regular::before { font-weight: 900 !important;color: $primary; }

@@ -24,6 +24,7 @@ use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Theme\Homzen\Actions\GetPropertiesAction;
+use Theme\Homzen\Actions\GetVacationRentalsAction;
 use Theme\Homzen\Forms\ShortcodeForm;
 
 app()->booted(function (): void {
@@ -70,6 +71,110 @@ app()->booted(function (): void {
         });
 
         Shortcode::setPreviewImage('properties', Theme::asset()->url('images/shortcodes/properties/style-2.png'));
+
+        Shortcode::register('vacation-rentals', __('Vacation Rentals'), __('Vacation Rentals'), function (ShortcodeCompiler $shortcode): ?string {
+            $categoryIds = Shortcode::fields()->getIds('category_ids', $shortcode) ?: [];
+            $cityId = $shortcode->city_id ?: null;
+            $authorId = $shortcode->author_id ?: null;
+            $isFeatured = (bool) $shortcode->is_featured;
+
+            $vacationRentals = (new GetVacationRentalsAction())->handle(
+                limit: (int) $shortcode->limit ?: 4,
+                categoryId: null,
+                featured: $isFeatured,
+                categoryIds: $categoryIds,
+                cityId: $cityId,
+                authorId: $authorId
+            );
+
+            return Theme::partial('shortcodes.vacation-rentals.index', compact('shortcode', 'vacationRentals', 'categoryIds'));
+        });
+
+        Shortcode::setPreviewImage('vacation-rentals', Theme::asset()->url('images/shortcodes/vacation-rentals/style-8.png'));
+
+        Shortcode::setAdminConfig('vacation-rentals', function (array $attributes): ShortcodeForm {
+            return ShortcodeForm::createFromArray($attributes)
+                ->lazyLoading()
+                ->add(
+                    'style',
+                    UiSelectorField::class,
+                    UiSelectorFieldOption::make()
+                        ->label(__('Style'))
+                        ->choices([
+                            8 => [
+                                'label' => __('Style :number', ['number' => 8]),
+                                'image' => Theme::asset()->url('images/shortcodes/vacation-rentals/style-8.png'),
+                            ],
+                        ])
+                        ->selected(Arr::get($attributes, 'style', 8))
+                        ->defaultValue(8)
+                )
+                ->addSectionHeadingFields()
+                ->add(
+                    'category_ids',
+                    SelectField::class,
+                    SelectFieldOption::make()
+                        ->label(__('Categories'))
+                        ->multiple()
+                        ->searchable()
+                        ->choices(
+                            Category::query()
+                                ->wherePublished()
+                                ->pluck('name', 'id')
+                                ->all()
+                        )
+                        ->selected(explode(',', Arr::get($attributes, 'category_ids', '')))
+                )
+                ->add(
+                    'is_featured',
+                    OnOffField::class,
+                    OnOffFieldOption::make()
+                        ->label(__('Only show featured vacation rentals'))
+                )
+                ->add(
+                    'city_id',
+                    SelectField::class,
+                    SelectFieldOption::make()
+                        ->label(__('City'))
+                        ->helperText(__('Select a specific city to filter vacation rentals.'))
+                        ->searchable()
+                        ->choices(
+                            ['' => __('All Cities')] +
+                            (is_plugin_active('location') ?
+                                City::query()
+                                    ->wherePublished()
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                                    ->all() : []
+                            )
+                        )
+                        ->selected(Arr::get($attributes, 'city_id', ''))
+                )
+                ->add(
+                    'author_id',
+                    SelectField::class,
+                    SelectFieldOption::make()
+                        ->label(__('Agent'))
+                        ->helperText(__('Select a specific agent to filter vacation rentals.'))
+                        ->searchable()
+                        ->choices(
+                            ['' => __('All Agents')] +
+                            Account::query()
+                                ->orderBy('first_name')
+                                ->orderBy('last_name')
+                                ->get()
+                                ->mapWithKeys(function ($account) {
+                                    $name = trim($account->first_name . ' ' . $account->last_name);
+                                    return [$account->id => $name ?: $account->username];
+                                })
+                                ->all()
+                        )
+                        ->selected(Arr::get($attributes, 'author_id', ''))
+                )
+                ->addLimitField()
+                ->addSectionButtonAction()
+                ->addBackgroundColorField();
+        });
 
         Shortcode::setAdminConfig('properties', function (array $attributes): ShortcodeForm {
             return ShortcodeForm::createFromArray($attributes)

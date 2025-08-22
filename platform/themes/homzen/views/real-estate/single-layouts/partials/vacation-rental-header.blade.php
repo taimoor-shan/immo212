@@ -40,41 +40,43 @@
 
         </div>
         <div class="col-12 col-md-4 col-lg-6">
-            <div class="d-flex justify-content-between justify-content-md-end align-items-end">
-                <div class="leftSec text-end">
+            <div class="d-flex justify-content-between justify-content-md-end  align-items-md-end flex-column gap-4 mt-3 mt-md-0">
+
                     <div class="d-flex align-items-center">
 
-                        <h4 class="price">{{ $vacationRental->price_format }}</h4>
+                        <h4 class="price fw-5">{{ $vacationRental->price_format }}</h4>
                         <span class="text-variant-1">/{{ __('per night') }}</span>
                     </div>
+                    <div class="d-flex justify-content-between gap-3">
+                        <ul class="iconText d-flex gap-3">
+                            @if (RealEstateHelper::isEnabledWishlist())
+                                <li>
+                                    <button type="button" class="roundBtn" data-type="vacation_rental"
+                                        data-bb-toggle="add-to-wishlist" data-id="{{ $vacationRental->getKey() }}"
+                                        data-add-message="{{ __('Added ":name" to wishlist successfully!', ['name' => $vacationRental->name]) }}"
+                                        data-remove-message="{{ __('Removed ":name" from wishlist successfully!', ['name' => $vacationRental->name]) }}">
+                                        <x-core::icon name="ti ti-heart" />
 
-                    <ul class="iconText d-flex gap-3">
-                        @if (RealEstateHelper::isEnabledWishlist())
+                                    </button>
+                                </li>
+                            @endif
                             <li>
-                                <button type="button" class="roundBtn" data-type="vacation_rental"
-                                    data-bb-toggle="add-to-wishlist" data-id="{{ $vacationRental->getKey() }}"
-                                    data-add-message="{{ __('Added ":name" to wishlist successfully!', ['name' => $vacationRental->name]) }}"
-                                    data-remove-message="{{ __('Removed ":name" from wishlist successfully!', ['name' => $vacationRental->name]) }}">
-                                    <i class="fa-regular fa-heart"></i>
-
-                                </button>
+                                @include(Theme::getThemeNamespace('views.real-estate.partials.social-sharing'),
+                                    [
+                                        'model' => $vacationRental,
+                                    ]
+                                )
                             </li>
-                        @endif
-                        <li>
-                            @include(Theme::getThemeNamespace('views.real-estate.partials.social-sharing'),
-                                [
-                                    'model' => $vacationRental,
-                                ]
-                            )
-                        </li>
-                    </ul>
-                </div>
+                        </ul>
+                        <div class="mobBtns d-block d-md-none">
+                            <a class="tf-btn" href="#bookingForm">{{ __('Book this property') }}</a>
+                            {{-- <a class=".tf-btn" href="">{{ __('Inquire now') }}</a> --}}
+                        </div>
+                    </div>
 
 
-                <div class="mobBtns d-block d-md-none">
-                    <a class="tf-btn" href="#bookingForm">{{ __('Book this property') }}</a>
-                    {{-- <a class=".tf-btn" href="">{{ __('Inquire now') }}</a> --}}
-                </div>
+
+
             </div>
         </div>
     </div>

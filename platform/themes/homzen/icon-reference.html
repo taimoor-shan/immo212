@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homzen Theme Icon Reference</title>
+    <link rel="stylesheet" href="public/css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f8f9fa;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .icon-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .icon-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .icon-display {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .icon-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .icon-class {
+            font-family: 'Courier New', monospace;
+            background: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #666;
+            word-break: break-all;
+        }
+        .usage-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .code-example {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        .search-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            margin: 20px auto;
+            display: block;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Homzen Theme Icon Reference</h1>
+        <p>Complete list of all available icons using the IcoMoon font system</p>
+        <input type="text" id="searchBox" class="search-box" placeholder="Search icons...">
+    </div>
+
+    <div class="usage-section">
+        <h2>How to Use Icons</h2>
+        <h3>1. HTML Class Method (Most Common)</h3>
+        <div class="code-example">
+            &lt;i class="icon icon-home"&gt;&lt;/i&gt;<br>
+            &lt;span class="icon icon-bed"&gt;&lt;/span&gt;
+        </div>
+        
+        <h3>2. Laravel Blade Component (New Method)</h3>
+        <div class="code-example">
+            &lt;x-core::icon name="ti ti-heart" /&gt;
+        </div>
+        
+        <h3>3. Custom Styling</h3>
+        <div class="code-example">
+            &lt;i class="icon icon-star" style="color: gold; font-size: 24px;"&gt;&lt;/i&gt;
+        </div>
+    </div>
+
+    <div class="icon-grid" id="iconGrid">
+        <!-- Property & Real Estate Icons -->
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-home"></i></div>
+            <div class="icon-name">Home</div>
+            <div class="icon-class">icon-home</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-apartment"></i></div>
+            <div class="icon-name">Apartment</div>
+            <div class="icon-class">icon-apartment</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-villa"></i></div>
+            <div class="icon-name">Villa</div>
+            <div class="icon-class">icon-villa</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-villa5"></i></div>
+            <div class="icon-name">Villa 5</div>
+            <div class="icon-class">icon-villa5</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-townhouse"></i></div>
+            <div class="icon-name">Townhouse</div>
+            <div class="icon-class">icon-townhouse</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-studio"></i></div>
+            <div class="icon-name">Studio</div>
+            <div class="icon-class">icon-studio</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-office"></i></div>
+            <div class="icon-name">Office</div>
+            <div class="icon-class">icon-office</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-commercial"></i></div>
+            <div class="icon-name">Commercial</div>
+            <div class="icon-class">icon-commercial</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-commercial2"></i></div>
+            <div class="icon-name">Commercial 2</div>
+            <div class="icon-class">icon-commercial2</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-ware"></i></div>
+            <div class="icon-name">Warehouse</div>
+            <div class="icon-class">icon-ware</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-farm"></i></div>
+            <div class="icon-name">Farm</div>
+            <div class="icon-class">icon-farm</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-garage"></i></div>
+            <div class="icon-name">Garage</div>
+            <div class="icon-class">icon-garage</div>
+        </div>
+        
+        <!-- Property Features -->
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-bed"></i></div>
+            <div class="icon-name">Bed</div>
+            <div class="icon-class">icon-bed</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-bathtub"></i></div>
+            <div class="icon-name">Bathtub</div>
+            <div class="icon-class">icon-bathtub</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-ruler"></i></div>
+            <div class="icon-name">Ruler (Size)</div>
+            <div class="icon-class">icon-ruler</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-double-ruler"></i></div>
+            <div class="icon-name">Double Ruler</div>
+            <div class="icon-class">icon-double-ruler</div>
+        </div>
+        
+        <!-- Transaction Types -->
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-buy-home"></i></div>
+            <div class="icon-name">Buy Home</div>
+            <div class="icon-class">icon-buy-home</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-sale-home"></i></div>
+            <div class="icon-name">Sale Home</div>
+            <div class="icon-class">icon-sale-home</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-rent-home"></i></div>
+            <div class="icon-name">Rent Home</div>
+            <div class="icon-class">icon-rent-home</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-sold"></i></div>
+            <div class="icon-name">Sold</div>
+            <div class="icon-class">icon-sold</div>
+        </div>
+        
+        <!-- Location & Map -->
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-location"></i></div>
+            <div class="icon-name">Location</div>
+            <div class="icon-class">icon-location</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-mapPin"></i></div>
+            <div class="icon-name">Map Pin</div>
+            <div class="icon-class">icon-mapPin</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-mapPinLine"></i></div>
+            <div class="icon-name">Map Pin Line</div>
+            <div class="icon-class">icon-mapPinLine</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-home-location"></i></div>
+            <div class="icon-name">Home Location</div>
+            <div class="icon-class">icon-home-location</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-map-trifold"></i></div>
+            <div class="icon-name">Map Trifold</div>
+            <div class="icon-class">icon-map-trifold</div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-search"></i></div>
+            <div class="icon-name">Search</div>
+            <div class="icon-class">icon-search</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-heart"></i></div>
+            <div class="icon-name">Heart (Favorite)</div>
+            <div class="icon-class">icon-heart</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-eye"></i></div>
+            <div class="icon-name">Eye (View)</div>
+            <div class="icon-class">icon-eye</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-eye-off"></i></div>
+            <div class="icon-name">Eye Off</div>
+            <div class="icon-class">icon-eye-off</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-share"></i></div>
+            <div class="icon-name">Share</div>
+            <div class="icon-class">icon-share</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-bookmark"></i></div>
+            <div class="icon-name">Bookmark</div>
+            <div class="icon-class">icon-bookmark</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-edit"></i></div>
+            <div class="icon-name">Edit</div>
+            <div class="icon-class">icon-edit</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-trash"></i></div>
+            <div class="icon-name">Trash (Delete)</div>
+            <div class="icon-class">icon-trash</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-download"></i></div>
+            <div class="icon-name">Download</div>
+            <div class="icon-class">icon-download</div>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-arr-r"></i></div>
+            <div class="icon-name">Arrow Right</div>
+            <div class="icon-class">icon-arr-r</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-arr-l"></i></div>
+            <div class="icon-name">Arrow Left</div>
+            <div class="icon-class">icon-arr-l</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-arr-down"></i></div>
+            <div class="icon-name">Arrow Down</div>
+            <div class="icon-class">icon-arr-down</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-close2"></i></div>
+            <div class="icon-name">Close</div>
+            <div class="icon-class">icon-close2</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-plus"></i></div>
+            <div class="icon-name">Plus (Add)</div>
+            <div class="icon-class">icon-plus</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-minus"></i></div>
+            <div class="icon-name">Minus</div>
+            <div class="icon-class">icon-minus</div>
+        </div>
+        
+        <!-- Interface -->
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-dashboard"></i></div>
+            <div class="icon-name">Dashboard</div>
+            <div class="icon-class">icon-dashboard</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-list"></i></div>
+            <div class="icon-name">List View</div>
+            <div class="icon-class">icon-list</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-grid"></i></div>
+            <div class="icon-name">Grid View</div>
+            <div class="icon-class">icon-grid</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-faders"></i></div>
+            <div class="icon-name">Filters</div>
+            <div class="icon-class">icon-faders</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-sliders-horizontal"></i></div>
+            <div class="icon-name">Sliders</div>
+            <div class="icon-class">icon-sliders-horizontal</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-categories"></i></div>
+            <div class="icon-name">Categories</div>
+            <div class="icon-class">icon-categories</div>
+        </div>
+        
+        <!-- Communication -->
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-phone"></i></div>
+            <div class="icon-name">Phone</div>
+            <div class="icon-class">icon-phone</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-phone2"></i></div>
+            <div class="icon-name">Phone 2</div>
+            <div class="icon-class">icon-phone2</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-mail"></i></div>
+            <div class="icon-name">Mail</div>
+            <div class="icon-class">icon-mail</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-send"></i></div>
+            <div class="icon-name">Send</div>
+            <div class="icon-class">icon-send</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-messages"></i></div>
+            <div class="icon-name">Messages</div>
+            <div class="icon-class">icon-messages</div>
+        </div>
+        
+        <!-- Social Media -->
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-facebook"></i></div>
+            <div class="icon-name">Facebook</div>
+            <div class="icon-class">icon-facebook</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-twitter"></i></div>
+            <div class="icon-name">Twitter</div>
+            <div class="icon-class">icon-twitter</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-linkedin"></i></div>
+            <div class="icon-name">LinkedIn</div>
+            <div class="icon-class">icon-linkedin</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-pinterest"></i></div>
+            <div class="icon-name">Pinterest</div>
+            <div class="icon-class">icon-pinterest</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-youtube"></i></div>
+            <div class="icon-name">YouTube</div>
+            <div class="icon-class">icon-youtube</div>
+        </div>
+        
+        <!-- User & Account -->
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-profile"></i></div>
+            <div class="icon-name">Profile</div>
+            <div class="icon-class">icon-profile</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-sign-out"></i></div>
+            <div class="icon-name">Sign Out</div>
+            <div class="icon-class">icon-sign-out</div>
+        </div>
+        
+        <!-- Other Features -->
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-calendar"></i></div>
+            <div class="icon-name">Calendar</div>
+            <div class="icon-class">icon-calendar</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-star"></i></div>
+            <div class="icon-name">Star (Rating)</div>
+            <div class="icon-class">icon-star</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-review"></i></div>
+            <div class="icon-name">Review</div>
+            <div class="icon-class">icon-review</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-clock-countdown"></i></div>
+            <div class="icon-name">Clock</div>
+            <div class="icon-class">icon-clock-countdown</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-booking"></i></div>
+            <div class="icon-name">Booking</div>
+            <div class="icon-class">icon-booking</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-360"></i></div>
+            <div class="icon-name">360 View</div>
+            <div class="icon-class">icon-360</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-images"></i></div>
+            <div class="icon-name">Images</div>
+            <div class="icon-class">icon-images</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-play"></i></div>
+            <div class="icon-name">Play</div>
+            <div class="icon-class">icon-play</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-play2"></i></div>
+            <div class="icon-name">Play 2</div>
+            <div class="icon-class">icon-play2</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-guarantee"></i></div>
+            <div class="icon-name">Guarantee</div>
+            <div class="icon-class">icon-guarantee</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-secure"></i></div>
+            <div class="icon-name">Secure</div>
+            <div class="icon-class">icon-secure</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-security"></i></div>
+            <div class="icon-name">Security</div>
+            <div class="icon-class">icon-security</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-support"></i></div>
+            <div class="icon-name">Support</div>
+            <div class="icon-class">icon-support</div>
+        </div>
+        
+        <!-- Amenity Icons -->
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-coffee"></i></div>
+            <div class="icon-name">Coffee</div>
+            <div class="icon-class">icon-coffee</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-tv"></i></div>
+            <div class="icon-name">TV</div>
+            <div class="icon-class">icon-tv</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-refrigerator"></i></div>
+            <div class="icon-name">Refrigerator</div>
+            <div class="icon-class">icon-refrigerator</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-microwave"></i></div>
+            <div class="icon-name">Microwave</div>
+            <div class="icon-class">icon-microwave</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-dishwasher"></i></div>
+            <div class="icon-name">Dishwasher</div>
+            <div class="icon-class">icon-dishwasher</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-iron"></i></div>
+            <div class="icon-name">Iron</div>
+            <div class="icon-class">icon-iron</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-bed-line"></i></div>
+            <div class="icon-name">Bed Line</div>
+            <div class="icon-class">icon-bed-line</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-pillows"></i></div>
+            <div class="icon-name">Pillows</div>
+            <div class="icon-class">icon-pillows</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-hanger"></i></div>
+            <div class="icon-name">Hanger</div>
+            <div class="icon-class">icon-hanger</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-lockbox"></i></div>
+            <div class="icon-name">Lockbox</div>
+            <div class="icon-class">icon-lockbox</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-kit"></i></div>
+            <div class="icon-name">Kit</div>
+            <div class="icon-class">icon-kit</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-carbon"></i></div>
+            <div class="icon-name">Carbon</div>
+            <div class="icon-class">icon-carbon</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-smoke-alarm"></i></div>
+            <div class="icon-name">Smoke Alarm</div>
+            <div class="icon-class">icon-smoke-alarm</div>
+        </div>
+        
+        <!-- Miscellaneous -->
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-hammer"></i></div>
+            <div class="icon-name">Hammer</div>
+            <div class="icon-class">icon-hammer</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-crop"></i></div>
+            <div class="icon-name">Crop</div>
+            <div class="icon-class">icon-crop</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-hand"></i></div>
+            <div class="icon-name">Hand</div>
+            <div class="icon-class">icon-hand</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-proven"></i></div>
+            <div class="icon-name">Proven</div>
+            <div class="icon-class">icon-proven</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-house-line"></i></div>
+            <div class="icon-name">House Line</div>
+            <div class="icon-class">icon-house-line</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-file-text"></i></div>
+            <div class="icon-name">File Text</div>
+            <div class="icon-class">icon-file-text</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-package"></i></div>
+            <div class="icon-name">Package</div>
+            <div class="icon-class">icon-package</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-list-dashes"></i></div>
+            <div class="icon-name">List Dashes</div>
+            <div class="icon-class">icon-list-dashes</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-tick"></i></div>
+            <div class="icon-name">Tick (Check)</div>
+            <div class="icon-class">icon-tick</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-img-2"></i></div>
+            <div class="icon-name">Image 2</div>
+            <div class="icon-class">icon-img-2</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-arrLeftRight"></i></div>
+            <div class="icon-name">Arrow Left Right</div>
+            <div class="icon-class">icon-arrLeftRight</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-arrow-down-right"></i></div>
+            <div class="icon-name">Arrow Down Right</div>
+            <div class="icon-class">icon-arrow-down-right</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-arrow-right2"></i></div>
+            <div class="icon-name">Arrow Right 2</div>
+            <div class="icon-class">icon-arrow-right2</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-arrow-left2"></i></div>
+            <div class="icon-name">Arrow Left 2</div>
+            <div class="icon-class">icon-arrow-left2</div>
+        </div>
+        
+        <div class="icon-item">
+            <div class="icon-display"><i class="icon icon-arrow-down-right2"></i></div>
+            <div class="icon-name">Arrow Down Right 2</div>
+            <div class="icon-class">icon-arrow-down-right2</div>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        document.getElementById('searchBox').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const iconItems = document.querySelectorAll('.icon-item');
+            
+            iconItems.forEach(function(item) {
+                const iconName = item.querySelector('.icon-name').textContent.toLowerCase();
+                const iconClass = item.querySelector('.icon-class').textContent.toLowerCase();
+                
+                if (iconName.includes(searchTerm) || iconClass.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+        
+        // Click to copy icon class
+        document.querySelectorAll('.icon-class').forEach(function(element) {
+            element.addEventListener('click', function() {
+                const text = this.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    // Visual feedback
+                    const original = element.textContent;
+                    element.textContent = 'Copied!';
+                    element.style.background = '#28a745';
+                    element.style.color = 'white';
+                    
+                    setTimeout(function() {
+                        element.textContent = original;
+                        element.style.background = '#f0f0f0';
+                        element.style.color = '#666';
+                    }, 1000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

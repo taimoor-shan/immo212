@@ -32,7 +32,7 @@
             </div>
             @if($property->address)
                 <div class="desc">
-                    <i class="icon icon-mapPin"></i>
+
                     <p>{{ $property->address }}</p>
                 </div>
             @endif

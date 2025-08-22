@@ -14,6 +14,8 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class VacationRentalRepository extends RepositoriesAbstract implements VacationRentalInterface
 {
@@ -78,6 +80,7 @@ class VacationRentalRepository extends RepositoriesAbstract implements VacationR
             'category_ids' => null,
             'check_in_date' => null,
             'check_out_date' => null,
+            'maximum_stay' => null,
         ], $filters);
 
         $orderBy = match ($filters['sort_by']) {
@@ -286,29 +289,109 @@ class VacationRentalRepository extends RepositoriesAbstract implements VacationR
             $this->model = $this->model->where('minimum_stay', '<=', $filters['minimum_stay']);
         }
 
+        if ($filters['maximum_stay'] !== null) {
+            $this->model = $this->model->where(function (Builder $query) use ($filters) {
+                $query->whereNull('maximum_stay')
+                      ->orWhere('maximum_stay', '>=', $filters['maximum_stay']);
+            });
+        }
+
         if ($filters['maximum_guests'] !== null) {
             $this->model = $this->model->where('maximum_guests', '>=', $filters['maximum_guests']);
         }
 
-        // Date availability filtering
-        if ($filters['check_in_date'] !== null || $filters['check_out_date'] !== null) {
-            $checkInDate = $filters['check_in_date'];
-            $checkOutDate = $filters['check_out_date'];
+        // Date availability filtering with comprehensive validation
+        // This filtering replicates the logic from the frontend booking calendar to ensure
+        // that only truly available vacation rentals are shown in search results.
+        // It validates:
+        // 1. Minimum stay requirements (property-level and rule-based overrides)
+        // 2. Maximum stay requirements (property-level and rule-based overrides)
+        // 3. No conflicting bookings (pending or confirmed)
+        // 4. No blocked, booked, or maintenance dates in the selected range
+        // 5. Availability rules that might block certain date ranges or days of week
+        if ($filters['check_in_date'] !== null && $filters['check_out_date'] !== null) {
+            $checkInDate = Carbon::parse($filters['check_in_date']);
+            $checkOutDate = Carbon::parse($filters['check_out_date']);
+            $nights = $checkInDate->diffInDays($checkOutDate);
 
-            if ($checkInDate && $checkOutDate) {
-                // Filter out vacation rentals that have conflicting bookings
-                $this->model = $this->model->whereDoesntHave('bookings', function ($query) use ($checkInDate, $checkOutDate) {
-                    $query->where('status', 'confirmed')
-                          ->where(function ($q) use ($checkInDate, $checkOutDate) {
-                              $q->whereBetween('check_in_date', [$checkInDate, $checkOutDate])
-                                ->orWhereBetween('check_out_date', [$checkInDate, $checkOutDate])
-                                ->orWhere(function ($q2) use ($checkInDate, $checkOutDate) {
-                                    $q2->where('check_in_date', '<=', $checkInDate)
-                                       ->where('check_out_date', '>=', $checkOutDate);
-                                });
-                          });
+            // Filter vacation rentals based on comprehensive availability check
+            $this->model = $this->model->where(function (Builder $query) use ($checkInDate, $checkOutDate, $nights) {
+                $query->whereExists(function ($subQuery) use ($checkInDate, $checkOutDate, $nights) {
+                    $subQuery->selectRaw('1')
+                        ->from('re_vacation_rentals as vr_check')
+                        ->whereColumn('vr_check.id', 're_vacation_rentals.id')
+                        ->where(function ($availabilityQuery) use ($checkInDate, $checkOutDate, $nights) {
+                            // Check base minimum stay requirement (property level)
+                            $availabilityQuery->where(function ($minStayQuery) use ($nights) {
+                                $minStayQuery->whereNull('minimum_stay')
+                                    ->orWhere('minimum_stay', '<=', $nights);
+                            })
+                            // Check base maximum stay requirement (property level)
+                            ->where(function ($maxStayQuery) use ($nights) {
+                                $maxStayQuery->whereNull('maximum_stay')
+                                    ->orWhere('maximum_stay', '>=', $nights);
+                            })
+                            // Check availability rules don't override stay requirements
+                            ->whereNotExists(function ($rulesQuery) use ($checkInDate, $nights) {
+                                $rulesQuery->select(DB::raw(1))
+                                    ->from('re_vacation_rental_availability_rules')
+                                    ->whereColumn('vacation_rental_id', 'vr_check.id')
+                                    ->where('is_active', true)
+                                    ->where(function ($ruleConditions) use ($checkInDate, $nights) {
+                                        $ruleConditions
+                                            // Rules with minimum stay override that's higher than our nights
+                                            ->where(function ($minStayRuleQuery) use ($nights) {
+                                                $minStayRuleQuery->whereNotNull('minimum_stay_override')
+                                                    ->where('minimum_stay_override', '>', $nights);
+                                            })
+                                            // OR rules with maximum stay override that's lower than our nights
+                                            ->orWhere(function ($maxStayRuleQuery) use ($nights) {
+                                                $maxStayRuleQuery->whereNotNull('maximum_stay_override')
+                                                    ->where('maximum_stay_override', '<', $nights);
+                                            });
+                                    })
+                                    ->where(function ($dateApplicability) use ($checkInDate) {
+                                        $dateApplicability
+                                            // Date range rules applicable to check-in date
+                                            ->where(function ($dateRangeQuery) use ($checkInDate) {
+                                                $dateRangeQuery->whereNotNull('start_date')
+                                                    ->whereNotNull('end_date')
+                                                    ->where('start_date', '<=', $checkInDate->format('Y-m-d'))
+                                                    ->where('end_date', '>=', $checkInDate->format('Y-m-d'));
+                                            })
+                                            // OR weekly rules applicable to check-in day of week
+                                            ->orWhere(function ($weeklyQuery) use ($checkInDate) {
+                                                $weeklyQuery->where('rule_type', 'weekly')
+                                                    ->whereJsonContains('days_of_week', $checkInDate->dayOfWeek);
+                                            });
+                                    });
+                            })
+                            // Check no conflicting bookings
+                            ->whereNotExists(function ($bookingQuery) use ($checkInDate, $checkOutDate) {
+                                $bookingQuery->select(DB::raw(1))
+                                    ->from('re_vacation_rental_bookings')
+                                    ->whereColumn('vacation_rental_id', 'vr_check.id')
+                                    ->whereIn('status', ['pending', 'confirmed'])
+                                    ->where(function ($dateQuery) use ($checkInDate, $checkOutDate) {
+                                        $dateQuery->whereBetween('check_in_date', [$checkInDate, $checkOutDate->copy()->subDay()])
+                                            ->orWhereBetween('check_out_date', [$checkInDate->copy()->addDay(), $checkOutDate])
+                                            ->orWhere(function ($overlapQuery) use ($checkInDate, $checkOutDate) {
+                                                $overlapQuery->where('check_in_date', '<=', $checkInDate)
+                                                    ->where('check_out_date', '>=', $checkOutDate);
+                                            });
+                                    });
+                            })
+                            // Check no blocked/maintenance dates in range
+                            ->whereNotExists(function ($availabilityQuery) use ($checkInDate, $checkOutDate) {
+                                $availabilityQuery->select(DB::raw(1))
+                                    ->from('re_vacation_rental_availability')
+                                    ->whereColumn('vacation_rental_id', 'vr_check.id')
+                                    ->whereBetween('date', [$checkInDate, $checkOutDate->copy()->subDay()])
+                                    ->whereIn('status', ['blocked', 'booked', 'maintenance']);
+                            });
+                        });
                 });
-            }
+            });
         }
 
         if ($filters['features'] !== null) {

@@ -194,7 +194,7 @@ svg {
     position: relative;
     padding: 30px;
     border-radius: 24px;
-    background-color: #f7f7f7;
+    background-color: $surface;
 
     .card-header {
         margin-bottom: 24px;
@@ -644,7 +644,7 @@ svg {
 @media (min-width: 768px) {
     .list-style-1 {
         .images-style {
-            max-width: 220px;
+            max-width: 340px;
         }
     }
 }
@@ -891,7 +891,7 @@ color: $primary;
         gap: 2rem;
         flex-wrap: wrap;
         margin-bottom: 1.5rem;
-        background-color: #f7f7f7;
+        background-color: $surface;
         padding: 1.5rem;
         border-radius: 12px;
 
@@ -1956,7 +1956,7 @@ a {
     }
     }
     }
-  
+
     }
 }
 

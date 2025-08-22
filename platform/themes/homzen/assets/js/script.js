@@ -1745,6 +1745,37 @@ $(() => {
       });
     }
   };
+
+  const initVacationRentalsV8 = () => {
+    if ($("#tf-sw-vacation-rental-v8").length > 0) {
+      new Swiper("#tf-sw-vacation-rental-v8", {
+        rtl: Theme.isRtl(),
+        slidesPerView: 1.2, // Show partial next slide on mobile
+        spaceBetween: 16,
+        navigation: {
+          clickable: true,
+          nextEl: ".nav-next-vacation-rental-v8",
+          prevEl: ".nav-prev-vacation-rental-v8",
+          disabledClass: "swiper-button-disabled",
+        },
+        watchSlidesProgress: true,
+        breakpoints: {
+          600: {
+            slidesPerView: 2,
+            spaceBetween: 20,
+          },
+          991: {
+            slidesPerView: 3,
+            spaceBetween: 20,
+          },
+          1200: {
+            slidesPerView: 4,
+            spaceBetween: 30,
+          },
+        },
+      });
+    }
+  };
   const initBlogsV8 = () => {
     if ($("#tf-sw-blog-v8").length > 0) {
       console.log("Initializing blog carousel v8...");
@@ -1796,6 +1827,7 @@ $(() => {
   initPropertiesTab();
   initPropertyCategories();
   initProperties();
+  initVacationRentalsV8();
   initServices();
   initTestimonials();
 
@@ -2425,6 +2457,15 @@ $(() => {
 
         if (attributes.style === "8") {
           initPropertiesV8();
+        }
+
+        break;
+
+      case "vacation-rentals":
+        initWishlist();
+
+        if (attributes.style === "8") {
+          initVacationRentalsV8();
         }
 
         break;

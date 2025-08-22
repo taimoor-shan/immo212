@@ -331,7 +331,7 @@
 
                                                 @if($property->short_address)
                                                     <div class="text-variant-1 small mb-3">
-                                                        <i class="icon icon-mapPin me-1"></i>
+
                                                         {{ $property->short_address }}
                                                     </div>
                                                 @endif

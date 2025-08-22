@@ -57,7 +57,7 @@
                                     <!-- Location moved to where meta-list was -->
                                     @if($property->address)
                                         <p class="location">
-                                            <span class="icon icon-mapPin"></span>
+
                                             {{ $property->address }}
                                         </p>
                                     @endif

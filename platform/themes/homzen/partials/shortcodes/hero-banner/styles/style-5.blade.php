@@ -53,7 +53,7 @@
                         <h6 class="title"><a href="{{ $property->url }}">{!! BaseHelper::clean($property->name) !!}</a></h6>
                         @if($property->address)
                             <div class="desc">
-                                <i class="fs-16 icon icon-mapPin"></i>
+
                                 <p>{{ $property->address }}</p>
                             </div>
                         @endif

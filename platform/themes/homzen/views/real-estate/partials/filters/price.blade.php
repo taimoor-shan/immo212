@@ -6,7 +6,7 @@
             <div class="price-dropdown-select" data-bb-toggle="price-dropdown">
                 <!-- <div class="nice-select price-select-trigger">
                     <span class="current">
-                        @if(request()->float('min_price') || request()->float('max_price'))
+                        {{-- @if(request()->float('min_price') || request()->float('max_price'))
                             @if(request()->float('min_price'))
                                 {{ format_price(request()->float('min_price')) }}
                             @else
@@ -20,7 +20,7 @@
                             @endif
                         @else
                             {{ __('Select Price Range') }}
-                        @endif
+                        @endif --}}
                     </span>
                 </div> -->
                 <div class="price-dropdown-menu">
@@ -32,10 +32,10 @@
                                        name="min_price"
                                        id="min_price_dropdown"
                                        class="form-control"
-                                       placeholder="{{ __('1K DH') }}"
+                                       placeholder="{{ format_price(100) }}"
                                        value="{{ BaseHelper::stringify(request()->float('min_price')) }}"
-                                       min="1000"
-                                       step="1000">
+                                       min="100"
+                                       step="100">
                             </div>
                             <div class="price-input-col">
                                 <label for="max_price_dropdown">{{ __('Max Price') }}</label>
@@ -43,10 +43,10 @@
                                        name="max_price"
                                        id="max_price_dropdown"
                                        class="form-control"
-                                       placeholder="{{ __('1M DH') }}"
+                                       placeholder="{{ format_price(1000) }}"
                                        value="{{ BaseHelper::stringify(request()->float('max_price')) }}"
-                                       min="1000000"
-                                       step="1000">
+                                       min="1000"
+                                       step="100">
                             </div>
                         </div>
                         <!-- <div class="price-actions">

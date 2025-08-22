@@ -18,9 +18,8 @@
     <div class="calendar-section">
         <div class="calendar-title">
             <i class="ti ti-calendar"></i>
-            {{ __('Select Your Dates') }}
+            {{ __('Select Your Dates Range') }}
         </div>
-
         <!-- Calendar Legend -->
         <div class="calendar-legend">
             <div class="legend-item">

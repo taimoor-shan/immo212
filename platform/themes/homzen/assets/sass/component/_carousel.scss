@@ -98,6 +98,31 @@
     }
 }
 
+// Style 8 Vacation Rentals Carousel (identical to properties)
+.wrap-sw-vacation-rental-v8 {
+    position: relative;
+    overflow: visible; // Allow navigation buttons to show outside
+}
+
+// .flat-vacation-rental-v8 .homeya-box .content .meta-list .item svg{
+//    display: none;
+// }
+
+.flat-vacation-rental-v8 .homeya-box .content .meta-list {
+    column-gap: 6px;
+    row-gap: 4px;
+}
+
+// Mobile-first: Enable overflow for partial card visibility
+.tf-sw-vacation-rental-v8 {
+    overflow: visible;
+    padding-right: 0; // Remove default padding on mobile
+
+    .swiper-slide {
+        transition: transform 0.3s ease;
+    }
+}
+
 .carousel-navigation-v8 {
     position: absolute;
     top: 50%;
@@ -156,12 +181,14 @@
         display: none;
     }
 
-    .wrap-sw-property-v8 {
+    .wrap-sw-property-v8,
+    .wrap-sw-vacation-rental-v8 {
         margin: 0 -15px; // Extend to screen edges for better mobile UX
         padding: 0 15px;
     }
 
-    .tf-sw-property-v8 {
+    .tf-sw-property-v8,
+    .tf-sw-vacation-rental-v8 {
         padding-right: 15px; // Add padding to show partial next card
 
         .swiper-slide {
@@ -172,11 +199,8 @@
 
 // Tablet and desktop: Show navigation with proper spacing
 @media (min-width: 768px) {
-    // .wrap-sw-property-v8 {
-
-    // }
-
-    .tf-sw-property-v8 {
+    .tf-sw-property-v8,
+    .tf-sw-vacation-rental-v8 {
         overflow: hidden; // Contain slides on larger screens
         padding-inline: 2px;
     }

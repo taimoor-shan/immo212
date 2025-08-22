@@ -1,41 +1,154 @@
-<div @class(['wd-find-select position-relative' =>  in_array($style, [1, 2, 4]), 'wd-filter-select' => $style === 3, 'no-left-round' => $noLeftRound ?? false])>
-    <div class="inner-group">
-        {{-- Vacation rental specific filter order: Check-in, Check-out, Cities, Categories, Price Range, Guests --}}
-        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-checkin'))
-        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-checkout'))
-        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.location'))
-        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.categories'))
-        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.price'), ['useDropdown' => true])
-        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-guests'))
-
-        @if (theme_option('real_estate_enable_advanced_search', 'yes') == 'yes')
-            <div @class(['form-group-4 box-filter', 'form-style' => $style === 3])>
-                <a class="filter-advanced pull-right" href="#"
-                   data-filter-text-default="{{ __('More Filters') }}"
-                   data-filter-text-active="{{ __('Hide Filters') }}"
-                   role="button"
-                   aria-expanded="false"
-                   aria-label="{{ __('More Filters') }}"
-                   aria-controls="advanced-search-form">
-                    <span class="filter-text">{{ __('More Filters') }}</span>
-                    <i class="icon-arr-down filter-icon"></i>
-                </a>
-            </div>
-        @endif
-    </div>
-    @if($style === 3)
-        <div class="form-style">
-    @endif
-    <div class="btn-group d-flex gap-2">
-        <button type="submit" class="tf-btn primary flex-fill">{{ __('Search Vacation Rentals') }}</button>
-        <button type="button" class="tf-btn outline-primary" onclick="resetVacationRentalFilters()">
-            <i class="fas fa-undo-alt me-1"></i>
-            {{ __('Reset') }}
-        </button>
-    </div>
-    @if($style === 3)
+{{-- New 3-row vacation rental filter design --}}
+<div class="vacation-rental-filter-modern @if($style === 3) sidebar-style @endif">
+    {{-- Row 1: Property Types (like tabs in image) --}}
+    <div class="vr-filter-row vr-property-types-row">
+        @php
+            $propertyTypes = [
+                '' => __('All Accommodation'),
+                'villa' => __('Villa'),
+                'hotel' => __('Hotel'),
+                'apartment' => __('Apartment'),
+                'home-stay' => __('Home Stay')
+            ];
+            $currentType = request()->query('category_id');
+        @endphp
+        
+        <div class="vr-property-type-tabs">
+            @foreach($propertyTypes as $value => $label)
+                <button type="button" 
+                        class="vr-property-tab @if($currentType == $value || (!$currentType && $value === '')) active @endif"
+                        data-property-type="{{ $value }}"
+                        onclick="selectPropertyType('{{ $value }}')">
+                    {{ $label }}
+                </button>
+            @endforeach
         </div>
-    @endif
+        <input type="hidden" name="category_id" id="selected_category_id" value="{{ $currentType }}">
+    </div>
+
+    {{-- Row 2: Location, Check-in, Check-out, Participants --}}
+    <div class="vr-filter-row vr-main-filters-row">
+        <div class="vr-filter-grid">
+            {{-- Location --}}
+            <div class="vr-filter-field vr-location-field">
+                <label class="vr-field-label">{{ __('Location') }}</label>
+                <div class="vr-field-input">
+                    <input type="text" 
+                           class="vr-input" 
+                           placeholder="{{ __('Type the destination') }}" 
+                           value="{{ BaseHelper::stringify(request()->query('location')) }}" 
+                           name="location" 
+                           data-url="{{ route('public.ajax.cities') }}"
+                           data-bb-toggle="search-suggestion" />
+                    <x-core::icon name="ti ti-current-location" class="vr-field-icon" />
+                </div>
+                <div data-bb-toggle="data-suggestion"></div>
+            </div>
+
+            {{-- Check In --}}
+            <div class="vr-filter-field vr-checkin-field">
+                <label class="vr-field-label">{{ __('Check In') }}</label>
+                <div class="vr-field-input">
+                    <input type="date" 
+                           name="check_in_date" 
+                           id="check_in_date"
+                           class="vr-input vr-date-input" 
+                           value="{{ request()->input('check_in_date') }}"
+                           min="{{ date('Y-m-d') }}"
+                           placeholder="{{ __('Add date') }}">
+                    <x-core::icon name="ti ti-calendar" class="vr-field-icon" />
+                </div>
+            </div>
+
+            {{-- Check Out --}}
+            <div class="vr-filter-field vr-checkout-field">
+                <label class="vr-field-label">{{ __('Check Out') }}</label>
+                <div class="vr-field-input">
+                    <input type="date" 
+                           name="check_out_date" 
+                           id="check_out_date"
+                           class="vr-input vr-date-input" 
+                           value="{{ request()->input('check_out_date') }}"
+                           min="{{ date('Y-m-d', strtotime('+1 day')) }}"
+                           placeholder="{{ __('Add date') }}">
+                    <x-core::icon name="ti ti-calendar" class="vr-field-icon" />
+                </div>
+            </div>
+
+            {{-- Participants/Guests (as input instead of dropdown) --}}
+            <div class="vr-filter-field vr-guests-field">
+                <label class="vr-field-label">{{ __('Participant') }}</label>
+                <div class="vr-field-input">
+                    <input type="number" 
+                           name="maximum_guests" 
+                           id="maximum_guests"
+                           class="vr-input vr-number-input" 
+                           value="{{ request()->input('maximum_guests') }}"
+                           min="1"
+                           max="20"
+                           placeholder="{{ __('Add guests') }}">
+                    <x-core::icon name="ti ti-users" class="vr-field-icon" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Row 3: Action Buttons (Reset + Advanced + Search) --}}
+    <div class="vr-filter-row vr-actions-row">
+        <div class="vr-action-buttons">
+            {{-- Reset Button (replaces /Night) --}}
+            <button type="button" class="vr-action-btn vr-reset-btn" onclick="resetVacationRentalFilters()">
+                <x-core::icon name="ti ti-refresh" class="vr-btn-icon" />
+                <span>{{ __('Reset') }}</span>
+            </button>
+            
+            {{-- Advanced Filter Button (replaces /Hour) --}}
+            @if (theme_option('real_estate_enable_advanced_search', 'yes') == 'yes')
+                <button type="button" class="vr-action-btn vr-advanced-btn" 
+                        data-filter-text-default="{{ __('Advanced') }}"
+                        data-filter-text-active="{{ __('Hide Advanced') }}"
+                        onclick="toggleAdvancedFilters()"
+                        aria-expanded="false"
+                        aria-controls="vr-advanced-filters">
+                    <x-core::icon name="ti ti-adjustments-alt" class="vr-btn-icon" />
+                    <span class="vr-advanced-text">{{ __('Advanced') }}</span>
+                </button>
+            @endif
+            
+            {{-- Search Button --}}
+            <button type="submit" class="vr-search-btn">
+                <x-core::icon name="ti ti-search" class="vr-search-icon" />
+                <span>{{ __('Search Accommodation') }}</span>
+            </button>
+        </div>
+    </div>
+
+    {{-- Advanced Filters Panel (hidden by default) --}}
+    <div class="vr-advanced-filters" id="vr-advanced-filters" style="display: none;">
+        <div class="vr-advanced-content">
+            <div class="vr-advanced-grid">
+                {{-- Price Range --}}
+                @include(Theme::getThemeNamespace('views.real-estate.partials.filters.price'), ['class' => 'vr-advanced-field', 'useDropdown' => false])
+                
+                {{-- Min Stay --}}
+                @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-stay'), ['class' => 'vr-advanced-field'])
+                
+                {{-- Max Stay --}}
+                @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-max-stay'), ['class' => 'vr-advanced-field'])
+                
+                {{-- Bedrooms --}}
+                @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bedroom'), ['class' => 'vr-advanced-field'])
+                
+                {{-- Bathrooms --}}
+                @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bathroom'), ['class' => 'vr-advanced-field'])
+            </div>
+            
+            {{-- Features --}}
+            <div class="vr-features-section">
+                @include(Theme::getThemeNamespace('views.real-estate.partials.filters.features'), ['class' => 'vr-features-grid'])
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -145,18 +258,57 @@ function resetVacationRentalFilters() {
             }
         });
         
+        // Reset property type tabs
+        $('.vr-property-tab').removeClass('active');
+        $('.vr-property-tab[data-property-type=""]').addClass('active');
+        $('#selected_category_id').val('');
+        
         // Clear date feedback
         $('.date-feedback').remove();
         
         // Reset date constraints
         $('#check_out_date').removeAttr('min');
         
-        // Optionally auto-submit the form to refresh results
-        // $form.submit();
+        // Hide advanced filters
+        $('#vr-advanced-filters').slideUp();
+        $('.vr-advanced-btn').attr('aria-expanded', 'false');
+        $('.vr-advanced-text').text($('.vr-advanced-btn').data('filter-text-default'));
         
-        // Or redirect to the clean URL
+        // Redirect to the clean URL
         const baseUrl = window.location.pathname;
         window.location.href = baseUrl;
+    }
+}
+
+// Function to handle property type selection
+function selectPropertyType(typeValue) {
+    // Update visual state
+    $('.vr-property-tab').removeClass('active');
+    $(`.vr-property-tab[data-property-type="${typeValue}"]`).addClass('active');
+    
+    // Update hidden input
+    $('#selected_category_id').val(typeValue);
+}
+
+// Function to toggle advanced filters
+function toggleAdvancedFilters() {
+    const $advancedPanel = $('#vr-advanced-filters');
+    const $button = $('.vr-advanced-btn');
+    const $buttonText = $('.vr-advanced-text');
+    const isExpanded = $button.attr('aria-expanded') === 'true';
+    
+    if (isExpanded) {
+        // Hide advanced filters
+        $advancedPanel.slideUp(300);
+        $button.attr('aria-expanded', 'false');
+        $buttonText.text($button.data('filter-text-default'));
+        $button.removeClass('active');
+    } else {
+        // Show advanced filters
+        $advancedPanel.slideDown(300);
+        $button.attr('aria-expanded', 'true');
+        $buttonText.text($button.data('filter-text-active'));
+        $button.addClass('active');
     }
 }
 </script>

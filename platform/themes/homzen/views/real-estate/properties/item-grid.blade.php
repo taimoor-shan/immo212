@@ -66,7 +66,7 @@
             <!-- Location moved to where meta-list was -->
             @if($property->short_address)
                 <div class="desc">
-                    <i class="icon icon-mapPin"></i>
+
                     <p class="line-clamp-1">{{ $property->short_address }}</p>
                 </div>
             @endif

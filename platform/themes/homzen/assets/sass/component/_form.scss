@@ -41,6 +41,12 @@
     }
 }
 
+
+.amenities-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
 // checkbox
 .tf-checkbox {
     position: relative;
@@ -92,6 +98,8 @@
         background-color: $on-surface;
     }
 }
+
+
 
 .tf-radio {
     position: relative;

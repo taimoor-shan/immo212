@@ -31,7 +31,7 @@
             </div>
             @if($project->short_address)
                 <div class="desc">
-                    <i class="icon icon-mapPin"></i>
+
                     <p class="line-clamp-1">{{ $project->short_address }}</p>
                 </div>
             @endif

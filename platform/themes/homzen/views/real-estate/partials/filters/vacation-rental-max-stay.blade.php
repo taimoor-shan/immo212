@@ -13,7 +13,7 @@
 <div @class(['form-group-1 form-style', $class ?? null])>
     <label class="title-user fw-6">{{ __('Maximum Stay') }}</label>
     <div class="group-select">
-        <select name="maximum_stay" class="nice-select" data-bb-toggle="select-dropdown">
+        <select name="maximum_stay" class="select_js nice-select" data-bb-toggle="select-dropdown">
             @foreach($maxStayOptions as $value => $label)
                 <option value="{{ $value }}" @selected(request()->input('maximum_stay') == $value)>
                     {{ $label }}

@@ -9,7 +9,7 @@
             </div>
             <div class="content">
                 <p class="location">
-                    <i class="icon icon-mapPin"></i>
+
                     __location__
                 </p>
                 <div class="title">

@@ -34,26 +34,26 @@
                     <span class="">{{ $property->category->name }}</span>
                 </div>
             @endif
-            
+
             <!-- Property Title -->
             <!-- <{{ $class === 'lg' ? 'h5' : 'div' }} @class(['text-capitalize', 'h7 fw-5' => $class !== 'lg'])>
                 <a href="{{ $property->url }}" class="link line-clamp-1" title="{{ $property->name }}">{!! BaseHelper::clean($property->name) !!}</a>
             </{{ $class === 'lg' ? 'h5' : 'div' }}> -->
-            
+
             <!-- Price per night -->
             <div class="vacation-rental-price">
                 <span class="price-amount">{{ format_price($property->price, $property->currency) }}</span>
                 <span class="price-period">/ {{ __('night') }}</span>
             </div>
-            
+
             <!-- Location -->
             @if($property->short_address)
                 <div class="desc">
-                    <i class="icon icon-mapPin"></i>
+
                     <p class="line-clamp-1">{{ $property->short_address }}</p>
                 </div>
             @endif
-            
+
             <!-- Vacation Rental Specific Info -->
             <!-- <div class="vacation-rental-info">
                 <div class="row g-2">
@@ -75,7 +75,7 @@
                     @endif
                 </div>
             </div> -->
-            
+
             <!-- Standard Property Meta -->
             <ul class="meta-list">
                 @if($property->number_bedroom)
@@ -97,7 +97,7 @@
                     </li>
                 @endif
             </ul>
-            
+
             <!-- Additional Vacation Rental Features -->
             @if($property->cleaning_fee || $property->security_deposit)
                 <div class="vacation-rental-fees">
@@ -115,11 +115,11 @@
                     @endif
                 </div>
             @endif
-            
+
             @if($class === 'lg' && $property->description)
                 <p class="note">{!! Str::limit(BaseHelper::clean($property->description)) !!}</p>
             @endif
-            
+
             <!-- Quick Booking CTA -->
             <div class="vacation-rental-cta">
                 <a href="{{ $property->url }}#availability" class="btn-vacation-rental">
@@ -137,12 +137,12 @@
         overflow: hidden;
         transition: all 0.3s ease;
     }
-    
+
     .vacation-rental-card:hover {
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         transform: translateY(-2px);
     }
-    
+
     .vacation-rental-card .flag-tag.vacation-rental {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -151,33 +151,33 @@
         padding: 4px 8px;
         border-radius: 4px;
     }
-    
+
     .vacation-rental-card .vacation-rental-price {
         display: flex;
         align-items: baseline;
         gap: 4px;
         margin: 0 0 8px;
     }
-    
+
     .vacation-rental-card .price-amount {
         font-size: 1.25rem;
         font-weight: 700;
         color: var(--primary-color);
     }
-    
+
     .vacation-rental-card .price-period {
         font-size: 0.875rem;
         color: #6b7280;
         font-weight: 500;
     }
-    
+
     .vacation-rental-card .vacation-rental-info {
         margin: 12px 0;
         padding: 8px;
         background-color: #f8fafc;
         border-radius: 6px;
     }
-    
+
     .vacation-rental-card .info-item {
         display: flex;
         align-items: center;
@@ -185,38 +185,38 @@
         font-size: 0.875rem;
         color: #4b5563;
     }
-    
+
     .vacation-rental-card .info-item i {
         font-size: 14px;
         color: #6366f1;
     }
-    
+
     .vacation-rental-card .vacation-rental-fees {
         display: flex;
         gap: 12px;
         margin: 8px 0;
         font-size: 0.8rem;
     }
-    
+
     .vacation-rental-card .fee-item {
         display: flex;
         align-items: center;
         gap: 4px;
     }
-    
+
     .vacation-rental-card .fee-label {
         color: #6b7280;
     }
-    
+
     .vacation-rental-card .fee-amount {
         color: #374151;
         font-weight: 500;
     }
-    
+
     .vacation-rental-card .vacation-rental-cta {
         margin-top: 12px;
     }
-    
+
     .vacation-rental-card .btn-vacation-rental {
         display: inline-block;
         width: 100%;
@@ -230,19 +230,19 @@
         text-align: center;
         transition: all 0.3s ease;
     }
-    
+
     .vacation-rental-card .btn-vacation-rental:hover {
         background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
         color: white;
         text-decoration: none;
         transform: translateY(-1px);
     }
-    
+
     @media (max-width: 768px) {
         .vacation-rental-card .vacation-rental-info .row {
             gap: 8px;
         }
-        
+
         .vacation-rental-card .vacation-rental-fees {
             flex-direction: column;
             gap: 4px;

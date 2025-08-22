@@ -15,9 +15,13 @@ class CategorySeeder extends BaseSeeder
 {
     public function run(): void
     {
-        Category::query()->truncate();
+        // Use delete instead of truncate to avoid foreign key constraint issues
+        Category::query()->delete();
         Slug::query()->where('reference_type', Category::class)->delete();
         DB::table('meta_boxes')->where('reference_type', Category::class)->delete();
+
+        // Reset auto increment
+        DB::statement('ALTER TABLE re_categories AUTO_INCREMENT = 1;');
 
         $categories = [
             'Apartment',

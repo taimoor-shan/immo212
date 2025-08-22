@@ -144,8 +144,9 @@ class PropertyAvailability extends BaseModel
             return false;
         }
 
-        // For vacation rentals, we need to be more careful about availability
-        if ($property->type === PropertyTypeEnum::VACATION_RENTAL) {
+        // PropertyAvailability is no longer used for properties since vacation rentals have been separated
+        // All availability management is now handled by the VacationRental system
+        if (false) { // This code is no longer executed
             $totalRecords = self::forProperty($propertyId)
                 ->inDateRange($startDate, $endDate)
                 ->count();

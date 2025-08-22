@@ -99,6 +99,135 @@
                 </a>
             </div>
         @endif
+
+        {{-- Vacation Rental Statistics --}}
+        @if($user->vacationRentals()->count() > 0)
+            <div class="col-12 mt-3">
+                <h5 class="mb-3">{{ trans('plugins/real-estate::vacation-rental.vacation_rentals') }}</h5>
+            </div>
+            
+            <div class="col-12 col-md-6 col-lg-4 dashboard-widget-item mt-3">
+                <a class="overflow-hidden text-white rounded d-block position-relative text-decoration-none bg-primary">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="px-4 py-3 details d-flex flex-column justify-content-between">
+                            <div class="desc fw-medium">{{ trans('plugins/real-estate::dashboard.approved_vacation_rentals') }}</div>
+                            <div class="number fw-bolder">
+                                {{ $user->vacationRentals()->where('moderation_status', \Botble\RealEstate\Enums\ModerationStatusEnum::APPROVED)->count() }}
+                            </div>
+                        </div>
+                        <div class="pb-5 visual ps-1 position-absolute end-0">
+                            <x-core::icon name="ti ti-home-star" class="me-n2" style="opacity: 0.1;" />
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4 dashboard-widget-item mt-3">
+                <a class="overflow-hidden text-white rounded d-block position-relative text-decoration-none bg-danger">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="px-4 py-3 details d-flex flex-column justify-content-between">
+                            <div class="desc fw-medium">{{ trans('plugins/real-estate::dashboard.pending_approve_vacation_rentals') }}</div>
+                            <div class="number fw-bolder">
+                                {{ $user->vacationRentals()->where('moderation_status', \Botble\RealEstate\Enums\ModerationStatusEnum::PENDING)->count() }}
+                            </div>
+                        </div>
+                        <div class="pb-5 visual ps-1 position-absolute end-0">
+                            <x-core::icon name="ti ti-clock-hour-8" class="me-n2" style="opacity: 0.1;" />
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4 dashboard-widget-item mt-3">
+                <a class="overflow-hidden text-white rounded d-block position-relative text-decoration-none bg-secondary">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="px-4 py-3 details d-flex flex-column justify-content-between">
+                            <div class="desc fw-medium">{{ trans('plugins/real-estate::dashboard.rejected_vacation_rentals') }}</div>
+                            <div class="number fw-bolder">
+                                {{ $user->vacationRentals()->where('moderation_status', \Botble\RealEstate\Enums\ModerationStatusEnum::REJECTED)->count() }}
+                            </div>
+                        </div>
+                        <div class="pb-5 visual ps-1 position-absolute end-0">
+                            <x-core::icon name="ti ti-edit" class="me-n2" style="opacity: 0.1;" />
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            {{-- Active Bookings --}}
+            <div class="col-12 col-md-6 col-lg-4 dashboard-widget-item mt-3">
+                <a class="overflow-hidden text-white rounded d-block position-relative text-decoration-none bg-success">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="px-4 py-3 details d-flex flex-column justify-content-between">
+                            <div class="desc fw-medium">{{ trans('plugins/real-estate::dashboard.active_bookings') }}</div>
+                            <div class="number fw-bolder">
+                                @php
+                                    $vacationRentalIds = $user->vacationRentals()->pluck('id');
+                                    $activeBookings = \Botble\RealEstate\Models\VacationRentalBooking::whereIn('vacation_rental_id', $vacationRentalIds)
+                                        ->where('status', \Botble\RealEstate\Models\VacationRentalBooking::STATUS_CONFIRMED)
+                                        ->where('check_in_date', '<=', \Carbon\Carbon::today())
+                                        ->where('check_out_date', '>=', \Carbon\Carbon::today())
+                                        ->count();
+                                @endphp
+                                {{ $activeBookings }}
+                            </div>
+                        </div>
+                        <div class="pb-5 visual ps-1 position-absolute end-0">
+                            <x-core::icon name="ti ti-users" class="me-n2" style="opacity: 0.1;" />
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            {{-- Upcoming Bookings (Next 7 Days) --}}
+            <div class="col-12 col-md-6 col-lg-4 dashboard-widget-item mt-3">
+                <a class="overflow-hidden text-white rounded d-block position-relative text-decoration-none bg-info">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="px-4 py-3 details d-flex flex-column justify-content-between">
+                            <div class="desc fw-medium">{{ trans('plugins/real-estate::dashboard.upcoming_bookings') }}</div>
+                            <div class="number fw-bolder">
+                                @php
+                                    $upcomingBookings = \Botble\RealEstate\Models\VacationRentalBooking::whereIn('vacation_rental_id', $vacationRentalIds ?? [])
+                                        ->where('status', \Botble\RealEstate\Models\VacationRentalBooking::STATUS_CONFIRMED)
+                                        ->where('check_in_date', '>', \Carbon\Carbon::today())
+                                        ->where('check_in_date', '<=', \Carbon\Carbon::today()->addDays(7))
+                                        ->count();
+                                @endphp
+                                {{ $upcomingBookings }}
+                            </div>
+                        </div>
+                        <div class="pb-5 visual ps-1 position-absolute end-0">
+                            <x-core::icon name="ti ti-calendar-event" class="me-n2" style="opacity: 0.1;" />
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            {{-- Monthly Revenue --}}
+            <div class="col-12 col-md-6 col-lg-4 dashboard-widget-item mt-3">
+                <a class="overflow-hidden text-white rounded d-block position-relative text-decoration-none bg-warning">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="px-4 py-3 details d-flex flex-column justify-content-between">
+                            <div class="desc fw-medium">{{ trans('plugins/real-estate::dashboard.monthly_revenue') }}</div>
+                            <div class="number fw-bolder">
+                                @php
+                                    $monthlyRevenue = \Botble\RealEstate\Models\VacationRentalBooking::whereIn('vacation_rental_id', $vacationRentalIds ?? [])
+                                        ->where('status', \Botble\RealEstate\Models\VacationRentalBooking::STATUS_CONFIRMED)
+                                        ->where('payment_status', \Botble\RealEstate\Models\VacationRentalBooking::PAYMENT_PAID)
+                                        ->whereMonth('check_in_date', \Carbon\Carbon::now()->month)
+                                        ->whereYear('check_in_date', \Carbon\Carbon::now()->year)
+                                        ->sum('total_amount');
+                                @endphp
+                                {{ format_price($monthlyRevenue) }}
+                            </div>
+                        </div>
+                        <div class="pb-5 visual ps-1 position-absolute end-0">
+                            <x-core::icon name="ti ti-currency-dollar" class="me-n2" style="opacity: 0.1;" />
+                        </div>
+                    </div>
+                </a>
+            </div>
+        @endif
     </div>
 
     <activity-log-component ajax-url="{{ route('public.account.activity-logs') }}" v-slot="{ activityLogs, loading }">

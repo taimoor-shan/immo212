@@ -4,6 +4,7 @@ use Botble\Base\Http\Middleware\RequiresJsonRequestMiddleware;
 use Botble\RealEstate\Facades\RealEstateHelper;
 use Botble\RealEstate\Http\Controllers\CustomFieldController;
 use Botble\RealEstate\Http\Controllers\Fronts\AccountPropertyController;
+use Botble\RealEstate\Http\Controllers\Fronts\AccountVacationRentalController;
 use Botble\RealEstate\Http\Controllers\Fronts\ConsultController;
 use Botble\RealEstate\Http\Controllers\Fronts\CouponController;
 use Botble\RealEstate\Http\Controllers\Fronts\ForgotPasswordController;
@@ -13,13 +14,14 @@ use Botble\RealEstate\Http\Controllers\Fronts\PublicAccountController;
 use Botble\RealEstate\Http\Controllers\Fronts\RegisterController;
 use Botble\RealEstate\Http\Controllers\Fronts\ResetPasswordController;
 use Botble\RealEstate\Http\Controllers\Fronts\ReviewController;
-use Botble\RealEstate\Http\Controllers\Fronts\VacationRentalController;
 use Botble\RealEstate\Http\Controllers\Fronts\VacationRentalBookingController;
+
 use Botble\RealEstate\Http\Middleware\EnsureAccountIsApproved;
 use Botble\RealEstate\Http\Middleware\LocaleMiddleware;
 use Botble\RealEstate\Models\Account;
 use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\Slug\Facades\SlugHelper;
 use Botble\Theme\Facades\Theme;
 use Illuminate\Support\Facades\Route;
@@ -31,24 +33,35 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
 
             $propertiesPrefix = SlugHelper::getPrefix(Property::class, 'properties') ?: 'properties';
 
+            $vacationRentalsPrefix = SlugHelper::getPrefix(VacationRental::class, 'vacation-rentals') ?: 'vacation-rentals';
+
             Route::match(theme_option('projects_list_page_id') ? ['POST'] : ['POST', 'GET'], $projectsPrefix, 'PublicController@getProjects')
                 ->name('public.projects');
 
             Route::match(theme_option('properties_list_page_id') ? ['POST'] : ['POST', 'GET'], $propertiesPrefix, 'PublicController@getProperties')
                 ->name('public.properties');
 
+            Route::match(theme_option('vacation_rentals_list_page_id') ? ['POST'] : ['POST', 'GET'], $vacationRentalsPrefix, 'PublicController@getVacationRentals')
+                ->name('public.vacation-rentals');
+
             if (is_plugin_active('location')) {
-                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('projects_city') . '/{slug}', 'PublicController@getProjectsByCity')
+                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('projects_city').'/{slug}', 'PublicController@getProjectsByCity')
                     ->name('public.projects-by-city');
 
-                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('properties_city') . '/{slug}', 'PublicController@getPropertiesByCity')
+                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('properties_city').'/{slug}', 'PublicController@getPropertiesByCity')
                     ->name('public.properties-by-city');
 
-                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('projects_state') . '/{slug}', 'PublicController@getProjectsByState')
+                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('vacation_rentals_city').'/{slug}', 'PublicController@getVacationRentalsByCity')
+                    ->name('public.vacation-rentals-by-city');
+
+                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('projects_state').'/{slug}', 'PublicController@getProjectsByState')
                     ->name('public.projects-by-state');
 
-                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('properties_state') . '/{slug}', 'PublicController@getPropertiesByState')
+                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('properties_state').'/{slug}', 'PublicController@getPropertiesByState')
                     ->name('public.properties-by-state');
+
+                Route::match(['POST', 'GET'], RealEstateHelper::getPageSlug('vacation_rentals_state').'/{slug}', 'PublicController@getVacationRentalsByState')
+                    ->name('public.vacation-rentals-by-state');
             }
 
             if (! RealEstateHelper::isDisabledPublicProfile()) {
@@ -98,18 +111,23 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
 
             // Vacation rental public API endpoints
             Route::prefix('ajax/vacation-rentals')->name('public.ajax.vacation-rentals.')->group(function (): void {
-                Route::get('availability', [VacationRentalController::class, 'getAvailabilityData'])
+                Route::get('availability', 'PublicController@getVacationRentalAvailabilityData')
                     ->middleware(RequiresJsonRequestMiddleware::class)
                     ->name('availability');
-                Route::post('calculate-price', [VacationRentalController::class, 'calculatePrice'])
+                Route::post('{vacationRental}/calculate-price', [VacationRentalBookingController::class, 'calculatePrice'])
                     ->middleware(RequiresJsonRequestMiddleware::class)
-                    ->name('calculate-price');
+                    ->name('calculate-price')
+                    ->wherePrimaryKey();
             });
 
             // Frontend calendar API endpoints
             Route::prefix('vacation-rental')->name('public.vacation-rental.')->group(function (): void {
-                Route::get('availability', [VacationRentalBookingController::class, 'getAvailability'])->name('availability');
-                Route::post('pricing', [VacationRentalBookingController::class, 'calculatePricing'])->name('pricing');
+                Route::get('{vacationRental}/availability', [VacationRentalBookingController::class, 'getAvailability'])
+                    ->name('availability')
+                    ->wherePrimaryKey();
+                Route::post('{vacationRental}/pricing', [VacationRentalBookingController::class, 'calculatePricing'])
+                    ->name('pricing')
+                    ->wherePrimaryKey();
             });
         });
 
@@ -145,17 +163,18 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
 
                 // Vacation rental management routes
                 Route::prefix('vacation-rentals')->name('vacation-rentals.')->group(function (): void {
-                    Route::get('dashboard', [VacationRentalController::class, 'dashboard'])->name('dashboard');
-                    Route::get('bookings', [VacationRentalController::class, 'bookings'])->name('bookings');
-                    Route::get('availability', function() {
-                        return redirect()->route('public.account.vacation-rentals.calendar');
-                    })->name('availability');
-                    Route::get('availability-data', [VacationRentalController::class, 'getAvailabilityDataForEdit'])->name('availability-data');
-                    Route::get('calendar', [VacationRentalController::class, 'calendar'])->name('calendar');
-                    Route::post('block-dates', [VacationRentalController::class, 'blockDates'])->name('block-dates');
-                    Route::post('unblock-dates', [VacationRentalController::class, 'unblockDates'])->name('unblock-dates');
-                    Route::post('maintenance-dates', [VacationRentalController::class, 'maintenanceDates'])->name('maintenance-dates');
-                    Route::put('bookings/{booking}/status', [VacationRentalController::class, 'updateBookingStatus'])->name('bookings.update-status');
+                    Route::resource('', AccountVacationRentalController::class)->parameters(['' => 'vacation-rental']);
+                    Route::post('renew/{id}', [AccountVacationRentalController::class, 'renew'])->name('renew')->wherePrimaryKey();
+                    // Booking management
+                    Route::match(['GET', 'POST'], 'bookings', [AccountVacationRentalController::class, 'bookings'])->name('bookings');
+                    Route::get('bookings/{booking}', [AccountVacationRentalController::class, 'showBooking'])->name('bookings.show')->wherePrimaryKey();
+                    Route::put('bookings/{booking}/status', [AccountVacationRentalController::class, 'updateBookingStatus'])->name('bookings.update-status');
+
+                    // Availability management (for AJAX calls from edit page)
+                    Route::get('availability-data', [AccountVacationRentalController::class, 'getAvailabilityDataForEdit'])->name('availability-data');
+                    Route::post('block-dates', [AccountVacationRentalController::class, 'blockDates'])->name('block-dates');
+                    Route::post('unblock-dates', [AccountVacationRentalController::class, 'unblockDates'])->name('unblock-dates');
+                    Route::post('maintenance-dates', [AccountVacationRentalController::class, 'maintenanceDates'])->name('maintenance-dates');
                 });
 
                 Route::prefix('ajax')->group(function (): void {

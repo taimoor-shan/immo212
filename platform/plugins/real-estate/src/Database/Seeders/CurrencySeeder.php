@@ -4,12 +4,17 @@ namespace Botble\RealEstate\Database\Seeders;
 
 use Botble\Base\Supports\BaseSeeder;
 use Botble\RealEstate\Models\Currency;
+use Illuminate\Support\Facades\DB;
 
 class CurrencySeeder extends BaseSeeder
 {
     public function run(): void
     {
-        Currency::query()->truncate();
+        // Use delete instead of truncate to avoid foreign key constraint issues
+        Currency::query()->delete();
+
+        // Reset auto increment
+        DB::statement('ALTER TABLE re_currencies AUTO_INCREMENT = 1;');
 
         $currencies = [
             [

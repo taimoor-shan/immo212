@@ -43,7 +43,7 @@
 
             @if ($model->short_address)
                 <p class="meta-item">
-                   
+
                     {{ $model->short_address }}
                 </p>
             @endif
@@ -52,18 +52,20 @@
     @if (RealEstateHelper::isEnabledWishlist())
         <ul class="iconText d-flex gap-3">
             <li>
-                <button type="button" class="tf-btn secondary sm" data-type="{{ $model instanceof \Botble\RealEstate\Models\Property ? 'property' : 'project' }}"
-                        data-bb-toggle="add-to-wishlist"
-                        data-id="{{ $model->getKey() }}"
-                        data-add-message="{{ __('Added ":name" to wishlist successfully!', ['name' => $model->name]) }}"
-                        data-remove-message="{{ __('Removed ":name" from wishlist successfully!', ['name' => $model->name]) }}"
-                >
-                    <x-core::icon name="ti ti-heart" />
-                    <span>Save</span>
+                <button type="button" class="roundBtn"
+                    data-type="{{ $model instanceof \Botble\RealEstate\Models\Property ? 'property' : 'project' }}"
+                    data-bb-toggle="add-to-wishlist" data-id="{{ $model->getKey() }}"
+                    data-add-message="{{ __('Added ":name" to wishlist successfully!', ['name' => $model->name]) }}"
+                    data-remove-message="{{ __('Removed ":name" from wishlist successfully!', ['name' => $model->name]) }}">
+                    <i class="fa-regular fa-heart"></i>
+
+
                 </button>
             </li>
             <li>
-                 @include(Theme::getThemeNamespace('views.real-estate.partials.social-sharing'), ['model' => $project])
+                @include(Theme::getThemeNamespace('views.real-estate.partials.social-sharing'), [
+                    'model' => $project,
+                ])
             </li>
         </ul>
     @endif

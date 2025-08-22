@@ -20,8 +20,11 @@ use Botble\RealEstate\Models\ConsultCustomField;
 use Botble\RealEstate\Models\Currency;
 use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
+use Botble\RealEstate\Services\SaveVacationRentalAvailabilityService;
 use Botble\SeoHelper\Facades\SeoHelper;
 use Botble\Theme\Facades\Theme;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -485,5 +488,137 @@ class PublicController extends BaseController
         Theme::breadcrumb()->add(__('Agents'), route('public.agents'));
 
         return Theme::scope('real-estate.agents', compact('accounts'), 'plugins/real-estate::themes.agents')->render();
+    }
+
+    public function getVacationRentals(Request $request)
+    {
+        SeoHelper::setTitle(__('Vacation Rentals'));
+
+        $vacationRentals = RealEstateHelper::getVacationRentalsFilter((int) theme_option('number_of_vacation_rentals_per_page') ?: 12);
+
+        if ($request->ajax()) {
+            if ($request->query('minimal')) {
+                return $this
+                    ->httpResponse()
+                    ->setData(Theme::partial('search-suggestion', ['items' => $vacationRentals]));
+            }
+
+            $view = Theme::getThemeNamespace('partials.real-estate.vacation-rentals.items');
+
+            if (! view()->exists($view)) {
+                $view = Theme::getThemeNamespace('views.real-estate.vacation-rentals.index');
+            }
+
+            return $this
+                ->httpResponse()
+                ->setData(view($view, compact('vacationRentals'))->render());
+        }
+
+        return Theme::scope('real-estate.vacation-rentals', compact('vacationRentals'), 'plugins/real-estate::themes.vacation-rentals')->render();
+    }
+
+    public function getVacationRentalsByCity(string $slug, Request $request)
+    {
+        $city = City::query()->wherePublished()->where('slug', $slug)->firstOrFail();
+
+        SeoHelper::setTitle(__('Vacation Rentals in :city', ['city' => $city->name]));
+
+        do_action(BASE_ACTION_PUBLIC_RENDER_SINGLE, CITY_MODULE_SCREEN_NAME, $city);
+
+        Theme::breadcrumb()
+            ->add(SeoHelper::getTitle(), route('public.vacation-rentals-by-city', $city->slug));
+
+        $perPage = $request->integer('per_page') ?: (int) theme_option('number_of_vacation_rentals_per_page', 12);
+
+        $request->merge(['city' => $slug, 'city_id' => $city->id]);
+
+        $vacationRentals = RealEstateHelper::getVacationRentalsFilter($perPage, RealEstateHelper::getReviewExtraData());
+
+        if ($request->ajax()) {
+            if ($request->input('minimal')) {
+                return $this
+                    ->httpResponse()
+                    ->setData(Theme::partial('search-suggestion', ['items' => $vacationRentals]));
+            }
+
+            return $this
+                ->httpResponse()
+                ->setData(Theme::partial('real-estate.vacation-rentals.items', ['vacationRentals' => $vacationRentals]));
+        }
+
+        return Theme::scope('real-estate.vacation-rentals', [
+            'vacationRentals' => $vacationRentals,
+            'ajaxUrl' => route('public.vacation-rentals-by-city', $city->slug),
+            'actionUrl' => route('public.vacation-rentals-by-city', $city->slug),
+        ], 'plugins/real-estate::themes.vacation-rentals')
+            ->render();
+    }
+
+    public function getVacationRentalsByState(string $slug, Request $request)
+    {
+        $state = State::query()->wherePublished()->where('slug', $slug)->firstOrFail();
+
+        SeoHelper::setTitle(__('Vacation Rentals in :state', ['state' => $state->name]));
+
+        do_action(BASE_ACTION_PUBLIC_RENDER_SINGLE, STATE_MODULE_SCREEN_NAME, $state);
+
+        Theme::breadcrumb()
+            ->add(SeoHelper::getTitle(), route('public.vacation-rentals-by-state', $state->slug));
+
+        $perPage = $request->integer('per_page') ?: (int) theme_option('number_of_vacation_rentals_per_page', 12);
+
+        $request->merge(['state' => $slug, 'state_id' => $state->id]);
+
+        $vacationRentals = RealEstateHelper::getVacationRentalsFilter($perPage, RealEstateHelper::getReviewExtraData());
+
+        if ($request->ajax()) {
+            if ($request->input('minimal')) {
+                return $this
+                    ->httpResponse()
+                    ->setData(Theme::partial('search-suggestion', ['items' => $vacationRentals]));
+            }
+
+            return $this
+                ->httpResponse()
+                ->setData(Theme::partial('real-estate.vacation-rentals.items', ['vacationRentals' => $vacationRentals]));
+        }
+
+        return Theme::scope('real-estate.vacation-rentals', [
+            'vacationRentals' => $vacationRentals,
+            'ajaxUrl' => route('public.vacation-rentals-by-state', $state->slug),
+            'actionUrl' => route('public.vacation-rentals-by-state', $state->slug),
+        ], 'plugins/real-estate::themes.vacation-rentals')
+            ->render();
+    }
+
+    /**
+     * Get availability data for vacation rental (AJAX endpoint)
+     */
+    public function getVacationRentalAvailabilityData(Request $request, SaveVacationRentalAvailabilityService $availabilityService)
+    {
+        $request->validate([
+            'property_id' => 'required|exists:re_vacation_rentals,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        try {
+            $vacationRental = VacationRental::findOrFail($request->property_id);
+
+            $startDate = Carbon::parse($request->start_date);
+            $endDate = Carbon::parse($request->end_date);
+
+            $availabilityData = $availabilityService->getAvailabilityDetails(
+                $vacationRental,
+                $startDate,
+                $endDate
+            );
+
+            return $this->httpResponse()->setData($availabilityData);
+        } catch (Exception $e) {
+            return $this->httpResponse()
+                ->setError()
+                ->setMessage(__('Error fetching availability: :error', ['error' => $e->getMessage()]));
+        }
     }
 }

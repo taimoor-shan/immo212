@@ -66,7 +66,11 @@ $border: 6px;
 .widget-box {
     padding: 24px;
     border-radius: $border;
+    margin-bottom: 30px;
+    padding: 24px;
+    border: 1px solid #e9ecef;
 }
+
 
 .flat-blog-item {
     margin-bottom: 40px;
@@ -759,7 +763,7 @@ $border: 6px;
     background-color: $primary;
     color: $white;
     text-transform: uppercase;
-   
+
     @include transition3;
 
     &.style-1 {
@@ -1010,21 +1014,18 @@ $border: 6px;
         .desc {
             display: flex;
             gap: 4px;
-            margin-top: 8px;
-            color: $dull;
-
-            .icon {
-                margin-top: 4px;
-            }
+               margin-top: 4px;
+            margin-bottom: 6px;
 
             p {
-                font-size: 16px;
+                font-size: 15px;
                 line-height: 26px;
             }
         }
 
         .meta-list {
             margin-top: 0;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             column-gap: 14px;
@@ -1711,14 +1712,14 @@ $border: 6px;
         width: 100%;
         height: 100%;
         margin: 0;
-       
+
         img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             border-radius :$radius;
             @include transition5;
-         
+
         }
     }
 
@@ -3247,12 +3248,12 @@ $border: 6px;
                     border-radius: .5rem;
                     list-style-type: none;
                     -webkit-box-shadow:none;
-                    box-shadow:none; 
+                    box-shadow:none;
                 }
             }
 
         }
-    
+
     }
 }
 
@@ -3625,8 +3626,6 @@ $border: 6px;
         padding-bottom: 23px;
         margin-bottom: 23px;
         border-bottom: none;
-        flex-wrap: wrap;
-        gap: 10px;
 
         .title {
             margin-top: 8px;
@@ -4133,6 +4132,7 @@ $border: 6px;
 
     .box-avatar {
         display: flex;
+        flex-direction: column;
         align-items: center;
         gap: 20px;
 
@@ -4143,10 +4143,14 @@ $border: 6px;
         .info {
             display: flex;
             flex-direction: column;
+            align-items: center;
+            text-align: center;
+
         }
 
         .info-item {
             color: $dull;
+            text-align: center;
         }
     }
 
@@ -4337,7 +4341,7 @@ $border: 6px;
         'item1 item1 item1 item4';
     grid-template-rows: 1fr 1fr 1fr;
     gap: 15px;
-    max-height: 400px;
+    max-height: 460px;
     margin-bottom: 20px;
 
     .item1 {
@@ -5147,7 +5151,7 @@ $border: 6px;
 
 // Bento Grid
 .bGrid {
-    display: grid;     
+    display: grid;
     gap: 16px;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: 325px 235px;
@@ -5185,7 +5189,7 @@ $border: 6px;
 
 // Blog Bento Grid Specific Styles
 .blog-bento-grid {
-    
+
     @extend .bGrid;
 
     .bento-blog-item {
@@ -5415,7 +5419,7 @@ $border: 6px;
                     transition: all 0.3s ease;
 
                     &:hover {
-                        
+
                         gap: 12px;
                     }
 

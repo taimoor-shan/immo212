@@ -3,8 +3,9 @@
 namespace Botble\RealEstate\Http\Controllers\Fronts;
 
 use Botble\Base\Http\Controllers\BaseController;
-use Botble\RealEstate\Services\AvailabilityService;
+use Botble\RealEstate\Services\SaveVacationRentalAvailabilityService;
 use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\Models\VacationRentalBooking;
 use Botble\RealEstate\Enums\PropertyTypeEnum;
 use Botble\RealEstate\Http\Requests\VacationRentalBookingRequest;
@@ -25,9 +26,9 @@ use Illuminate\Support\ViewErrorBag;
 
 class VacationRentalBookingController extends BaseController
 {
-    protected AvailabilityService $availabilityService;
+    protected SaveVacationRentalAvailabilityService $availabilityService;
 
-    public function __construct(AvailabilityService $availabilityService)
+    public function __construct(SaveVacationRentalAvailabilityService $availabilityService)
     {
         $this->availabilityService = $availabilityService;
     }
@@ -41,16 +42,15 @@ class VacationRentalBookingController extends BaseController
         return 'plugins/real-estate::themes.' . $view;
     }
 
-    public function showBookingForm(Request $request, $propertySlug)
+    public function showBookingForm(Request $request, $vacationRentalSlug)
     {
-        $slug = SlugHelper::getSlug($propertySlug, SlugHelper::getPrefix(Property::class));
+        $slug = SlugHelper::getSlug($vacationRentalSlug, SlugHelper::getPrefix(VacationRental::class));
 
         if (!$slug) {
             abort(404);
         }
 
-        $property = Property::where('id', $slug->reference_id)
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
+        $vacationRental = VacationRental::where('id', $slug->reference_id)
             ->where('moderation_status', 'approved')
             ->firstOrFail();
 
@@ -60,7 +60,7 @@ class VacationRentalBookingController extends BaseController
         $guests = $request->get('guests', 1);
 
         if (!$checkIn || !$checkOut) {
-            return redirect($property->url)->with('error', __('Please select check-in and check-out dates.'));
+            return redirect($vacationRental->url)->with('error', __('Please select check-in and check-out dates.'));
         }
 
         $checkInDate = Carbon::parse($checkIn);
@@ -68,29 +68,30 @@ class VacationRentalBookingController extends BaseController
 
         // Validate dates
         if ($checkInDate->isPast() || $checkOutDate->isPast() || $checkOutDate <= $checkInDate) {
-            return redirect($property->url)->with('error', __('Invalid dates selected.'));
+            return redirect($vacationRental->url)->with('error', __('Invalid dates selected.'));
         }
 
         // Check availability
-        if (!$this->availabilityService->checkAvailability($property->id, $checkInDate, $checkOutDate)) {
-            return redirect($property->url)->with('error', __('Selected dates are not available.'));
+        if (!$this->availabilityService->checkAvailability($vacationRental, $checkInDate, $checkOutDate)) {
+            return redirect($vacationRental->url)->with('error', __('Selected dates are not available.'));
         }
 
-        // Validate minimum stay
-        if (!$this->availabilityService->validateMinimumStay($property->id, $checkInDate, $checkOutDate)) {
-            $effectiveMinimumStay = $this->availabilityService->getEffectiveMinimumStay($property->id, $checkInDate);
-            return redirect($property->url)->with('error', __('Minimum stay is :nights nights.', ['nights' => $effectiveMinimumStay]));
+        // Validate minimum stay (simplified for now)
+        $nights = $checkInDate->diffInDays($checkOutDate);
+        $minimumStay = $vacationRental->minimum_stay ?? 1;
+        if ($nights < $minimumStay) {
+            return redirect($vacationRental->url)->with('error', __('Minimum stay is :nights nights.', ['nights' => $minimumStay]));
         }
 
         // Check maximum guests
-        if ($property->maximum_guests && $guests > $property->maximum_guests) {
-            return redirect($property->url)->with('error', __('Maximum :guests guests allowed.', ['guests' => $property->maximum_guests]));
+        if ($vacationRental->maximum_guests && $guests > $vacationRental->maximum_guests) {
+            return redirect($vacationRental->url)->with('error', __('Maximum :guests guests allowed.', ['guests' => $vacationRental->maximum_guests]));
         }
 
         try {
-            $pricing = $this->availabilityService->calculateBookingPrice($property->id, $checkInDate, $checkOutDate, $guests);
+            $pricing = $this->availabilityService->calculateBookingPrice($vacationRental, $checkInDate, $checkOutDate, $guests);
         } catch (\Exception $e) {
-            return redirect($property->url)->with('error', $e->getMessage());
+            return redirect($vacationRental->url)->with('error', $e->getMessage());
         }
 
         $this->pageTitle(__('Book :property', ['property' => $property->name]));
@@ -114,22 +115,40 @@ class VacationRentalBookingController extends BaseController
         ]);
 
         Log::info('Booking validation passed, processing dates', [
-            'check_in_date_raw' => $request->check_in_date,
-            'check_out_date_raw' => $request->check_out_date,
+            'check_in_date_raw' => $request['check_in_date'],
+            'check_out_date_raw' => $request['check_out_date'],
         ]);
 
-        $property = Property::where('id', $request->property_id)
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
-            ->where('moderation_status', 'approved')
-            ->firstOrFail();
+        $vacationRentalId = $request['vacation_rental_id'];
 
-        $checkInDate = Carbon::parse($request->check_in_date);
-        $checkOutDate = Carbon::parse($request->check_out_date);
+        Log::info('Looking for vacation rental', [
+            'vacation_rental_id' => $vacationRentalId,
+            'vacation_rental_id_type' => gettype($vacationRentalId)
+        ]);
+
+        $property = VacationRental::where('id', $vacationRentalId)
+            ->where('moderation_status', 'approved')
+            ->first();
+
+        if (!$property) {
+            Log::error('Vacation rental not found or not approved', [
+                'vacation_rental_id' => $vacationRentalId,
+                'all_vacation_rentals' => VacationRental::pluck('id', 'name')->toArray()
+            ]);
+
+            return $this->httpResponse()
+                ->setError()
+                ->setMessage(__('Vacation rental not found or not available for booking.'))
+                ->setCode(404);
+        }
+
+        $checkInDate = Carbon::parse($request['check_in_date']);
+        $checkOutDate = Carbon::parse($request['check_out_date']);
 
 
 
         // Re-validate availability (in case it changed)
-        if (!$this->availabilityService->checkAvailability($property->id, $checkInDate, $checkOutDate)) {
+        if (!$this->availabilityService->checkAvailability($property, $checkInDate, $checkOutDate)) {
             return $this->httpResponse()
                 ->setError()
                 ->setMessage(__('Selected dates are no longer available.'));
@@ -137,10 +156,10 @@ class VacationRentalBookingController extends BaseController
 
         try {
             $pricing = $this->availabilityService->calculateBookingPrice(
-                $property->id, 
-                $checkInDate, 
-                $checkOutDate, 
-                $request->guests_count
+                $property,
+                $checkInDate,
+                $checkOutDate,
+                $request['guests_count']
             );
 
             DB::beginTransaction();
@@ -148,14 +167,14 @@ class VacationRentalBookingController extends BaseController
             // Create booking
             $booking = VacationRentalBooking::create([
                 'booking_number' => $this->generateBookingNumber(),
-                'property_id' => $property->id,
-                'guest_name' => $request->guest_name,
-                'guest_email' => $request->guest_email,
-                'guest_phone' => $request->guest_phone,
+                'vacation_rental_id' => $property->id,
+                'guest_name' => $request['guest_name'],
+                'guest_email' => $request['guest_email'],
+                'guest_phone' => $request['guest_phone'],
                 'check_in_date' => $checkInDate,
                 'check_out_date' => $checkOutDate,
                 'nights_count' => $pricing['nights'],
-                'guests_count' => $request->guests_count,
+                'guests_count' => $request['guests_count'],
 
                 'base_price_per_night' => $pricing['base_price_per_night'],
                 'total_nights_cost' => $pricing['total_nights_cost'],
@@ -164,7 +183,7 @@ class VacationRentalBookingController extends BaseController
                 'taxes' => $pricing['taxes'],
                 'security_deposit' => $pricing['security_deposit'],
                 'total_amount' => $pricing['total_amount'],
-                'special_requests' => $request->special_requests,
+                'special_requests' => $request['special_requests'],
                 'status' => VacationRentalBooking::STATUS_PENDING,
                 'payment_status' => VacationRentalBooking::PAYMENT_PENDING,
             ]);
@@ -213,7 +232,7 @@ class VacationRentalBookingController extends BaseController
         Log::info('Redirecting to payment', [
             'booking_id' => $booking->id,
             'booking_number' => $booking->booking_number,
-            'payment_method' => $request->payment_method,
+            'payment_method' => $request['payment_method'],
             'total_amount' => $booking->total_amount
         ]);
 
@@ -225,7 +244,7 @@ class VacationRentalBookingController extends BaseController
             'customer_type' => null,
             'return_url' => route('public.vacation-rental.booking.success', $booking->booking_number),
             'callback_url' => route('public.vacation-rental.booking.callback'),
-            'payment_method' => $request->payment_method,
+            'payment_method' => $request['payment_method'],
             'description' => __('Vacation Rental Booking #:number', ['number' => $booking->booking_number]),
         ];
 
@@ -237,7 +256,7 @@ class VacationRentalBookingController extends BaseController
 
         try {
             // For JSON requests with test payment method, return success directly
-            if ($request->expectsJson() && $request->payment_method === 'test') {
+            if ($request->expectsJson() && $request['payment_method'] === 'test') {
                 $successUrl = route('public.vacation-rental.booking.success', $booking->booking_number);
                 return $this->httpResponse()
                     ->setData([
@@ -296,7 +315,7 @@ class VacationRentalBookingController extends BaseController
             }
 
             // Fallback: redirect to success page for test payments
-            if ($request->payment_method === 'test') {
+            if ($request['payment_method'] === 'test') {
                 $successUrl = route('public.vacation-rental.booking.success', $booking->booking_number);
                 if ($request->expectsJson()) {
                     return $this->httpResponse()
@@ -312,7 +331,7 @@ class VacationRentalBookingController extends BaseController
             // Log the error for debugging
             \Log::error('Payment processing failed: ' . $e->getMessage(), [
                 'booking_id' => $booking->id,
-                'payment_method' => $request->payment_method,
+                'payment_method' => $request['payment_method'],
                 'error' => $e->getTraceAsString()
             ]);
 
@@ -330,7 +349,7 @@ class VacationRentalBookingController extends BaseController
         }
 
         $booking = VacationRentalBooking::find($bookingId);
-        
+
         if (!$booking) {
             return redirect()->route('public.properties')->with('error', __('Booking not found.'));
         }
@@ -419,7 +438,7 @@ class VacationRentalBookingController extends BaseController
     public function bookingSuccess($bookingNumber)
     {
         $booking = VacationRentalBooking::where('booking_number', $bookingNumber)
-            ->with('property')
+            ->with(['vacationRental.slugable'])
             ->firstOrFail();
 
         $this->pageTitle(__('Booking Confirmed'));
@@ -430,7 +449,7 @@ class VacationRentalBookingController extends BaseController
     public function bookingDetails($bookingNumber)
     {
         $booking = VacationRentalBooking::where('booking_number', $bookingNumber)
-            ->with('property')
+            ->with(['vacationRental.slugable'])
             ->firstOrFail();
 
         $this->pageTitle(__('Booking Details'));
@@ -450,23 +469,22 @@ class VacationRentalBookingController extends BaseController
         ]);
 
         try {
-            $property = Property::where('id', $request->property_id)
-                ->where('type', PropertyTypeEnum::VACATION_RENTAL)
+            $vacationRental = VacationRental::where('id', $request->vacation_rental_id)
                 ->where('moderation_status', 'approved')
                 ->with('author')
                 ->firstOrFail();
 
             // Follow the same pattern as consultation form
             $sendTo = null;
-            if ($property->author?->email) {
-                $sendTo = $property->author->email;
-                Log::info('Inquiry will be sent to property owner', [
-                    'property_id' => $property->id,
+            if ($vacationRental->author?->email) {
+                $sendTo = $vacationRental->author->email;
+                Log::info('Inquiry will be sent to vacation rental owner', [
+                    'vacation_rental_id' => $vacationRental->id,
                     'owner_email' => $sendTo,
                 ]);
             } else {
-                Log::warning('No property owner email found, will use admin fallback', [
-                    'property_id' => $property->id,
+                Log::warning('No vacation rental owner email found, will use admin fallback', [
+                    'vacation_rental_id' => $vacationRental->id,
                 ]);
             }
 
@@ -521,7 +539,7 @@ class VacationRentalBookingController extends BaseController
         return $number;
     }
 
-    public function getAvailability(Request $request, int $propertyId)
+    public function getAvailability(Request $request, VacationRental $vacationRental)
     {
         $startDate = Carbon::parse($request->query('start'));
         $endDate = Carbon::parse($request->query('end'));
@@ -537,10 +555,10 @@ class VacationRentalBookingController extends BaseController
         try {
             if ($exceptionsOnly) {
                 // Return only non-available dates for performance optimization
-                $availability = $this->availabilityService->getAvailabilityExceptions($propertyId, $startDate, $endDate);
+                $availability = $this->availabilityService->getAvailabilityExceptions($vacationRental, $startDate, $endDate);
             } else {
                 // Return full availability data (backward compatibility)
-                $availability = $this->availabilityService->getAvailabilityDetails($propertyId, $startDate, $endDate);
+                $availability = $this->availabilityService->getAvailabilityDetails($vacationRental, $startDate, $endDate);
             }
 
             return $this->httpResponse()->setData($availability);
@@ -552,9 +570,9 @@ class VacationRentalBookingController extends BaseController
         }
     }
 
-    public function calculatePrice(Request $request, int $propertyId)
+    public function calculatePrice(Request $request, VacationRental $vacationRental)
     {
-        Log::info('AJAX Price Calculation Started', ['property_id' => $propertyId, 'request' => $request->all()]);
+        Log::info('AJAX Price Calculation Started', ['vacation_rental_id' => $vacationRental->id, 'request' => $request->all()]);
 
         $checkIn = $request->input('check_in');
         $checkOut = $request->input('check_out');
@@ -571,7 +589,7 @@ class VacationRentalBookingController extends BaseController
             $checkInDate = Carbon::parse($checkIn);
             $checkOutDate = Carbon::parse($checkOut);
 
-            $pricing = $this->availabilityService->calculateBookingPrice($propertyId, $checkInDate, $checkOutDate, $guests);
+            $pricing = $this->availabilityService->calculateBookingPrice($vacationRental, $checkInDate, $checkOutDate, $guests);
 
             return $this->httpResponse()->setData($pricing);
         } catch (\InvalidArgumentException $e) {

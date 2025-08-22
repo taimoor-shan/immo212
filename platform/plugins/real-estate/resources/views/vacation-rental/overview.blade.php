@@ -103,19 +103,19 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <a href="{{ route('vacation-rental.properties') }}" class="btn btn-primary btn-block">
+                                <a href="{{ route('vacation-rental.index') }}" class="btn btn-primary btn-block">
                                     <x-core::icon name="ti ti-building" class="me-2" />
                                     {{ __('Manage Properties & Availability') }}
                                 </a>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <a href="{{ route('vacation-rental.bookings') }}" class="btn btn-success btn-block">
+                                <a href="{{ route('vacation-rental.admin.bookings') }}" class="btn btn-success btn-block">
                                     <x-core::icon name="ti ti-calendar-check" class="me-2" />
                                     {{ __('View Bookings') }}
                                 </a>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <a href="{{ route('property.create') }}?type=vacation_rental" class="btn btn-info btn-block">
+                                <a href="{{ route('vacation-rental.create') }}" class="btn btn-info btn-block">
                                     <x-core::icon name="ti ti-plus" class="me-2" />
                                     {{ __('Add New Property') }}
                                 </a>

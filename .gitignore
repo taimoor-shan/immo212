@@ -8,6 +8,7 @@
 /public/themes/*/css/
 /public/themes/*/js/
 /public/vendor/
+/public/storage/
 /public/mix-manifest.json
 *.css.map
 *.js.map

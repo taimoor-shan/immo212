@@ -35,7 +35,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="card-body">
                         <div class="row">
                             <!-- Property Information -->
@@ -44,21 +44,21 @@
                                     <h5>{{ __('Property Information') }}</h5>
                                     <div class="property-info">
                                         <div class="property-image mb-3">
-                                            {{ RvMedia::image($booking->property->image, $booking->property->name, 'medium-rectangle') }}
+                                            {{ RvMedia::image($booking->vacationRental->image, $booking->vacationRental->name, 'medium-rectangle') }}
                                         </div>
-                                        <h6>{{ $booking->property->name }}</h6>
-                                        @if($booking->property->short_address)
+                                        <h6>{{ $booking->vacationRental->name }}</h6>
+                                        @if($booking->vacationRental->short_address)
                                             <p class="text-muted">
-                                                <i class="fas fa-map-marker-alt"></i> {{ $booking->property->short_address }}
+                                                <i class="fas fa-map-marker-alt"></i> {{ $booking->vacationRental->short_address }}
                                             </p>
                                         @endif
-                                        <a href="{{ $booking->property->url }}" class="btn btn-outline-primary btn-sm">
+                                        <a href="{{ $booking->vacationRental->url }}" class="btn btn-outline-primary btn-sm">
                                             {{ __('View Property') }}
                                         </a>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Booking Information -->
                             <div class="col-md-6">
                                 <div class="section">
@@ -85,25 +85,25 @@
                                                 @endif
                                             </span>
                                         </div>
-                                        @if($booking->property->check_in_time)
+                                        @if($booking->vacationRental->check_in_time)
                                             <div class="detail-row">
                                                 <span class="label">{{ __('Check-in time:') }}</span>
-                                                <span class="value">{{ $booking->property->check_in_time }}</span>
+                                                <span class="value">{{ $booking->vacationRental->check_in_time }}</span>
                                             </div>
                                         @endif
-                                        @if($booking->property->check_out_time)
+                                        @if($booking->vacationRental->check_out_time)
                                             <div class="detail-row">
                                                 <span class="label">{{ __('Check-out time:') }}</span>
-                                                <span class="value">{{ $booking->property->check_out_time }}</span>
+                                                <span class="value">{{ $booking->vacationRental->check_out_time }}</span>
                                             </div>
                                         @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
-                  
-                        
+
+
+
                         <div class="row">
                             <!-- Guest Information -->
                             <div class="col-md-6">
@@ -131,7 +131,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Payment Information -->
                             <div class="col-md-6">
                                 <div class="section">
@@ -160,7 +160,7 @@
                                                     <span>${{ number_format($booking->taxes, 2) }}</span>
                                                 </div>
                                             @endif
-                                         
+
                                             <div class="price-row total">
                                                 <strong>{{ __('Total Amount') }}</strong>
                                                 <strong>${{ number_format($booking->total_amount, 2) }}</strong>
@@ -172,7 +172,7 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        
+
                                         <div class="payment-status mt-3">
                                             <div class="detail-row">
                                                 <span class="label">{{ __('Payment Status:') }}</span>
@@ -193,7 +193,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Special Requests -->
                         @if($booking->special_requests)
                             <hr>
@@ -204,25 +204,25 @@
                                 </div>
                             </div>
                         @endif
-                        
+
                         <!-- House Rules -->
-                        @if($booking->property->house_rules)
+                        @if($booking->vacationRental->house_rules)
                             <hr>
                             <div class="section">
                                 <h5>{{ __('House Rules') }}</h5>
                                 <div class="house-rules">
-                                    {!! nl2br(e($booking->property->house_rules)) !!}
+                                    {!! nl2br(e($booking->vacationRental->house_rules)) !!}
                                 </div>
                             </div>
                         @endif
-                        
+
                         <!-- Action Buttons -->
                         <hr>
                         <div class="action-buttons text-center">
-                            <a href="{{ $booking->property->url }}" class="btn btn-outline-primary me-3">
+                            <a href="{{ $booking->vacationRental->url }}" class="btn btn-outline-primary me-3">
                                 {{ __('View Property') }}
                             </a>
-                            <a href="{{ route('public.properties') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('public.vacation-rentals') }}" class="btn btn-outline-secondary">
                                 {{ __('Browse More Properties') }}
                             </a>
                         </div>
@@ -236,14 +236,14 @@
         .section {
             margin-bottom: 2rem;
         }
-        
+
         .section h5 {
             margin-bottom: 1rem;
             color: #495057;
             border-bottom: 2px solid #e9ecef;
             padding-bottom: 0.5rem;
         }
-        
+
         .detail-row, .price-row {
             display: flex;
             justify-content: space-between;
@@ -251,46 +251,46 @@
             padding: 0.5rem 0;
             border-bottom: 1px solid #f8f9fa;
         }
-        
+
         .detail-row:last-child, .price-row:last-child {
             border-bottom: none;
         }
-        
+
         .detail-row .label, .price-row span:first-child {
             color: #6c757d;
             font-weight: 500;
         }
-        
+
         .detail-row .value, .price-row span:last-child {
             color: #495057;
         }
-        
+
         .price-row.total {
             font-size: 1.1rem;
             border-top: 2px solid #dee2e6;
             margin-top: 0.5rem;
             padding-top: 1rem;
         }
-        
+
         .price-row.deposit {
             color: #6c757d;
             font-size: 0.9rem;
         }
-        
+
         .property-image img {
             width: 100%;
             height: 200px;
             object-fit: cover;
             border-radius: 6px;
         }
-        
+
         .special-requests {
             background-color: #f8f9fa;
             border-radius: 6px;
             padding: 1rem;
             color: #495057;
         }
-        
+
         .house-rules {
             background-color: #fff3cd;
             border: 1px solid #ffeaa7;
@@ -298,18 +298,18 @@
             padding: 1rem;
             color: #856404;
         }
-        
+
         .action-buttons .btn {
             margin-bottom: 0.5rem;
         }
-        
+
         @media (max-width: 768px) {
             .detail-row, .price-row {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.25rem;
             }
-            
+
             .action-buttons .btn {
                 display: block;
                 width: 100%;

@@ -51,6 +51,7 @@ use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
 use Botble\RealEstate\Models\Review;
 use Botble\RealEstate\Models\Transaction;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\PanelSections\SettingRealEstatePanelSetting;
 use Botble\RealEstate\Repositories\Eloquent\AccountActivityLogRepository;
 use Botble\RealEstate\Repositories\Eloquent\AccountRepository;
@@ -67,6 +68,7 @@ use Botble\RealEstate\Repositories\Eloquent\ProjectRepository;
 use Botble\RealEstate\Repositories\Eloquent\PropertyRepository;
 use Botble\RealEstate\Repositories\Eloquent\ReviewRepository;
 use Botble\RealEstate\Repositories\Eloquent\TransactionRepository;
+use Botble\RealEstate\Repositories\Eloquent\VacationRentalRepository;
 use Botble\RealEstate\Repositories\Interfaces\AccountActivityLogInterface;
 use Botble\RealEstate\Repositories\Interfaces\AccountInterface;
 use Botble\RealEstate\Repositories\Interfaces\CategoryInterface;
@@ -82,6 +84,7 @@ use Botble\RealEstate\Repositories\Interfaces\ProjectInterface;
 use Botble\RealEstate\Repositories\Interfaces\PropertyInterface;
 use Botble\RealEstate\Repositories\Interfaces\ReviewInterface;
 use Botble\RealEstate\Repositories\Interfaces\TransactionInterface;
+use Botble\RealEstate\Repositories\Interfaces\VacationRentalInterface;
 use Botble\RssFeed\Facades\RssFeed;
 use Botble\SeoHelper\Facades\SeoHelper;
 use Botble\Slug\Facades\SlugHelper;
@@ -102,66 +105,70 @@ class RealEstateServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(PropertyInterface::class, function () {
-            return new PropertyRepository(new Property());
+            return new PropertyRepository(new Property);
         });
 
         $this->app->singleton(ProjectInterface::class, function () {
-            return new ProjectRepository(new Project());
+            return new ProjectRepository(new Project);
+        });
+
+        $this->app->singleton(VacationRentalInterface::class, function () {
+            return new VacationRentalRepository(new VacationRental);
         });
 
         $this->app->singleton(FeatureInterface::class, function () {
-            return new FeatureRepository(new Feature());
+            return new FeatureRepository(new Feature);
         });
 
         $this->app->bind(InvestorInterface::class, function () {
-            return new InvestorRepository(new Investor());
+            return new InvestorRepository(new Investor);
         });
 
         $this->app->bind(CurrencyInterface::class, function () {
-            return new CurrencyRepository(new Currency());
+            return new CurrencyRepository(new Currency);
         });
 
         $this->app->bind(ConsultInterface::class, function () {
-            return new ConsultRepository(new Consult());
+            return new ConsultRepository(new Consult);
         });
 
         // Register vacation rental services
-        $this->app->singleton(\Botble\RealEstate\Services\AvailabilityService::class);
+        $this->app->singleton(\Botble\RealEstate\Services\SaveVacationRentalAvailabilityService::class);
 
         $this->app->bind(CategoryInterface::class, function () {
-            return new CategoryRepository(new Category());
+            return new CategoryRepository(new Category);
         });
 
         $this->app->bind(FacilityInterface::class, function () {
-            return new FacilityRepository(new Facility());
+            return new FacilityRepository(new Facility);
         });
 
         $this->app->bind(CustomFieldInterface::class, function () {
-            return new CustomFieldRepository(new CustomField());
+            return new CustomFieldRepository(new CustomField);
         });
 
         $this->app->bind(ReviewInterface::class, function () {
-            return new ReviewRepository(new Review());
+            return new ReviewRepository(new Review);
         });
 
         $this->app->bind(InvoiceInterface::class, function () {
-            return new InvoiceRepository(new Invoice());
+            return new InvoiceRepository(new Invoice);
         });
 
         $this->app->bind(AccountInterface::class, function () {
-            return new AccountRepository(new Account());
+            return new AccountRepository(new Account);
         });
 
         $this->app->bind(AccountActivityLogInterface::class, function () {
-            return new AccountActivityLogRepository(new AccountActivityLog());
+            return new AccountActivityLogRepository(new AccountActivityLog);
         });
 
         $this->app->bind(PackageInterface::class, function () {
-            return new PackageRepository(new Package());
+            return new PackageRepository(new Package);
         });
 
         $this->app->singleton(TransactionInterface::class, function () {
-            return new TransactionRepository(new Transaction());
+            return new TransactionRepository(new Transaction);
         });
 
         config([
@@ -221,10 +228,12 @@ class RealEstateServiceProvider extends ServiceProvider
             SlugHelper::registerModule(Property::class, fn () => trans('plugins/real-estate::property.properties'));
             SlugHelper::registerModule(Category::class, fn () => trans('plugins/real-estate::category.property_categories'));
             SlugHelper::registerModule(Project::class, fn () => trans('plugins/real-estate::project.projects'));
+            SlugHelper::registerModule(VacationRental::class, fn () => trans('plugins/real-estate::vacation-rental.vacation_rentals'));
             SlugHelper::setPrefix(Project::class, 'projects', true);
 
             SlugHelper::setPrefix(Property::class, 'properties', true);
             SlugHelper::setPrefix(Category::class, 'property-category', true);
+            SlugHelper::setPrefix(VacationRental::class, 'vacation-rentals', true);
 
             if (! setting('real_estate_disabled_public_profile')) {
                 SlugHelper::registerModule(Account::class, fn () => trans('plugins/real-estate::account.agents'));
@@ -415,11 +424,11 @@ class RealEstateServiceProvider extends ServiceProvider
                 })
                 ->registerItem([
                     'id' => 'cms-plugins-vacation-rental',
-                    'priority' => 6,
-                    'parent_id' => 'cms-plugins-real-estate',
+                    'priority' => 0,
+                    'parent_id' => null,
                     'name' => 'plugins/real-estate::vacation-rental.name',
-                    'icon' => null,
-                    'url' => fn () => route('vacation-rental.overview'),
+                    'icon' => 'ti ti-bed',
+                    'url' => fn () => route('vacation-rental.index'),
                     'permissions' => ['vacation-rental.index'],
                 ])
                 ->registerItem([
@@ -428,7 +437,7 @@ class RealEstateServiceProvider extends ServiceProvider
                     'parent_id' => 'cms-plugins-vacation-rental',
                     'name' => 'plugins/real-estate::vacation-rental.overview',
                     'icon' => null,
-                    'url' => fn () => route('vacation-rental.overview'),
+                    'url' => fn () => route('vacation-rental.admin.overview'),
                     'permissions' => ['vacation-rental.dashboard'],
                 ])
                 ->registerItem([
@@ -437,7 +446,7 @@ class RealEstateServiceProvider extends ServiceProvider
                     'parent_id' => 'cms-plugins-vacation-rental',
                     'name' => 'plugins/real-estate::vacation-rental.properties',
                     'icon' => null,
-                    'url' => fn () => route('vacation-rental.properties'),
+                    'url' => fn () => route('vacation-rental.index'),
                     'permissions' => ['vacation-rental.index'],
                 ])
                 ->registerItem([
@@ -446,9 +455,11 @@ class RealEstateServiceProvider extends ServiceProvider
                     'parent_id' => 'cms-plugins-vacation-rental',
                     'name' => 'plugins/real-estate::vacation-rental.bookings',
                     'icon' => null,
-                    'url' => fn () => route('vacation-rental.bookings'),
+                    'url' => fn () => route('vacation-rental.admin.bookings'),
                     'permissions' => ['vacation-rental.bookings'],
                 ]);
+
+
         });
 
         DashboardMenu::for('account')->beforeRetrieving(function (DashboardMenuSupport $dashboardMenu): void {
@@ -491,8 +502,8 @@ class RealEstateServiceProvider extends ServiceProvider
                     'id' => 'cms-account-vacation-rentals',
                     'priority' => 2.5,
                     'name' => 'Vacation Rentals',
-                    'url' => fn () => route('public.account.vacation-rentals.dashboard'),
-                    'icon' => 'ti ti-calendar-event',
+                    'url' => fn () => route('public.account.vacation-rentals.index'),
+                    'icon' => 'ti ti-home-star',
                 ])
                 ->registerItem([
                     'id' => 'cms-account-vacation-rental-bookings',
@@ -500,13 +511,6 @@ class RealEstateServiceProvider extends ServiceProvider
                     'name' => 'Bookings',
                     'url' => fn () => route('public.account.vacation-rentals.bookings'),
                     'icon' => 'ti ti-calendar-check',
-                ])
-                ->registerItem([
-                    'id' => 'cms-account-vacation-rental-calendar',
-                    'priority' => 2.7,
-                    'name' => 'Availability Calendar',
-                    'url' => fn () => route('public.account.vacation-rentals.calendar'),
-                    'icon' => 'ti ti-calendar',
                 ])
                 ->registerItem([
                     'id' => 'cms-account-settings',
@@ -554,10 +558,12 @@ class RealEstateServiceProvider extends ServiceProvider
         SiteMapManager::registerKey([
             'properties-((?:19|20|21|22)\d{2})-(0?[1-9]|1[012])',
             'projects-((?:19|20|21|22)\d{2})-(0?[1-9]|1[012])',
+            'vacation-rentals-((?:19|20|21|22)\d{2})-(0?[1-9]|1[012])',
             'property-categories',
             'agents',
             'properties-city',
             'projects-city',
+            'vacation-rentals-city',
         ]);
 
         if (defined('LANGUAGE_MODULE_SCREEN_NAME')) {
@@ -650,7 +656,7 @@ class RealEstateServiceProvider extends ServiceProvider
                             }
 
                             foreach ($options as $value) {
-                                $newRequest = new Request();
+                                $newRequest = new Request;
 
                                 $newRequest->replace([
                                     'language' => $request->input('language'),
@@ -682,7 +688,7 @@ class RealEstateServiceProvider extends ServiceProvider
                                 return;
                             }
 
-                            $newRequest = new Request();
+                            $newRequest = new Request;
 
                             $newRequest->replace([
                                 'language' => $request->input('language'),
@@ -715,7 +721,7 @@ class RealEstateServiceProvider extends ServiceProvider
                                 return;
                             }
 
-                            $newRequest = new Request();
+                            $newRequest = new Request;
 
                             $newRequest->replace([
                                 'language' => $request->input('language'),
@@ -756,6 +762,7 @@ class RealEstateServiceProvider extends ServiceProvider
 
         if (is_plugin_active('location')) {
             Location::registerModule(Property::class);
+            Location::registerModule(VacationRental::class);
             Location::registerModule(Project::class);
             Location::registerModule(Account::class);
         } else {
@@ -783,6 +790,7 @@ class RealEstateServiceProvider extends ServiceProvider
             SeoHelper::registerModule([
                 Property::class,
                 Project::class,
+                VacationRental::class,
             ]);
 
             EmailHandler::addTemplateSettings(REAL_ESTATE_MODULE_SCREEN_NAME, config('plugins.real-estate.email', []));

@@ -206,8 +206,8 @@
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <a href="{{ route('public.account.vacation-rentals.availability') }}?property_id={{ $property->id }}" class="btn btn-sm btn-outline-primary">
-                                                {{ __('Manage') }}
+                                            <a href="{{ route('public.account.vacation-rentals.edit', $property->id) }}" class="btn btn-sm btn-outline-primary">
+                                                {{ __('Edit') }}
                                             </a>
                                         </div>
                                     </div>
@@ -216,8 +216,8 @@
                         </div>
                         @if($vacationRentals->count() > 5)
                             <div class="card-footer">
-                                <a href="{{ route('public.account.properties.index') }}" class="btn btn-primary btn-sm">
-                                    {{ __('View All Properties') }}
+                                <a href="{{ route('public.account.vacation-rentals.index') }}" class="btn btn-primary btn-sm">
+                                    {{ __('View All Vacation Rentals') }}
                                 </a>
                             </div>
                         @endif

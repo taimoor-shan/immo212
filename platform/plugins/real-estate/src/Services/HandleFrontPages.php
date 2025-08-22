@@ -9,6 +9,7 @@ use Botble\RealEstate\Models\Account;
 use Botble\RealEstate\Models\Category;
 use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\QueryBuilders\ProjectBuilder;
 use Botble\RealEstate\QueryBuilders\PropertyBuilder;
 use Botble\RealEstate\Repositories\Interfaces\ProjectInterface;
@@ -224,6 +225,74 @@ class HandleFrontPages
                     'default_view' => 'plugins/real-estate::themes.property-category',
                     'data' => compact('category', 'properties'),
                     'slug' => $category->slug,
+                ];
+
+            case VacationRental::class:
+                $condition = [
+                    'id' => $slug->reference_id,
+                ];
+
+                // if (! $isPreviewing) {
+                //     $condition = [
+                //         ...$condition,
+                //         'status' => \Botble\RealEstate\Enums\VacationRentalStatusEnum::RENTING,
+                //         'moderation_status' => \Botble\RealEstate\Enums\ModerationStatusEnum::APPROVED,
+                //     ];
+                // }
+
+
+                $vacationRental = VacationRental::query()
+                    ->where($condition)
+                    // ->with(RealEstateHelper::getVacationRentalRelationsQuery())
+               
+                    ->firstOrFail();
+
+                    
+                if ($vacationRental->slugable->key !== $slug->key) {
+                    return [
+                        'slug' => $vacationRental->slugable->key,
+                        'data' => [$vacationRental],
+                    ];
+                }
+
+                $images = [];
+                if (! empty($vacationRental->images)) {
+                    foreach ($vacationRental->images as $image) {
+                        $images[] = RvMedia::getImageUrl($image, null, false, RvMedia::getDefaultImage());
+                    }
+                }
+
+                SeoHelper::setTitle($vacationRental->name)
+                    ->setDescription(Str::words($vacationRental->description, 120));
+
+                $meta = new SeoOpenGraph();
+                if ($vacationRental->image) {
+                    $meta->setImage(RvMedia::getImageUrl($vacationRental->image));
+                }
+                $meta->setDescription($vacationRental->description);
+                $meta->setUrl($vacationRental->url);
+                $meta->setTitle($vacationRental->name);
+                $meta->setType('article');
+
+                SeoHelper::setSeoOpenGraph($meta);
+
+                Theme::breadcrumb()
+                    ->add(__('Vacation Rentals'), route('public.vacation-rentals'))
+                    ->add($vacationRental->name);
+
+                Helper::handleViewCount($vacationRental, 'viewed_vacation_rental');
+
+                do_action(BASE_ACTION_PUBLIC_RENDER_SINGLE, 'VACATION_RENTAL_MODULE_SCREEN_NAME', $vacationRental);
+
+                if (function_exists('admin_bar')) {
+                    admin_bar()->registerLink(__('Edit this vacation rental'), route('vacation-rental.edit', $vacationRental->id));
+                }
+
+                return [
+                    'view' => 'real-estate.vacation-rental',
+                    'default_view' => 'plugins/real-estate::themes.vacation-rental',
+                    'data' => compact('vacationRental', 'images'),
+                    'slug' => $vacationRental->slug,
                 ];
 
             case Account::class:

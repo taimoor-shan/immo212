@@ -45,7 +45,7 @@ class VacationRentalBookingTable extends TableAbstract
                 return Html::link(route('vacation-rental.booking.edit', $item->getKey()), $item->booking_number);
             })
             ->editColumn('property_name', function (VacationRentalBooking $item) {
-                return $item->property ? $item->property->name : '&mdash;';
+                return $item->vacationRental ? $item->vacationRental->name : '&mdash;';
             })
             ->editColumn('guest_name', function (VacationRentalBooking $item) {
                 return $item->guest_name;
@@ -63,7 +63,7 @@ class VacationRentalBookingTable extends TableAbstract
                 return $item->guests_count . ' ' . __('guests');
             })
             ->editColumn('total_amount', function (VacationRentalBooking $item) {
-                return format_price($item->total_amount, $item->property?->currency);
+                return format_price($item->total_amount, $item->vacationRental?->currency);
             })
             ->editColumn('status', function (VacationRentalBooking $item) {
                 $statusLabels = [
@@ -113,7 +113,7 @@ class VacationRentalBookingTable extends TableAbstract
             ->select([
                 'id',
                 'booking_number',
-                'property_id',
+                'vacation_rental_id',
                 'guest_name',
                 'guest_email',
                 'guest_phone',
@@ -124,7 +124,7 @@ class VacationRentalBookingTable extends TableAbstract
                 'status',
                 'created_at',
             ])
-            ->with(['property:id,name,currency_id', 'property.currency']);
+            ->with(['vacationRental:id,name,currency_id', 'vacationRental.currency']);
 
         return $this->applyScopes($query);
     }
@@ -136,7 +136,7 @@ class VacationRentalBookingTable extends TableAbstract
             Column::make('booking_number')
                 ->title(trans('plugins/real-estate::vacation-rental.booking_number')),
             Column::make('property_name')
-                ->title(trans('plugins/real-estate::vacation-rental.property'))
+                ->title(trans('plugins/real-estate::vacation-rental.vacation_rental'))
                 ->searchable(false)
                 ->orderable(false),
             Column::make('guest_name')

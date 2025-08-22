@@ -13,10 +13,9 @@ class SavePropertyAvailabilityService
 {
     public function execute(Property $property, array $availabilityData = []): void
     {
-        // Only process availability data for vacation rentals
-        if ($property->type != PropertyTypeEnum::VACATION_RENTAL) {
-            return;
-        }
+        // This service is no longer used for properties since vacation rentals have been separated
+        // All availability management is now handled by the VacationRental system
+        return;
 
         // If no availability data provided, skip processing
         if (empty($availabilityData)) {

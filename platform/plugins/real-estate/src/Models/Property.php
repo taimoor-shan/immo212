@@ -1,7 +1,6 @@
 <?php
 
 namespace Botble\RealEstate\Models;
-
 use Botble\Base\Casts\SafeContent;
 use Botble\Base\Models\BaseModel;
 use Botble\Media\Facades\RvMedia;
@@ -65,16 +64,6 @@ class Property extends BaseModel
         'floor_plan_image',
         'floor_plan_document',
         'reject_reason',
-        // Vacation rental specific fields
-        'check_in_time',
-        'check_out_time',
-        'minimum_stay',
-        'maximum_stay',
-        'maximum_guests',
-        'cleaning_fee',
-        'security_deposit',
-        'house_rules',
-        'cancellation_policy',
     ];
 
     protected $casts = [
@@ -97,12 +86,6 @@ class Property extends BaseModel
         'number_floor' => 'int',
         'featured_priority' => 'int',
         'floor_plans' => 'array',
-        // Vacation rental specific casts
-        'minimum_stay' => 'int',
-        'maximum_stay' => 'int',
-        'maximum_guests' => 'int',
-        'cleaning_fee' => 'float',
-        'security_deposit' => 'float',
     ];
 
     protected static function newFactory(): PropertyFactory
@@ -225,8 +208,6 @@ class Property extends BaseModel
 
             if ($this->type == PropertyTypeEnum::RENT) {
                 $price .= ' / ' . Str::lower($this->period->shortLabel());
-            } elseif ($this->type == PropertyTypeEnum::VACATION_RENTAL) {
-                $price .= ' / ' . __('night');
             }
 
             return $price;
@@ -274,26 +255,7 @@ class Property extends BaseModel
         return $this->morphMany(Review::class, 'reviewable');
     }
 
-    // Vacation rental availability relationships
-    public function availability(): HasMany
-    {
-        return $this->hasMany(PropertyAvailability::class);
-    }
 
-    public function availabilityRules(): HasMany
-    {
-        return $this->hasMany(PropertyAvailabilityRule::class);
-    }
-
-    public function vacationRentalBookings(): HasMany
-    {
-        return $this->hasMany(VacationRentalBooking::class);
-    }
-
-    public function calendarEvents(): HasMany
-    {
-        return $this->hasMany(PropertyCalendarEvent::class);
-    }
 
     public function newEloquentBuilder($query): PropertyBuilder
     {

@@ -12,7 +12,6 @@
         @if($property->can_see_private_notes && $property->private_notes)
             <div class="bd-callout bd-callout-info">
                 <div class="h7 title fw-6 mb-2">{{ __('Private Notes') }}</div>
-
                 {!! BaseHelper::clean(nl2br($property->private_notes)) !!}
             </div>
         @endif

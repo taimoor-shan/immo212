@@ -14,58 +14,58 @@
                         <div class="success-icon mb-4">
                             <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
                         </div>
-                        
+
                         <!-- Success Message -->
                         <h2 class="text-success mb-3">{{ __('Booking Confirmed!') }}</h2>
                         <p class="lead mb-4">{{ __('Thank you for your booking. Your reservation has been confirmed.') }}</p>
-                        
+
                         <!-- Booking Details -->
                         <div class="booking-confirmation">
                             <div class="row">
                                 <div class="col-md-10 mx-auto">
                                     <div class="confirmation-details">
                                         <h5 class="mb-3">{{ __('Booking Details') }}</h5>
-                                        
+
                                         <div class="detail-item">
                                             <strong>{{ __('Booking Number:') }}</strong>
                                             <span class="booking-number">{{ $booking->booking_number }}</span>
                                         </div>
-                                        
+
                                         <div class="detail-item">
                                             <strong>{{ __('Property:') }}</strong>
-                                            <span>{{ $booking->property->name }}</span>
+                                            <span>{{ $booking->vacationRental->name }}</span>
                                         </div>
-                                        
+
                                         <div class="detail-item">
                                             <strong>{{ __('Guest:') }}</strong>
                                             <span>{{ $booking->guest_name }}</span>
                                         </div>
-                                        
+
                                         <div class="detail-item">
                                             <strong>{{ __('Check-in:') }}</strong>
                                             <span>{{ $booking->check_in_date->format('M j, Y') }}</span>
                                         </div>
-                                        
+
                                         <div class="detail-item">
                                             <strong>{{ __('Check-out:') }}</strong>
                                             <span>{{ $booking->check_out_date->format('M j, Y') }}</span>
                                         </div>
-                                        
+
                                         <div class="detail-item">
                                             <strong>{{ __('Nights:') }}</strong>
                                             <span>{{ $booking->nights_count }}</span>
                                         </div>
-                                        
+
                                         <div class="detail-item">
                                             <strong>{{ __('Guests:') }}</strong>
                                             <span>{{ $booking->guests_count }}</span>
                                         </div>
-                                        
+
                                         <div class="detail-item total">
                                             <strong>{{ __('Total Amount:') }}</strong>
                                             <strong class="text-primary">${{ number_format($booking->total_amount, 2) }}</strong>
                                         </div>
-                                        
+
                                         <div class="detail-item">
                                             <strong>{{ __('Status:') }}</strong>
                                             <span class="badge bg-success text-success-fg">{{ ucfirst($booking->status) }}</span>
@@ -74,7 +74,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Next Steps -->
                         <div class="next-steps mt-5">
                             <h5>{{ __('What\'s Next?') }}</h5>
@@ -114,39 +114,39 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Important Information -->
-                        @if($booking->property->check_in_time || $booking->property->check_out_time)
+                        @if($booking->vacationRental->check_in_time || $booking->vacationRental->check_out_time)
                             <div class="important-info mt-4">
                                 <h5>{{ __('Important Information') }}</h5>
                                 <div class="info-box">
-                                    @if($booking->property->check_in_time)
+                                    @if($booking->vacationRental->check_in_time)
                                         <div class="info-item">
-                                            <strong>{{ __('Check-in Time:') }}</strong> {{ $booking->property->check_in_time }}
+                                            <strong>{{ __('Check-in Time:') }}</strong> {{ $booking->vacationRental->check_in_time }}
                                         </div>
                                     @endif
-                                    @if($booking->property->check_out_time)
+                                    @if($booking->vacationRental->check_out_time)
                                         <div class="info-item">
-                                            <strong>{{ __('Check-out Time:') }}</strong> {{ $booking->property->check_out_time }}
+                                            <strong>{{ __('Check-out Time:') }}</strong> {{ $booking->vacationRental->check_out_time }}
                                         </div>
                                     @endif
                                 </div>
                             </div>
                         @endif
-                        
+
                         <!-- Action Buttons -->
                         <div class="action-buttons mt-4">
                             <a href="{{ route('public.vacation-rental.booking.details', $booking->booking_number) }}" class="btn btn-primary me-3">
                                 {{ __('View Booking Details') }}
                             </a>
-                            <a href="{{ $booking->property->url }}" class="btn btn-outline-primary me-3">
+                            <a href="{{ $booking->vacationRental->url }}" class="btn btn-outline-primary me-3">
                                 {{ __('View Property') }}
                             </a>
                             <a href="{{ route('public.properties') }}" class="btn btn-outline-secondary">
                                 {{ __('Browse More Properties') }}
                             </a>
                         </div>
-                        
+
                         <!-- Contact Information -->
                         <div class="contact-info mt-4">
                             <p class="text-muted">

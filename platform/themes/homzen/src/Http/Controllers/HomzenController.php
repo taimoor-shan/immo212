@@ -5,6 +5,7 @@ namespace Theme\Homzen\Http\Controllers;
 use Botble\Base\Http\Responses\BaseHttpResponse;
 use Botble\Location\Models\City;
 use Botble\Location\Repositories\Interfaces\CityInterface;
+use Botble\Media\Facades\RvMedia;
 use Botble\RealEstate\Enums\PropertyTypeEnum;
 use Botble\RealEstate\Facades\RealEstateHelper;
 use Botble\RealEstate\Models\Project;
@@ -240,5 +241,66 @@ class HomzenController extends PublicController
         Theme::breadcrumb()->add(__('Wishlist'));
 
         return Theme::scope('real-estate.wishlist', compact('properties', 'projects'))->render();
+    }
+
+    public function ajaxGetVacationRentals(Request $request): BaseHttpResponse
+    {
+        $request->validate([
+            'limit' => ['required', 'integer'],
+            'is_featured' => ['boolean'],
+            'category_id' => ['nullable', 'string'],
+            'category_ids' => ['nullable', 'array'],
+            'city_id' => ['nullable', 'integer'],
+            'author_id' => ['nullable', 'integer'],
+        ]);
+
+        $vacationRentals = RealEstateHelper::getVacationRentalsFilter(
+            $request->integer('limit', 6)
+        );
+
+        return $this
+            ->httpResponse()
+            ->setData(Theme::partial('vacation-rentals', compact('vacationRentals')));
+    }
+
+    public function ajaxGetVacationRentalsForMap(Request $request): BaseHttpResponse
+    {
+        $validated = $request->validate([
+            'k' => ['nullable', 'string'],
+            'minimum_stay' => ['nullable', 'integer'],
+            'maximum_guests' => ['nullable', 'integer'],
+            'min_price' => ['nullable', 'numeric'],
+            'max_price' => ['nullable', 'numeric'],
+            'category_id' => ['nullable', 'string'],
+            'city' => ['nullable', 'string'],
+            'city_id' => ['nullable', 'integer'],
+            'location' => ['nullable', 'string'],
+        ]);
+
+        $vacationRentals = RealEstateHelper::getVacationRentalsFilter(20);
+
+        // For now, return basic data structure similar to properties
+        // This will be enhanced when we create VacationRentalResource
+        $data = $vacationRentals->map(function ($vacationRental) {
+            return [
+                'id' => $vacationRental->id,
+                'name' => $vacationRental->name,
+                'location' => $vacationRental->location,
+                'latitude' => $vacationRental->latitude,
+                'longitude' => $vacationRental->longitude,
+                'image_thumb' => RvMedia::getImageUrl($vacationRental->image, 'thumb'),
+                'formatted_price' => format_price($vacationRental->price, $vacationRental->currency) . ' / ' . __('night'),
+                'url' => $vacationRental->url,
+                'status_html' => $vacationRental->status->toHtml(),
+                'map_icon' => format_price($vacationRental->price, $vacationRental->currency),
+                'minimum_stay' => $vacationRental->minimum_stay,
+                'maximum_guests' => $vacationRental->maximum_guests,
+                'category_name' => $vacationRental->category->name ?? '',
+            ];
+        });
+
+        return $this
+            ->httpResponse()
+            ->setData($data);
     }
 }

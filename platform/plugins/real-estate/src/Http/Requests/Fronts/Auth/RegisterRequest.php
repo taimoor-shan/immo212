@@ -17,9 +17,11 @@ class RegisterRequest extends Request
             'last_name' => ['required', 'string', 'max:120', 'min:2'],
             'username' => [
                 Rule::requiredIf(fn () => ! setting('real_estate_hide_username_in_registration_page', false)),
+                'nullable',
                 'string',
                 'max:120',
                 'min:2',
+                'regex:/^[a-zA-Z0-9_.-]+$/',
                 Rule::unique((new Account())->getTable(), 'username'),
             ],
             'email' => ['required', 'max:60', 'min:6', new EmailRule(), 'unique:re_accounts'],
@@ -31,6 +33,16 @@ class RegisterRequest extends Request
             ],
             'password' => ['required', 'min:6', 'confirmed'],
             'agree_terms_and_policy' => ['sometimes', 'accepted:1'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'username.regex' => __('Username can only contain letters, numbers, dots, hyphens and underscores.'),
+            'username.unique' => __('This username is already taken.'),
+            'email.unique' => __('This email address is already registered.'),
+            'phone.unique' => __('This phone number is already registered.'),
         ];
     }
 }

@@ -10,8 +10,12 @@ class FeatureSeeder extends BaseSeeder
 {
     public function run(): void
     {
-        Feature::query()->truncate();
+        // Use delete instead of truncate to avoid foreign key constraint issues
+        Feature::query()->delete();
         DB::table('re_project_features')->truncate();
+
+        // Reset auto increment
+        DB::statement('ALTER TABLE re_features AUTO_INCREMENT = 1;');
 
         $features = [
             [

@@ -34,9 +34,10 @@ class LoginForm extends AuthForm
                 'email',
                 EmailField::class,
                 EmailFieldOption::make()
-                    ->label(__('Email'))
-                    ->placeholder(__('Email address'))
+                    ->label(__('Email or Username'))
+                    ->placeholder(__('Email address or username'))
                     ->icon('ti ti-mail')
+                    ->addAttribute('autocomplete', 'username')
                     ->toArray()
             )
             ->add(

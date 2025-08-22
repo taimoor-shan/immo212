@@ -217,6 +217,11 @@ class Account extends BaseModel implements
         return $this->morphMany(Project::class, 'author');
     }
 
+    public function vacationRentals(): MorphMany
+    {
+        return $this->morphMany(VacationRental::class, 'author');
+    }
+
     public function canPost(): bool
     {
         return ! RealEstateHelper::isEnabledCreditsSystem() || $this->credits > 0;

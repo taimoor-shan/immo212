@@ -10,7 +10,7 @@ class VacationRentalBookingRequest extends Request
     public function rules(): array
     {
         return [
-            'property_id' => 'required|exists:re_properties,id',
+            'vacation_rental_id' => 'required|exists:re_vacation_rentals,id',
             'check_in_date' => 'required|date|after_or_equal:today',
             'check_out_date' => 'required|date|after:check_in_date',
             'guests_count' => 'required|integer|min:1|max:20',
@@ -27,8 +27,8 @@ class VacationRentalBookingRequest extends Request
     public function messages(): array
     {
         return [
-            'property_id.required' => __('Property is required.'),
-            'property_id.exists' => __('Selected property is invalid.'),
+            'vacation_rental_id.required' => __('Vacation rental is required.'),
+            'vacation_rental_id.exists' => __('Selected vacation rental is invalid.'),
             'check_in_date.required' => __('Check-in date is required.'),
             'check_in_date.date' => __('Check-in date must be a valid date.'),
             'check_in_date.after_or_equal' => __('Check-in date must be today or later.'),
@@ -60,7 +60,7 @@ class VacationRentalBookingRequest extends Request
     public function attributes(): array
     {
         return [
-            'property_id' => __('Property'),
+            'vacation_rental_id' => __('Vacation rental'),
             'check_in_date' => __('Check-in date'),
             'check_out_date' => __('Check-out date'),
             'guests_count' => __('Number of guests'),

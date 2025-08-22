@@ -11,10 +11,13 @@ use Botble\RealEstate\Enums\ProjectStatusEnum;
 use Botble\RealEstate\Enums\PropertyStatusEnum;
 use Botble\RealEstate\Enums\PropertyTypeEnum;
 use Botble\RealEstate\Enums\ReviewStatusEnum;
+use Botble\RealEstate\Enums\VacationRentalStatusEnum;
 use Botble\RealEstate\Models\Project;
 use Botble\RealEstate\Models\Property;
+use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\Repositories\Interfaces\ProjectInterface;
 use Botble\RealEstate\Repositories\Interfaces\PropertyInterface;
+use Botble\RealEstate\Repositories\Interfaces\VacationRentalInterface;
 use Botble\Slug\Facades\SlugHelper;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
@@ -101,6 +104,33 @@ class RealEstateHelper
         return $relations;
     }
 
+public function getVacationRentalRelationsQuery(): array
+{
+    $relations = [
+        'slugable:id,key,prefix,reference_id',
+        'currency:id,is_default,exchange_rate,symbol,title,is_prefix_symbol',
+        'categories' => function (BelongsToMany|BaseQueryBuilder $query) {
+            return $query
+                ->wherePublished()
+                ->orderBy('re_categories.created_at', 'DESC') // ✅ specify table
+                ->orderByDesc('re_categories.is_default')
+                ->orderByDesc('re_categories.order')
+                ->select(['re_categories.id', 're_categories.name']);
+        },
+    ];
+
+    if (is_plugin_active('location')) {
+        $relations = [
+            ...$relations,
+            'state:id,name',
+            'city:id,name',
+        ];
+    }
+
+    return $relations;
+}
+
+
     public function isEnabledCreditsSystem(): bool
     {
         return setting('real_estate_enable_credits_system', 1) == 1;
@@ -142,6 +172,19 @@ class RealEstateHelper
         return $conditions;
     }
 
+    public function getVacationRentalDisplayQueryConditions(): array
+    {
+        $conditions = [
+            're_vacation_rentals.moderation_status' => ModerationStatusEnum::APPROVED,
+        ];
+
+        foreach ($this->exceptedVacationRentalStatuses() as $status) {
+            $conditions[] = ['re_vacation_rentals.status', '!=', $status];
+        }
+
+        return $conditions;
+    }
+
     public function exceptedPropertyStatuses(): array
     {
         $statuses = setting('real_estate_hide_properties_in_statuses');
@@ -162,6 +205,17 @@ class RealEstateHelper
         }
 
         return [ProjectStatusEnum::NOT_AVAILABLE];
+    }
+
+    public function exceptedVacationRentalStatuses(): array
+    {
+        $statuses = setting('real_estate_hide_vacation_rentals_in_statuses');
+
+        if ($statuses) {
+            return json_decode($statuses, true);
+        }
+
+        return [VacationRentalStatusEnum::DRAFT];
     }
 
     public function isEnabledWishlist(): bool
@@ -314,6 +368,55 @@ class RealEstateHelper
         return app(ProjectInterface::class)->getProjects($filters, $params);
     }
 
+    public function getVacationRentalsFilter(?int $perPage = 12, array $extra = []): LengthAwarePaginator|Collection
+    {
+        $request = request();
+
+        $perPage = $request->integer('per_page') ?: ($perPage ?? 12);
+
+        try {
+            $filters = $request->validate(apply_filters('vacation_rentals_filter_validation_rules', [
+                'keyword' => 'nullable|string|max:255',
+                'location' => 'nullable|string',
+                'city_id' => 'nullable|numeric',
+                'city' => 'nullable|string',
+                'state' => 'nullable|string',
+                'state_id' => 'nullable|numeric',
+                'category_id' => 'nullable|numeric',
+                'min_price' => 'nullable|numeric',
+                'max_price' => 'nullable|numeric',
+                'minimum_stay' => 'nullable|numeric',
+                'maximum_guests' => 'nullable|numeric',
+                'sort_by' => 'nullable|string',
+                'locations' => 'nullable|array',
+                'category_ids' => 'nullable|array',
+                'features' => 'nullable|array',
+                'bedroom' => 'nullable|numeric',
+                'bathroom' => 'nullable|numeric',
+                'floor' => 'nullable|numeric',
+                'min_square' => 'nullable|numeric',
+                'max_square' => 'nullable|numeric',
+                'check_in_date' => 'nullable|date|after_or_equal:today',
+                'check_out_date' => 'nullable|date|after:check_in_date',
+            ]));
+        } catch (Throwable) {
+            $filters = [];
+        }
+
+        $filters['keyword'] = $request->input('k');
+
+        $params = array_merge([
+            'paginate' => [
+                'per_page' => $perPage,
+                'current_paged' => $request->integer('page', 1),
+            ],
+            'order_by' => ['re_vacation_rentals.created_at' => 'DESC'],
+            'with' => RealEstateHelper::getVacationRentalRelationsQuery(),
+        ], $extra);
+
+        return app(VacationRentalInterface::class)->getVacationRentals($filters, $params);
+    }
+
     public function getPropertiesPerPageList(): array
     {
         return apply_filters(PROPERTIES_PER_PAGE_LIST, [
@@ -324,6 +427,19 @@ class RealEstateHelper
             45 => 45,
             60 => 60,
             120 => 120,
+        ]);
+    }
+
+    public function getVacationRentalsPerPageList(): array
+    {
+        return apply_filters('vacation_rentals_per_page_list', [
+            6 => 6,
+            9 => 9,
+            12 => 12,
+            15 => 15,
+            24 => 24,
+            36 => 36,
+            48 => 48,
         ]);
     }
 
@@ -495,6 +611,7 @@ class RealEstateHelper
         if (is_plugin_active('location')) {
             $projectSlug = SlugHelper::getPrefix(Project::class, 'projects') ?: 'projects';
             $propertySlug = SlugHelper::getPrefix(Property::class, 'properties') ?: 'properties';
+            $vacationRentalSlug = SlugHelper::getPrefix(VacationRental::class, 'vacation-rentals') ?: 'vacation-rentals';
             $citySlug = SlugHelper::getPrefix(City::class, 'city') ?: 'city';
             $stateSlug = SlugHelper::getPrefix(State::class, 'state') ?: 'state';
 
@@ -503,6 +620,8 @@ class RealEstateHelper
                 'projects_state' => sprintf('%s/%s', $projectSlug, $stateSlug),
                 'properties_city' => sprintf('%s/%s', $propertySlug, $citySlug),
                 'properties_state' => sprintf('%s/%s', $propertySlug, $stateSlug),
+                'vacation_rentals_city' => sprintf('%s/%s', $vacationRentalSlug, $citySlug),
+                'vacation_rentals_state' => sprintf('%s/%s', $vacationRentalSlug, $stateSlug),
             ];
         }
 

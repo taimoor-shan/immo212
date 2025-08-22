@@ -35,7 +35,7 @@
             {!! apply_filters('ads_render', null, 'listing_page_before') !!}
 
             <div class="position-relative mb-3" data-bb-toggle="data-listing">
-                @include($itemsViewPath, ['itemLayout' => $itemLayout, 'itemsPerRow' => $itemLayout === 'grid' ? 2 : 1])
+                @include($itemsViewPath, array_merge(['itemLayout' => $itemLayout, 'itemsPerRow' => $itemLayout === 'grid' ? 2 : 1], get_defined_vars()))
             </div>
 
             {!! apply_filters('ads_render', null, 'listing_page_after') !!}

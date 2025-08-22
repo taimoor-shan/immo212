@@ -1426,7 +1426,8 @@
         grid-template-areas: 'item1';
         grid-template-columns: 1fr;
         grid-template-rows: 1fr;
-        max-height: 300px; // Reduce height for mobile
+        max-height: 270px; // Reduce height for mobile
+        margin-bottom: 0;
 
         // Hide all items except the first one
         .item-2,

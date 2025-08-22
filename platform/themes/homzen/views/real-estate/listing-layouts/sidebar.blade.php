@@ -42,7 +42,7 @@
 
                 <div class="col-xl-8 col-lg-7">
                     <div class="position-relative" data-bb-toggle="data-listing">
-                        @include($itemsViewPath, ['itemLayout' => $itemLayout, 'itemsPerRow' => $itemLayout === 'grid' ? 2 : 1])
+                        @include($itemsViewPath, array_merge(['itemLayout' => $itemLayout, 'itemsPerRow' => $itemLayout === 'grid' ? 2 : 1], get_defined_vars()))
                     </div>
                 </div>
             </div>

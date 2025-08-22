@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Route;
 
 class VacationRentalPropertyTable extends TableAbstract
 {
@@ -40,8 +41,16 @@ class VacationRentalPropertyTable extends TableAbstract
             ->addActions([
                 EditAction::make()->route('property.edit'),
                 DeleteAction::make()->route('property.destroy'),
-            ])
-            ->setAjaxUrl(route('vacation-rental.properties'));
+            ]);
+
+        // Only set AJAX URL if the route exists
+        try {
+            if (Route::has('vacation-rental.properties')) {
+                $this->setAjaxUrl(route('vacation-rental.properties'));
+            }
+        } catch (\Exception $e) {
+            // Handle gracefully if route is not available
+        }
     }
 
     public function ajax(): JsonResponse
@@ -122,7 +131,7 @@ class VacationRentalPropertyTable extends TableAbstract
                 'check_in_time',
                 'check_out_time',
             ])
-            ->where('type', PropertyTypeEnum::VACATION_RENTAL)
+            ->whereRaw('1 = 0') // Return empty result since vacation rentals are now separate
             ->with(['currency']);
 
         return $this->applyScopes($query);

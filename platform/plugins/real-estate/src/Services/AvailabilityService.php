@@ -239,20 +239,45 @@ class AvailabilityService
      */
     public function blockDates(int $propertyId, Carbon $startDate, Carbon $endDate, string $reason = 'Blocked by owner'): void
     {
-        // Create calendar event
-        PropertyCalendarEvent::createBlockedPeriod($propertyId, $startDate, $endDate, 'Blocked', $reason);
-
-        // Update availability records
-        $dates = [];
-        $period = CarbonPeriod::create($startDate, $endDate);
-        foreach ($period as $date) {
-            $dates[] = $date->format('Y-m-d');
-        }
-
-        PropertyAvailability::bulkUpdateAvailability($propertyId, $dates, [
-            'status' => PropertyAvailability::STATUS_BLOCKED,
-            'notes' => $reason,
+        Log::info('Blocking dates for property', [
+            'property_id' => $propertyId,
+            'start_date' => $startDate->format('Y-m-d'),
+            'end_date' => $endDate->format('Y-m-d'),
+            'reason' => $reason
         ]);
+
+        try {
+            // Create calendar event
+            PropertyCalendarEvent::createBlockedPeriod($propertyId, $startDate, $endDate, 'Blocked', $reason);
+
+            // Update availability records
+            $dates = [];
+            $period = CarbonPeriod::create($startDate, $endDate);
+            foreach ($period as $date) {
+                $dates[] = $date->format('Y-m-d');
+            }
+
+            PropertyAvailability::bulkUpdateAvailability($propertyId, $dates, [
+                'status' => PropertyAvailability::STATUS_BLOCKED,
+                'notes' => $reason,
+            ]);
+
+            Log::info('Successfully blocked dates for property', [
+                'property_id' => $propertyId,
+                'dates_count' => count($dates),
+                'date_range' => $startDate->format('Y-m-d') . ' to ' . $endDate->format('Y-m-d')
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to block dates for property', [
+                'property_id' => $propertyId,
+                'start_date' => $startDate->format('Y-m-d'),
+                'end_date' => $endDate->format('Y-m-d'),
+                'reason' => $reason,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
     }
 
     /**
@@ -260,23 +285,46 @@ class AvailabilityService
      */
     public function unblockDates(int $propertyId, Carbon $startDate, Carbon $endDate): void
     {
-        // Remove calendar events
-        PropertyCalendarEvent::forProperty($propertyId)
-            ->ofType(PropertyCalendarEvent::TYPE_BLOCKED)
-            ->inDateRange($startDate, $endDate)
-            ->delete();
-
-        // Update availability records
-        $dates = [];
-        $period = CarbonPeriod::create($startDate, $endDate);
-        foreach ($period as $date) {
-            $dates[] = $date->format('Y-m-d');
-        }
-
-        PropertyAvailability::bulkUpdateAvailability($propertyId, $dates, [
-            'status' => PropertyAvailability::STATUS_AVAILABLE,
-            'notes' => null,
+        Log::info('Unblocking dates for property', [
+            'property_id' => $propertyId,
+            'start_date' => $startDate->format('Y-m-d'),
+            'end_date' => $endDate->format('Y-m-d')
         ]);
+
+        try {
+            // Remove calendar events
+            PropertyCalendarEvent::forProperty($propertyId)
+                ->ofType(PropertyCalendarEvent::TYPE_BLOCKED)
+                ->inDateRange($startDate, $endDate)
+                ->delete();
+
+            // Update availability records
+            $dates = [];
+            $period = CarbonPeriod::create($startDate, $endDate);
+            foreach ($period as $date) {
+                $dates[] = $date->format('Y-m-d');
+            }
+
+            PropertyAvailability::bulkUpdateAvailability($propertyId, $dates, [
+                'status' => PropertyAvailability::STATUS_AVAILABLE,
+                'notes' => null,
+            ]);
+
+            Log::info('Successfully unblocked dates for property', [
+                'property_id' => $propertyId,
+                'dates_count' => count($dates),
+                'date_range' => $startDate->format('Y-m-d') . ' to ' . $endDate->format('Y-m-d')
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to unblock dates for property', [
+                'property_id' => $propertyId,
+                'start_date' => $startDate->format('Y-m-d'),
+                'end_date' => $endDate->format('Y-m-d'),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
     }
 
     /**
@@ -284,20 +332,45 @@ class AvailabilityService
      */
     public function maintenanceDates(int $propertyId, Carbon $startDate, Carbon $endDate, string $reason = 'Maintenance'): void
     {
-        // Create calendar event
-        PropertyCalendarEvent::createMaintenancePeriod($propertyId, $startDate, $endDate, 'Maintenance', $reason);
-
-        // Update availability records
-        $dates = [];
-        $period = CarbonPeriod::create($startDate, $endDate);
-        foreach ($period as $date) {
-            $dates[] = $date->format('Y-m-d');
-        }
-
-        PropertyAvailability::bulkUpdateAvailability($propertyId, $dates, [
-            'status' => PropertyAvailability::STATUS_MAINTENANCE,
-            'notes' => $reason,
+        Log::info('Setting maintenance dates for property', [
+            'property_id' => $propertyId,
+            'start_date' => $startDate->format('Y-m-d'),
+            'end_date' => $endDate->format('Y-m-d'),
+            'reason' => $reason
         ]);
+
+        try {
+            // Create calendar event
+            PropertyCalendarEvent::createMaintenancePeriod($propertyId, $startDate, $endDate, 'Maintenance', $reason);
+
+            // Update availability records
+            $dates = [];
+            $period = CarbonPeriod::create($startDate, $endDate);
+            foreach ($period as $date) {
+                $dates[] = $date->format('Y-m-d');
+            }
+
+            PropertyAvailability::bulkUpdateAvailability($propertyId, $dates, [
+                'status' => PropertyAvailability::STATUS_MAINTENANCE,
+                'notes' => $reason,
+            ]);
+
+            Log::info('Successfully set maintenance dates for property', [
+                'property_id' => $propertyId,
+                'dates_count' => count($dates),
+                'date_range' => $startDate->format('Y-m-d') . ' to ' . $endDate->format('Y-m-d')
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to set maintenance dates for property', [
+                'property_id' => $propertyId,
+                'start_date' => $startDate->format('Y-m-d'),
+                'end_date' => $endDate->format('Y-m-d'),
+                'reason' => $reason,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
     }
 
     /**

@@ -23,15 +23,15 @@
 
                         <div class="row mb-3">
                             <div class="col-sm-3">
-                                <strong>{{ __('Property') }}:</strong>
+                                <strong>{{ __('Vacation Rental') }}:</strong>
                             </div>
                             <div class="col-sm-9">
-                                @if($booking->property)
-                                    <a href="{{ route('property.edit', $booking->property->id) }}" target="_blank">
-                                        {{ $booking->property->name }}
+                                @if($booking->vacationRental)
+                                    <a href="{{ route('vacation-rental.edit', $booking->vacationRental->id) }}" target="_blank">
+                                        {{ $booking->vacationRental->name }}
                                     </a>
                                 @else
-                                    <span class="text-muted">{{ __('Property not found') }}</span>
+                                    <span class="text-muted">{{ __('Vacation Rental not found') }}</span>
                                 @endif
                             </div>
                         </div>
@@ -126,7 +126,7 @@
                                 <strong>{{ __('Total Amount') }}:</strong>
                             </div>
                             <div class="col-sm-9">
-                                {{ format_price($booking->total_amount, $booking->property->currency ?? null) }}
+                                {{ format_price($booking->total_amount, $booking->vacationRental->currency ?? null) }}
                                 <small class="text-muted">({{ __('Cannot be changed') }})</small>
                             </div>
                         </div>
@@ -141,7 +141,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between">
-                            <a href="{{ route('vacation-rental.bookings') }}" class="btn btn-secondary">
+                            <a href="{{ route('vacation-rental.admin.bookings') }}" class="btn btn-secondary">
                                 <x-core::icon name="ti ti-arrow-left" />
                                 {{ __('Cancel') }}
                             </a>
@@ -164,14 +164,14 @@
                     <div class="row mb-2">
                         <div class="col-8">{{ __('Base Price per Night') }}:</div>
                         <div class="col-4 text-end">
-                            {{ format_price($booking->base_price_per_night, $booking->property->currency ?? null) }}
+                            {{ format_price($booking->base_price_per_night, $booking->vacationRental->currency ?? null) }}
                         </div>
                     </div>
 
                     <div class="row mb-2">
                         <div class="col-8">{{ __('Total Nights Cost') }}:</div>
                         <div class="col-4 text-end">
-                            {{ format_price($booking->total_nights_cost, $booking->property->currency ?? null) }}
+                            {{ format_price($booking->total_nights_cost, $booking->vacationRental->currency ?? null) }}
                         </div>
                     </div>
 
@@ -179,7 +179,7 @@
                     <div class="row mb-2">
                         <div class="col-8">{{ __('Cleaning Fee') }}:</div>
                         <div class="col-4 text-end">
-                            {{ format_price($booking->cleaning_fee, $booking->property->currency ?? null) }}
+                            {{ format_price($booking->cleaning_fee, $booking->vacationRental->currency ?? null) }}
                         </div>
                     </div>
                     @endif
@@ -188,7 +188,7 @@
                     <div class="row mb-2">
                         <div class="col-8">{{ __('Service Fee') }}:</div>
                         <div class="col-4 text-end">
-                            {{ format_price($booking->service_fee, $booking->property->currency ?? null) }}
+                            {{ format_price($booking->service_fee, $booking->vacationRental->currency ?? null) }}
                         </div>
                     </div>
                     @endif
@@ -197,7 +197,7 @@
                     <div class="row mb-2">
                         <div class="col-8">{{ __('Taxes') }}:</div>
                         <div class="col-4 text-end">
-                            {{ format_price($booking->taxes, $booking->property->currency ?? null) }}
+                            {{ format_price($booking->taxes, $booking->vacationRental->currency ?? null) }}
                         </div>
                     </div>
                     @endif
@@ -206,7 +206,7 @@
                     <div class="row mb-2">
                         <div class="col-8">{{ __('Security Deposit') }}:</div>
                         <div class="col-4 text-end">
-                            {{ format_price($booking->security_deposit, $booking->property->currency ?? null) }}
+                            {{ format_price($booking->security_deposit, $booking->vacationRental->currency ?? null) }}
                         </div>
                     </div>
                     @endif
@@ -215,7 +215,7 @@
                     <div class="row">
                         <div class="col-8"><strong>{{ __('Total Amount') }}:</strong></div>
                         <div class="col-4 text-end">
-                            <strong>{{ format_price($booking->total_amount, $booking->property->currency ?? null) }}</strong>
+                            <strong>{{ format_price($booking->total_amount, $booking->vacationRental->currency ?? null) }}</strong>
                         </div>
                     </div>
                 </div>

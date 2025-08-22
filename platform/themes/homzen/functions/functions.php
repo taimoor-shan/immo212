@@ -119,6 +119,15 @@ if (! function_exists('get_property_listing_page_layout')) {
     }
 }
 
+if (! function_exists('get_vacation_rental_listing_page_layout')) {
+    function get_vacation_rental_listing_page_layout(string $default = 'top-map'): string
+    {
+        $layout = theme_option('real_estate_vacation_rental_listing_layout', $default);
+
+        return in_array($layout, ['top-map', 'half-map', 'sidebar', 'without-map']) ? $layout : $default;
+    }
+}
+
 app()->booted(function (): void {
     register_page_template([
         'default' => __('Default'),

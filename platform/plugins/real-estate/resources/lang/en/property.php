@@ -50,6 +50,9 @@ return [
         'house_rules' => 'House Rules',
         'house_rules_placeholder' => 'Enter house rules and policies',
         'cancellation_policy' => 'Cancellation Policy',
+        'auto_renew'=> 'Auto Renew',
+        'auto_renew_helper' => 'Auto renew property when it expires.',
+     
     ],
     'statuses' => [
         'draft' => 'Draft',

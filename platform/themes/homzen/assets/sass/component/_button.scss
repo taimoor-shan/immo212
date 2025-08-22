@@ -1,3 +1,55 @@
+.roundBtn {
+    /* padding: 4px; */
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    outline: none;
+    border: 1px solid #888888;
+}
+
+.roundBtn.active i.fa-regular::before { font-weight: 900 !important;color: $primary; }
+.readMore{
+    outline: none;
+    border: none;
+    background: transparent;
+    color: $primary;
+    font-size: 16px;
+    text-decoration: underline;
+}
+
+.contact-btn {
+        display: block;
+        width: 100%;
+        max-width: 300px;
+        align-items: center;
+        padding: 8px 20px;
+        background: #65d78d;
+        border: 1px solid #65d78d;
+        border-radius: 50px;
+        text-decoration: none;
+        color: $on-surface;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        text-align: center;
+        font-weight: 500;
+        line-height: 1.5;
+    }
+
+    .contact-btn:hover {
+        background: #9be5b5;
+
+    }
+    .contact-btn:focus {
+        border-color: $primary;
+    }
+    .contact-btn.outline {
+        background-color: transparent;
+        border: 1px solid #65d78d;
+    }
+
+    .contact-btn.outline:hover {
+        background: #eefbf2;
+    }
 .tf-btn {
     font-size: 1rem;
     line-height: 1;
@@ -122,17 +174,17 @@
         font-size: 18px;
         color: $primary;
     }
- 
+
 
     display: inline-flex;
     align-items: center;
     gap: 8px;
-  
+
 
     &:hover {
         .text {
             color: $on-surface;
-         
+
         }
         .icon {
             animation: 0.3s link-icon linear;

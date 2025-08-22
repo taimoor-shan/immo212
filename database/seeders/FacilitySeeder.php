@@ -4,12 +4,17 @@ namespace Database\Seeders;
 
 use Botble\Base\Supports\BaseSeeder;
 use Botble\RealEstate\Models\Facility;
+use Illuminate\Support\Facades\DB;
 
 class FacilitySeeder extends BaseSeeder
 {
     public function run(): void
     {
-        Facility::query()->truncate();
+        // Use delete instead of truncate to avoid foreign key constraint issues
+        Facility::query()->delete();
+
+        // Reset auto increment
+        DB::statement('ALTER TABLE re_facilities AUTO_INCREMENT = 1;');
 
         $facilities = [
             [

@@ -17,6 +17,8 @@ Route::middleware(['web', 'core'])
                 Route::get('properties/map', 'ajaxGetPropertiesForMap')->name('properties.map');
                 Route::get('projects/map', 'ajaxGetProjectsForMap')->name('projects.map');
                 Route::get('projects/search', 'ajaxSearchProjects')->name('projects.search');
+                Route::get('vacation-rentals', 'ajaxGetVacationRentals')->name('vacation-rentals');
+                Route::get('vacation-rentals/map', 'ajaxGetVacationRentalsForMap')->name('vacation-rentals.map');
                 Route::get('cities', 'ajaxGetCities')->name('cities');
             });
         });

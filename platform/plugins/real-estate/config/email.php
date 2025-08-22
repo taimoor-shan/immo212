@@ -73,6 +73,18 @@ return [
                 'post_url' => 'Post URL',
             ],
         ],
+        'new-pending-vacation-rental' => [
+            'title' => 'New pending vacation rental',
+            'description' => 'Send email to admin when a new vacation rental created',
+            'subject' => 'New pending vacation rental by {{ post_author }} waiting for approve',
+            'can_off' => true,
+            'enabled' => false,
+            'variables' => [
+                'post_author' => 'Post Author',
+                'post_name' => 'Post Name',
+                'post_url' => 'Post URL',
+            ],
+        ],
         'account-registered' => [
             'title' => 'Account registered',
             'description' => 'Send a notification to admin when a new account registered',
@@ -184,6 +196,29 @@ return [
                 'author_name' => 'Author name',
                 'property_name' => 'Property name',
                 'property_link' => 'Property link',
+                'reason' => 'Reason for rejection',
+            ],
+        ],
+        'vacation-rental-approved' => [
+            'title' => 'Vacation rental approved',
+            'description' => 'Send an email notification to the agent when their vacation rental is approved',
+            'subject' => 'Your vacation rental on {{ site_title }} has been approved',
+            'can_off' => true,
+            'variables' => [
+                'author_name' => 'Author name',
+                'vacation_rental_name' => 'Vacation rental name',
+                'vacation_rental_link' => 'Vacation rental link',
+            ],
+        ],
+        'vacation-rental-rejected' => [
+            'title' => 'Vacation rental rejected',
+            'description' => 'Send an email notification to the agent when their vacation rental is rejected',
+            'subject' => 'Your vacation rental on {{ site_title }} has been rejected',
+            'can_off' => true,
+            'variables' => [
+                'author_name' => 'Author name',
+                'vacation_rental_name' => 'Vacation rental name',
+                'vacation_rental_link' => 'Vacation rental link',
                 'reason' => 'Reason for rejection',
             ],
         ],

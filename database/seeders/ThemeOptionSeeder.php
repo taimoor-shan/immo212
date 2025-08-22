@@ -47,6 +47,7 @@ class ThemeOptionSeeder extends BaseSeeder
             'newsletter_popup_description' => 'Do not worry we don’t spam!',
             'properties_list_page_id' => $this->getPageId('Properties'),
             'projects_list_page_id' => $this->getPageId('Projects'),
+            'real_estate_property_detail_layout' => 4,
         ]);
     }
 }

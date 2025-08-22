@@ -63,15 +63,15 @@
                 </div>
                 <div class="modal-body">
                     {{-- Use standard contact-form class for existing JS handling --}}
-                    <form class="contact-form" action="{{ route('public.send.consult') }}" method="POST">
+                    {{-- <form class="contact-form" action="{{ route('public.send.consult') }}" method="POST">
                         @csrf
 
-                        {{-- Hidden Fields --}}
+
                         <input type="hidden" name="type" value="vacation_rental">
                         <input type="hidden" name="data_id" value="{{ $vacationRental->getKey() }}">
                         <input type="hidden" class="form-control" value="{{ $vacationRental->name }}">
 
-                        {{-- Name and Email Row --}}
+
                         <div class="row">
                             <div class="col-md-6 ip-group">
                                 <label for="vr_name" class="form-label">{{ __('Name') }} <span
@@ -87,7 +87,7 @@
                             </div>
                         </div>
 
-                        {{-- Phone and Contact Method Row --}}
+
                         <div class="row">
                             <div class="col-md-6 ip-group">
                                 <label for="vr_phone" class="form-label">{{ __('Phone') }}</label>
@@ -108,7 +108,7 @@
                             </div>
                         </div>
 
-                        {{-- Stay Dates Row --}}
+
                         <div class="row">
                             <div class="col-md-4 ip-group">
                                 <label for="vr_checkin" class="form-label">{{ __('Check-in') }}</label>
@@ -133,7 +133,7 @@
                             </div>
                         </div>
 
-                        {{-- Purpose and Group Type Row --}}
+
                         <div class="row">
                             <div class="col-md-6 ip-group">
                                 <label for="vr_purpose" class="form-label">{{ __('Purpose of Stay') }}</label>
@@ -162,7 +162,7 @@
                             </div>
                         </div>
 
-                        {{-- Message Row --}}
+
                         <div class="row">
                             <div class="col-12 ip-group">
                                 <label for="vr_content" class="form-label">{{ __('Message') }} <span
@@ -172,13 +172,17 @@
                             </div>
                         </div>
 
-                        {{-- Submit Button Row --}}
+
                         <div class="row">
                             <div class="col-12 ip-group">
                                 <button type="submit" class="tf-btn primary w-100">{{ __('Send Message') }}</button>
                             </div>
                         </div>
-                    </form>
+                    </form> --}}
+                     {!! \Botble\RealEstate\Forms\Fronts\ConsultForm::create()->formClass('contact-form')->setFormInputWrapperClass('ip-group')->modify('content', 'textarea', ['attr' => ['class' => 'form-control']])->modify('submit', 'submit', ['attr' => ['class' => 'tf-btn primary w-100']])->add('type', 'hidden', ['attr' => ['value' => 'property']])->add('data_id', 'hidden', ['attr' => ['value' => $vacationRental->getKey()]])->addBefore('content', 'data_name', 'text', [
+                             'label' => false,
+                             'attr' => ['value' => $vacationRental->name, 'disabled' => true],
+                         ])->renderForm() !!}
                 </div>
             </div>
         </div>
@@ -188,70 +192,6 @@
 </div>
 
 <style>
-    .single-vacation-rental-contact {
-        padding: 24px;
-        background: white;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        margin-bottom: 20px;
-    }
-
-    .host-info {
-        display: flex;
-        gap: 16px;
-        margin: 20px 0;
-    }
-
-    .host-avatar {
-        flex-shrink: 0;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        overflow: hidden;
-    }
-
-    .host-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .avatar-placeholder {
-        width: 100%;
-        height: 100%;
-        background: #e9ecef;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #6c757d;
-        font-size: 24px;
-    }
-
-    .host-details {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .host-name {
-        font-size: 18px;
-        font-weight: 600;
-        color: #212529;
-        margin-bottom: 4px;
-    }
-
-    .host-description {
-        font-size: 14px;
-        color: #6c757d;
-        margin-bottom: 8px;
-        line-height: 1.4;
-    }
-
-    .host-stats {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-
     .stat-item {
         display: flex;
         align-items: center;

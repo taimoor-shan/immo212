@@ -20,8 +20,7 @@
 
                     {{-- Advanced filters section --}}
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-stay'), ['class' => 'form-style'])
-                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-checkin'), ['class' => 'form-style'])
-                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-checkout'), ['class' => 'form-style'])
+                    @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-max-stay'), ['class' => 'form-style'])
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bedroom'), ['class' => 'form-style'])
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bathroom'), ['class' => 'form-style'])
 
@@ -41,7 +40,12 @@
                         </a>
                     </div>
                     <div class="form-style mt-5">
-                        <button type="submit" class="tf-btn primary">{{ __('Find Vacation Rentals') }}</button>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="tf-btn primary flex-fill">{{ __('Find Vacation Rentals') }}</button>
+                            <button type="button" class="tf-btn outline-primary" onclick="resetVacationRentalFilters()">
+                                <i class="fas fa-undo-alt"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -57,19 +61,22 @@
                     @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-guests'))
                 </div>
                 <div class="group-box">
-                    <div class="group-select grid-3">
+                    <div class="group-select grid-4">
                         @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-stay'))
+                        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-max-stay'))
                         @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bedroom'))
                         @include(Theme::getThemeNamespace('views.real-estate.partials.filters.bathroom'))
-                    </div>
-                    <div class="group-select grid-2">
-                        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-checkin'))
-                        @include(Theme::getThemeNamespace('views.real-estate.partials.filters.vacation-rental-checkout'))
                     </div>
                 </div>
                 @include(Theme::getThemeNamespace('views.real-estate.partials.filters.features'))
 
-                <button type="submit" class="tf-btn primary form-search-box-offcanvas-button mt-5">{{ __('Find Vacation Rentals') }}</button>
+                <div class="d-flex gap-2 mt-5">
+                    <button type="submit" class="tf-btn primary form-search-box-offcanvas-button flex-fill">{{ __('Find Vacation Rentals') }}</button>
+                    <button type="button" class="tf-btn outline-primary" onclick="resetVacationRentalFilters()">
+                        <i class="fas fa-undo-alt me-1"></i>
+                        {{ __('Reset') }}
+                    </button>
+                </div>
             </div>
         </div>
     </div>

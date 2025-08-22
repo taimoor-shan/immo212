@@ -464,6 +464,11 @@
     }
 }
 
+.modal.fade {
+    background-color: rgb(0 0 0 / 40%);
+    backdrop-filter: blur(2px);
+}
+
 /*------------ Components ---------------- */
 @import "./component/index";
 

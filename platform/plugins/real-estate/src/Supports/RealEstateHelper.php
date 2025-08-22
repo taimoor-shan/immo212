@@ -386,6 +386,7 @@ public function getVacationRentalRelationsQuery(): array
                 'min_price' => 'nullable|numeric',
                 'max_price' => 'nullable|numeric',
                 'minimum_stay' => 'nullable|numeric',
+                'maximum_stay' => 'nullable|numeric',
                 'maximum_guests' => 'nullable|numeric',
                 'sort_by' => 'nullable|string',
                 'locations' => 'nullable|array',

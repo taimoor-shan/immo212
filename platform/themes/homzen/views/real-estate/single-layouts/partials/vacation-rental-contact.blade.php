@@ -43,7 +43,6 @@
                         </div>
                     @endif
                 </div>
-
             </div>
         </div>
     @endif
@@ -55,13 +54,13 @@
     <div class="modal fade" id="vacationRentalContactModal" tabindex="-1"
         aria-labelledby="vacationRentalContactModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content px-4 px-lg-5 py-4">
+            <div class="modal-content px-3 py-4">
                 <div class="modal-header">
                     <h5 class="modal-title" id="vacationRentalContactModalLabel">{{ __('Contact Host') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                         aria-label="{{ __('Close') }}"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body pt-0">
                     {{-- Use standard contact-form class for existing JS handling --}}
                     {{-- <form class="contact-form" action="{{ route('public.send.consult') }}" method="POST">
                         @csrf

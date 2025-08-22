@@ -55,14 +55,14 @@
 
      <div class="modal fade" id="contactAgentModal" tabindex="-1" aria-labelledby="contactAgentModal"
          aria-hidden="true">
-         <div class="modal-dialog">
-             <div class="modal-content px-4 px-lg-5 py-4">
+         <div class="modal-dialog modal-dialog-centered">
+             <div class="modal-content px-3 py-4">
                  <div class="modal-header">
                      <h5 class="modal-title" id="contactAgentModalLabel">{{ __('Contact Agent') }}</h5>
                      <button type="button" class="btn-close" data-bs-dismiss="modal"
                          aria-label="{{ __('Close') }}"></button>
                  </div>
-                 <div class="modal-body">
+                 <div class="modal-body pt-0">
                      {!! \Botble\RealEstate\Forms\Fronts\ConsultForm::create()->formClass('contact-form')->setFormInputWrapperClass('ip-group')->modify('content', 'textarea', ['attr' => ['class' => 'form-control']])->modify('submit', 'submit', ['attr' => ['class' => 'tf-btn primary w-100']])->add('type', 'hidden', ['attr' => ['value' => 'property']])->add('data_id', 'hidden', ['attr' => ['value' => $property->getKey()]])->addBefore('content', 'data_name', 'text', [
                              'label' => false,
                              'attr' => ['value' => $property->name, 'disabled' => true],

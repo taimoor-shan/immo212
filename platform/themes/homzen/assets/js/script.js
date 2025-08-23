@@ -1776,6 +1776,23 @@ $(() => {
       });
     }
   };
+
+  // Generic function to initialize swipers with data-driven config
+  const initDataDrivenSwipers = () => {
+    $('[data-swiper-config]').each(function() {
+      const $slider = $(this);
+      const config = $slider.data('swiper-config');
+      
+      if (config && !$slider.data('swiper-initialized')) {
+        try {
+          new Swiper(this, config);
+          $slider.data('swiper-initialized', true);
+        } catch (error) {
+          console.error('Failed to initialize swiper for element:', this, 'Config:', config, 'Error:', error);
+        }
+      }
+    });
+  };
   const initBlogsV8 = () => {
     if ($("#tf-sw-blog-v8").length > 0) {
       console.log("Initializing blog carousel v8...");
@@ -1828,6 +1845,7 @@ $(() => {
   initPropertyCategories();
   initProperties();
   initVacationRentalsV8();
+  initDataDrivenSwipers(); // Initialize data-driven swipers
   initServices();
   initTestimonials();
 
@@ -2457,6 +2475,7 @@ $(() => {
 
         if (attributes.style === "8") {
           initPropertiesV8();
+          initDataDrivenSwipers(); // Initialize data-driven swipers for properties
         }
 
         break;
@@ -2466,6 +2485,7 @@ $(() => {
 
         if (attributes.style === "8") {
           initVacationRentalsV8();
+          initDataDrivenSwipers(); // Initialize data-driven swipers for vacation rentals
         }
 
         break;
@@ -2488,6 +2508,7 @@ $(() => {
         if (attributes.style === "3") {
           console.log("Initializing blog carousel style 3...");
           initBlogsV8();
+          initDataDrivenSwipers(); // Initialize data-driven swipers for blog posts
         }
 
         break;

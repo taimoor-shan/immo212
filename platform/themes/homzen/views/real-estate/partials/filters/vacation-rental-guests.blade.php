@@ -14,7 +14,7 @@
 @endphp
 
 <div @class(['form-group-1 form-style', $class ?? null])>
-    <label class="title-user fw-6">{{ __('Guests') }}</label>
+    <label class="title-user fw-5">{{ __('Guests') }}</label>
     <div class="group-select">
         <select name="maximum_guests" class="nice-select" data-bb-toggle="select-dropdown">
             @foreach($guestOptions as $value => $label)

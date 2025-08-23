@@ -167,11 +167,13 @@
     }
 }
 
-.nav-prev {
+.nav-prev,
+[class*="nav-prev-"] {
     left: -20px;
 }
 
-.nav-next {
+.nav-next,
+[class*="nav-next-"] {
     right: -20px;
 }
 

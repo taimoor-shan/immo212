@@ -11,7 +11,7 @@
 @endphp
 
 <div @class(['form-group-1 form-style', $class ?? null])>
-    <label class="title-user fw-6">{{ __('Minimum Stay') }}</label>
+    <label class="title-user fw-5">{{ __('Minimum Stay') }}</label>
     <div class="group-select">
         <select name="minimum_stay" class="select_js nice-select" data-bb-toggle="select-dropdown">
             @foreach($stayOptions as $value => $label)

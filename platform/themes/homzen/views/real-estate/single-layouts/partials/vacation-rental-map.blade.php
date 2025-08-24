@@ -71,7 +71,7 @@
                         <div class="popup-content">
                             <h6 class="popup-title">${name}</h6>
                             <p class="popup-address">${address}</p>
-                            <div class="popup-price">${price} <span>per night</span></div>
+                            <div class="popup-price">${price} <span>{{ __('per night') }}</span></div>
                             <a href="${url}" class="popup-link">{{ __('View Details') }}</a>
                         </div>
                     </div>

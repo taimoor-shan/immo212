@@ -2,6 +2,6 @@
 
 return [
     'name' => 'Investisseurs',
-    'create' => 'New investor',
+    'create' => 'Nouvel investisseur',
     'edit' => 'Modifier l\'investisseur',
 ];

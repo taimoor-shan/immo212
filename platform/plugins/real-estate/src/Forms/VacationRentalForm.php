@@ -375,7 +375,7 @@ class VacationRentalForm extends FormAbstract
                         'plugins/real-estate::partials.form-facilities',
                         compact('facilities', 'selectedFacilities')
                     ),
-                    'priority' => 0,
+                    'priority' => 2,
                 ],
                 'vacation_rental_availability' => [
                     'title' => trans('plugins/real-estate::vacation-rental.availability_calendar'),
@@ -383,7 +383,7 @@ class VacationRentalForm extends FormAbstract
                         'plugins/real-estate::partials.form-vacation-rental-availability',
                         ['vacationRental' => $this->getModel()]
                     )->render(),
-                    'priority' => 2,
+                    'priority' => 0,
                 ],
             ])
             ->add(

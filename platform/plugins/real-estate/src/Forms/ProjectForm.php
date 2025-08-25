@@ -289,6 +289,13 @@ class ProjectForm extends FormAbstract
                 'html' => '</div>',
             ])
             ->addMetaBoxes([
+                'properties' => [
+                    'title' => 'Properties',
+                    'content' => view('plugins/real-estate::partials.project-properties', [
+                        'project' => $this->getModel()
+                    ])->render(),
+                    'priority' => 0,
+                ],
                 'features' => [
                     'title' => trans('plugins/real-estate::property.form.features'),
                     'content' => view(
@@ -303,15 +310,9 @@ class ProjectForm extends FormAbstract
                         'plugins/real-estate::partials.form-facilities',
                         compact('facilities', 'selectedFacilities')
                     ),
-                    'priority' => 0,
-                ],
-                'properties' => [
-                    'title' => 'Properties',
-                    'content' => view('plugins/real-estate::partials.project-properties', [
-                        'project' => $this->getModel()
-                    ])->render(),
                     'priority' => 2,
                 ],
+
             ])
             ->add('status', SelectField::class, StatusFieldOption::make()->choices(ProjectStatusEnum::labels())->toArray())
             ->when($this->getModel()->exists, function (FormAbstract $form): void {

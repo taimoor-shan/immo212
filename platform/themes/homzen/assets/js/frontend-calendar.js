@@ -83,7 +83,7 @@ class VacationRentalFrontendCalendar {
         notification.innerHTML = `
             <div class="alert alert-info alert-dismissible fade show" role="alert" style="margin-bottom: 10px; font-size: 0.875rem;">
                 <i class="fas fa-info-circle"></i>
-                Calendar is showing default availability. Some dates may have different status.
+                ${window.__('failed_load_calendar') || 'Calendar is showing default availability. Some dates may have different status.'}
                 <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         `;
@@ -300,22 +300,20 @@ class VacationRentalFrontendCalendar {
         container.innerHTML = `
             <div class="calendar-wrapper">
                 <div class="calendar-header">
-                    <h5>Select your dates</h5>
+                    <h5>${window.__('select_dates') || 'Select your dates'}</h5>
                     <div class="calendar-legend">
                         <div class="legend-item available">
                             <div class="color-box"></div>
-                            <span>Available</span>
+                            <span>${window.__('available') || 'Available'}</span>
                         </div>
                         <div class="legend-item booked">
                             <div class="color-box"></div>
-                            <span>Booked</span>
+                            <span>${window.__('booked') || 'Booked'}</span>
                         </div>
-
                         <div class="legend-item maintenance">
                             <div class="color-box"></div>
-                            <span>Maintenance</span>
+                            <span>${window.__('maintenance') || 'Maintenance'}</span>
                         </div>
-
                     </div>
                 </div>
                 <div class="calendar-container">
@@ -325,33 +323,33 @@ class VacationRentalFrontendCalendar {
                     <div class="summary-content">
                         <div class="date-range">
                             <div class="date-item">
-                                <label>Check-in</label>
+                                <label>${window.__('check_in') || 'Check-in'}</label>
                                 <span id="checkin-display">-</span>
                             </div>
                             <div class="date-item">
-                                <label>Check-out</label>
+                                <label>${window.__('check_out') || 'Check-out'}</label>
                                 <span id="checkout-display">-</span>
                             </div>
                             <div class="date-item">
-                                <label>Nights</label>
+                                <label>${window.__('nights') || 'Nights'}</label>
                                 <span id="nights-display">-</span>
                             </div>
                         </div>
                         <div class="guest-details">
                             <div class="form-group">
-                                <label for="guest_name">Full Name</label>
+                                <label for="guest_name">${window.__('full_name') || 'Full Name'}</label>
                                 <input type="text" id="guest_name" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="guest_email">Email</label>
+                                <label for="guest_email">${window.__('email') || 'Email'}</label>
                                 <input type="email" id="guest_email" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="guest_phone">Phone</label>
+                                <label for="guest_phone">${window.__('phone') || 'Phone'}</label>
                                 <input type="tel" id="guest_phone" class="form-control">
                             </div>
                              <div class="form-group">
-                                <label for="guests_count">Guests</label>
+                                <label for="guests_count">${window.__('guests') || 'Guests'}</label>
                                 <input type="number" id="guests_count" class="form-control" value="1" min="1" max="${this.options.maxGuests || 20}">
                             </div>
                         </div>
@@ -359,18 +357,18 @@ class VacationRentalFrontendCalendar {
                             <!-- Pricing details will be inserted here -->
                         </div>
                         <div class="total-price">
-                            <strong>Total: <span id="total-price">$0</span></strong>
+                            <strong>${window.__('total') || 'Total'}: <span id="total-price">$0</span></strong>
                         </div>
                         <div class="form-group terms-and-conditions">
                             <input type="checkbox" id="terms_accepted" required>
-                            <label for="terms_accepted">I agree to the <a href="/terms-and-conditions" target="_blank">terms and conditions</a></label>
+                            <label for="terms_accepted">${window.__('terms_agreement') || 'I agree to the'} <a href="/terms-and-conditions" target="_blank">${window.__('terms_and_conditions') || 'terms and conditions'}</a></label>
                         </div>
                         <div class="booking-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
                             <button type="button" class="btn btn-outline-primary btn-inquiry" id="send-inquiry" style="flex: 1; min-width: 140px;">
-                                📧 Send Inquiry
+                                📧 ${window.__('send_inquiry') || 'Send Inquiry'}
                             </button>
                             <button type="button" class="btn btn-primary btn-book" id="proceed-booking" style="flex: 1; min-width: 140px;">
-                                🏠 Book Now
+                                🏠 ${window.__('book_now') || 'Book Now'}
                             </button>
                         </div>
                     </div>
@@ -441,13 +439,13 @@ class VacationRentalFrontendCalendar {
             // Check minimum stay requirement
             const nights = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
             if (nights < this.options.minStay) {
-                this.showValidationError(`Minimum stay is ${this.options.minStay} night(s). Selected range is ${nights} night(s).`);
+                this.showValidationError(window.__('minimum_stay_error', { min_stay: this.options.minStay, nights: nights }) || `Minimum stay is ${this.options.minStay} night(s). Selected range is ${nights} night(s).`);
                 return false;
             }
 
             // Check maximum stay requirement
             if (this.options.maxStay && nights > this.options.maxStay) {
-                this.showValidationError(`Maximum stay is ${this.options.maxStay} night(s). Selected range is ${nights} night(s).`);
+                this.showValidationError(window.__('maximum_stay_error', { max_stay: this.options.maxStay, nights: nights }) || `Maximum stay is ${this.options.maxStay} night(s). Selected range is ${nights} night(s).`);
                 return false;
             }
 
@@ -637,7 +635,7 @@ class VacationRentalFrontendCalendar {
 
     async proceedToBooking() {
         if (!this.checkInDate || !this.checkOutDate) {
-            this.showError('Please select check-in and check-out dates');
+            this.showError(window.__('select_dates_required') || 'Please select check-in and check-out dates');
             return;
         }
 
@@ -651,12 +649,12 @@ class VacationRentalFrontendCalendar {
         const termsAccepted = document.getElementById('terms_accepted').checked;
 
         if (!guestName || !guestEmail) {
-            this.showError('Please fill in your name and email.');
+            this.showError(window.__('please_fill_required_fields') || 'Please fill in your name and email.');
             return;
         }
 
         if (!termsAccepted) {
-            this.showError('You must accept the terms and conditions.');
+            this.showError(window.__('terms_acceptance_required') || 'You must accept the terms and conditions.');
             return;
         }
 

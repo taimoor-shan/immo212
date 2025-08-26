@@ -68,4 +68,16 @@ Route::group([
             'uses' => 'VigAutoTranslationsController@getAutoTranslate',
         ]);
     });
+
+    // Global translation group publish route for compatibility with VIG views
+    Route::group([
+        'prefix' => BaseHelper::getAdminPrefix() . '/translations/group',
+        'middleware' => ['auth', 'core'],
+        'permission' => 'vig-auto-translations.index',
+    ], function () {
+        Route::post('publish', [
+            'as' => 'translations.group.publish',
+            'uses' => 'VigAutoTranslationsController@publishTranslationGroup',
+        ]);
+    });
 });

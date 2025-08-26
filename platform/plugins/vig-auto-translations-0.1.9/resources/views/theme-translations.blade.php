@@ -89,16 +89,20 @@
                     </div>
                     <div class="card-body">
                         @if (count(\Botble\Base\Supports\Language::getAvailableLocales()) > 0 && $group)
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p>{{ trans('plugins/translation::translation.translate_from') }} <strong class="text-info">{{ $defaultLanguage ? $defaultLanguage['name'] : 'en' }}</strong> {{ trans('plugins/translation::translation.to') }} <strong class="text-info">{{ $group['name'] }}</strong></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="text-end">
-                                        @include('plugins/vig-auto-translations::partials.list-theme-languages-to-translate', compact('groups', 'group'))
-                                    </div>
-                                </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>{{ trans('plugins/translation::translation.translate_from') }} <strong class="text-info">{{ $defaultLanguage ? $defaultLanguage['name'] : 'en' }}</strong> {{ trans('plugins/translation::translation.to') }} <strong class="text-info">{{ $group['name'] }}</strong></p>
+                            <p class="small text-muted">
+                                <i class="ti ti-settings"></i> Current provider: <strong>{{ ucfirst(setting('vig_translate_driver', 'google')) }}</strong> | 
+                                <a href="{{ route('vig-auto-translations.settings') }}" class="text-primary">Change Settings</a>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-end">
+                                @include('plugins/vig-auto-translations::partials.list-theme-languages-to-translate', compact('groups', 'group'))
                             </div>
+                        </div>
+                    </div>
 
                             @if ($group['locale'] != 'en')
                                 <form action="{{ route('vig-auto-translations.theme.post-all') }}" method="POST" class="mb-3">

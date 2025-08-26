@@ -3,6 +3,7 @@
 namespace VigStudio\VigAutoTranslations\Services;
 
 use VigStudio\VigAutoTranslations\Contracts\Translator;
+use VigStudio\VigAutoTranslations\Services\GoogleTranslate;
 
 class GoogleTranslator implements Translator
 {

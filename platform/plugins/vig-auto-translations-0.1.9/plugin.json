@@ -1,12 +1,12 @@
 {
-    "id": "vigstudio/vig-auto-translations",
-    "name": "Auto Translations",
+    "id": "shaikhspare/smart-auto-translations",
+    "name": "Smart Auto Translations Pro",
     "namespace": "VigStudio\\VigAutoTranslations\\",
     "provider": "VigStudio\\VigAutoTranslations\\Providers\\VigAutoTranslationsServiceProvider",
-    "author": "Nghĩa Nè",
-    "url": "https://nghiane.com",
-    "version": "0.1.9",
-    "description": "Auto Translations Theme and Plugin for Botble CMS, using Google or Amazon Translate",
+    "author": "Muhammad Taimoor",
+    "url": "https://www.shaikhspare.com",
+    "version": "1.0.0",
+    "description": "Professional Auto Translation Suite for Botble CMS - Multi-provider translations with AWS, ChatGPT, caching, and batch processing",
     "required_plugins": [
         "translation"
     ]

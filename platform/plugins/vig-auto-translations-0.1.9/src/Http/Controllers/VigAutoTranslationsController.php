@@ -10,15 +10,20 @@ use Botble\Base\Supports\Language;
 use Botble\Translation\Http\Requests\TranslationRequest;
 use Botble\Translation\Manager;
 use Botble\Translation\Models\Translation;
+use Botble\Translation\Services\GetGroupedTranslationsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+use VigStudio\VigAutoTranslations\EnhancedAutoTranslateManager;
 use VigStudio\VigAutoTranslations\Manager as AutoTranslateManager;
 
 class VigAutoTranslationsController extends BaseController
 {
-    public function __construct(protected AutoTranslateManager $autoTranslateManager)
-    {
+    public function __construct(
+        protected AutoTranslateManager $autoTranslateManager,
+        protected EnhancedAutoTranslateManager $enhancedManager
+    ) {
     }
 
     public function getThemeTranslations(Request $request)
@@ -87,7 +92,8 @@ class VigAutoTranslationsController extends BaseController
         $value = $request->input('value');
 
         if ($request->input('auto') == 'true') {
-            $value = $this->autoTranslateManager->translate('en', $locale, $name);
+            // Use enhanced manager for better translation quality
+            $value = $this->enhancedManager->translate('en', $locale, $name) ?: $name;
         }
 
         if ($locale) {
@@ -118,7 +124,8 @@ class VigAutoTranslationsController extends BaseController
                 continue;
             }
 
-            $translations[$key] = $this->autoTranslateManager->translate('en', $locale, $key);
+            // Use enhanced manager for better translation quality and caching
+            $translations[$key] = $this->enhancedManager->translate('en', $locale, $key) ?: $key;
         }
 
         $this->autoTranslateManager->saveThemeTranslations($locale, $translations);
@@ -139,23 +146,68 @@ class VigAutoTranslationsController extends BaseController
         $group = $request->input('group');
         $refLang = $request->input('ref_lang');
 
+        // Get English source translations using the same method as getLang but only for specific group
         $translations = $this->getLang();
+        
+        // Get existing translations using the same mechanism as the enhanced core command
+        $existingTranslations = [];
+        if ($group && $refLang) {
+            // First, get database translations
+            $dbTranslations = Translation::query()
+                ->where('group', $group)
+                ->where('locale', $refLang)
+                ->get()
+                ->keyBy('key');
+                
+            foreach ($dbTranslations as $translation) {
+                $existingTranslations[$translation->key] = $translation;
+            }
+            
+            // Then, load from files using the correct mechanism from enhanced core command
+            // Use GetGroupedTranslationsService to get proper translations structure
+            $allTranslations = (new GetGroupedTranslationsService())
+                ->handle()
+                ->filter(function ($translation) use ($group) {
+                    return $translation['group'] === $group;
+                });
+                
+            foreach ($allTranslations as $translation) {
+                $key = $translation['key'];
+                $englishValue = $translation['value'];
+                
+                // Get the translated value using the correct approach from enhanced core command
+                $translatedValue = trans(
+                    Str::of($group)
+                        ->replaceLast(DIRECTORY_SEPARATOR, '::')
+                        ->append(".{$key}")
+                        ->toString(),
+                    [],
+                    $refLang
+                );
+                
+                // If we got a real translation (different from English and not the key itself)
+                if ($translatedValue !== $englishValue && $translatedValue !== $key) {
+                    if (!isset($existingTranslations[$key])) {
+                        // Create a temporary Translation object for display (file-based translation)
+                        $tempTranslation = new Translation();
+                        $tempTranslation->key = $key;
+                        $tempTranslation->value = $translatedValue;
+                        $tempTranslation->locale = $refLang;
+                        $tempTranslation->group = $group;
+                        $tempTranslation->status = Translation::STATUS_SAVED; // Mark as saved since it's from files
+                        $tempTranslation->id = 0; // Temporary ID for file-based translations
+                        
+                        $existingTranslations[$key] = $tempTranslation;
+                    }
+                }
+            }
+        }
 
         $locales = Language::getAvailableLocales();
 
-        $allTranslations = Translation::query()
-            ->where('group', $group)
-            ->where('locale', $refLang)
-            ->orderBy('key')
-            ->get();
-        $translationData = [];
-        foreach ($allTranslations as $translation) {
-            $translationData[$translation->key] = $translation;
-        }
-
         return view('plugins/vig-auto-translations::plugin-translations')
             ->with('translations', $translations)
-            ->with('translationData', $translationData)
+            ->with('translationData', $existingTranslations)
             ->with('locales', $locales)
             ->with('group', $group)
             ->with('ref_lang', $refLang)
@@ -219,8 +271,9 @@ class VigAutoTranslationsController extends BaseController
         $allTranslations = $this->getLang()[$group];
 
         foreach ($allTranslations as $key => $value) {
-            $value = $this->autoTranslateManager->translate('en', $locale, $value);
-            $this->firstOrNewTranslation($locale, $group, $key, $value);
+            // Use enhanced manager for better translation quality and caching
+            $translatedValue = $this->enhancedManager->translate('en', $locale, $value) ?: $value;
+            $this->firstOrNewTranslation($locale, $group, $key, $translatedValue);
         }
 
         return $response;
@@ -237,7 +290,8 @@ class VigAutoTranslationsController extends BaseController
             [$locale, $key] = explode('|', $name, 2);
 
             if ($request->input('auto') == 'true') {
-                $value = $this->autoTranslateManager->translate('en', $locale, $value);
+                // Use enhanced manager for better translation quality and caching
+                $value = $this->enhancedManager->translate('en', $locale, $value) ?: $value;
             }
 
             $this->firstOrNewTranslation($locale, $group, $key, $value);
@@ -263,11 +317,75 @@ class VigAutoTranslationsController extends BaseController
         if (($locale = $request->input('locale')) &&
             ($name = $request->input('name')) &&
             in_array($locale, array_keys(Language::getAvailableLocales()))) {
-            $value = $this->autoTranslateManager->translate('en', $locale, $name);
+            // Use enhanced manager for better translation quality and caching
+            $value = $this->enhancedManager->translate('en', $locale, $name) ?: $name;
 
             return $response->setData([$locale => $value]);
         }
 
         return $response->setCode(404)->setError();
+    }
+
+    /**
+     * Publish translation group to files
+     * This method handles the "Publish Translations" button functionality
+     */
+    public function publishTranslationGroup(Request $request, BaseHttpResponse $response)
+    {
+        $group = $request->input('group');
+        
+        if (empty($group)) {
+            return $response
+                ->setError()
+                ->setMessage('Translation group is required');
+        }
+
+        try {
+            // Get all translations for this group from database
+            $translations = Translation::query()
+                ->where('group', $group)
+                ->where('status', Translation::STATUS_CHANGED)
+                ->get()
+                ->groupBy('locale');
+
+            $publishedCount = 0;
+            
+            foreach ($translations as $locale => $localeTranslations) {
+                $translationArray = [];
+                
+                foreach ($localeTranslations as $translation) {
+                    $translationArray[$translation->key] = $translation->value;
+                }
+                
+                if (!empty($translationArray)) {
+                    // Use Botble's translation manager to save to files  
+                    // Since autoTranslateManager is our VIG manager, we need to use Botble's Manager
+                    app(Manager::class)->updateTranslation(
+                        $locale,
+                        $group,
+                        $translationArray
+                    );
+                    $publishedCount += count($translationArray);
+                }
+                
+                // Mark translations as published
+                Translation::query()
+                    ->where('group', $group)
+                    ->where('locale', $locale)
+                    ->where('status', Translation::STATUS_CHANGED)
+                    ->update(['status' => Translation::STATUS_SAVED]);
+            }
+
+            return $response
+                ->setMessage(trans('plugins/translation::translation.export_warning', [
+                    'count' => $publishedCount,
+                    'group' => $group
+                ]));
+                
+        } catch (\Exception $e) {
+            return $response
+                ->setError()
+                ->setMessage('Failed to publish translations: ' . $e->getMessage());
+        }
     }
 }

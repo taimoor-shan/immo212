@@ -3,8 +3,8 @@
     {{-- Row 1: Property Types (like tabs in image) --}}
     <div class="vr-filter-row vr-property-types-row">
         @php
-            // Get actual vacation rental categories from database
-            $vacationRentalCategories = get_property_categories([
+            // Get vacation rental specific categories (excludes Land, Commercial, etc.)
+            $vacationRentalCategories = get_vacation_rental_categories([
                 'indent' => '',
                 'conditions' => ['status' => \Botble\Base\Enums\BaseStatusEnum::PUBLISHED],
             ]);

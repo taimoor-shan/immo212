@@ -16,7 +16,7 @@
                     @if ($model->views === 1)
                         {{ __('1 Views') }}
                     @else
-                        {{ __(':number Views', ['number' => number_format($model->views)]) }}
+                        {{ number_format($model->views) }} {{ __('Views') }}
                     @endif
                 </li>
             @endif

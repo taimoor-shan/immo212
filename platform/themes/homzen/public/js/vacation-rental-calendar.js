@@ -49,7 +49,7 @@ var VacationRentalCalendar = /*#__PURE__*/function () {
       var _this = this;
       var calendarElement = this.container.querySelector('.flatpickr-calendar-container');
       if (!calendarElement) {
-        console.error('Calendar element not found');
+        console.error(window.__ ? window.__('calendar_element_not_found') : 'Calendar element not found');
         return;
       }
       this.calendar = flatpickr(calendarElement, {
@@ -120,7 +120,7 @@ var VacationRentalCalendar = /*#__PURE__*/function () {
                 _context.next = 3;
                 break;
               }
-              console.error('Missing availability URL or vacation rental ID');
+              console.error(window.__ ? window.__('missing_availability_url') : 'Missing availability URL or vacation rental ID');
               return _context.abrupt("return");
             case 3:
               _context.prev = 3;
@@ -145,7 +145,7 @@ var VacationRentalCalendar = /*#__PURE__*/function () {
                 _context.next = 16;
                 break;
               }
-              throw new Error(data.message || 'Failed to load availability data');
+              throw new Error(data.message || (window.__ ? window.__('failed_load_availability') : 'Failed to load availability data'));
             case 16:
               this.availabilityData = data.data || {};
               this.refreshCalendarDisplay();
@@ -155,7 +155,7 @@ var VacationRentalCalendar = /*#__PURE__*/function () {
               _context.prev = 20;
               _context.t0 = _context["catch"](3);
               console.error('Error loading availability data:', _context.t0);
-              this.showError('Failed to load calendar data. Please refresh the page.');
+              this.showError(window.__ ? window.__('failed_load_calendar') : 'Failed to load calendar data. Please refresh the page.');
             case 24:
             case "end":
               return _context.stop();
@@ -191,19 +191,19 @@ var VacationRentalCalendar = /*#__PURE__*/function () {
         // Validate stay duration
         var nights = Math.ceil((this.checkOutDate - this.checkInDate) / (1000 * 60 * 60 * 24));
         if (nights < this.minStay) {
-          this.showError("Minimum stay is ".concat(this.minStay, " night(s)"));
+          this.showError(window.__ ? window.__('minimum_stay_error', {min_stay: this.minStay}) : "Minimum stay is ".concat(this.minStay, " night(s)"));
           this.calendar.clear();
           return;
         }
         if (this.maxStay && nights > this.maxStay) {
-          this.showError("Maximum stay is ".concat(this.maxStay, " night(s)"));
+          this.showError(window.__ ? window.__('maximum_stay_error', {max_stay: this.maxStay}) : "Maximum stay is ".concat(this.maxStay, " night(s)"));
           this.calendar.clear();
           return;
         }
 
         // Check if all dates in range are available
         if (!this.validateDateRange()) {
-          this.showError('Some dates in the selected range are not available');
+          this.showError(window.__ ? window.__('dates_unavailable') : 'Some dates in the selected range are not available');
           this.calendar.clear();
           return;
         }
@@ -266,7 +266,7 @@ var VacationRentalCalendar = /*#__PURE__*/function () {
                 _context2.next = 11;
                 break;
               }
-              throw new Error(data.message || 'Failed to calculate pricing');
+              throw new Error(data.message || (window.__ ? window.__('pricing_calculation_error') : 'Failed to calculate pricing'));
             case 11:
               this.currentPricing = data.data;
               this.updateBookingSummary();
@@ -276,7 +276,7 @@ var VacationRentalCalendar = /*#__PURE__*/function () {
               _context2.prev = 15;
               _context2.t0 = _context2["catch"](2);
               console.error('Error calculating pricing:', _context2.t0);
-              this.showError('Failed to calculate pricing. Please try again.');
+              this.showError(window.__ ? window.__('pricing_calculation_error') : 'Failed to calculate pricing. Please try again.');
             case 19:
             case "end":
               return _context2.stop();
@@ -311,7 +311,8 @@ var VacationRentalCalendar = /*#__PURE__*/function () {
         }
         var nights = Math.ceil((this.checkOutDate - this.checkInDate) / (1000 * 60 * 60 * 24));
         if (nightsElement) {
-          nightsElement.textContent = "".concat(nights, " night").concat(nights > 1 ? 's' : '');
+          var nightText = nights === 1 ? (window.__ ? window.__('night') : 'night') : (window.__ ? window.__('nights') : 'nights');
+          nightsElement.textContent = "".concat(nights, " ").concat(nightText);
         }
       }
       if (this.currentPricing && totalElement) {
@@ -327,9 +328,9 @@ var VacationRentalCalendar = /*#__PURE__*/function () {
       var canBook = this.checkInDate && this.checkOutDate && this.currentPricing;
       bookButton.disabled = !canBook;
       if (canBook) {
-        bookButton.textContent = 'Book Now';
+        bookButton.textContent = window.__ ? window.__('book_now') : 'Book Now';
       } else {
-        bookButton.textContent = 'Select Dates';
+        bookButton.textContent = window.__ ? window.__('select_dates') : 'Select Dates';
       }
     }
   }, {
@@ -361,12 +362,12 @@ var VacationRentalCalendar = /*#__PURE__*/function () {
         if (this.loginUrl) {
           window.location.href = this.loginUrl;
         } else {
-          this.showError('Please log in to make a booking');
+          this.showError(window.__ ? window.__('login_required') : 'Please log in to make a booking');
         }
         return;
       }
       if (!this.checkInDate || !this.checkOutDate) {
-        this.showError('Please select check-in and check-out dates');
+        this.showError(window.__ ? window.__('select_dates_required') : 'Please select check-in and check-out dates');
         return;
       }
 

@@ -226,23 +226,75 @@
                     <h4 class="card-title">{{ __('Quick Actions') }}</h4>
                 </div>
                 <div class="card-body">
-                    <a href="{{ route('vacation-rental.booking.show', $booking->id) }}" class="btn btn-info btn-sm mb-2">
-                        <x-core::icon name="ti ti-eye" />
-                        {{ __('View Details') }}
-                    </a>
-                    <br>
-                    <form method="POST" action="{{ route('vacation-rental.booking.destroy', $booking->id) }}" 
-                          style="display: inline-block;" 
-                          onsubmit="return confirm('{{ __('Are you sure you want to delete this booking?') }}')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            <x-core::icon name="ti ti-trash" />
-                            {{ __('Delete Booking') }}
-                        </button>
-                    </form>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteBooking({{ $booking->id }})">
+                        <x-core::icon name="ti ti-trash" />
+                        {{ __('Delete Booking') }}
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+@push('footer')
+<script>
+function deleteBooking(bookingId) {
+    if (!confirm('{{ __('Are you sure you want to delete this booking?') }}')) {
+        return;
+    }
+    
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || $('meta[name="csrf-token"]').attr('content');
+    
+    $.ajax({
+        url: '{{ route('vacation-rental.booking.destroy', ':id') }}'.replace(':id', bookingId),
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        success: function(response) {
+            if (response.error === false) {
+                // Show success message
+                if (typeof Botble !== 'undefined' && Botble.showSuccess) {
+                    Botble.showSuccess(response.message || '{{ __('Booking deleted successfully!') }}');
+                } else {
+                    alert(response.message || '{{ __('Booking deleted successfully!') }}');
+                }
+                
+                // Redirect to bookings list after a short delay
+                setTimeout(function() {
+                    window.location.href = '{{ route('vacation-rental.admin.bookings') }}';
+                }, 1000);
+            } else {
+                // Show error message
+                if (typeof Botble !== 'undefined' && Botble.showError) {
+                    Botble.showError(response.message || '{{ __('Failed to delete booking. Please try again.') }}');
+                } else {
+                    alert('Error: ' + (response.message || '{{ __('Failed to delete booking. Please try again.') }}'));
+                }
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Delete booking error:', xhr.responseText);
+            
+            let errorMessage = '{{ __('Failed to delete booking. Please try again.') }}';
+            
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            } else if (xhr.status === 403) {
+                errorMessage = '{{ __('You do not have permission to delete this booking.') }}';
+            } else if (xhr.status === 404) {
+                errorMessage = '{{ __('Booking not found.') }}';
+            }
+            
+            if (typeof Botble !== 'undefined' && Botble.showError) {
+                Botble.showError(errorMessage);
+            } else {
+                alert('Error: ' + errorMessage);
+            }
+        }
+    });
+}
+</script>
+@endpush

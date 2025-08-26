@@ -36,7 +36,7 @@ class CategoryController extends BaseController
             'is_default' => 'DESC',
         ]);
 
-        $categories->loadMissing('slugable')->loadCount(['properties', 'projects']);
+        $categories->loadMissing('slugable')->loadCount(['properties', 'projects', 'vacationRentals']);
 
         if ($request->ajax()) {
             $data = view('core/base::forms.partials.tree-categories', $this->getOptions(compact('categories')))->render();

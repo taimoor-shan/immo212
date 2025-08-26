@@ -5,10 +5,12 @@
             <option value="">{{ __('All') }}</option>
             @foreach(range(1, 5) as $i)
                 <option value="{{ $i }}">
-                    @if($i < 5)
-                        {{ $i === 1 ? __('1 Bedroom') : __(':number Bedrooms', ['number' => $i]) }}
+                    @if($i === 1)
+                        {{ __('1 Bedroom') }}
+                    @elseif($i < 5)
+                        {{ $i }} {{ __('Bedrooms') }}
                     @else
-                        {{ __(':number+ Bedrooms', ['number' => $i]) }}
+                        {{ $i }}+ {{ __('Bedrooms') }}
                     @endif
                 </option>
             @endforeach

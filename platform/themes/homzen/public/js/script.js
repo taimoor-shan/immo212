@@ -849,11 +849,11 @@ $(function () {
         var minVal = $minInput.val();
         var maxVal = $maxInput.val();
         if (minVal || maxVal) {
-          var minText = minVal ? new Intl.NumberFormat().format(minVal) : 'Any';
-          var maxText = maxVal ? new Intl.NumberFormat().format(maxVal) : 'Any';
+          var minText = minVal ? new Intl.NumberFormat().format(minVal) : (window.__ ? window.__('any') : 'Any');
+          var maxText = maxVal ? new Intl.NumberFormat().format(maxVal) : (window.__ ? window.__('any') : 'Any');
           $current.text(minText + ' - ' + maxText);
         } else {
-          $current.text('Select Price Range');
+          $current.text(window.__ ? window.__('select_price_range') : 'Select Price Range');
         }
       };
 

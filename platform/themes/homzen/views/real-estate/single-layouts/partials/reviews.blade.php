@@ -25,7 +25,7 @@
                 @if($model->reviews_count === 1)
                     {{ __('1 Review') }}
                 @else
-                    {{ __(':number Reviews', ['number' => $model->reviews_count]) }}
+                    {{ $model->reviews_count }} {{ __('Reviews') }}
                 @endif
             </div>
             <div class="d-flex align-items-center gap-2">

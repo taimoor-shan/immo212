@@ -17,7 +17,7 @@ class ConsultSeeder extends BaseSeeder
 
         $customFields = [
             [
-                'name' => 'Schedule a Tour (optional)',
+                'name' => 'plugins/real-estate::consult.schedule_tour_optional',
                 'type' => ConsultCustomFieldTypeEnum::DATE,
                 'required' => false,
             ],

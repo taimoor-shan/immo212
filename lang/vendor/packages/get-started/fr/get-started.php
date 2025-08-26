@@ -19,7 +19,7 @@ return [
     'favicon' => 'Favicon',
     'admin_favicon' => 'Admin Favicon',
     'next_step' => 'Prochaine étape',
-    'site_ready_title' => 'Your site is ready!',
+    'site_ready_title' => 'Votre site est prêt!',
     'site_ready_description' => 'Bienvenue sur votre nouveau site! Votre site Web a été créé et rempli d\'échantillons de données. Vous êtes dans la zone d\'administration de votre site où vous pouvez configurer tout le reste nécessaire pour compléter votre site.',
     'finish' => 'Finition',
     'exit_wizard_title' => 'Êtes-vous sûr de vouloir quitter l\'assistant de configuration rapide?',

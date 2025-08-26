@@ -18,6 +18,7 @@ use Botble\RealEstate\Models\VacationRental;
 use Botble\RealEstate\Repositories\Interfaces\ProjectInterface;
 use Botble\RealEstate\Repositories\Interfaces\PropertyInterface;
 use Botble\RealEstate\Repositories\Interfaces\VacationRentalInterface;
+use Botble\RealEstate\Enums\CategoryTypeEnum;
 use Botble\Slug\Facades\SlugHelper;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
@@ -112,7 +113,12 @@ public function getVacationRentalRelationsQuery(): array
         'categories' => function (BelongsToMany|BaseQueryBuilder $query) {
             return $query
                 ->wherePublished()
-                ->orderBy('re_categories.created_at', 'DESC') // ✅ specify table
+                // Filter categories to only show those suitable for vacation rentals
+                ->where(function ($subQuery) {
+                    $subQuery->whereJsonContains('re_categories.category_types', CategoryTypeEnum::VACATION_RENTAL)
+                        ->orWhereNull('re_categories.category_types'); // Include categories with no type restriction for backward compatibility
+                })
+                ->orderBy('re_categories.created_at', 'DESC')
                 ->orderByDesc('re_categories.is_default')
                 ->orderByDesc('re_categories.order')
                 ->select(['re_categories.id', 're_categories.name']);

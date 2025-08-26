@@ -78,3 +78,50 @@ if (! function_exists('get_property_categories_related_ids')) {
         return array_filter($results);
     }
 }
+
+if (! function_exists('get_vacation_rental_categories')) {
+    function get_vacation_rental_categories(array $args = []): array
+    {
+        $indent = Arr::get($args, 'indent', '——');
+
+        $repo = app(CategoryInterface::class);
+
+        // Get only categories suitable for vacation rentals
+        $baseConditions = Arr::get($args, 'conditions', []);
+        
+        $categories = $repo->getModel()
+            ->forVacationRentals() // Use our new scope
+            ->where($baseConditions)
+            ->wherePublished()
+            ->orderBy('created_at', 'DESC')
+            ->orderByDesc('is_default')
+            ->orderBy('order', 'ASC')
+            ->get(Arr::get($args, 'select', ['*']));
+
+        $categories = sort_item_with_children($categories);
+
+        foreach ($categories as $category) {
+            $depth = (int) $category->depth;
+            $indentText = str_repeat($indent, $depth);
+            $category->indent_text = $indentText;
+        }
+
+        return $categories;
+    }
+}
+
+if (! function_exists('get_vacation_rental_categories_with_children')) {
+    function get_vacation_rental_categories_with_children(): array
+    {
+        $categories = app(CategoryInterface::class)
+            ->getModel()
+            ->forVacationRentals() // Use our new scope
+            ->wherePublished()
+            ->get(['id', 'name', 'parent_id']);
+
+        return app(SortItemsWithChildrenHelper::class)
+            ->setChildrenProperty('child_cats')
+            ->setItems($categories)
+            ->sort();
+    }
+}

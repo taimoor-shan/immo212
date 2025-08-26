@@ -14,6 +14,9 @@ cmds = [
     "cp /assets/worker-*.conf /etc/supervisor/conf.d/",
     "cp /assets/supervisord.conf /etc/supervisord.conf",
     "chmod +x /assets/start.sh",
+    # Ensure lang folder exists with proper permissions
+    "mkdir -p /app/lang",
+    "chown -R www-data:www-data /app/lang",
     "..."
 ]
 
@@ -23,6 +26,12 @@ cmd = '/assets/start.sh'
 [staticAssets]
 "start.sh" = '''
 #!/bin/bash
+
+# Fix lang folder permissions for persistent storage
+if [ -d "/app/lang" ]; then
+    chown -R www-data:www-data /app/lang
+    chmod -R 755 /app/lang
+fi
 
 # Transform the nginx configuration
 node /assets/scripts/prestart.mjs /assets/nginx.template.conf /etc/nginx.conf
@@ -147,11 +156,11 @@ http {
         add_header X-Content-Type-Options "nosniff";
 
         client_max_body_size 35M;
-     
+
         index index.php;
-     
+
         charset utf-8;
-     
+
 
         $if(NIXPACKS_PHP_FALLBACK_PATH) (
             location / {
@@ -162,21 +171,21 @@ http {
                 try_files $uri $uri/ /index.php?$query_string;
            }
         )
-     
+
         location = /favicon.ico { access_log off; log_not_found off; }
         location = /robots.txt  { access_log off; log_not_found off; }
-     
+
         $if(IS_LARAVEL) (
             error_page 404 /index.php;
         ) else ()
-     
+
         location ~ \.php$ {
             fastcgi_pass 127.0.0.1:9000;
             fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
             include $!{nginx}/conf/fastcgi_params;
             include $!{nginx}/conf/fastcgi.conf;
         }
-     
+
         location ~ /\.(?!well-known).* {
             deny all;
         }

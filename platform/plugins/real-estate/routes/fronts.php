@@ -127,17 +127,18 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
                     ->name('pricing')
                     ->wherePrimaryKey();
             });
+
+            // Vacation rental booking routes (public, no auth required) - localized
+            Route::prefix('vacation-rental')->name('public.vacation-rental.')->group(function (): void {
+                Route::get('book/{slug}', [VacationRentalBookingController::class, 'showBookingForm'])->name('booking.form');
+                Route::post('book', [VacationRentalBookingController::class, 'processBooking'])->name('booking.process');
+                Route::post('inquiry', [VacationRentalBookingController::class, 'sendInquiry'])->name('inquiry');
+                Route::get('booking/callback', [VacationRentalBookingController::class, 'paymentCallback'])->name('booking.callback');
+                Route::get('booking/{bookingNumber}/success', [VacationRentalBookingController::class, 'bookingSuccess'])->name('booking.success');
+                Route::get('booking/{bookingNumber}', [VacationRentalBookingController::class, 'bookingDetails'])->name('booking.details');
+            });
         });
 
-        // Vacation rental booking routes (public, no auth required)
-        Route::prefix('vacation-rental')->name('public.vacation-rental.')->group(function (): void {
-            Route::get('book/{slug}', [VacationRentalBookingController::class, 'showBookingForm'])->name('booking.form');
-            Route::post('book', [VacationRentalBookingController::class, 'processBooking'])->name('booking.process');
-            Route::post('inquiry', [VacationRentalBookingController::class, 'sendInquiry'])->name('inquiry');
-            Route::get('booking/callback', [VacationRentalBookingController::class, 'paymentCallback'])->name('booking.callback');
-            Route::get('booking/{bookingNumber}/success', [VacationRentalBookingController::class, 'bookingSuccess'])->name('booking.success');
-            Route::get('booking/{bookingNumber}', [VacationRentalBookingController::class, 'bookingDetails'])->name('booking.details');
-        });
 
         Route::group(['middleware' => ['web', 'core', 'account', EnsureAccountIsApproved::class, LocaleMiddleware::class]], function (): void {
             Route::prefix('account')->name('public.account.')->group(function (): void {

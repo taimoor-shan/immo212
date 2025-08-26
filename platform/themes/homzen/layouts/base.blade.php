@@ -34,21 +34,41 @@
         {{-- JavaScript Translations --}}
         @php
             $translations = [
-                // Vacation Rental Calendar (HIGH PRIORITY)
+                // Vacation Rental Calendar (HIGH PRIORITY) - Used in frontend-calendar.js
+                'failed_load_calendar' => __('plugins/real-estate::vacation-rental.js.failed_load_calendar'),
+                'select_dates' => __('plugins/real-estate::vacation-rental.js.select_dates'),
+                'available' => __('plugins/real-estate::vacation-rental.js.available'),
+                'booked' => __('plugins/real-estate::vacation-rental.js.booked'),
+                'maintenance' => __('plugins/real-estate::vacation-rental.js.maintenance'),
+                'check_in' => __('plugins/real-estate::vacation-rental.js.check_in'),
+                'check_out' => __('plugins/real-estate::vacation-rental.js.check_out'),
+                'nights' => __('plugins/real-estate::vacation-rental.js.nights'),
+                'full_name' => __('plugins/real-estate::vacation-rental.js.full_name'),
+                'email' => __('plugins/real-estate::vacation-rental.js.email'),
+                'phone' => __('plugins/real-estate::vacation-rental.js.phone'),
+                'guests' => __('plugins/real-estate::vacation-rental.js.guests'),
+                'total' => __('plugins/real-estate::vacation-rental.js.total'),
+                'terms_agreement' => __('plugins/real-estate::vacation-rental.js.terms_agreement'),
+                'terms_and_conditions' => __('plugins/real-estate::vacation-rental.js.terms_and_conditions'),
+                'send_inquiry' => __('plugins/real-estate::vacation-rental.js.send_inquiry'),
+                'book_now' => __('plugins/real-estate::vacation-rental.js.book_now'),
+                'dates_unavailable' => __('plugins/real-estate::vacation-rental.js.dates_unavailable'),
+                'minimum_stay_prefix' => __('plugins/real-estate::vacation-rental.js.minimum_stay_prefix'),
+                'maximum_stay_prefix' => __('plugins/real-estate::vacation-rental.js.maximum_stay_prefix'),
+                'cleaning_fee' => __('plugins/real-estate::vacation-rental.js.cleaning_fee'),
+                'service_fee' => __('plugins/real-estate::vacation-rental.js.service_fee'),
+                'taxes' => __('plugins/real-estate::vacation-rental.js.taxes'),
+                'select_dates_required' => __('plugins/real-estate::vacation-rental.js.select_dates_required'),
+                'please_fill_required_fields' => __('plugins/real-estate::vacation-rental.js.please_fill_required_fields'),
+                'terms_acceptance_required' => __('plugins/real-estate::vacation-rental.js.terms_acceptance_required'),
+
+                // Additional Calendar Keys (not currently used in frontend-calendar.js but available)
                 'calendar_element_not_found' => __('plugins/real-estate::vacation-rental.js.calendar_element_not_found'),
                 'missing_availability_url' => __('plugins/real-estate::vacation-rental.js.missing_availability_url'),
                 'failed_load_availability' => __('plugins/real-estate::vacation-rental.js.failed_load_availability'),
-                'failed_load_calendar' => __('plugins/real-estate::vacation-rental.js.failed_load_calendar'),
-                'minimum_stay_error' => __('plugins/real-estate::vacation-rental.js.minimum_stay_error'),
-                'maximum_stay_error' => __('plugins/real-estate::vacation-rental.js.maximum_stay_error'),
-                'dates_unavailable' => __('plugins/real-estate::vacation-rental.js.dates_unavailable'),
                 'pricing_calculation_error' => __('plugins/real-estate::vacation-rental.js.pricing_calculation_error'),
                 'login_required' => __('plugins/real-estate::vacation-rental.js.login_required'),
-                'select_dates_required' => __('plugins/real-estate::vacation-rental.js.select_dates_required'),
-                'book_now' => __('plugins/real-estate::vacation-rental.js.book_now'),
-                'select_dates' => __('plugins/real-estate::vacation-rental.js.select_dates'),
                 'night' => __('plugins/real-estate::vacation-rental.js.night'),
-                'nights' => __('plugins/real-estate::vacation-rental.js.nights'),
 
                 // Common UI (MEDIUM PRIORITY)
                 'error' => __('plugins/real-estate::vacation-rental.js.error'),
@@ -59,7 +79,6 @@
                 'select_price_range' => __('plugins/real-estate::vacation-rental.js.select_price_range'),
 
                 // Form validation (MEDIUM PRIORITY)
-                'please_fill_required_fields' => __('plugins/real-estate::vacation-rental.js.please_fill_required_fields'),
                 'invalid_email' => __('plugins/real-estate::vacation-rental.js.invalid_email'),
                 'please_enter_email' => __('plugins/real-estate::vacation-rental.js.please_enter_email'),
                 'please_enter_password' => __('plugins/real-estate::vacation-rental.js.please_enter_password'),

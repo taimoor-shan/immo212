@@ -392,12 +392,16 @@ class VacationRentalFrontendCalendar {
                 this.applyAvailabilityToDay(dayElem, date, availability);
             },
             onChange: (selectedDates) => {
-                if (this.validateDateSelection(selectedDates)) {
+                const validationResult = this.validateDateSelection(selectedDates);
+                if (validationResult.isValid) {
                     this.handleDateSelection(selectedDates);
                 } else {
                     // Clear invalid selection
                     this.calendar.clear();
-                    this.showValidationError('Selected date range contains unavailable dates. Please select a different range.');
+                    // Show the specific validation error message
+                    if (validationResult.errorMessage) {
+                        this.showValidationError(validationResult.errorMessage);
+                    }
                 }
             },
             onReady: () => {
@@ -413,8 +417,15 @@ class VacationRentalFrontendCalendar {
         });
     }
     validateDateSelection(selectedDates) {
+        // Return object with validation result and specific error message
+        const validationResult = {
+            isValid: false,
+            errorMessage: null
+        };
+
         if (selectedDates.length === 0) {
-            return true; // Empty selection is valid
+            validationResult.isValid = true;
+            return validationResult; // Empty selection is valid
         }
 
         if (selectedDates.length === 1) {
@@ -424,11 +435,18 @@ class VacationRentalFrontendCalendar {
 
             // With exceptions-only loading: no data = available, data = check if it's an exception
             if (!availability) {
-                return true; // No exception data means it's available
+                validationResult.isValid = true;
+                return validationResult; // No exception data means it's available
             }
 
             // If we have data, it should be an exception (unavailable)
-            return availability.status === 'available';
+            if (availability.status === 'available') {
+                validationResult.isValid = true;
+                return validationResult;
+            } else {
+                validationResult.errorMessage = window.__('dates_unavailable') || 'Selected date is not available. Please select a different date.';
+                return validationResult;
+            }
         }
 
         if (selectedDates.length === 2) {
@@ -439,14 +457,16 @@ class VacationRentalFrontendCalendar {
             // Check minimum stay requirement
             const nights = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
             if (nights < this.options.minStay) {
-                this.showValidationError(window.__('minimum_stay_error', { min_stay: this.options.minStay, nights: nights }) || `Minimum stay is ${this.options.minStay} night(s). Selected range is ${nights} night(s).`);
-                return false;
+                validationResult.errorMessage =  `${window.__('minimum_stay_prefix')} ${this.options.minStay} ${window.__('nights')}`;
+                return validationResult;
             }
 
             // Check maximum stay requirement
             if (this.options.maxStay && nights > this.options.maxStay) {
-                this.showValidationError(window.__('maximum_stay_error', { max_stay: this.options.maxStay, nights: nights }) || `Maximum stay is ${this.options.maxStay} night(s). Selected range is ${nights} night(s).`);
-                return false;
+                validationResult.errorMessage = `${window.__('maximum_stay_prefix')} ${this.options.maxStay} ${window.__('nights')}`;
+
+                // window.__('maximum_stay_error', { max_stay: this.options.maxStay, nights: nights }) || `Maximum stay is ${this.options.maxStay} night(s). Selected range is ${nights} night(s).`;
+                return validationResult;
             }
 
             // Check all dates in range are available
@@ -458,7 +478,8 @@ class VacationRentalFrontendCalendar {
                 // With exceptions-only loading: no data = available, data = check if it's an exception
                 if (availability && availability.status !== 'available') {
                     console.log(`Date ${dateStr} is not available:`, availability);
-                    return false;
+                    validationResult.errorMessage = window.__('dates_unavailable') || 'Selected date range contains unavailable dates. Please select a different range.';
+                    return validationResult;
                 }
                 // If no availability data exists, the date is available (default state)
 
@@ -466,7 +487,8 @@ class VacationRentalFrontendCalendar {
             }
         }
 
-        return true;
+        validationResult.isValid = true;
+        return validationResult;
     }
 
     showValidationError(message) {
@@ -587,28 +609,28 @@ class VacationRentalFrontendCalendar {
 
         if (pricing.total_nights_cost) {
             html += `<div class="price-item">
-                <span>${pricing.nights} nights × ${pricing.average_nightly_rate.toFixed(2)}</span>
+                <span>${pricing.nights} ${window.__('nights') || 'Nights'}× ${pricing.average_nightly_rate.toFixed(2)}</span>
                 <span>${pricing.total_nights_cost.toFixed(2)}</span>
             </div>`;
         }
 
         if (pricing.cleaning_fee > 0) {
             html += `<div class="price-item">
-                <span>Cleaning fee</span>
+                <span> ${window.__('cleaning_fee') || 'Cleaning fee'}</span>
                 <span>${pricing.cleaning_fee.toFixed(2)}</span>
             </div>`;
         }
 
         if (pricing.service_fee > 0) {
             html += `<div class="price-item">
-                <span>Service fee</span>
+                <span>${window.__('service_fee') || 'Service fee'}</span>
                 <span>${pricing.service_fee.toFixed(2)}</span>
             </div>`;
         }
 
         if (pricing.taxes > 0) {
             html += `<div class="price-item">
-                <span>Taxes</span>
+                <span>${window.__('taxes') || 'Taxes'}</span>
                 <span>${pricing.taxes.toFixed(2)}</span>
             </div>`;
         }

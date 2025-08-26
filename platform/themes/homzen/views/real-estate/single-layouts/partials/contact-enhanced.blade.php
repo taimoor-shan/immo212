@@ -40,7 +40,7 @@
          <div class="modal-dialog modal-lg">
              <div class="modal-content">
                  <div class="modal-header">
-                     <h5 class="modal-title" id="contactHostModalLabel">{{ __('Contact About This Property') }}</h5>
+                    <h5 class="modal-title" id="contactHostModalLabel">{{ __('plugins/real-estate::consult.contact_about_property') }}</h5>
                      <button type="button" class="btn-close" data-bs-dismiss="modal"
                          aria-label="{{ __('Close') }}"></button>
                  </div>
@@ -57,7 +57,7 @@
                              
                              {{-- Add property name as readonly field --}}
                              ->addBefore('content', 'property_name', 'text', [
-                                 'label' => __('Property of Interest'),
+                                 'label' => __('plugins/real-estate::consult.property_of_interest'),
                                  'attr' => [
                                      'value' => $property->name, 
                                      'readonly' => true,
@@ -67,88 +67,88 @@
                              
                              {{-- Modify name field --}}
                              ->modify('name', 'text', [
-                                 'label' => __('Full Name'),
+                                 'label' => __('plugins/real-estate::consult.full_name'),
                                  'attr' => [
                                      'class' => 'form-control',
-                                     'placeholder' => __('Enter your full name')
+                                     'placeholder' => __('plugins/real-estate::consult.enter_full_name')
                                  ],
                                  'required' => true
                              ])
                              
                              {{-- Modify phone field --}}
                              ->modify('phone', 'text', [
-                                 'label' => __('Phone Number'),
+                                 'label' => __('plugins/real-estate::consult.phone_number'),
                                  'attr' => [
                                      'class' => 'form-control',
-                                     'placeholder' => __('Your phone number')
+                                     'placeholder' => __('plugins/real-estate::consult.your_phone_number')
                                  ]
                              ])
                              
                              {{-- Modify email field --}}
                              ->modify('email', 'email', [
-                                 'label' => __('Email Address'),
+                                 'label' => __('plugins/real-estate::consult.email_address'),
                                  'attr' => [
                                      'class' => 'form-control',
-                                     'placeholder' => __('your.email@example.com')
+                                     'placeholder' => __('plugins/real-estate::consult.your_email_example')
                                  ]
                              ])
                              
                              {{-- Add preferred contact method --}}
                              ->addAfter('email', 'preferred_contact_method', 'select', [
-                                 'label' => __('Preferred Contact Method'),
+                                 'label' => __('plugins/real-estate::consult.preferred_contact_method'),
                                  'attr' => ['class' => 'form-control'],
                                  'choices' => [
-                                     '' => __('How would you like to be contacted?'),
+                                     '' => __('plugins/real-estate::consult.how_contacted'),
                                      'email' => __('Email'),
-                                     'phone' => __('Phone Call'),
+                                     'phone' => __('plugins/real-estate::consult.phone_call'),
                                      'whatsapp' => __('WhatsApp'),
-                                     'both' => __('Both Email & Phone'),
+                                     'both' => __('plugins/real-estate::consult.both_email_phone'),
                                  ],
                                  'required' => false
                              ])
                              
                              {{-- Add budget range --}}
                              ->addAfter('preferred_contact_method', 'budget_range', 'select', [
-                                 'label' => __('Budget Range'),
+                                 'label' => __('plugins/real-estate::consult.budget_range'),
                                  'attr' => ['class' => 'form-control'],
                                  'choices' => [
-                                     '' => __('Select your budget range (optional)'),
-                                     '0-100000' => __('Under $100,000'),
-                                     '100000-250000' => __('$100,000 - $250,000'),
-                                     '250000-500000' => __('$250,000 - $500,000'),
-                                     '500000-750000' => __('$500,000 - $750,000'),
-                                     '750000-1000000' => __('$750,000 - $1,000,000'),
-                                     '1000000+' => __('Over $1,000,000'),
+                                     '' => __('plugins/real-estate::consult.select_budget_range_optional'),
+                                     '0-100000' => __('plugins/real-estate::consult.under_100k'),
+                                     '100000-250000' => __('plugins/real-estate::consult.100k_250k'),
+                                     '250000-500000' => __('plugins/real-estate::consult.250k_500k'),
+                                     '500000-750000' => __('plugins/real-estate::consult.500k_750k'),
+                                     '750000-1000000' => __('plugins/real-estate::consult.750k_1m'),
+                                     '1000000+' => __('plugins/real-estate::consult.over_1m'),
                                  ],
                                  'required' => false
                              ])
                              
                              {{-- Add viewing timeframe --}}
                              ->addAfter('budget_range', 'viewing_timeframe', 'select', [
-                                 'label' => __('When would you like to view?'),
+                                 'label' => __('plugins/real-estate::consult.when_view'),
                                  'attr' => ['class' => 'form-control'],
                                  'choices' => [
-                                     '' => __('Select viewing timeframe'),
-                                     'asap' => __('As soon as possible'),
-                                     'this_week' => __('This week'),
-                                     'next_week' => __('Next week'),
-                                     'within_month' => __('Within a month'),
-                                     'flexible' => __('I am flexible'),
+                                     '' => __('plugins/real-estate::consult.select_viewing_timeframe'),
+                                     'asap' => __('plugins/real-estate::consult.as_soon_as_possible'),
+                                     'this_week' => __('plugins/real-estate::consult.this_week'),
+                                     'next_week' => __('plugins/real-estate::consult.next_week'),
+                                     'within_month' => __('plugins/real-estate::consult.within_month'),
+                                     'flexible' => __('plugins/real-estate::consult.i_am_flexible'),
                                  ],
                                  'required' => false
                              ])
                              
                              {{-- Add financing status --}}
                              ->addAfter('viewing_timeframe', 'financing_status', 'select', [
-                                 'label' => __('Financing Status'),
+                                 'label' => __('plugins/real-estate::consult.financing_status'),
                                  'attr' => ['class' => 'form-control'],
                                  'choices' => [
-                                     '' => __('Select your financing status'),
-                                     'cash_buyer' => __('Cash Buyer'),
-                                     'pre_approved' => __('Pre-approved for mortgage'),
-                                     'need_financing' => __('Need financing assistance'),
-                                     'first_time_buyer' => __('First-time buyer'),
-                                     'other' => __('Other'),
+                                     '' => __('plugins/real-estate::consult.select_financing_status'),
+                                     'cash_buyer' => __('plugins/real-estate::consult.cash_buyer'),
+                                     'pre_approved' => __('plugins/real-estate::consult.pre_approved_mortgage'),
+                                     'need_financing' => __('plugins/real-estate::consult.need_financing_assistance'),
+                                     'first_time_buyer' => __('plugins/real-estate::consult.first_time_buyer'),
+                                     'other' => __('plugins/real-estate::consult.other'),
                                  ],
                                  'required' => false
                              ])
@@ -159,18 +159,18 @@
                                  'attr' => [
                                      'class' => 'form-control',
                                      'rows' => '5',
-                                     'placeholder' => __('I am interested in this property. Please provide more information about pricing, availability, viewing appointments, and any additional details...')
+                                     'placeholder' => __('plugins/real-estate::consult.interested_property_details')
                                  ],
                                  'required' => true
                              ])
                              
                              {{-- Add additional questions --}}
                              ->addAfter('content', 'additional_questions', 'textarea', [
-                                 'label' => __('Additional Questions or Requirements'),
+                                 'label' => __('plugins/real-estate::consult.additional_questions_requirements'),
                                  'attr' => [
                                      'class' => 'form-control',
                                      'rows' => '3',
-                                     'placeholder' => __('Any specific questions about the neighborhood, amenities, or property features?')
+                                     'placeholder' => __('plugins/real-estate::consult.specific_questions_placeholder')
                                  ],
                                  'required' => false
                              ])
@@ -178,7 +178,7 @@
                              {{-- Modify submit button --}}
                              ->modify('submit', 'submit', [
                                  'attr' => ['class' => 'tf-btn primary w-100 mt-3'],
-                                 'label' => __('Send Inquiry')
+                                 'label' => __('plugins/real-estate::consult.send_inquiry')
                              ])
                              
                              ->renderForm() 
@@ -186,7 +186,7 @@
                      
                      {{-- Property Summary Card --}}
                      <div class="property-summary-card mt-4 p-3 bg-light rounded">
-                         <h6>{{ __('Property Summary') }}</h6>
+                         <h6>{{ __('plugins/real-estate::consult.property_summary') }}</h6>
                          <div class="row">
                              <div class="col-6">
                                  <small class="text-muted">{{ __('Price') }}</small><br>

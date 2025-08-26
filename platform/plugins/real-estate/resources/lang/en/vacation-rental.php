@@ -128,7 +128,7 @@ return [
     'per_night' => 'per night',
     'cleaning_fee_label' => 'Cleaning fee:',
     'security_deposit_label' => 'Security deposit:',
-    'description' => 'Description',
+    'description_title' => 'Description',
     'features' => 'Features',
     'location' => 'Location',
     'loading' => 'Loading...',
@@ -215,8 +215,8 @@ return [
         'missing_availability_url' => 'Missing availability URL or vacation rental ID',
         'failed_load_availability' => 'Failed to load availability data',
         'failed_load_calendar' => 'Failed to load calendar data. Please refresh the page.',
-        'minimum_stay_error' => 'Minimum stay is :min_stay night(s)',
-        'maximum_stay_error' => 'Maximum stay is :max_stay night(s)',
+        'minimum_stay_prefix' => 'Minimum stay is',
+        'maximum_stay_prefix' => 'Maximum stay is',
         'dates_unavailable' => 'Some dates in the selected range are not available',
         'pricing_calculation_error' => 'Failed to calculate pricing. Please try again.',
         'login_required' => 'Please log in to make a booking',
@@ -226,6 +226,11 @@ return [
         'night' => 'night',
         'nights' => 'nights',
 
+        // Additional Calendar Keys (referenced in base.blade.php)
+        'cleaning_fee' => 'Cleaning fee',
+        'service_fee' => 'Service fee',
+        'taxes' => 'Taxes',
+
         // Common UI (MEDIUM PRIORITY)
         'error' => 'Error',
         'success' => 'Success',
@@ -234,11 +239,27 @@ return [
         'any' => 'Any',
         'select_price_range' => 'Select Price Range',
 
+        // Calendar UI elements
+        'available' => 'Available',
+        'booked' => 'Booked',
+        'maintenance' => 'Maintenance',
+        'check_in' => 'Check-in',
+        'check_out' => 'Check-out',
+        'full_name' => 'Full Name',
+        'email' => 'Email',
+        'phone' => 'Phone',
+        'guests' => 'Guests',
+        'total' => 'Total',
+        'terms_agreement' => 'I agree to the',
+        'terms_and_conditions' => 'terms and conditions',
+        'send_inquiry' => 'Send Inquiry',
+
         // Form validation (MEDIUM PRIORITY)
         'please_fill_required_fields' => 'Please fill in all required fields',
         'invalid_email' => 'Invalid email address',
         'please_enter_email' => 'Please enter your email',
         'please_enter_password' => 'Please enter your password',
+        'terms_acceptance_required' => 'You must accept the terms and conditions',
 
         // Calendar messages (MEDIUM PRIORITY)
         'please_select_dates' => 'Please select dates',

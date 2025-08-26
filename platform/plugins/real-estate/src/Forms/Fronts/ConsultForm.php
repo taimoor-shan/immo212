@@ -116,7 +116,7 @@ class ConsultForm extends FormFront
                         "consult_custom_fields[$customField->id]",
                         $field,
                         $fieldOptions
-                            ->label($customField->name)
+                            ->label(__($customField->name))
                             ->required($customField->required)
                     );
                 }

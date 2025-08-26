@@ -16,6 +16,7 @@ use Botble\RealEstate\Notifications\VacationRentalBookingProcessingNotification;
 use Botble\Base\Facades\EmailHandler;
 use Botble\Slug\Facades\SlugHelper;
 use Botble\Theme\Facades\Theme;
+use Botble\Language\Facades\Language;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -236,14 +237,18 @@ class VacationRentalBookingController extends BaseController
             'total_amount' => $booking->total_amount
         ]);
 
+        // Generate localized URLs for return and callback
+        $successUrl = $this->getLocalizedUrl(route('public.vacation-rental.booking.success', $booking->booking_number));
+        $callbackUrl = $this->getLocalizedUrl(route('public.vacation-rental.booking.callback'));
+
         $paymentData = [
             'amount' => $booking->total_amount,
             'currency' => config('plugins.payment.payment.currency', 'USD'),
             'order_id' => [$booking->id],
             'customer_id' => null, // Guest booking
             'customer_type' => null,
-            'return_url' => route('public.vacation-rental.booking.success', $booking->booking_number),
-            'callback_url' => route('public.vacation-rental.booking.callback'),
+            'return_url' => $successUrl,
+            'callback_url' => $callbackUrl,
             'payment_method' => $request['payment_method'],
             'description' => __('Vacation Rental Booking #:number', ['number' => $booking->booking_number]),
         ];
@@ -361,10 +366,12 @@ class VacationRentalBookingController extends BaseController
             'payment_status' => VacationRentalBooking::PAYMENT_PAID,
         ]);
 
-        // Send booking confirmation email to customer
+        // Send booking confirmation email to customer in their preferred language
         try {
-            Notification::route('mail', $booking->guest_email)
-                ->notify(new VacationRentalBookingConfirmationNotification($booking));
+            $this->sendLocalizedEmail(function() use ($booking) {
+                Notification::route('mail', $booking->guest_email)
+                    ->notify(new VacationRentalBookingConfirmationNotification($booking));
+            });
         } catch (\Exception $e) {
             Log::error('Failed to send booking confirmation email: ' . $e->getMessage(), [
                 'booking_id' => $booking->id,
@@ -373,56 +380,65 @@ class VacationRentalBookingController extends BaseController
             ]);
         }
 
-        // Send booking notification email to property owner (following consultation pattern)
+        // Send booking notification emails to both property owner AND admin
         $property = $booking->property;
-        $sendTo = null;
-
+        $emailRecipients = [];
+        
+        // Always send to admin
+        $emailRecipients['admin'] = null; // null triggers EmailHandler to use admin email
+        
+        // Also send to property owner if they have email
         if ($property->author?->email) {
-            $sendTo = $property->author->email;
-            Log::info('Booking notification will be sent to property owner', [
+            $emailRecipients['owner'] = $property->author->email;
+            Log::info('Booking notification will be sent to both admin and property owner', [
                 'booking_id' => $booking->id,
                 'booking_number' => $booking->booking_number,
-                'owner_email' => $sendTo,
+                'owner_email' => $property->author->email,
             ]);
         } else {
-            Log::warning('No property owner email found for booking notification, will use admin fallback', [
+            Log::info('Booking notification will be sent to admin only (no property owner email)', [
                 'booking_id' => $booking->id,
                 'booking_number' => $booking->booking_number,
                 'property_id' => $property->id,
             ]);
         }
 
-        try {
-            // Use EmailHandler following consultation form pattern
-            EmailHandler::setModule(REAL_ESTATE_MODULE_SCREEN_NAME)
-                ->setVariableValues([
-                    'booking_number' => $booking->booking_number,
-                    'property_name' => $property->name,
-                    'property_link' => $property->url,
-                    'guest_name' => $booking->guest_name,
-                    'guest_email' => $booking->guest_email,
-                    'guest_phone' => $booking->guest_phone ?: 'Not provided',
-                    'check_in_date' => $booking->check_in_date->format('M d, Y'),
-                    'check_out_date' => $booking->check_out_date->format('M d, Y'),
-                    'guests_count' => $booking->guests_count,
-                    'total_amount' => format_price($booking->total_amount),
-                    'payment_status' => ucfirst($booking->payment_status),
-                    'special_requests' => $booking->special_requests ?: 'None',
-                    'booking_link' => route('public.vacation-rental.booking.details', $booking->booking_number),
-                ])
-                ->sendUsingTemplate('vacation_rental_booking_confirmed', $sendTo);
+        // Send emails to all recipients
+        foreach ($emailRecipients as $recipientType => $recipientEmail) {
+            try {
+                EmailHandler::setModule(REAL_ESTATE_MODULE_SCREEN_NAME)
+                    ->setVariableValues([
+                        'booking_number' => $booking->booking_number,
+                        'property_name' => $property->name,
+                        'property_link' => $property->url,
+                        'guest_name' => $booking->guest_name,
+                        'guest_email' => $booking->guest_email,
+                        'guest_phone' => $booking->guest_phone ?: 'Not provided',
+                        'check_in_date' => $booking->check_in_date->format('M d, Y'),
+                        'check_out_date' => $booking->check_out_date->format('M d, Y'),
+                        'guests_count' => $booking->guests_count,
+                        'total_amount' => format_price($booking->total_amount),
+                        'payment_status' => ucfirst($booking->payment_status),
+                        'special_requests' => $booking->special_requests ?: 'None',
+                        'booking_link' => route('public.vacation-rental.booking.details', $booking->booking_number),
+                    ])
+                    ->sendUsingTemplate('vacation_rental_booking_confirmed', $recipientEmail);
 
-            Log::info('Booking notification sent successfully', [
-                'booking_id' => $booking->id,
-                'booking_number' => $booking->booking_number,
-                'sent_to' => $sendTo ?: 'admin fallback',
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Failed to send booking notification: ' . $e->getMessage(), [
-                'booking_id' => $booking->id,
-                'booking_number' => $booking->booking_number,
-                'error' => $e->getMessage(),
-            ]);
+                Log::info('Booking notification sent successfully', [
+                    'booking_id' => $booking->id,
+                    'booking_number' => $booking->booking_number,
+                    'recipient_type' => $recipientType,
+                    'sent_to' => $recipientEmail ?: 'admin (auto-detected)',
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Failed to send booking notification', [
+                    'booking_id' => $booking->id,
+                    'booking_number' => $booking->booking_number,
+                    'recipient_type' => $recipientType,
+                    'recipient_email' => $recipientEmail,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
 
         // Note: Availability is already updated to 'booked' status by the VacationRentalBooking model's created event
@@ -432,7 +448,9 @@ class VacationRentalBookingController extends BaseController
         // Clear session
         session()->forget(['vacation_rental_booking_id', 'vacation_rental_payment_data']);
 
-        return redirect()->route('public.vacation-rental.booking.success', $booking->booking_number);
+        // Use localized URL for success page redirect
+        $successUrl = $this->getLocalizedUrl(route('public.vacation-rental.booking.success', $booking->booking_number));
+        return redirect($successUrl);
     }
 
     public function bookingSuccess($bookingNumber)
@@ -525,6 +543,64 @@ class VacationRentalBookingController extends BaseController
             return $this->httpResponse()
                 ->setError()
                 ->setMessage(__('Sorry, there was an error sending your inquiry. Please try again.'));
+        }
+    }
+
+    /**
+     * Generate localized URL preserving current language
+     */
+    protected function getLocalizedUrl(string $url): string
+    {
+        try {
+            // Check if Language facade is available
+            if (class_exists('\Botble\Language\Facades\Language')) {
+                return Language::localizeURL($url);
+            }
+        } catch (\Exception $e) {
+            Log::warning('Failed to localize URL: ' . $e->getMessage(), ['url' => $url]);
+        }
+        
+        return $url; // Fallback to original URL
+    }
+
+    /**
+     * Send email in the current user's language
+     */
+    protected function sendLocalizedEmail(callable $emailCallback): void
+    {
+        $currentLocale = null;
+        
+        try {
+            // Get the current locale if language system is available
+            if (class_exists('\Botble\Language\Facades\Language')) {
+                $currentLocale = Language::getCurrentLocale();
+            }
+            
+            // If we have a locale, temporarily set the app locale for email generation
+            if ($currentLocale) {
+                $originalLocale = app()->getLocale();
+                app()->setLocale($currentLocale);
+                
+                try {
+                    $emailCallback();
+                } finally {
+                    // Always restore the original locale
+                    app()->setLocale($originalLocale);
+                }
+            } else {
+                // No localization available, send email normally
+                $emailCallback();
+            }
+        } catch (\Exception $e) {
+            Log::warning('Failed to send localized email: ' . $e->getMessage());
+            
+            // Fallback: try to send email without localization
+            try {
+                $emailCallback();
+            } catch (\Exception $fallbackException) {
+                Log::error('Failed to send email even without localization: ' . $fallbackException->getMessage());
+                throw $fallbackException;
+            }
         }
     }
 

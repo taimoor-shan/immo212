@@ -11,7 +11,7 @@ class SettingsController extends SettingController
 {
     public function settings(Request $request)
     {
-        $this->pageTitle('Setting Vig Auto Translate');
+        $this->pageTitle('VIG Auto Translations Pro Settings');
 
         return AutoTranslateSettingForm::create()->renderForm();
     }

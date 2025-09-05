@@ -14,7 +14,8 @@ class HookServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        add_filter(BASE_FILTER_AFTER_SETTING_CONTENT, [$this, 'addSettings'], 99);
+        // Remove the BASE_FILTER_AFTER_SETTING_CONTENT since we have a dedicated settings page
+        // add_filter(BASE_FILTER_AFTER_SETTING_CONTENT, [$this, 'addSettings'], 99);
 
         if (is_plugin_active('translation')) {
             add_filter(BASE_FILTER_GET_LIST_DATA, [$this, 'addColumnToTranslationTable'], 153, 2);
@@ -22,10 +23,11 @@ class HookServiceProvider extends ServiceProvider
         }
     }
 
-    public function addSettings(?string $data = null): string
-    {
-        return $data . view('plugins/vig-auto-translations::setting')->render();
-    }
+    // Removed addSettings method since we use a dedicated settings form
+    // public function addSettings(?string $data = null): string
+    // {
+    //     return $data . view('plugins/vig-auto-translations::setting')->render();
+    // }
 
     public function addHeadingToTranslationTable(array $headings, Model|string|null $model): array
     {

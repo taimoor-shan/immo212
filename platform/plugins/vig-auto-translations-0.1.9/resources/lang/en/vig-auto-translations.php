@@ -21,5 +21,9 @@ return [
     'aws_secret' => 'AWS Secret',
     'aws_region' => 'AWS Region',
     'chatgpt_key' => 'ChatGPT API Key',
+    'chatgpt_model' => 'ChatGPT Model',
+    'chatgpt_model_help' => 'Select the OpenAI model to use for translations. GPT-4.1 is the latest flagship model with superior coding and instruction-following capabilities.',
+    'chatgpt_system_message' => 'Custom System Message',
+    'chatgpt_system_message_help' => 'Optional: Customize the system message to define translation style and requirements. Use placeholders: {source_language}, {target_language}, {source}, {target}. Leave empty to use the default professional translation prompt.',
     'actions' => 'Actions',
 ];

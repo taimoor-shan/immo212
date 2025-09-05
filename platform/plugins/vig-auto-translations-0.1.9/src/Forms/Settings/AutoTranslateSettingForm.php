@@ -3,11 +3,16 @@
 namespace VigStudio\VigAutoTranslations\Forms\Settings;
 
 use Botble\Base\Forms\FieldOptions\RadioFieldOption;
+use Botble\Base\Forms\FieldOptions\SelectFieldOption;
+use Botble\Base\Forms\FieldOptions\TextareaFieldOption;
 use Botble\Base\Forms\FieldOptions\TextFieldOption;
 use Botble\Base\Forms\Fields\RadioField;
+use Botble\Base\Forms\Fields\SelectField;
+use Botble\Base\Forms\Fields\TextareaField;
 use Botble\Base\Forms\Fields\TextField;
 use Botble\Setting\Forms\SettingForm;
 use VigStudio\VigAutoTranslations\Http\Requests\SettingRequest;
+use VigStudio\VigAutoTranslations\Services\ChatGPTTranslator;
 
 class AutoTranslateSettingForm extends SettingForm
 {
@@ -71,6 +76,61 @@ class AutoTranslateSettingForm extends SettingForm
                     ->allowOverLimit()
                     ->value(old('vig_translate_chatgpt_key', setting('vig_translate_chatgpt_key', config('plugins.vig-auto-translations.general.chatgpt_key'))))
                     ->toArray()
+            )
+            ->add(
+                'vig_translate_chatgpt_model',
+                SelectField::class,
+                SelectFieldOption::make()
+                    ->label(trans('plugins/vig-auto-translations::vig-auto-translations.chatgpt_model'))
+                    ->choices($this->getChatGPTModelOptions())
+                    ->selected(setting('vig_translate_chatgpt_model', config('plugins.vig-auto-translations.general.chatgpt_model')))
+                    ->helperText(trans('plugins/vig-auto-translations::vig-auto-translations.chatgpt_model_help'))
+                    ->toArray()
+            )
+            ->add(
+                'vig_translate_chatgpt_system_message',
+                TextareaField::class,
+                TextareaFieldOption::make()
+                    ->label(trans('plugins/vig-auto-translations::vig-auto-translations.chatgpt_system_message'))
+                    ->rows(6)
+                    ->value(old('vig_translate_chatgpt_system_message', setting('vig_translate_chatgpt_system_message', config('plugins.vig-auto-translations.general.chatgpt_system_message'))))
+                    ->helperText(trans('plugins/vig-auto-translations::vig-auto-translations.chatgpt_system_message_help'))
+                    ->placeholder($this->getDefaultSystemMessageTemplate())
+                    ->toArray()
             );
+    }
+
+    /**
+     * Get ChatGPT model options for the dropdown
+     */
+    protected function getChatGPTModelOptions(): array
+    {
+        $translator = new ChatGPTTranslator();
+        $models = $translator->getAvailableModels();
+        
+        $options = [];
+        foreach ($models as $key => $model) {
+            // Enhanced display with context window and strengths
+            $contextInfo = isset($model['context_window']) ? ', ' . $model['context_window'] : '';
+            $strengthInfo = isset($model['strengths']) ? ' (' . implode(', ', $model['strengths']) . ')' : '';
+            
+            $options[$key] = sprintf('%s%s - %s%s', 
+                $model['name'],
+                $contextInfo,
+                $model['description'],
+                $strengthInfo
+            );
+        }
+        
+        return $options;
+    }
+
+    /**
+     * Get default system message template for placeholder
+     */
+    protected function getDefaultSystemMessageTemplate(): string
+    {
+        $translator = new ChatGPTTranslator();
+        return $translator->getDefaultSystemMessageTemplate();
     }
 }

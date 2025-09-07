@@ -19,7 +19,7 @@ return [
     'or' => 'o',
     'faqs_menu_name' => 'Administrador -> Preguntas frecuentes -> Crear',
     'select_from_existing' => 'Seleccionar de las preguntas frecuentes existentes',
-    'no_existing' => 'No existing FAQs, please create one first at :link.',
+    'no_existing' => 'No existen preguntas frecuentes. Por favor, cree una primero en :link.',
     'edit' => 'Editar FAQ',
     'all' => 'Todo',
 ];

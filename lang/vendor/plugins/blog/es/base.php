@@ -18,4 +18,7 @@ return [
         'enable_blog_post_schema_description' => 'Obtenga más información: https://schema.org/Article',
         'schema_type' => 'tipo de esquema',
     ],
+    'blog_posts' => 'Publicaciones de blog',
+    'blog_categories' => 'Categorías del blog',
+    'blog_tags' => 'Etiquetas del blog',
 ];

@@ -6,6 +6,6 @@ return [
     'edit_this_category' => 'Editar esta categoría',
     'menu_name' => 'Categorías',
     'none' => 'Nada',
-    'total_posts' => 'Total posts: :total',
+    'total_posts' => 'Total de publicaciones: :total',
     'edit' => 'Editar',
 ];

@@ -42,7 +42,8 @@ class HookServiceProvider extends ServiceProvider
             return $headings;
         }
 
-        Assets::addScriptsDirectly(['vendor/core/plugins/vig-auto-translations/js/auto-translations.js']);
+        // Note: JavaScript file would need to be published to work
+        // Assets::addScriptsDirectly([asset('vendor/core/plugins/vig-auto-translations/js/auto-translations.js')]);
 
         return array_merge($headings, [
             'action' => [

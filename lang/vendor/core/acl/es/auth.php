@@ -69,6 +69,14 @@ return [
         'email' => [
             'description' => 'Configuración de correo ACL',
             'title' => 'LCA',
+            'templates' => [
+                'password_reminder' => [
+                    'title' => 'Restablecer contraseña',
+                    'description' => 'Enviar correo electrónico al usuario al solicitar restablecimiento de contraseña',
+                    'subject' => 'Restablecer contraseña',
+                    'reset_link' => 'Enlace para restablecer la contraseña',
+                ],
+            ],
         ],
     ],
 ];

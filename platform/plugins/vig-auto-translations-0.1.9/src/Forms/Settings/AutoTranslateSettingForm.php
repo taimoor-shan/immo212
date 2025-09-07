@@ -92,10 +92,10 @@ class AutoTranslateSettingForm extends SettingForm
                 TextareaField::class,
                 TextareaFieldOption::make()
                     ->label(trans('plugins/vig-auto-translations::vig-auto-translations.chatgpt_system_message'))
-                    ->rows(6)
+                    ->rows(4)
                     ->value(old('vig_translate_chatgpt_system_message', setting('vig_translate_chatgpt_system_message', config('plugins.vig-auto-translations.general.chatgpt_system_message'))))
                     ->helperText(trans('plugins/vig-auto-translations::vig-auto-translations.chatgpt_system_message_help'))
-                    ->placeholder($this->getDefaultSystemMessageTemplate())
+                    ->placeholder($this->getStyleInstructionsPlaceholder())
                     ->toArray()
             );
     }
@@ -126,11 +126,10 @@ class AutoTranslateSettingForm extends SettingForm
     }
 
     /**
-     * Get default system message template for placeholder
+     * Get simple placeholder text for style instructions
      */
-    protected function getDefaultSystemMessageTemplate(): string
+    protected function getStyleInstructionsPlaceholder(): string
     {
-        $translator = new ChatGPTTranslator();
-        return $translator->getDefaultSystemMessageTemplate();
+        return 'Examples:\n• Use a real estate platform tone with professional phrasing\n• Prefer formal address and EU date/number formats\n• Keep brand names in English; localize amenities to common terms\n• Use concise, action-oriented language for buttons and forms';
     }
 }

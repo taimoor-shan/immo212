@@ -42,4 +42,5 @@ return [
     'search' => 'Buscar...',
     'copied' => 'Copiado',
     'copy' => 'Copiar',
+    'clear' => 'Limpiar',
 ];

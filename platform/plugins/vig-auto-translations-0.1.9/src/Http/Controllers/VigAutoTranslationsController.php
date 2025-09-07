@@ -31,9 +31,7 @@ class VigAutoTranslationsController extends BaseController
         page_title()->setTitle(trans('plugins/vig-auto-translations::vig-auto-translations.title'));
 
         Assets::addScripts(['bootstrap-editable'])
-            ->addStyles(['bootstrap-editable'])
-            ->addScriptsDirectly('vendor/core/plugins/translation/js/theme-translations.js')
-            ->addStylesDirectly('vendor/core/plugins/translation/css/theme-translations.css');
+            ->addStyles(['bootstrap-editable']);
 
         $data = $this->getDataTranslations($request->input('ref_lang'));
 
@@ -131,8 +129,147 @@ class VigAutoTranslationsController extends BaseController
         $this->autoTranslateManager->saveThemeTranslations($locale, $translations);
 
         return $response
-            ->setPreviousUrl(route('vig-auto-translations.theme'))
+            ->setPreviousUrl(route('vig-auto-translations.plugin'))
             ->setMessage(trans('core/base::notices.update_success_message'));
+    }
+
+    /**
+     * Get bulk translations interface - integrated into plugin translations page
+     * Shows all available groups when no specific group is selected (like Botble's behavior)
+     */
+    protected function getBulkTranslationsInterface(Request $request, array $allGroups, string $refLang)
+    {
+        $locales = Language::getAvailableLocales();
+        
+        // Get current provider info
+        $currentDriver = setting('vig_translate_driver', 'google');
+        $providerNames = [
+            'google' => 'Google Translate',
+            'aws' => 'Amazon Translate',
+            'chatgpt' => 'ChatGPT/OpenAI'
+        ];
+        $providerName = $providerNames[$currentDriver] ?? 'Google Translate';
+        
+        // Return the same plugin-translations view but with bulk mode data
+        return view('plugins/vig-auto-translations::plugin-translations', compact(
+            'allGroups',
+            'locales',
+            'refLang',
+            'providerName',
+            'currentDriver'
+        ) + [
+            'translations' => [], // Empty for bulk mode
+            'translationData' => [], // Empty for bulk mode
+            'group' => null, // No specific group selected = bulk mode
+            'ref_lang' => $refLang,
+            'editUrl' => route('vig-auto-translations.plugin.post'),
+            'isBulkMode' => true // Flag to indicate bulk mode
+        ]);
+    }
+
+    /**
+     * Bulk translate ALL groups at once - integrated into plugin translations interface
+     * This is the web UI equivalent of: php artisan vig:translate:core {locale}
+     */
+    public function postBulkTranslateAll(Request $request, BaseHttpResponse $response)
+    {
+        $locale = $request->input('locale');
+        
+        if (!$locale || $locale === 'en') {
+            return $response
+                ->setError()
+                ->setMessage('Please select a valid target language (not English)');
+        }
+
+        BaseHelper::maximumExecutionTimeAndMemoryLimit();
+
+        try {
+            // Use GetGroupedTranslationsService to get all translation groups (same as our enhanced command)
+            $groupedTranslationsService = new GetGroupedTranslationsService();
+            $allTranslations = $groupedTranslationsService->handle();
+            
+            $translated = 0;
+            $skipped = 0;
+            $errors = 0;
+            $processedGroups = [];
+            
+            // Group translations by group name for batch processing
+            $translationsByGroup = $allTranslations->groupBy('group');
+            
+            foreach ($translationsByGroup as $group => $translations) {
+                $autoTranslations = [];
+                
+                foreach ($translations as $translation) {
+                    $key = $translation['key'];
+                    $englishValue = $translation['value'];
+                    
+                    // Get existing translation to check if already translated
+                    $existingTranslation = $this->getExistingTranslationValue($group, $key, $locale);
+                    
+                    // Skip if already translated (different from English)
+                    if ($existingTranslation && $existingTranslation !== $englishValue) {
+                        $skipped++;
+                        continue;
+                    }
+                    
+                    // Use enhanced manager for translation (with caching and multiple providers)
+                    $translatedValue = $this->enhancedManager->translate('en', $locale, $englishValue);
+                    
+                    if ($translatedValue && $translatedValue !== $englishValue) {
+                        $autoTranslations[$key] = $translatedValue;
+                        $translated++;
+                    } else {
+                        $errors++;
+                    }
+                }
+                
+                // Save translations to database (so they can be published later)
+                if (!empty($autoTranslations)) {
+                    foreach ($autoTranslations as $key => $translatedValue) {
+                        $this->firstOrNewTranslation($locale, $group, $key, $translatedValue);
+                    }
+                    $processedGroups[] = $group;
+                }
+            }
+            
+            $message = sprintf(
+                'Bulk translation completed! Translated %d strings across %d groups. Skipped: %d, Errors: %d',
+                $translated,
+                count($processedGroups),
+                $skipped,
+                $errors
+            );
+            
+            return $response
+                ->setPreviousUrl(route('vig-auto-translations.plugin'))
+                ->setMessage($message);
+                
+        } catch (\Exception $e) {
+            return $response
+                ->setError()
+                ->setMessage('Bulk translation failed: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Helper method to get existing translation value from files
+     */
+    protected function getExistingTranslationValue(string $group, string $key, string $locale): ?string
+    {
+        try {
+            $translationKey = Str::of($group)
+                ->replaceLast(DIRECTORY_SEPARATOR, '::')
+                ->append(".{$key}")
+                ->toString();
+            
+            $translation = trans($translationKey, [], $locale);
+            
+            // Return null if translation is the same as the key (not found)
+            return $translation === $translationKey ? null : $translation;
+            
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     public function getPluginsTranslations(Request $request)
@@ -140,12 +277,21 @@ class VigAutoTranslationsController extends BaseController
         page_title()->setTitle(trans('plugins/translation::translation.translations'));
 
         Assets::addScripts(['bootstrap-editable'])
-            ->addStyles(['bootstrap-editable'])
-            ->addStylesDirectly('vendor/core/plugins/translation/css/translation.css');
+            ->addStyles(['bootstrap-editable']);
 
         $group = $request->input('group');
-        $refLang = $request->input('ref_lang');
+        $refLang = $request->input('ref_lang', 'es'); // Default to Spanish
+        
+        // Get all available groups using GetGroupedTranslationsService (same as Botble)
+        $groupedTranslationsService = new GetGroupedTranslationsService();
+        $allGroups = $groupedTranslationsService->getGroups();
+        
+        // BULK MODE: When no specific group is selected, show all groups (like Botble's /admin/translations)
+        if (!$group) {
+            return $this->getBulkTranslationsInterface($request, $allGroups, $refLang);
+        }
 
+        // SINGLE GROUP MODE: When specific group is selected, show individual translations
         // Get English source translations using the same method as getLang but only for specific group
         $translations = $this->getLang();
         
@@ -341,16 +487,24 @@ class VigAutoTranslationsController extends BaseController
         }
 
         try {
-            // Get all translations for this group from database
-            $translations = Translation::query()
+            // Get all translations for this group from database (including changed and saved)
+            $changedTranslations = Translation::query()
                 ->where('group', $group)
                 ->where('status', Translation::STATUS_CHANGED)
                 ->get()
                 ->groupBy('locale');
+                
+            // Also get all translations for this group to show total count
+            $allTranslations = Translation::query()
+                ->where('group', $group)
+                ->get()
+                ->groupBy('locale');
 
             $publishedCount = 0;
+            $totalCount = 0;
             
-            foreach ($translations as $locale => $localeTranslations) {
+            // Process changed translations
+            foreach ($changedTranslations as $locale => $localeTranslations) {
                 $translationArray = [];
                 
                 foreach ($localeTranslations as $translation) {
@@ -359,10 +513,9 @@ class VigAutoTranslationsController extends BaseController
                 
                 if (!empty($translationArray)) {
                     // Use Botble's translation manager to save to files  
-                    // Since autoTranslateManager is our VIG manager, we need to use Botble's Manager
                     app(Manager::class)->updateTranslation(
                         $locale,
-                        $group,
+                        str_replace('/', DIRECTORY_SEPARATOR, $group),
                         $translationArray
                     );
                     $publishedCount += count($translationArray);
@@ -375,9 +528,22 @@ class VigAutoTranslationsController extends BaseController
                     ->where('status', Translation::STATUS_CHANGED)
                     ->update(['status' => Translation::STATUS_SAVED]);
             }
+            
+            // Count total translations for this group
+            foreach ($allTranslations as $locale => $localeTranslations) {
+                $totalCount += count($localeTranslations);
+            }
+            
+            // Provide appropriate message based on what happened
+            if ($publishedCount > 0) {
+                $message = "Successfully published {$publishedCount} new/changed translations for group '{$group}'. Files have been updated and are ready to use.";
+            } elseif ($totalCount > 0) {
+                $message = "No new translations to publish for group '{$group}'. All {$totalCount} translations are already up to date in files.";
+            } else {
+                $message = "No translations found for group '{$group}'. Please translate some strings first, then publish.";
+            }
 
-            return $response
-                ->setMessage("Successfully published {$publishedCount} translations for group '{$group}'. Files have been updated and are ready to use.");
+            return $response->setMessage($message);
                 
         } catch (\Exception $e) {
             return $response

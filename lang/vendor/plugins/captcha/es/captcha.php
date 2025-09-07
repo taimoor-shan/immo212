@@ -17,7 +17,7 @@ return [
         'recaptcha_secret' => 'Secreto reCAPTCHA',
         'enable_recaptcha' => '¿Habilitar reCAPTCHA?',
         'recaptcha_score' => 'Puntaje',
-        'recaptcha_credential_helper' => 'Obtain your Google reCAPTCHA credentials :link.',
+        'recaptcha_credential_helper' => 'Obtenga sus credenciales de Google reCAPTCHA :link.',
         'recaptcha_credential_helper_here' => 'aquí',
         'recaptcha_warning' => 'Debe usar reCAPTCHA en la configuración de credenciales. Tenga cuidado, la configuración incorrecta provocará la interrupción del sistema de inicio de sesión.',
         'show_disclaimer' => '¿Mostrar el descargo de responsabilidad de reCAPTCHA?',

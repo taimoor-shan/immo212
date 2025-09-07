@@ -57,6 +57,7 @@ return [
     'selected' => 'seleccionado',
     'count_selected' => ':count seleccionado',
     'sort_order' => 'Orden de clasificación',
+    'search_input_placeholder' => 'Buscar...',
     'character_remain' => 'Caracteres',
     'collapse_all' => 'Desplegar todo',
     'expand_all' => 'Expandir todo',

@@ -1,0 +1,40 @@
+<?php
+
+return [
+    'name' => 'Facturas',
+    'amount' => 'Cantidad',
+    'code' => 'Código',
+    'show' => 'Factura :code',
+    'print' => 'Imprimir factura',
+    'download' => 'Descargar factura',
+    'heading' => 'Factura',
+    'purchase_at' => 'Comprar en',
+    'sub_total' => 'Subtotal',
+    'tax_amount' => 'Importe del impuesto',
+    'discount_amount' => 'Importe del descuento',
+    'total_amount' => 'Importe total',
+    'status' => 'Estado',
+    'account' => 'Cuenta',
+    'payment_info' => 'Información de pago',
+    'payment_method' => 'Método de pago',
+    'payment_status' => 'Estado de pago',
+    'item' => [
+        'name' => 'Nombre',
+        'qty' => 'Cantidad',
+        'description' => 'Descripción',
+    ],
+    'statuses' => [
+        'pending' => 'Pendiente',
+        'processing' => 'Procesando',
+        'completed' => 'Completado',
+        'canceled' => 'Cancelado',
+    ],
+    'template' => [
+        'name' => 'Plantilla de factura',
+        'setting' => 'Configuración de facturas',
+        'setting_description' => 'Configuración de la plantilla de factura',
+        'setting_content' => 'Contenido',
+        'preview' => 'Vista previa',
+        'preview_heading' => 'Vista previa de la plantilla de factura',
+    ],
+];

@@ -41,8 +41,11 @@ This plugin follows a **composition-over-inheritance** approach, extending Botbl
 # Enhanced theme translation
 php artisan vig:translate:theme {locale} [--driver=google|aws|chatgpt] [--batch-size=50] [--verbose] [--override] [--clear-cache]
 
-# Enhanced core/plugin translation  
-php artisan vig:translate:core {locale} [--driver=google|aws|chatgpt] [--group=plugin-name] [--verbose] [--override] [--clear-cache]
+# Enhanced core/plugin translation (BULK MODE - translates ALL groups by default)
+php artisan vig:translate:core {locale} [--driver=google|aws|chatgpt] [--verbose] [--override] [--clear-cache]
+
+# Enhanced core/plugin translation (TARGETED MODE - specific groups only)
+php artisan vig:translate:core {locale} [--group=plugin-name] [--verbose] [--override] [--clear-cache]
 
 # Cache management
 php artisan vig:translate:cache {clear|stats|warm-up} [--locale=locale]
@@ -51,12 +54,12 @@ php artisan vig:translate:cache {clear|stats|warm-up} [--locale=locale]
 ### Example Workflows
 
 ```bash
-# Complete Spanish translation workflow
+# Complete Spanish translation workflow (BULK MODE - translates everything)
 php artisan vig:translate:theme es --verbose --driver=chatgpt
-php artisan vig:translate:core es --verbose --driver=chatgpt
+php artisan vig:translate:core es --verbose --driver=chatgpt  # ← Now translates ALL groups!
 php artisan vig:translate:cache stats
 
-# Target specific plugins
+# Target specific plugins (TARGETED MODE)
 php artisan vig:translate:core es --group=real-estate --group=blog
 
 # Performance optimization

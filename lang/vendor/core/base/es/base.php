@@ -36,6 +36,8 @@ return [
             ],
         ],
         'variable' => 'Variable',
+        'html_attributes' => 'Atributos HTML',
+        'body_attributes' => 'Atributos corporales',
     ],
     'change_image' => 'Cambiar imagen',
     'delete_image' => 'Eliminar imagen',

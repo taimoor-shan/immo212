@@ -66,6 +66,10 @@ return [
         'title' => 'Escoge un tema',
         'message' => 'Elija un tema para personalizar la apariencia de su sitio web. Esta selección también importará datos de muestra adaptados al tema elegido.',
     ],
+    'theme_preset' => [
+        'title' => 'Elija el tema predefinido',
+        'message' => 'Elija un tema predefinido para personalizar la apariencia de su sitio web. Esta selección también importará datos de muestra adaptados al tema elegido.',
+    ],
     'createAccount' => [
         'pageTitle' => 'Instalación - Paso 4: Crear cuenta',
         'title' => 'Crear cuenta',
@@ -92,5 +96,5 @@ return [
         'exit' => 'Ir al panel de administración',
     ],
     'install_success' => '¡Instalado con éxito!',
-    'install_step_title' => 'Installation - Step :step: :title',
+    'install_step_title' => 'Instalación - Paso :step: :title',
 ];

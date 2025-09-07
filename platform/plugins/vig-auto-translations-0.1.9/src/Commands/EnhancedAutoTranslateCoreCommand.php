@@ -12,9 +12,8 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use VigStudio\VigAutoTranslations\EnhancedAutoTranslateManager;
-use VigStudio\VigAutoTranslations\Services\FileBased\TranslationService;
 
-#[AsCommand('vig:translate:core', 'Enhanced auto translate core/plugins with multiple providers and caching')]
+#[AsCommand('vig:translate:core', 'Enhanced auto translate ALL core/plugins (or specific groups) with multiple providers and caching')]
 class EnhancedAutoTranslateCoreCommand extends Command implements PromptsForMissingInput
 {
     public function handle(Manager $manager, EnhancedAutoTranslateManager $enhancedManager): int
@@ -56,7 +55,16 @@ class EnhancedAutoTranslateCoreCommand extends Command implements PromptsForMiss
         
         $providerName = $providerNames[$currentDriver] ?? $currentDriver;
         
-        $this->components->info(sprintf('🌍 Translating core/plugins to %s using %s', $locale, $providerName));
+        // Show translation mode
+        if ($groups && !empty($groups)) {
+            $this->components->info(sprintf('🎯 Targeted Translation Mode: Translating %d specific groups to %s', count($groups), $locale));
+            $this->components->info(sprintf('🔍 Groups: %s', implode(', ', $groups)));
+        } else {
+            $this->components->info(sprintf('🌍 Bulk Translation Mode: Translating ALL core/plugins to %s', $locale));
+            $this->components->info('💡 This matches Botble\'s default behavior - all translation groups will be processed');
+        }
+        
+        $this->components->info(sprintf('🔧 Using provider: %s', $providerName));
         $this->components->info('🔧 Processing plugin/core translations (PHP files)...');
 
         $translations = $this->getTranslations($locale, $groups);
@@ -174,7 +182,8 @@ class EnhancedAutoTranslateCoreCommand extends Command implements PromptsForMiss
 
         // Success message with next steps
         if ($count > 0) {
-            $this->components->success("✨ Core/Plugin translations completed successfully! {$count} new translations added.");
+            $translationMode = ($groups && !empty($groups)) ? 'Targeted Group' : 'Bulk (All Groups)';
+            $this->components->success("✨ {$translationMode} translation completed successfully! {$count} new translations added.");
             
             $this->components->info('🎆 Next Steps:');
             $this->components->bulletList([
@@ -207,7 +216,7 @@ class EnhancedAutoTranslateCoreCommand extends Command implements PromptsForMiss
             ->addOption('override', 'o', InputOption::VALUE_NONE, 'Force translate core again')
             ->addOption('driver', 'd', InputOption::VALUE_REQUIRED, 'Translation driver (google, aws, chatgpt)', null)
             ->addOption('clear-cache', 'c', InputOption::VALUE_NONE, 'Clear translation cache before processing')
-            ->addOption('group', 'g', InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Specific translation groups to process');
+            ->addOption('group', 'g', InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Specific translation groups to process (optional - if not provided, all groups will be translated)');
     }
 
     protected function promptForMissingArgumentsUsing(): array
@@ -218,17 +227,19 @@ class EnhancedAutoTranslateCoreCommand extends Command implements PromptsForMiss
     }
 
     /**
-     * Get translations with optional group filtering (File-based, no database)
+     * Get translations using Botble's GetGroupedTranslationsService for full compatibility
+     * Supports bulk "translate all" when no groups specified, matching default Botble behavior
      */
     protected function getTranslations(string $locale, ?array $groups = null): Collection
     {
-        // Use file-based translation service instead of database
-        $fileBasedService = new TranslationService();
-        
-        $this->components->info('Loading translations from file system (no database required)...');
+        $this->components->info('Loading translations using Botble\'s GetGroupedTranslationsService...');
         
         try {
-            $translations = $fileBasedService->getGroupedTranslations()
+            // Use Botble's official service for maximum compatibility
+            $groupedTranslationsService = new GetGroupedTranslationsService();
+            
+            $translations = $groupedTranslationsService
+                ->handle()
                 ->transform(fn ($translation) => [
                     'key' => sprintf('%s::%s', $translation['group'], $translation['key']),
                     'en' => $translation['value'],
@@ -246,24 +257,31 @@ class EnhancedAutoTranslateCoreCommand extends Command implements PromptsForMiss
                     ];
                 });
 
-            // Filter by specific groups if provided
-            if ($groups) {
+            // Filter by specific groups if provided, otherwise translate ALL groups (bulk mode)
+            if ($groups && !empty($groups)) {
                 $translations = $translations->filter(function ($translation) use ($groups) {
                     return in_array($translation['group'], $groups);
                 });
                 
-                $this->components->info(sprintf('Filtered to %d specific groups: %s', 
+                $this->components->info(sprintf('📋 Group Filter Mode: Translating %d specific groups: %s', 
                     count($groups), 
                     implode(', ', $groups)
                 ));
+            } else {
+                $totalGroups = $translations->pluck('group')->unique()->count();
+                $this->components->info(sprintf('🌍 Bulk Translation Mode: Translating ALL %d available groups (same as Botble default behavior)', $totalGroups));
+                $this->components->info('💡 Tip: Use --group="plugin-name" to translate specific groups only');
             }
             
-            $this->components->info(sprintf('Loaded %d translation keys from files', $translations->count()));
+            $this->components->info(sprintf('Loaded %d translation keys across %d groups', 
+                $translations->count(), 
+                $translations->pluck('group')->unique()->count()
+            ));
             
             return $translations;
             
         } catch (\Exception $e) {
-            $this->components->error('Failed to load file-based translations: ' . $e->getMessage());
+            $this->components->error('Failed to load translations via GetGroupedTranslationsService: ' . $e->getMessage());
             
             // Fallback to empty collection
             return collect();

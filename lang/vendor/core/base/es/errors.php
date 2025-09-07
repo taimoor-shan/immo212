@@ -11,6 +11,7 @@ return [
     'go_to_home' => 'Ve a la página de inicio',
     'error_when_sending_email' => 'No se puede enviar el correo electrónico. Algo está mal con la configuración de tu correo electrónico en Administrador → Configuración → Correo, por favor revisa tus ajustes nuevamente.',
     'error_when_sending_email_guest' => 'No se pudo enviar el correo electrónico. Por favor, contacta al administrador del sitio si el problema persiste.',
+    'token_mismatch' => 'Sesión expirada. Por favor, inténtelo de nuevo.',
     '401_msg' => '<li>El administrador no te ha otorgado acceso a esta sección.</li>'."\n"
         .'	                <li>Posiblemente no tienes el perfil correcto en tu cuenta.</li>'."\n"
         .'	                <li>No está autorizado para ver el recurso solicitado.</li>'."\n"

@@ -21,6 +21,8 @@ class HookServiceProvider extends ServiceProvider
             add_filter(BASE_FILTER_GET_LIST_DATA, [$this, 'addColumnToTranslationTable'], 153, 2);
             add_filter(BASE_FILTER_TABLE_HEADINGS, [$this, 'addHeadingToTranslationTable'], 153, 2);
         }
+        
+        // Navigation is now handled in VigAutoTranslationsServiceProvider
     }
 
     // Removed addSettings method since we use a dedicated settings form

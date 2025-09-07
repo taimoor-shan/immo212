@@ -67,6 +67,44 @@ Route::group([
             'as' => 'auto-translate',
             'uses' => 'VigAutoTranslationsController@getAutoTranslate',
         ]);
+        
+        // New dashboard routes
+        Route::group(['prefix' => 'dashboard'], function () {
+            Route::get('/', [
+                'as' => 'dashboard',
+                'uses' => 'AdminTranslationController@index',
+            ]);
+            
+            // AJAX endpoints
+            Route::post('/translate-theme', [
+                'as' => 'dashboard.translate-theme',
+                'uses' => 'AdminTranslationController@translateTheme',
+            ]);
+            Route::post('/translate-core', [
+                'as' => 'dashboard.translate-core',
+                'uses' => 'AdminTranslationController@translateCore',
+            ]);
+            Route::get('/progress', [
+                'as' => 'dashboard.progress',
+                'uses' => 'AdminTranslationController@getProgress',
+            ]);
+            Route::get('/stats', [
+                'as' => 'dashboard.stats',
+                'uses' => 'AdminTranslationController@getStats',
+            ]);
+            Route::get('/groups', [
+                'as' => 'dashboard.groups',
+                'uses' => 'AdminTranslationController@getGroups',
+            ]);
+            Route::post('/clear-cache', [
+                'as' => 'dashboard.clear-cache',
+                'uses' => 'AdminTranslationController@clearCache',
+            ]);
+            Route::post('/test-provider', [
+                'as' => 'dashboard.test-provider',
+                'uses' => 'AdminTranslationController@testProvider',
+            ]);
+        });
     });
 
     // Global translation group publish route for compatibility with VIG views

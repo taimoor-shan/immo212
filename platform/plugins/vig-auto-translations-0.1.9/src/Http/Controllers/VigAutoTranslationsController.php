@@ -377,10 +377,7 @@ class VigAutoTranslationsController extends BaseController
             }
 
             return $response
-                ->setMessage(trans('plugins/translation::translation.export_warning', [
-                    'count' => $publishedCount,
-                    'group' => $group
-                ]));
+                ->setMessage("Successfully published {$publishedCount} translations for group '{$group}'. Files have been updated and are ready to use.");
                 
         } catch (\Exception $e) {
             return $response

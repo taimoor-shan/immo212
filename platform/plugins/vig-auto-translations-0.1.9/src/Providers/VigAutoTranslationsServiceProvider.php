@@ -75,8 +75,13 @@ class VigAutoTranslationsServiceProvider extends ServiceProvider
         ]);
 
         $this->app->booted(function () {
-            $this->app->register(HookServiceProvider::class);
+            $this->loadRoutes();
         });
+        
+        // Register new admin controller
+        $this->app->singleton(
+            \VigStudio\VigAutoTranslations\Http\Controllers\AdminTranslationController::class
+        );
 
         PanelSectionManager::default()->beforeRendering(function () {
             PanelSectionManager::registerItem(
@@ -92,43 +97,52 @@ class VigAutoTranslationsServiceProvider extends ServiceProvider
 
         // Register dashboard menu items for easy end-user access
         $this->app['events']->listen(RouteMatched::class, function () {
-            // Main menu item
+            // Main menu item - NEW DASHBOARD
             dashboard_menu()
                 ->registerItem([
                     'id' => 'cms-plugins-vig-auto-translations',
                     'priority' => 80, 
                     'parent_id' => null,
-                    'name' => 'plugins/vig-auto-translations::vig-auto-translations.title',
+                    'name' => 'Smart Translations Pro',
                     'icon' => 'ti ti-language',
-                    'url' => route('vig-auto-translations.theme'),
+                    'url' => route('vig-auto-translations.dashboard'),
                     'permissions' => ['vig-auto-translations.index'],
                 ]);
                 
             // Sub-menu items
             dashboard_menu()
                 ->registerItem([
-                    'id' => 'cms-plugins-vig-auto-translations-theme',
+                    'id' => 'cms-plugins-vig-auto-translations-dashboard',
                     'priority' => 1,
                     'parent_id' => 'cms-plugins-vig-auto-translations',
-                    'name' => 'plugins/vig-auto-translations::vig-auto-translations.name_theme',
+                    'name' => 'Dashboard',
+                    'icon' => null,
+                    'url' => route('vig-auto-translations.dashboard'),
+                    'permissions' => ['vig-auto-translations.index'],
+                ])
+                ->registerItem([
+                    'id' => 'cms-plugins-vig-auto-translations-theme',
+                    'priority' => 2,
+                    'parent_id' => 'cms-plugins-vig-auto-translations',
+                    'name' => 'Theme Translations',
                     'icon' => null,
                     'url' => route('vig-auto-translations.theme'),
                     'permissions' => ['vig-auto-translations.index'],
                 ])
                 ->registerItem([
                     'id' => 'cms-plugins-vig-auto-translations-plugin',
-                    'priority' => 2,
+                    'priority' => 3,
                     'parent_id' => 'cms-plugins-vig-auto-translations', 
-                    'name' => 'plugins/vig-auto-translations::vig-auto-translations.name_plugin',
+                    'name' => 'Plugin Translations',
                     'icon' => null,
                     'url' => route('vig-auto-translations.plugin'),
                     'permissions' => ['vig-auto-translations.index'],
                 ])
                 ->registerItem([
                     'id' => 'cms-plugins-vig-auto-translations-settings',
-                    'priority' => 3,
+                    'priority' => 4,
                     'parent_id' => 'cms-plugins-vig-auto-translations',
-                    'name' => 'core/setting::setting.title',
+                    'name' => 'Provider Settings',
                     'icon' => null,
                     'url' => route('vig-auto-translations.settings'),
                     'permissions' => ['vig-auto-translations.index'],

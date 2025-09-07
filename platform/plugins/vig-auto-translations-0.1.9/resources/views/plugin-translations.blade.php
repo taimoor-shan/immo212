@@ -32,17 +32,64 @@
 
             @if (!empty($group))
                 @if (!empty($ref_lang))
-                    <div class="alert alert-info mt-10" role="alert">
-                        {{ trans('plugins/translation::translation.export_warning', ['lang_path' => lang_path()]) }}
-                        <form method="POST" action="{{ route('translations.group.publish', compact('group')) }}" role="form">
-                            @csrf
-                            <button type="submit" class="btn btn-primary button-publish-groups">{{ trans('plugins/translation::translation.publish_translations') }}</button>
-                        </form>
+                    {{-- Current Provider Info --}}
+                    <div class="alert alert-success" role="alert">
+                        <strong><i class="fas fa-cog"></i> Current provider:</strong> 
+                        @php
+                            $currentDriver = setting('vig_translate_driver', 'google');
+                            $providerNames = [
+                                'google' => 'Google Translate',
+                                'aws' => 'Amazon Translate',
+                                'chatgpt' => 'ChatGPT/OpenAI'
+                            ];
+                            $providerName = $providerNames[$currentDriver] ?? 'Google Translate';
+                        @endphp
+                        <span class="badge badge-info">{{ $providerName }}</span>
+                        | <a href="{{ route('vig-auto-translations.settings') }}" class="alert-link">Change Settings</a>
                     </div>
 
-                    <button class="btn btn-warning btn-xs btn-translate-all">
-                        <i class="fa-sharp fa-solid fa-language"></i> {{ trans('plugins/vig-auto-translations::vig-auto-translations.translate_all', ['language' => $locales[$ref_lang]['name']]) }}
-                    </button>
+                    {{-- Action Buttons - Proper Order --}}
+                    <div class="mb-3">
+                        <button class="btn btn-warning btn-sm btn-translate-all mr-2">
+                            <i class="fa-sharp fa-solid fa-language"></i> {{ trans('plugins/vig-auto-translations::vig-auto-translations.translate_all', ['language' => $locales[$ref_lang]['name']]) }}
+                        </button>
+                        
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#publishModal">
+                            <i class="fas fa-upload"></i> {{ trans('plugins/translation::translation.publish_translations') }}
+                        </button>
+                    </div>
+
+                    {{-- Export Warning --}}
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle"></i> {{ trans('plugins/translation::translation.export_warning', ['lang_path' => lang_path()]) }}
+                    </div>
+
+                    {{-- Publish Modal --}}
+                    <div class="modal fade" id="publishModal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">{{ trans('plugins/translation::translation.publish_translations') }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><i class="fas fa-exclamation-triangle text-warning"></i> This will publish all translations for the <strong>{{ $group }}</strong> group.</p>
+                                    <p>Are you sure you want to continue?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <form method="POST" action="{{ route('translations.group.publish', compact('group')) }}" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary button-publish-groups">
+                                            <i class="fas fa-upload"></i> Publish Now
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 @endif
 
                 <hr>

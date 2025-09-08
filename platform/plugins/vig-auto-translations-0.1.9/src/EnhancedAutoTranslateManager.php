@@ -375,4 +375,57 @@ class EnhancedAutoTranslateManager extends BaseAutoTranslateManager
             ],
         ];
     }
+    
+    /**
+     * Get current model information for the active translator
+     */
+    public function getCurrentModelInfo(): array
+    {
+        $defaultInfo = ['name' => 'Unknown', 'version' => 'Unknown'];
+        
+        // Return model info based on current translator
+        if ($this->translator instanceof ChatGPTTranslator) {
+            $model = config('vig-auto-translations.chatgpt_model', 'gpt-4.1');
+            return [
+                'name' => $this->getModelDisplayName($model),
+                'version' => $model,
+                'provider' => 'OpenAI'
+            ];
+        }
+        
+        if ($this->translator instanceof AWSTranslator) {
+            return [
+                'name' => 'Amazon Translate',
+                'version' => 'Latest',
+                'provider' => 'AWS'
+            ];
+        }
+        
+        if ($this->translator instanceof GoogleTranslator) {
+            return [
+                'name' => 'Google Translate',
+                'version' => 'v3',
+                'provider' => 'Google'
+            ];
+        }
+        
+        return $defaultInfo;
+    }
+    
+    /**
+     * Get user-friendly model display name
+     */
+    private function getModelDisplayName(string $model): string
+    {
+        return match ($model) {
+            'gpt-4.1' => 'GPT-4.1 Flagship',
+            'gpt-4.1-mini' => 'GPT-4.1 Mini',
+            'gpt-4.1-nano' => 'GPT-4.1 Nano',
+            'gpt-4o' => 'GPT-4o',
+            'gpt-4-turbo' => 'GPT-4 Turbo',
+            'gpt-4' => 'GPT-4',
+            'gpt-3.5-turbo' => 'GPT-3.5 Turbo',
+            default => $model,
+        };
+    }
 }

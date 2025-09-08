@@ -1,0 +1,93 @@
+<?php
+
+return [
+    'name' => 'Contacts',
+    'contact_form' => 'Contact form',
+    'menu' => 'Contatto',
+    'edit' => 'View contact',
+    'tables' => [
+        'phone' => 'Telefono',
+        'full_name' => 'Nome completo',
+        'address' => 'Indirizzo',
+        'subject' => 'Oggetto',
+        'content' => 'Contenuto',
+    ],
+    'contact_information' => 'Contact information',
+    'replies' => 'Replies',
+    'email' => [
+        'header' => 'Email',
+        'title' => 'New contact from your site',
+    ],
+    'form' => [
+        'name' => [
+            'required' => 'Name is required',
+        ],
+        'email' => [
+            'required' => 'Email is required',
+            'email' => 'The email address is not valid',
+        ],
+        'content' => [
+            'required' => 'Content is required',
+        ],
+    ],
+    'contact_sent_from' => 'This contact information sent from',
+    'sender' => 'Sender',
+    'sender_email' => 'Email',
+    'sender_address' => 'Indirizzo',
+    'sender_phone' => 'Telefono',
+    'message_content' => 'Message content',
+    'sent_from' => 'Email sent from',
+    'form_name' => 'Nome',
+    'form_email' => 'Email',
+    'form_address' => 'Indirizzo',
+    'form_subject' => 'Oggetto',
+    'form_phone' => 'Telefono',
+    'form_message' => 'Messaggio',
+    'form_content' => 'Contenuto',
+    'required_field' => 'The field with (<span style="color: red">*</span>) is required.',
+    'send_btn' => 'Send message',
+    'new_msg_notice' => 'You have <span class="bold">:count</span> New Messages',
+    'view_all' => 'View all',
+    'statuses' => [
+        'read' => 'Read',
+        'unread' => 'Unread',
+    ],
+    'phone' => 'Telefono',
+    'address' => 'Indirizzo',
+    'message' => 'Messaggio',
+    'settings' => [
+        'email' => [
+            'title' => 'Contatto',
+        ],
+        'title' => 'Contatto',
+    ],
+    'no_reply' => 'No reply yet!',
+    'reply' => 'Reply',
+    'send' => 'Invia',
+    'shortcode_name' => 'Contact form',
+    'shortcode_description' => 'Add a contact form',
+    'shortcode_content_description' => 'Add shortcode [contact-form][/contact-form] to editor',
+    'message_sent_success' => 'Message sent successfully!',
+    'dropdown_show_label' => 'Show contacts',
+    'display_fields' => 'Display fields',
+    'mandatory_fields' => 'Mandatory fields',
+    'mandatory_fields_helper_text' => 'If left blank, these fields will be validated by default configuration. Name and Message are always mandatory.',
+    'custom_field' => [
+        'name' => 'Campi personalizzati',
+        'type' => 'Tipo',
+        'order' => 'Ordina',
+        'options' => 'Opzioni',
+        'option' => [
+            'label' => 'Etichetta',
+            'value' => 'Valore',
+        ],
+        'enums' => [
+            'types' => [
+                'text' => 'Testo',
+                'number' => 'Numero',
+                'dropdown' => 'Menu a discesa',
+                'checkbox' => 'Casella di controllo',
+            ],
+        ],
+    ],
+];

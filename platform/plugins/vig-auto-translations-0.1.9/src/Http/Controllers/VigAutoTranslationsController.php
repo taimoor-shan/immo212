@@ -9,7 +9,6 @@ use Botble\Base\Http\Responses\BaseHttpResponse;
 use Botble\Base\Supports\Language;
 use Botble\Translation\Http\Requests\TranslationRequest;
 use Botble\Translation\Manager;
-use Botble\Translation\Models\Translation;
 use Botble\Translation\Services\GetGroupedTranslationsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -295,134 +294,89 @@ class VigAutoTranslationsController extends BaseController
         }
 
         // SINGLE GROUP MODE: When specific group is selected, show individual translations
-        // Get English source translations using the same method as getLang but only for specific group
-        $translations = $this->getLang();
+        // Use file-based approach only (same as Botble's TranslationController)
         
-        // Get existing translations using the same mechanism as the enhanced core command
-        $existingTranslations = [];
-        if ($group && $refLang) {
-            // First, get database translations
-            $dbTranslations = Translation::query()
-                ->where('group', $group)
-                ->where('locale', $refLang)
-                ->get()
-                ->keyBy('key');
-                
-            foreach ($dbTranslations as $translation) {
-                $existingTranslations[$translation->key] = $translation;
-            }
+        // Use GetGroupedTranslationsService to get all translations (same as Botble's TranslationTable)
+        $groupedTranslationsService = new GetGroupedTranslationsService();
+        $allTranslations = $groupedTranslationsService->handle();
+        
+        // Filter translations for the selected group
+        $translations = $allTranslations->filter(function ($translation) use ($group) {
+            return $translation['group'] === $group;
+        });
+        
+        // Build translations data for the view in the expected format
+        $translationData = [];
+        $translationsForView = [];
+        
+        foreach ($translations as $translation) {
+            $key = $translation['key'];
+            $englishValue = $translation['value'];
+            $groupName = $translation['group'];
             
-            // Then, load from files using the correct mechanism from enhanced core command
-            // Use GetGroupedTranslationsService to get proper translations structure
-            $allTranslations = (new GetGroupedTranslationsService())
-                ->handle()
-                ->filter(function ($translation) use ($group) {
-                    return $translation['group'] === $group;
-                });
-                
-            foreach ($allTranslations as $translation) {
-                $key = $translation['key'];
-                $englishValue = $translation['value'];
-                
-                // Get the translated value using the correct approach from enhanced core command
-                $translatedValue = trans(
-                    Str::of($group)
-                        ->replaceLast(DIRECTORY_SEPARATOR, '::')
-                        ->append(".{$key}")
-                        ->toString(),
-                    [],
-                    $refLang
-                );
-                
-                // If we got a real translation (different from English and not the key itself)
-                if ($translatedValue !== $englishValue && $translatedValue !== $key) {
-                    if (!isset($existingTranslations[$key])) {
-                        // Create a temporary Translation object for display (file-based translation)
-                        $tempTranslation = new Translation();
-                        $tempTranslation->key = $key;
-                        $tempTranslation->value = $translatedValue;
-                        $tempTranslation->locale = $refLang;
-                        $tempTranslation->group = $group;
-                        $tempTranslation->status = Translation::STATUS_SAVED; // Mark as saved since it's from files
-                        $tempTranslation->id = 0; // Temporary ID for file-based translations
-                        
-                        $existingTranslations[$key] = $tempTranslation;
-                    }
-                }
+            // Get the translated value from files (same as Botble's TranslationTable)
+            $translatedValue = trans(
+                Str::of($groupName)
+                    ->replaceLast(DIRECTORY_SEPARATOR, '::')
+                    ->append(".{$key}")
+                    ->toString(),
+                [],
+                $refLang
+            );
+            
+            // Build the translations array in the format expected by the view
+            if (!isset($translationsForView[$group])) {
+                $translationsForView[$group] = [];
             }
+            $translationsForView[$group][$key] = $englishValue;
+            
+            // Create translation data objects for editing
+            $translationData[$key] = (object) [
+                'key' => $key,
+                'value' => is_array($translatedValue) ? $englishValue : $translatedValue,
+                'locale' => $refLang,
+                'group' => $groupName,
+                'english_value' => $englishValue,
+                'id' => 0, // File-based translations don't have IDs
+                'status' => (is_array($translatedValue) || $translatedValue === $englishValue) ? 0 : 1
+            ];
         }
 
         $locales = Language::getAvailableLocales();
+        $allGroups = $groupedTranslationsService->getGroups();
 
         return view('plugins/vig-auto-translations::plugin-translations')
-            ->with('translations', $translations)
-            ->with('translationData', $existingTranslations)
+            ->with('translations', $translationsForView) // Formatted for view consumption
+            ->with('translationData', $translationData)
             ->with('locales', $locales)
+            ->with('allGroups', $allGroups)
             ->with('group', $group)
             ->with('ref_lang', $refLang)
-            ->with('editUrl', route('translations.group.edit', ['group' => $group]));
+            ->with('editUrl', route('translations.group.edit', ['group' => $group]))
+            ->with('isBulkMode', false);
     }
 
-    public function getLang(): array
-    {
-        $basePath = base_path();
-        $arrayPathGet = [
-            'core' => $basePath . '/platform/core',
-            'packages' => $basePath . '/platform/packages',
-            'plugins' => $basePath . '/platform/plugins',
-        ];
-
-        $langArray = [];
-
-        foreach ($arrayPathGet as $key => $vendorPath) {
-            if (is_dir($vendorPath)) {
-                $packages = File::directories($vendorPath);
-                foreach ($packages as $package) {
-                    $packageName = basename($package);
-                    $packagePath = $vendorPath . '/' . $packageName;
-
-                    $langPath = $packagePath . '/resources/lang';
-                    if (! is_dir($langPath)) {
-                        continue;
-                    }
-
-                    $files = File::allFiles($langPath);
-                    foreach ($files as $file) {
-                        $info = pathinfo($file);
-                        $group = $info['filename'];
-                        $subLangPath = str_replace($langPath . DIRECTORY_SEPARATOR, '', $info['dirname']);
-                        $subLangPath = str_replace(DIRECTORY_SEPARATOR, '/', $subLangPath);
-
-                        if ($subLangPath != $langPath) {
-                            $group = substr($subLangPath, 0, -3) . '/' . $group;
-                        }
-                        $filePath = $key . '/' . $packageName . $group;
-
-                        if (! is_readable($file->getPathname())) {
-                            continue;
-                        }
-
-                        $translations = require $file->getPathname();
-                        $langArray[$filePath] = Arr::dot($translations);
-                    }
-                }
-            }
-        }
-
-        return $langArray;
-    }
 
     public function postAllPluginsTranslations(Request $request, BaseHttpResponse $response)
     {
         $group = $request->input('group');
         $locale = $request->input('ref_lang');
 
-        $allTranslations = $this->getLang()[$group];
+        // Use GetGroupedTranslationsService to get translations (same as Botble's approach)
+        $groupedTranslationsService = new GetGroupedTranslationsService();
+        $allTranslations = $groupedTranslationsService->handle()
+            ->filter(function ($translation) use ($group) {
+                return $translation['group'] === $group;
+            });
+            
         $autoTranslations = [];
 
-        foreach ($allTranslations as $key => $value) {
+        foreach ($allTranslations as $translation) {
+            $key = $translation['key'];
+            $englishValue = $translation['value'];
+            
             // Use enhanced manager for better translation quality and caching
-            $translatedValue = $this->enhancedManager->translate('en', $locale, $value) ?: $value;
+            $translatedValue = $this->enhancedManager->translate('en', $locale, $englishValue) ?: $englishValue;
             $autoTranslations[$key] = $translatedValue;
         }
 

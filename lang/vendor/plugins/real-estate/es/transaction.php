@@ -3,5 +3,6 @@
 return [
     'types' => [
         'remove' => 'Eliminar',
+        'add' => 'Añadir',
     ],
 ];

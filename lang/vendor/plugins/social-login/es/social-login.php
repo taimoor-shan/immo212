@@ -11,7 +11,7 @@ return [
             'app_secret' => 'App secreta',
             'helper' => 'Vaya a: https://developers.facebook.com para crear una nueva Aplicación: App ID, App clave secreta. La URL de devolución de llamada es:  :callback',
             'enable' => 'Habilitar inicio de sesión de Facebook',
-            'data_deletion_request_callback_url' => 'Set this URL :url as the Data Deletion Request URL in your Facebook app settings to allow users to request deletion of their data.',
+            'data_deletion_request_callback_url' => 'Establezca esta URL :url como la URL de Solicitud de Eliminación de Datos en la configuración de su aplicación de Facebook para permitir que los usuarios soliciten la eliminación de sus datos.',
         ],
         'google' => [
             'title' => 'Configuración de inicio de sesión de Google',
@@ -20,6 +20,8 @@ return [
             'app_secret' => 'App secreta',
             'helper' => 'Vaya a: https://console.developers.google.com/apis/dashboard para crear una nueva Aplicación: App ID, App clave secreta. La URL de devolución de llamada es:  :callback',
             'enable' => 'Habilitar el inicio de sesión de Google',
+            'use_google_button' => 'Usar botón de Google',
+            'use_google_button_helper' => 'Si habilita esta opción, se utilizará el botón de Google en lugar del botón predeterminado.',
         ],
         'github' => [
             'title' => 'Configuración de inicio de sesión de Github',
@@ -43,11 +45,12 @@ return [
             'enable' => 'Habilite Linkedin mediante el inicio de sesión de OpenID Connect',
             'app_id' => 'ID de aplicación',
             'app_secret' => 'App secreta',
-            'helper' => 'Please go to https://www.linkedin.com/developers/apps/new to create new app update App ID, App Secret. Callback URL is :callback',
+            'helper' => 'Por favor, vaya a https://www.linkedin.com/developers/apps/new para crear una nueva aplicación y actualizar el App ID y el App Secret. La URL de retorno es :callback',
         ],
         'style' => 'Estilo',
         'minimal' => 'Mínimo',
         'default' => 'Por defecto',
+        'basic' => 'Básico',
     ],
     'socials' => [
         'facebook' => 'Facebook',
@@ -58,5 +61,5 @@ return [
     ],
     'menu' => 'Sesión Social',
     'description' => 'Ver y actualizar su configuración de inicio de sesión social',
-    'sign_in_with' => 'Sign in with :provider',
+    'sign_in_with' => 'Inicie sesión con :provider',
 ];

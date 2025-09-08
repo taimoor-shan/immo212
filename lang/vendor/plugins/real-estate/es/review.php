@@ -5,7 +5,7 @@ return [
     'author' => 'Autor',
     'star' => 'Estrella',
     'content' => 'Contenido',
-    'reviewable' => 'Reviewable',
+    'reviewable' => 'Revisable',
     'moderation-statuses' => [
         'pending' => 'Pendiente',
         'approved' => 'Aprobado',

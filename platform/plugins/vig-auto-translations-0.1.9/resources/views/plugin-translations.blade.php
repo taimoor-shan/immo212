@@ -174,7 +174,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($translations[$group] as $key => $value)
+                            @foreach (($translations[$group] ?? []) as $key => $value)
                                 @php $item = $translationData[$key] ?? null @endphp
                                 <tr id="{{ $key }}">
                                     <td>{{ $key }}</td>

@@ -1,0 +1,40 @@
+<?php
+
+return [
+    'settings' => [
+        'description' => 'reCAPTCHA è un servizio gratuito di Google che aiuta a proteggere i siti web da spam e abusi. <br/><br/> Math Captcha consente di utilizzare semplici problemi matematici per verificare che gli utenti del sito siano effettivamente persone.',
+        'panel_description' => 'Visualizza e aggiorna reCAPTCHA e Math CAPTCHA.',
+        'recaptcha_site_key' => 'Chiave del sito reCAPTCHA',
+        'recaptcha_secret' => 'Segreto reCAPTCHA',
+        'enable_recaptcha' => 'Attiva reCAPTCHA',
+        'recaptcha_score' => 'Punteggio',
+        'recaptcha_credential_helper' => 'Ottieni le tue credenziali Google reCAPTCHA :link.',
+        'recaptcha_credential_helper_here' => 'qui',
+        'recaptcha_warning' => 'È necessario utilizzare reCAPTCHA nella configurazione delle credenziali. Attenzione, impostazioni errate potrebbero interrompere il sistema di accesso.',
+        'hide_badge' => 'Nascondi il badge reCAPTCHA',
+        'show_disclaimer' => 'Visualizza l\'informativa reCAPTCHA',
+        'type' => 'Tipo',
+        'v2_description' => 'V2 (Verifica le richieste con una sfida)',
+        'v3_description' => 'V3 (Verifica le richieste con un punteggio)',
+        'enable_math_captcha' => 'Abilita CAPTCHA matematico',
+        'enable_for_form' => 'Abilita per :form',
+    ],
+    'numbers' => [
+        1 => 'Uno',
+        'Due',
+        'Tre',
+        'Quattro',
+    ],
+    'operands' => [
+        '+' => 'plus',
+        '-' => 'minus',
+        '*' => 'times',
+        '/' => 'divided by',
+    ],
+    'recaptcha_disclaimer_message_with_link' => 'This site is protected by reCAPTCHA and the Google :privacyLink and :termsLink apply.',
+    'privacy_policy' => 'Privacy Policy',
+    'terms_of_service' => 'Terms of Service',
+    'admin_login_form' => 'Admin login form',
+    'admin_forgot_password_form' => 'Admin forgot password form',
+    'admin_reset_password_form' => 'Admin reset password form',
+];

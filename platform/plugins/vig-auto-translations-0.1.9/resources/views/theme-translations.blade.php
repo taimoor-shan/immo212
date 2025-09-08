@@ -215,32 +215,80 @@
             });
         });
 
+        // Smart theme translation handler (similar to plugin translations)
         $(document).on('click', '.btn-begin-translate-all', function(event) {
             event.preventDefault();
             event.stopPropagation();
-            $(this).prop('disabled', true).addClass('button-loading');
-
+            
+            const form = $(this).closest('form');
+            const locale = form.find('[name="locale"]').val() || '@if(isset($group)){{ $group['locale'] }}@endif';
+            const languageName = '@if(isset($group)){{ $group['name'] }}@endif';
+            const submitBtn = $(this);
+            
+            if (!locale || locale === 'en') {
+                if (typeof Botble !== 'undefined' && Botble.showError) {
+                    Botble.showError('Please select a target language (not English)');
+                } else {
+                    alert('Please select a target language (not English)');
+                }
+                return;
+            }
+            
+            // Show confirmation dialog for theme translations
+            if (!confirm('Start theme translation to ' + (languageName || locale) + '?\n\nThis will translate all theme text strings and may take a few minutes.\n\nProvider: @php echo ucfirst(setting('vig_translate_driver', 'google')); @endphp')) {
+                return;
+            }
+            
+            // Start optimized theme translation
+            submitBtn.prop('disabled', true).addClass('button-loading')
+                     .html('<i class="fas fa-spinner fa-spin"></i> Translating Theme...');
+            
+            // Show info message
+            if (typeof Botble !== 'undefined' && Botble.showInfo) {
+                Botble.showInfo('Theme translation started. This may take a few minutes depending on the number of strings.');
+            }
+            
+            // Submit the form
             $.ajax({
                 type: 'POST',
                 cache: false,
-                url: $(this).closest('form').prop('action'),
-                data: new FormData($(this).closest('form')[0]),
+                url: form.prop('action'),
+                data: new FormData(form[0]),
                 contentType: false,
                 processData: false,
                 success: res => {
                     if (!res.error) {
-                        Botble.showSuccess(res.message);
+                        showSuccess(res.message || 'Theme translation completed successfully!');
                     } else {
-                        Botble.showError(res.message);
+                        showError(res.message || 'Translation failed');
                     }
-                    location.reload();
-                    $(this).prop('disabled', false).removeClass('button-loading');
+                    setTimeout(() => location.reload(), 1500);
                 },
                 error: res => {
-                    $(this).prop('disabled', false).removeClass('button-loading');
-                    Botble.handleError(res);
+                    const message = res.responseJSON?.message || 'Theme translation failed';
+                    showError(message);
+                },
+                complete: () => {
+                    submitBtn.prop('disabled', false).removeClass('button-loading')
+                             .html('<i class="fa-sharp fa-solid fa-language"></i> Translate All');
                 }
             });
         });
+        
+        function showSuccess(message) {
+            if (typeof Botble !== 'undefined' && Botble.showSuccess) {
+                Botble.showSuccess(message);
+            } else {
+                alert('Success: ' + message);
+            }
+        }
+        
+        function showError(message) {
+            if (typeof Botble !== 'undefined' && Botble.showError) {
+                Botble.showError(message);
+            } else {
+                alert('Error: ' + message);
+            }
+        }
     </script>
 @endpush

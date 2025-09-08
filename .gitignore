@@ -1,6 +1,7 @@
 # Dependencies (will be installed during deployment)
 /node_modules
 /vendor
+/lang/
 
 # Build artifacts (will be built during deployment)
 /public/hot

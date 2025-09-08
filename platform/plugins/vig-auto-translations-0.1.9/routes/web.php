@@ -25,16 +25,6 @@ Route::group([
                 'as' => 'settings.update',
                 'uses' => 'SettingsController@update',
             ]);
-            
-            Route::post('clear-all-caches', [
-                'as' => 'settings.clear-all-caches',
-                'uses' => 'SettingsController@clearAllCaches',
-            ]);
-            
-            Route::post('clear-translation-cache', [
-                'as' => 'settings.clear-translation-cache', 
-                'uses' => 'SettingsController@clearTranslationCache',
-            ]);
 
         });
 

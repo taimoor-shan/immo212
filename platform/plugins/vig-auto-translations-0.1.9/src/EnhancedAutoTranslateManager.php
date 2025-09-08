@@ -231,38 +231,84 @@ class EnhancedAutoTranslateManager extends BaseAutoTranslateManager
     }
 
     /**
-     * Clear translation cache
+     * Clear translation cache for specific locale or all locales
      */
-    public function clearCache(?string $locale = null): bool
+    public function clearCache(?string $locale = null): array
     {
+        $cleared = 0;
+        $errors = 0;
+        $locales = [];
+        
         try {
             if ($locale) {
                 // Clear cache for specific locale
                 $pattern = $this->cachePrefix . ':*:' . $locale . ':*';
+                $cleared += $this->clearCacheByPattern($pattern);
+                $locales[] = $locale;
             } else {
-                // Clear all VIG translation cache
+                // Clear all translation caches
                 $pattern = $this->cachePrefix . ':*';
+                $cleared += $this->clearCacheByPattern($pattern);
+                $locales = ['all'];
             }
             
-            // Try to clear using Redis if available
+            logger()->info('Translation cache cleared', [
+                'locale' => $locale ?? 'all',
+                'pattern' => $pattern ?? 'unknown',
+                'cleared_count' => $cleared
+            ]);
+            
+        } catch (\Exception $e) {
+            $errors++;
+            logger()->error('Failed to clear translation cache', [
+                'locale' => $locale ?? 'all',
+                'error' => $e->getMessage()
+            ]);
+        }
+        
+        return [
+            'cleared_count' => $cleared,
+            'errors' => $errors,
+            'locales' => $locales,
+            'cache_prefix' => $this->cachePrefix
+        ];
+    }
+    
+    /**
+     * Clear cache by pattern (implementation varies by cache driver)
+     */
+    protected function clearCacheByPattern(string $pattern): int
+    {
+        $cleared = 0;
+        
+        try {
+            // For Redis cache, we can use pattern matching
             if (Cache::getStore() instanceof \Illuminate\Cache\RedisStore) {
-                $redis = Cache::getStore()->getRedis();
+                $redis = Cache::getStore()->connection();
                 $keys = $redis->keys($pattern);
                 
                 if (!empty($keys)) {
-                    return $redis->del($keys) > 0;
+                    $redis->del($keys);
+                    $cleared = count($keys);
                 }
             } else {
-                // For file-based cache, we can't easily pattern match,
-                // so we'll just flush the entire cache store
+                // For other cache drivers, clear the entire cache
+                // This is less efficient but ensures all translation caches are cleared
                 Cache::flush();
+                $cleared = 1; // We can't count individual keys, so return 1 to indicate success
             }
-            
-            return true;
         } catch (\Exception $e) {
-            logger()->error('Failed to clear VIG translation cache: ' . $e->getMessage());
-            return false;
+            logger()->warning('Pattern-based cache clearing failed, using full flush', [
+                'pattern' => $pattern,
+                'error' => $e->getMessage()
+            ]);
+            
+            // Fallback to full cache flush
+            Cache::flush();
+            $cleared = 1;
         }
+        
+        return $cleared;
     }
     
     /**
@@ -375,4 +421,58 @@ class EnhancedAutoTranslateManager extends BaseAutoTranslateManager
             ],
         ];
     }
+    
+    /**
+     * Get current model information for the active translator
+     */
+    public function getCurrentModelInfo(): array
+    {
+        $defaultInfo = ['name' => 'Unknown', 'version' => 'Unknown'];
+        
+        // Return model info based on current translator
+        if ($this->translator instanceof ChatGPTTranslator) {
+            $model = config('vig-auto-translations.chatgpt_model', 'gpt-4.1');
+            return [
+                'name' => $this->getModelDisplayName($model),
+                'version' => $model,
+                'provider' => 'OpenAI'
+            ];
+        }
+        
+        if ($this->translator instanceof AWSTranslator) {
+            return [
+                'name' => 'Amazon Translate',
+                'version' => 'Latest',
+                'provider' => 'AWS'
+            ];
+        }
+        
+        if ($this->translator instanceof GoogleTranslator) {
+            return [
+                'name' => 'Google Translate',
+                'version' => 'v3',
+                'provider' => 'Google'
+            ];
+        }
+        
+        return $defaultInfo;
+    }
+    
+    /**
+     * Get user-friendly model display name
+     */
+    private function getModelDisplayName(string $model): string
+    {
+        return match ($model) {
+            'gpt-4.1' => 'GPT-4.1 Flagship',
+            'gpt-4.1-mini' => 'GPT-4.1 Mini',
+            'gpt-4.1-nano' => 'GPT-4.1 Nano',
+            'gpt-4o' => 'GPT-4o',
+            'gpt-4-turbo' => 'GPT-4 Turbo',
+            'gpt-4' => 'GPT-4',
+            'gpt-3.5-turbo' => 'GPT-3.5 Turbo',
+            default => $model,
+        };
+    }
+    
 }

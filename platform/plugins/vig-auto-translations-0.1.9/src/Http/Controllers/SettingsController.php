@@ -20,4 +20,5 @@ class SettingsController extends SettingController
     {
         return $this->performUpdate($request->validated());
     }
+
 }

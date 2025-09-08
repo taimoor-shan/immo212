@@ -69,6 +69,11 @@ return [
         'email' => [
             'title' => 'الرباط الصليبي الأمامي',
             'description' => 'تكوين البريد الإلكتروني ACL',
+            'templates' => [
+                'password_reminder' => [
+                    'reset_link' => 'رابط إعادة تعيين كلمة المرور',
+                ],
+            ],
         ],
     ],
 ];

@@ -18,7 +18,7 @@ return [
     'search' => 'يبحث',
     'add_new' => 'اضف جديد',
     'n_a' => 'لا يوجد',
-    'page_loaded_in_time' => 'Page loaded in :time seconds',
+    'page_loaded_in_time' => 'تم تحميل الصفحة في :time ثانية',
     'view_website' => 'عرض الموقع',
     'tools' => 'أدوات',
     'page_loaded_time' => 'Page loaded in',

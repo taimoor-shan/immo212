@@ -25,6 +25,16 @@ Route::group([
                 'as' => 'settings.update',
                 'uses' => 'SettingsController@update',
             ]);
+            
+            Route::post('clear-all-caches', [
+                'as' => 'settings.clear-all-caches',
+                'uses' => 'SettingsController@clearAllCaches',
+            ]);
+            
+            Route::post('clear-translation-cache', [
+                'as' => 'settings.clear-translation-cache', 
+                'uses' => 'SettingsController@clearTranslationCache',
+            ]);
 
         });
 
@@ -65,6 +75,27 @@ Route::group([
             Route::post('bulk-translate-all', [
                 'as' => 'plugin.bulk-translate-all',
                 'uses' => 'VigAutoTranslationsController@postBulkTranslateAll',
+            ]);
+            
+            // Optimized bulk translation routes for handling large datasets
+            Route::post('start-chunked-translation', [
+                'as' => 'plugin.start-chunked',
+                'uses' => 'OptimizedBulkTranslationController@startChunkedTranslation',
+            ]);
+            
+            Route::get('translation-progress', [
+                'as' => 'plugin.progress',
+                'uses' => 'OptimizedBulkTranslationController@getTranslationProgress',
+            ]);
+            
+            Route::post('process-small-batch', [
+                'as' => 'plugin.small-batch',
+                'uses' => 'OptimizedBulkTranslationController@processSmallBatch',
+            ]);
+            
+            Route::get('estimation', [
+                'as' => 'plugin.estimation',
+                'uses' => 'OptimizedBulkTranslationController@getEstimation',
             ]);
         });
 

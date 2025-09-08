@@ -378,4 +378,9 @@ return [
     'generating_media_thumbnails' => 'جارٍ إنشاء صور مصغرة للوسائط...',
     'test_email_template' => 'اختبار قالب البريد الإلكتروني',
     'select_email_template' => 'حدد قالب البريد الإلكتروني',
+    'enums' => [
+        'data_retention_period' => [
+            365 => 'سنة واحدة',
+        ],
+    ],
 ];

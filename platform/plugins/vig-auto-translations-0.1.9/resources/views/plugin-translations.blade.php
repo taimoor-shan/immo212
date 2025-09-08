@@ -304,17 +304,170 @@
             })
         }
 
-        // Bulk translation form handler
-        $(document).on('submit', 'form[action*="bulk-translate-all"]', function(e) {
-            const submitBtn = $(this).find('#bulk-translate-btn');
-
-            // Show loading state
-            submitBtn.prop('disabled', true)
-                     .html('<i class="fas fa-spinner fa-spin"></i> Translating All Groups...');
-
-            // Show progress notification
-            Botble.showNotice('Bulk translation started! This may take several minutes. Please wait...', 'info');
+        // Smart bulk translation handler with estimation and progress
+        $(document).on('click', '#bulk-translate-btn', function(e) {
+            e.preventDefault();
+            
+            const form = $(this).closest('form');
+            const locale = form.find('input[name="locale"]').val();
+            const submitBtn = $(this);
+            
+            if (!locale) {
+                if (typeof Botble !== 'undefined' && Botble.showError) {
+                    Botble.showError('Please select a target language');
+                } else {
+                    alert('Please select a target language');
+                }
+                return;
+            }
+            
+            // Show confirmation dialog
+            if (!confirm('Start bulk translation for all @json(count($allGroups ?? [])) groups to ' + $('#ref_lang option:selected').text() + '?\n\nThis may take several minutes and will use @json($providerName ?? "Google Translate").')) {
+                return;
+            }
+            
+            // Start smart bulk translation
+            startSmartBulkTranslation(locale, submitBtn);
         });
+        
+        async function startSmartBulkTranslation(locale, button) {
+            try {
+                // Show loading state
+                button.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Getting Estimation...');
+                
+                // Get estimation first
+                const estimation = await getTranslationEstimation(locale);
+                
+                if (estimation.items_needing_translation === 0) {
+                    showSuccess('All translations are already up to date!');
+                    button.prop('disabled', false).html('<i class="fas fa-globe"></i> Translate All Groups');
+                    return;
+                }
+                
+                // Update button with better info
+                button.html('<i class="fas fa-spinner fa-spin"></i> Processing ' + estimation.items_needing_translation + ' translations...');
+                
+                // Select approach based on size
+                if (estimation.items_needing_translation <= 50) {
+                    await executeSmallBatch(locale, estimation);
+                } else {
+                    await executeChunkedTranslation(locale, estimation);
+                }
+                
+            } catch (error) {
+                console.error('Smart bulk translation error:', error);
+                showError('Translation failed: ' + error.message);
+                button.prop('disabled', false).html('<i class="fas fa-globe"></i> Translate All Groups');
+            }
+        }
+        
+        async function getTranslationEstimation(locale) {
+            const response = await fetch(`{{ route('vig-auto-translations.plugin.estimation') }}?locale=${locale}`, {
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            });
+            
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to get estimation');
+            }
+            
+            return result.data;
+        }
+        
+        async function executeSmallBatch(locale, estimation) {
+            showInfo('Processing small batch of ' + estimation.items_needing_translation + ' translations...');
+            
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('locale', locale);
+            formData.append('max_items', Math.min(estimation.items_needing_translation, 50));
+            
+            const response = await fetch('{{ route('vig-auto-translations.plugin.small-batch') }}', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            if (response.ok) {
+                showSuccess(`Small batch completed! Translated: ${result.data.translated}, Skipped: ${result.data.skipped}, Errors: ${result.data.errors}`);
+                setTimeout(() => location.reload(), 2000);
+            } else {
+                throw new Error(result.message);
+            }
+        }
+        
+        async function executeChunkedTranslation(locale, estimation) {
+            showInfo('Starting background processing for ' + estimation.items_needing_translation + ' translations...');
+            
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('locale', locale);
+            formData.append('chunk_size', 25);
+            
+            const response = await fetch('{{ route('vig-auto-translations.plugin.start-chunked') }}', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.message);
+            }
+            
+            // Start progress tracking
+            showSuccess('Background processing started! ' + result.data.total_items + ' items in ' + result.data.chunk_count + ' chunks.');
+            startProgressTracking(result.data.batch_id);
+        }
+        
+        function startProgressTracking(batchId) {
+            const progressInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`{{ route('vig-auto-translations.plugin.progress') }}?batch_id=${batchId}`, {
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    if (response.ok && result.data.is_complete) {
+                        clearInterval(progressInterval);
+                        const progress = result.data.progress;
+                        showSuccess(`Translation completed! Translated: ${progress.translated}, Skipped: ${progress.skipped}, Errors: ${progress.errors}`);
+                        setTimeout(() => location.reload(), 3000);
+                    }
+                } catch (error) {
+                    console.error('Progress tracking error:', error);
+                }
+            }, 3000); // Check every 3 seconds
+        }
+        
+        function showSuccess(message) {
+            if (typeof Botble !== 'undefined' && Botble.showSuccess) {
+                Botble.showSuccess(message);
+            } else {
+                alert('Success: ' + message);
+            }
+        }
+        
+        function showError(message) {
+            if (typeof Botble !== 'undefined' && Botble.showError) {
+                Botble.showError(message);
+            } else {
+                alert('Error: ' + message);
+            }
+        }
+        
+        function showInfo(message) {
+            if (typeof Botble !== 'undefined' && Botble.showInfo) {
+                Botble.showInfo(message);
+            } else {
+                console.log('Info: ' + message);
+            }
+        }
 
     </script>
 @endpush

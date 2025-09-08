@@ -231,38 +231,84 @@ class EnhancedAutoTranslateManager extends BaseAutoTranslateManager
     }
 
     /**
-     * Clear translation cache
+     * Clear translation cache for specific locale or all locales
      */
-    public function clearCache(?string $locale = null): bool
+    public function clearCache(?string $locale = null): array
     {
+        $cleared = 0;
+        $errors = 0;
+        $locales = [];
+        
         try {
             if ($locale) {
                 // Clear cache for specific locale
                 $pattern = $this->cachePrefix . ':*:' . $locale . ':*';
+                $cleared += $this->clearCacheByPattern($pattern);
+                $locales[] = $locale;
             } else {
-                // Clear all VIG translation cache
+                // Clear all translation caches
                 $pattern = $this->cachePrefix . ':*';
+                $cleared += $this->clearCacheByPattern($pattern);
+                $locales = ['all'];
             }
             
-            // Try to clear using Redis if available
+            logger()->info('Translation cache cleared', [
+                'locale' => $locale ?? 'all',
+                'pattern' => $pattern ?? 'unknown',
+                'cleared_count' => $cleared
+            ]);
+            
+        } catch (\Exception $e) {
+            $errors++;
+            logger()->error('Failed to clear translation cache', [
+                'locale' => $locale ?? 'all',
+                'error' => $e->getMessage()
+            ]);
+        }
+        
+        return [
+            'cleared_count' => $cleared,
+            'errors' => $errors,
+            'locales' => $locales,
+            'cache_prefix' => $this->cachePrefix
+        ];
+    }
+    
+    /**
+     * Clear cache by pattern (implementation varies by cache driver)
+     */
+    protected function clearCacheByPattern(string $pattern): int
+    {
+        $cleared = 0;
+        
+        try {
+            // For Redis cache, we can use pattern matching
             if (Cache::getStore() instanceof \Illuminate\Cache\RedisStore) {
-                $redis = Cache::getStore()->getRedis();
+                $redis = Cache::getStore()->connection();
                 $keys = $redis->keys($pattern);
                 
                 if (!empty($keys)) {
-                    return $redis->del($keys) > 0;
+                    $redis->del($keys);
+                    $cleared = count($keys);
                 }
             } else {
-                // For file-based cache, we can't easily pattern match,
-                // so we'll just flush the entire cache store
+                // For other cache drivers, clear the entire cache
+                // This is less efficient but ensures all translation caches are cleared
                 Cache::flush();
+                $cleared = 1; // We can't count individual keys, so return 1 to indicate success
             }
-            
-            return true;
         } catch (\Exception $e) {
-            logger()->error('Failed to clear VIG translation cache: ' . $e->getMessage());
-            return false;
+            logger()->warning('Pattern-based cache clearing failed, using full flush', [
+                'pattern' => $pattern,
+                'error' => $e->getMessage()
+            ]);
+            
+            // Fallback to full cache flush
+            Cache::flush();
+            $cleared = 1;
         }
+        
+        return $cleared;
     }
     
     /**
@@ -428,4 +474,5 @@ class EnhancedAutoTranslateManager extends BaseAutoTranslateManager
             default => $model,
         };
     }
+    
 }

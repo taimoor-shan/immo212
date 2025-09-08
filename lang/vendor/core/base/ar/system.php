@@ -73,6 +73,7 @@ return [
     'copy_report' => 'نسخ التقرير',
     'package_name' => 'اسم الحزمة',
     'dependency_name' => 'اسم التبعية',
+    'server_ip' => 'Server IP',
     'version' => 'إصدار',
     'cms_version' => 'نسخة نظام إدارة المحتوى',
     'imagick_or_gd_ext' => 'Imagick/GD تحويلة',
@@ -96,4 +97,5 @@ return [
         'success_message' => 'تم تنظيف البيانات بنجاح',
         'not_enabled_yet' => 'لم يتم تمكين هذه الميزة بعد. <br />يرجى الإضافة إلى .env: <code>CMS_ENABLED_CLEANUP_DATABASE=true</code> لتمكين هذه الميزة!',
     ],
+    'cache_too_large_alert' => 'مجلد التخزين المؤقت لديك كبير جدًا ~:size. يرجى الذهاب إلى إدارة المنصة -> إدارة التخزين المؤقت ومسحه لتقليل مساحة القرص.',
 ];

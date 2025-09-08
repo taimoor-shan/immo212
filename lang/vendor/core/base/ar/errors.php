@@ -11,6 +11,7 @@ return [
     'go_to_home' => 'اذهب إلى المنزل',
     'error_when_sending_email' => 'غير قادر على إرسال البريد الإلكتروني. هناك خطأ ما في إعدادات بريدك الإلكتروني في المسؤول → الإعدادات → البريد الإلكتروني، يرجى التحقق من إعداداتك مرة أخرى.',
     'error_when_sending_email_guest' => 'غير قادر على إرسال البريد الإلكتروني. يرجى الاتصال بمسؤول الموقع إذا استمرت المشكلة.',
+    'token_mismatch' => 'انتهت الجلسة. يرجى المحاولة مرة أخرى.',
     '401_msg' => '<li>You have not been granted access to the section by the administrator.</li>'."\n"
         .'	                <li>You may have the wrong account type.</li>'."\n"
         .'	                <li>You are not authorized to view the requested resource.</li>'."\n"

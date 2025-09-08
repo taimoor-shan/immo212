@@ -57,6 +57,7 @@ return [
     'selected' => 'المحدد',
     'count_selected' => ':count selected',
     'sort_order' => 'امر ترتيب',
+    'search_input_placeholder' => 'يبحث...',
     'character_remain' => 'character(s) remain',
     'expand_all' => 'Expand all',
     'collapse_all' => 'Collapse all',

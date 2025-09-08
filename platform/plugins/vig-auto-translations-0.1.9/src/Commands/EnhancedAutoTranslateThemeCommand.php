@@ -41,7 +41,18 @@ class EnhancedAutoTranslateThemeCommand extends Command implements PromptsForMis
 
         $manager->downloadLocaleIfMissing($locale);
 
-        $this->components->info(sprintf('Translating %s using %s...', $locale, get_class($enhancedManager)));
+        // Display provider information
+        $currentDriver = setting('vig_translate_driver', 'google');
+        $providerNames = [
+            'google' => 'Google Translate (Free)',
+            'aws' => 'Amazon Translate (Enterprise)', 
+            'chatgpt' => 'ChatGPT/OpenAI (' . $enhancedManager->getCurrentModelInfo()['name'] ?? 'GPT-4.1' . ')'
+        ];
+        
+        $providerName = $providerNames[$currentDriver] ?? $currentDriver;
+        
+        $this->components->info(sprintf('🌍 Translating %s using %s', $locale, $providerName));
+        $this->components->info('📁 Processing theme translations (JSON files)...');
 
         $translations = $manager->getThemeTranslations($locale);
 
@@ -107,16 +118,35 @@ class EnhancedAutoTranslateThemeCommand extends Command implements PromptsForMis
 
         $manager->saveThemeTranslations($locale, $translations);
 
-        // Display summary
-        $this->components->info(sprintf('Translation Summary for %s:', $locale));
+        // Display comprehensive summary
+        $this->newLine();
+        $this->components->info("🎆 Translation Summary for {$locale} (Theme)");
         $this->table(['Metric', 'Count'], [
             ['New Translations', $count],
             ['From Cache', $cached],
             ['Errors', $errors],
             ['Total Processed', count($translations)],
+            ['Provider Used', $providerName],
+            ['Files Updated', 'Theme JSON files'],
         ]);
 
-        $this->components->info('Theme translations completed successfully!');
+        // Success message with next steps
+        if ($count > 0) {
+            $this->components->success("✨ Theme translations completed successfully! {$count} new translations added.");
+            
+            $this->components->info('🎆 Next Steps:');
+            $this->components->bulletList([
+                'Translate plugins/core: php artisan vig:translate:core ' . $locale,
+                'Check your website in ' . $locale . ' language',
+                'Review translations in: lang/vendor/themes/{theme}/' . $locale . '.json'
+            ]);
+        } else {
+            $this->components->info('📊 All theme translations were already up to date!');
+        }
+        
+        if ($errors > 0) {
+            $this->components->warn("⚠️ {$errors} translations failed. Check logs for details.");
+        }
 
         return self::SUCCESS;
     }

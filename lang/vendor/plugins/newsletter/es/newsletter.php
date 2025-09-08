@@ -12,10 +12,17 @@ return [
                 'to_admin' => [
                     'title' => 'Enviar correo electrónico al administrador',
                     'description' => 'Plantilla para enviar correo electrónico al administrador',
+                    'subject' => 'Nuevo usuario se ha suscrito a su boletín',
+                    'newsletter_email' => 'Correo electrónico del usuario que se suscribe al boletín',
                 ],
                 'to_user' => [
                     'title' => 'Enviar correo electrónico al usuario',
                     'description' => 'Plantilla para enviar correo electrónico al suscriptor',
+                    'subject' => '{{ site_title }}: ¡Suscripción confirmada!',
+                    'newsletter_name' => 'Nombre completo del usuario que se suscribe al boletín',
+                    'newsletter_email' => 'Correo electrónico del usuario que se suscribe al boletín',
+                    'newsletter_unsubscribe_link' => 'Enlace para darse de baja del boletín',
+                    'newsletter_unsubscribe_url' => 'URL para darse de baja del boletín',
                 ],
             ],
         ],

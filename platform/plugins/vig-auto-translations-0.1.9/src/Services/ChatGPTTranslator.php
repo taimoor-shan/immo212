@@ -33,6 +33,21 @@ class ChatGPTTranslator implements Translator
     protected int $timeout = 45;
 
     /**
+     * Rate limiting: max requests per minute
+     */
+    protected int $maxRequestsPerMinute = 60;
+
+    /**
+     * Batch size for concurrent processing
+     */
+    protected int $concurrentBatchSize = 5;
+
+    /**
+     * Request counter for rate limiting
+     */
+    protected static array $requestCounts = [];
+
+    /**
      * Available models with their capabilities (Updated for GPT-4.1 family)
      */
     protected array $availableModels = [
@@ -215,43 +230,55 @@ class ChatGPTTranslator implements Translator
 
     /**
      * Generate system prompt for translation
+     * Uses composition approach: base professional prompt + optional user enhancements
      */
     protected function getSystemPrompt(string $source, string $target): string
     {
         $sourceLanguage = $this->getLanguageName($source);
         $targetLanguage = $this->getLanguageName($target);
         
-        // Get custom system message from admin configuration
-        $customSystemMessage = setting('vig_translate_chatgpt_system_message');
+        // Base professional prompt with all critical safeguards
+        $basePrompt = $this->getBaseSystemPrompt($sourceLanguage, $targetLanguage);
         
-        if (!empty($customSystemMessage)) {
-            // Use custom system message with language placeholders
-            return str_replace(
+        // Get user style enhancements from admin configuration
+        $userEnhancements = trim((string) setting('vig_translate_chatgpt_system_message'));
+        
+        if ($userEnhancements !== '') {
+            // Support placeholders for backward compatibility, but they're now optional
+            $enhancedInstructions = str_replace(
                 ['{source_language}', '{target_language}', '{source}', '{target}'],
                 [$sourceLanguage, $targetLanguage, $source, $target],
-                $customSystemMessage
+                $userEnhancements
             );
+            
+            // Append user enhancements as additional style instructions
+            // This ensures base safeguards are never lost
+            return $basePrompt . 
+                "\n\nADDITIONAL STYLE INSTRUCTIONS (apply only if compatible with the rules above):\n" .
+                $enhancedInstructions;
         }
         
-        // Enhanced system prompt leveraging GPT-4.1's superior instruction following
-        return sprintf(
-            'You are an expert professional translator with specialized expertise in %s to %s translations. ' .
+        return $basePrompt;
+    }
+    
+    /**
+     * Get the base professional system prompt with all critical safeguards
+     * This ensures consistent, safe translation behavior regardless of user customizations
+     */
+    protected function getBaseSystemPrompt(string $sourceLanguage, string $targetLanguage): string
+    {
+        return 'You are an expert professional translator with specialized expertise in ' . $sourceLanguage . ' to ' . $targetLanguage . ' translations. ' .
             'Your task is to provide accurate, contextually appropriate translations that maintain the exact intent and nuance of the original text.' .
-            '\n\nCRITICAL TRANSLATION RULES (follow exactly):' .
-            '\n1. OUTPUT FORMAT: Return ONLY the translated text with no explanations, introductions, or additional commentary.' .
-            '\n2. PRESERVE FORMATTING: Maintain ALL formatting exactly - HTML tags, markdown syntax, special characters, line breaks, spacing, and indentation must remain identical.' .
-            '\n3. PRESERVE VARIABLES: Keep ALL variables completely unchanged including :name, {{variable}}, {variable}, [variable], :variable, %variable%, and any other placeholder patterns.' .
-            '\n4. MAINTAIN TONE: Preserve the exact tone, style, formality level, and register of the original text.' .
-            '\n5. TECHNICAL TERMS: Use standard industry terminology for %s. For programming terms, use widely accepted translations or keep in English if commonly used untranslated.' .
-            '\n6. UI ELEMENTS: For user interface text, use standard terminology familiar to %s users of software applications.' .
-            '\n7. CONTEXT AWARENESS: Consider the likely context (web interface, documentation, marketing, etc.) and translate appropriately.' .
-            '\n8. CONSISTENCY: Maintain consistency in terminology throughout the translation.' .
-            '\n\nRemember: Your response must contain ONLY the translated text - no explanations or meta-commentary.',
-            $sourceLanguage,
-            $targetLanguage,
-            $targetLanguage,
-            $targetLanguage
-        );
+            "\n\nCRITICAL TRANSLATION RULES (follow exactly):" .
+            "\n1. OUTPUT FORMAT: Return ONLY the translated text with no explanations, introductions, or additional commentary." .
+            "\n2. PRESERVE FORMATTING: Maintain ALL formatting exactly - HTML tags, markdown syntax, special characters, line breaks, spacing, and indentation must remain identical." .
+            "\n3. PRESERVE VARIABLES: Keep ALL variables completely unchanged including :name, {{variable}}, {variable}, [variable], :variable, %variable%, and any other placeholder patterns." .
+            "\n4. MAINTAIN TONE: Preserve the exact tone, style, formality level, and register of the original text." .
+            "\n5. TECHNICAL TERMS: Use standard industry terminology for " . $targetLanguage . ". For programming terms, use widely accepted translations or keep in English if commonly used untranslated." .
+            "\n6. UI ELEMENTS: For user interface text, use standard terminology familiar to " . $targetLanguage . " users of software applications." .
+            "\n7. CONTEXT AWARENESS: Consider the likely context (web interface, documentation, marketing, etc.) and translate appropriately." .
+            "\n8. CONSISTENCY: Maintain consistency in terminology throughout the translation." .
+            "\n\nRemember: Your response must contain ONLY the translated text - no explanations or meta-commentary.";
     }
 
     /**
@@ -362,21 +389,110 @@ class ChatGPTTranslator implements Translator
     }
 
     /**
-     * Get default system message template with placeholders
+     * Get default system message template - now provides simple style instruction examples
+     * The complex system prompt is now always provided as the base, this is just for user guidance
      */
     public function getDefaultSystemMessageTemplate(): string
     {
-        return 'You are an expert professional translator with specialized expertise in {source_language} to {target_language} translations. ' .
-               'Your task is to provide accurate, contextually appropriate translations that maintain the exact intent and nuance of the original text.\n\n' .
-               'CRITICAL TRANSLATION RULES (follow exactly):\n' .
-               '1. OUTPUT FORMAT: Return ONLY the translated text with no explanations, introductions, or additional commentary.\n' .
-               '2. PRESERVE FORMATTING: Maintain ALL formatting exactly - HTML tags, markdown syntax, special characters, line breaks, spacing, and indentation must remain identical.\n' .
-               '3. PRESERVE VARIABLES: Keep ALL variables completely unchanged including :name, {{variable}}, {variable}, [variable], :variable, %variable%, and any other placeholder patterns.\n' .
-               '4. MAINTAIN TONE: Preserve the exact tone, style, formality level, and register of the original text.\n' .
-               '5. TECHNICAL TERMS: Use standard industry terminology for {target_language}. For programming terms, use widely accepted translations or keep in English if commonly used untranslated.\n' .
-               '6. UI ELEMENTS: For user interface text, use standard terminology familiar to {target_language} users of software applications.\n' .
-               '7. CONTEXT AWARENESS: Consider the likely context (web interface, documentation, marketing, etc.) and translate appropriately.\n' .
-               '8. CONSISTENCY: Maintain consistency in terminology throughout the translation.\n\n' .
-               'Remember: Your response must contain ONLY the translated text - no explanations or meta-commentary.';
+        return 'Examples:\n• Use a real estate platform tone with professional phrasing\n• Prefer formal address and EU date/number formats\n• Keep brand names in English; localize amenities to common terms\n• Use concise, action-oriented language for buttons and forms';
+    }
+
+    /**
+     * Check and enforce rate limiting
+     */
+    protected function checkRateLimit(): bool
+    {
+        $minute = floor(time() / 60);
+        $key = static::class . '_' . $minute;
+        
+        if (!isset(static::$requestCounts[$key])) {
+            static::$requestCounts[$key] = 0;
+            // Clean old entries
+            foreach (static::$requestCounts as $oldKey => $count) {
+                if (strpos($oldKey, (string)($minute - 1)) === false && 
+                    strpos($oldKey, (string)$minute) === false) {
+                    unset(static::$requestCounts[$oldKey]);
+                }
+            }
+        }
+        
+        if (static::$requestCounts[$key] >= $this->maxRequestsPerMinute) {
+            Log::warning('ChatGPT rate limit reached, waiting...', [
+                'requests_this_minute' => static::$requestCounts[$key],
+                'limit' => $this->maxRequestsPerMinute
+            ]);
+            
+            // Wait until next minute
+            $sleepTime = 60 - (time() % 60) + 1;
+            sleep($sleepTime);
+            return $this->checkRateLimit(); // Retry after waiting
+        }
+        
+        static::$requestCounts[$key]++;
+        return true;
+    }
+
+    /**
+     * Bulk translate multiple texts efficiently with batching
+     */
+    public function bulkTranslateEfficient(string $source, string $target, array $texts): array
+    {
+        if (empty($texts)) {
+            return [];
+        }
+
+        Log::info('Starting bulk translation', [
+            'provider' => 'ChatGPT',
+            'model' => $this->getModel(),
+            'count' => count($texts),
+            'source' => $source,
+            'target' => $target
+        ]);
+
+        $results = [];
+        $chunks = array_chunk($texts, $this->concurrentBatchSize, true);
+        $totalChunks = count($chunks);
+
+        foreach ($chunks as $chunkIndex => $chunk) {
+            Log::info('Processing chunk', [
+                'chunk' => $chunkIndex + 1,
+                'total_chunks' => $totalChunks,
+                'chunk_size' => count($chunk)
+            ]);
+
+            // Process chunk items sequentially with rate limiting
+            foreach ($chunk as $key => $text) {
+                $this->checkRateLimit();
+                
+                try {
+                    $result = $this->translate($source, $target, $text);
+                    $results[$key] = $result;
+                    
+                    // Small delay between requests to be API-friendly
+                    usleep(100000); // 0.1 second
+                    
+                } catch (\Exception $e) {
+                    Log::error('Bulk translation item failed', [
+                        'key' => $key,
+                        'error' => $e->getMessage(),
+                        'text' => substr($text, 0, 100)
+                    ]);
+                    $results[$key] = null;
+                }
+            }
+
+            // Small delay between chunks
+            if ($chunkIndex < $totalChunks - 1) {
+                usleep(200000); // 0.2 second between chunks
+            }
+        }
+
+        Log::info('Bulk translation completed', [
+            'total_processed' => count($results),
+            'successful' => count(array_filter($results)),
+            'failed' => count(array_filter($results, fn($r) => $r === null))
+        ]);
+
+        return $results;
     }
 }

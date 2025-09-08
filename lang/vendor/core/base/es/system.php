@@ -34,7 +34,7 @@ return [
     ],
     'info' => [
         'title' => 'Información del sistema',
-        'cache' => 'Cache',
+        'cache' => 'Caché',
         'locale' => 'Configuración regional activa',
         'environment' => 'Entorno',
         'description' => 'Toda la información sobre la configuración actual del sistema.',
@@ -73,6 +73,7 @@ return [
     'copy_report' => 'Información de copia',
     'package_name' => 'Nombre del paquete',
     'dependency_name' => 'Nombre de la dependencia',
+    'server_ip' => 'IP del servidor',
     'version' => 'Versión',
     'cms_version' => 'Versión',
     'imagick_or_gd_ext' => 'Imagick/GD Ext.',
@@ -96,4 +97,5 @@ return [
         'success_message' => 'Datos limpiados con éxito',
         'not_enabled_yet' => 'Esta característica aún no está habilitada. <br />Por favor, añade en el archivo .env: <code>CMS_ENABLED_CLEANUP_DATABASE=true</code> para habilitar esta característica.',
     ],
+    'cache_too_large_alert' => 'Su carpeta de caché es demasiado grande ~:size. Por favor, vaya a Administración de la plataforma -> Gestión de caché y límpiela para reducir el espacio en disco.',
 ];

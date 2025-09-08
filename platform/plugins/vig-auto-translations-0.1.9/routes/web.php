@@ -61,23 +61,18 @@ Route::group([
                 'as' => 'plugin.all',
                 'uses' => 'VigAutoTranslationsController@postAllPluginsTranslations',
             ]);
+            
+            Route::post('bulk-translate-all', [
+                'as' => 'plugin.bulk-translate-all',
+                'uses' => 'VigAutoTranslationsController@postBulkTranslateAll',
+            ]);
         });
 
         Route::get('auto-translate', [
             'as' => 'auto-translate',
             'uses' => 'VigAutoTranslationsController@getAutoTranslate',
         ]);
+        
     });
 
-    // Global translation group publish route for compatibility with VIG views
-    Route::group([
-        'prefix' => BaseHelper::getAdminPrefix() . '/translations/group',
-        'middleware' => ['auth', 'core'],
-        'permission' => 'vig-auto-translations.index',
-    ], function () {
-        Route::post('publish', [
-            'as' => 'translations.group.publish',
-            'uses' => 'VigAutoTranslationsController@publishTranslationGroup',
-        ]);
-    });
 });

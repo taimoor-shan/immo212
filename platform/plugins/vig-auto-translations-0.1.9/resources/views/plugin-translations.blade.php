@@ -10,10 +10,16 @@
                 <div class="form-group col-md-6">
                     <label class="fw-bold mb-2">{{ trans('plugins/vig-auto-translations::vig-auto-translations.group') }}</label>
                     <select name="group" id="group" data-value="group" class="form-control ui-select group-select select-search-full">
-                        <option value="">----</option>
-                        @foreach ($translations as $key => $value)
-                            <option value="{{ $key }}"{{ $key == $group ? ' selected' : '' }}>{{ $key }}</option>
-                        @endforeach
+                        <option value="">{{ isset($isBulkMode) && $isBulkMode ? 'All Groups (Bulk Mode)' : '----' }}</option>
+                        @if(isset($allGroups))
+                            @foreach ($allGroups as $groupKey)
+                                <option value="{{ $groupKey }}"{{ $groupKey == $group ? ' selected' : '' }}>{{ $groupKey }}</option>
+                            @endforeach
+                        @elseif(isset($translations))
+                            @foreach ($translations as $key => $value)
+                                <option value="{{ $key }}"{{ $key == $group ? ' selected' : '' }}>{{ $key }}</option>
+                            @endforeach
+                        @endif
                     </select>
                 </div>
 
@@ -30,19 +36,128 @@
             <br>
             {!! Form::close() !!}
 
-            @if (!empty($group))
+            @if (isset($isBulkMode) && $isBulkMode)
+                {{-- BULK MODE: Translate ALL groups at once --}}
+                <div class="alert alert-info" role="alert">
+                    <h5 class="alert-heading">
+                        <i class="fas fa-globe"></i> Bulk Translation Mode (All Groups)
+                    </h5>
+                    <p>This mode allows you to translate ALL {{ count($allGroups) }} available groups at once, equivalent to:</p>
+                    <ul>
+                        <li><strong>CLI:</strong> <code>php artisan vig:translate:core {{ $ref_lang }}</code></li>
+                        <li><strong>Botble Default:</strong> <code>php artisan cms:translation:auto-translate-core {{ $ref_lang }}</code></li>
+                    </ul>
+                </div>
+
+                {{-- Current Provider Info --}}
+                <div class="alert alert-success" role="alert">
+                    <strong><i class="fas fa-cog"></i> Current provider:</strong>
+                    <span class="badge badge-info">{{ $providerName }}</span>
+                    @if($currentDriver === 'chatgpt')
+                        <span class="badge badge-secondary">{{ setting('vig_translate_chatgpt_model', 'gpt-4.1') }}</span>
+                    @endif
+                    | <a href="{{ route('vig-auto-translations.settings') }}" class="alert-link">Change Settings</a>
+                </div>
+
+                {{-- Bulk Translation Form --}}
+                <form method="POST" action="{{ route('vig-auto-translations.plugin.bulk-translate-all') }}" class="mb-4">
+                    @csrf
+                    <input type="hidden" name="locale" value="{{ $ref_lang }}">
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5>🌍 Translate All {{ count($allGroups) }} Groups to {{ $locales[$ref_lang]['name'] ?? $ref_lang }}</h5>
+                            <p class="text-muted">
+                                This will process all core, plugin, and package translation groups using {{ $providerName }}.
+                                <strong>Warning:</strong> This operation may take several minutes.
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button type="submit" class="btn btn-success btn-lg" id="bulk-translate-btn">
+                                <i class="fas fa-globe"></i>
+                                Translate All Groups
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                {{-- Available Groups Display --}}
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-list"></i> Available Groups ({{ count($allGroups) }})</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @foreach ($allGroups as $groupItem)
+                                @php
+                                    $groupDisplay = $groupItem;
+                                    $badgeClass = 'secondary';
+
+                                    if (str_starts_with($groupItem, 'core/')) {
+                                        $badgeClass = 'primary';
+                                        $name = \Illuminate\Support\Str::headline(\Illuminate\Support\Str::slug(\Illuminate\Support\Str::afterLast($groupItem, '/')));
+                                        $groupDisplay = $name . ' (core)';
+                                    } elseif (str_starts_with($groupItem, 'plugins/')) {
+                                        $badgeClass = 'success';
+                                        $plugin = \Illuminate\Support\Str::beforeLast(\Illuminate\Support\Str::after($groupItem, 'plugins/'), '/');
+                                        $name = \Illuminate\Support\Str::afterLast($groupItem, '/');
+
+                                        if ($plugin !== $name) {
+                                            $name = \Illuminate\Support\Str::headline(\Illuminate\Support\Str::slug($name));
+                                            $groupDisplay = $name . ' (' . $plugin . ')';
+                                        } else {
+                                            $groupDisplay = \Illuminate\Support\Str::headline(\Illuminate\Support\Str::slug($name));
+                                        }
+                                    } elseif (str_starts_with($groupItem, 'packages/')) {
+                                        $badgeClass = 'warning';
+                                        $name = \Illuminate\Support\Str::headline(\Illuminate\Support\Str::slug(\Illuminate\Support\Str::afterLast($groupItem, '/')));
+                                        $groupDisplay = $name . ' (package)';
+                                    }
+                                @endphp
+                                <div class="col-md-4 col-lg-3 mb-2">
+                                    <span class="badge badge-{{ $badgeClass }} w-100" title="{{ $groupItem }}">
+                                        {{ $groupDisplay }}
+                                    </span>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle"></i>
+                                Select a specific group from the dropdown above to switch to single-group translation mode.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+            @elseif (!empty($group))
                 @if (!empty($ref_lang))
-                    <div class="alert alert-info mt-10" role="alert">
-                        {{ trans('plugins/translation::translation.export_warning', ['lang_path' => lang_path()]) }}
-                        <form method="POST" action="{{ route('translations.group.publish', compact('group')) }}" role="form">
-                            @csrf
-                            <button type="submit" class="btn btn-primary button-publish-groups">{{ trans('plugins/translation::translation.publish_translations') }}</button>
-                        </form>
+                    {{-- Current Provider Info --}}
+                    <div class="alert alert-success" role="alert">
+                        <strong><i class="fas fa-cog"></i> Current provider:</strong>
+                        @php
+                            $currentDriver = setting('vig_translate_driver', 'google');
+                            $providerNames = [
+                                'google' => 'Google Translate',
+                                'aws' => 'Amazon Translate',
+                                'chatgpt' => 'ChatGPT/OpenAI'
+                            ];
+                            $providerName = $providerNames[$currentDriver] ?? 'Google Translate';
+                        @endphp
+                        <span class="badge badge-info">{{ $providerName }}</span>
+                        | <a href="{{ route('vig-auto-translations.settings') }}" class="alert-link">Change Settings</a>
                     </div>
 
-                    <button class="btn btn-warning btn-xs btn-translate-all">
-                        <i class="fa-sharp fa-solid fa-language"></i> {{ trans('plugins/vig-auto-translations::vig-auto-translations.translate_all', ['language' => $locales[$ref_lang]['name']]) }}
-                    </button>
+                    {{-- Action Buttons --}}
+                    <div class="mb-3">
+                        <button class="btn btn-success btn-sm btn-translate-all mr-2">
+                            <i class="fa-sharp fa-solid fa-language"></i> {{ trans('plugins/vig-auto-translations::vig-auto-translations.translate_all', ['language' => $locales[$ref_lang]['name']]) }}
+                        </button>
+
+                    </div>
+
+                    {{-- Info Message --}}
+
                 @endif
 
                 <hr>
@@ -188,5 +303,18 @@
                 ref_lang: ref_lang
             })
         }
+
+        // Bulk translation form handler
+        $(document).on('submit', 'form[action*="bulk-translate-all"]', function(e) {
+            const submitBtn = $(this).find('#bulk-translate-btn');
+
+            // Show loading state
+            submitBtn.prop('disabled', true)
+                     .html('<i class="fas fa-spinner fa-spin"></i> Translating All Groups...');
+
+            // Show progress notification
+            Botble.showNotice('Bulk translation started! This may take several minutes. Please wait...', 'info');
+        });
+
     </script>
 @endpush

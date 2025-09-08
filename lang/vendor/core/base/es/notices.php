@@ -14,4 +14,5 @@ return [
     'enum' => [
         'validate_message' => 'El valor de :attribute que has ingresado es inválido.',
     ],
+    'delete_failed_message' => 'No se pudo eliminar, elemento no encontrado.',
 ];

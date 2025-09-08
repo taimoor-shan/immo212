@@ -21,6 +21,8 @@ class HookServiceProvider extends ServiceProvider
             add_filter(BASE_FILTER_GET_LIST_DATA, [$this, 'addColumnToTranslationTable'], 153, 2);
             add_filter(BASE_FILTER_TABLE_HEADINGS, [$this, 'addHeadingToTranslationTable'], 153, 2);
         }
+        
+        // Navigation is now handled in VigAutoTranslationsServiceProvider
     }
 
     // Removed addSettings method since we use a dedicated settings form
@@ -40,7 +42,8 @@ class HookServiceProvider extends ServiceProvider
             return $headings;
         }
 
-        Assets::addScriptsDirectly(['vendor/core/plugins/vig-auto-translations/js/auto-translations.js']);
+        // Note: JavaScript file would need to be published to work
+        // Assets::addScriptsDirectly([asset('vendor/core/plugins/vig-auto-translations/js/auto-translations.js')]);
 
         return array_merge($headings, [
             'action' => [

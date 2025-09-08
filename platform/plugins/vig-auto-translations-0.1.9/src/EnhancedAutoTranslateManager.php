@@ -138,34 +138,94 @@ class EnhancedAutoTranslateManager extends BaseAutoTranslateManager
     }
 
     /**
-     * Bulk translate method for efficient processing
+     * Bulk translate method for efficient processing with smart caching
      */
     public function bulkTranslate(string $source, string $target, array $texts): array
     {
+        if (empty($texts)) {
+            return [];
+        }
+
+        logger()->info('Enhanced bulk translation started', [
+            'provider' => get_class($this->translator),
+            'source' => $source,
+            'target' => $target,
+            'count' => count($texts)
+        ]);
+
         $translations = [];
         $uncachedTexts = [];
+        $cacheHits = 0;
         
         // First pass: check cache for all texts
         if ($this->enableCaching) {
             foreach ($texts as $key => $text) {
+                // Skip empty texts
+                if (empty(trim($text))) {
+                    $translations[$key] = $text;
+                    continue;
+                }
+                
                 $cacheKey = $this->getCacheKey($source, $target, $text);
                 $cachedTranslation = Cache::get($cacheKey);
                 
                 if ($cachedTranslation) {
                     $translations[$key] = $cachedTranslation;
+                    $cacheHits++;
                 } else {
                     $uncachedTexts[$key] = $text;
                 }
             }
         } else {
-            $uncachedTexts = $texts;
+            // Filter out empty texts
+            foreach ($texts as $key => $text) {
+                if (empty(trim($text))) {
+                    $translations[$key] = $text;
+                } else {
+                    $uncachedTexts[$key] = $text;
+                }
+            }
         }
         
-        // Second pass: translate uncached texts
-        foreach ($uncachedTexts as $key => $text) {
-            $translated = $this->translate($source, $target, $text);
-            $translations[$key] = $translated;
+        logger()->info('Cache analysis complete', [
+            'cache_hits' => $cacheHits,
+            'needs_translation' => count($uncachedTexts),
+            'cache_hit_rate' => count($texts) > 0 ? round(($cacheHits / count($texts)) * 100, 2) . '%' : '0%'
+        ]);
+        
+        // Second pass: translate uncached texts efficiently
+        if (!empty($uncachedTexts)) {
+            // Use provider-specific bulk translation if available
+            if (method_exists($this->translator, 'bulkTranslateEfficient')) {
+                $bulkResults = $this->translator->bulkTranslateEfficient($source, $target, $uncachedTexts);
+                
+                foreach ($bulkResults as $key => $translated) {
+                    if ($translated && $translated !== $uncachedTexts[$key]) {
+                        $translations[$key] = $translated;
+                        
+                        // Cache the result
+                        if ($this->enableCaching) {
+                            $this->cacheTranslation($source, $target, $uncachedTexts[$key], $translated);
+                        }
+                    } else {
+                        // Fallback to original text if translation failed
+                        $translations[$key] = $uncachedTexts[$key];
+                    }
+                }
+            } else {
+                // Fallback to individual translations
+                foreach ($uncachedTexts as $key => $text) {
+                    $translated = $this->translate($source, $target, $text);
+                    $translations[$key] = $translated;
+                }
+            }
         }
+        
+        logger()->info('Bulk translation completed', [
+            'total_items' => count($translations),
+            'cache_hits' => $cacheHits,
+            'new_translations' => count($uncachedTexts)
+        ]);
         
         return $translations;
     }

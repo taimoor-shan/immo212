@@ -75,7 +75,7 @@ class VigAutoTranslationsServiceProvider extends ServiceProvider
         ]);
 
         $this->app->booted(function () {
-            $this->app->register(HookServiceProvider::class);
+            $this->loadRoutes();
         });
 
         PanelSectionManager::default()->beforeRendering(function () {
@@ -90,7 +90,7 @@ class VigAutoTranslationsServiceProvider extends ServiceProvider
             );
         });
 
-        // Register dashboard menu items for easy end-user access
+        // Register translation menu items
         $this->app['events']->listen(RouteMatched::class, function () {
             // Main menu item
             dashboard_menu()
@@ -98,7 +98,7 @@ class VigAutoTranslationsServiceProvider extends ServiceProvider
                     'id' => 'cms-plugins-vig-auto-translations',
                     'priority' => 80, 
                     'parent_id' => null,
-                    'name' => 'plugins/vig-auto-translations::vig-auto-translations.title',
+                    'name' => 'Smart Translations Pro',
                     'icon' => 'ti ti-language',
                     'url' => route('vig-auto-translations.theme'),
                     'permissions' => ['vig-auto-translations.index'],
@@ -110,7 +110,7 @@ class VigAutoTranslationsServiceProvider extends ServiceProvider
                     'id' => 'cms-plugins-vig-auto-translations-theme',
                     'priority' => 1,
                     'parent_id' => 'cms-plugins-vig-auto-translations',
-                    'name' => 'plugins/vig-auto-translations::vig-auto-translations.name_theme',
+                    'name' => 'Theme Translations',
                     'icon' => null,
                     'url' => route('vig-auto-translations.theme'),
                     'permissions' => ['vig-auto-translations.index'],
@@ -119,7 +119,7 @@ class VigAutoTranslationsServiceProvider extends ServiceProvider
                     'id' => 'cms-plugins-vig-auto-translations-plugin',
                     'priority' => 2,
                     'parent_id' => 'cms-plugins-vig-auto-translations', 
-                    'name' => 'plugins/vig-auto-translations::vig-auto-translations.name_plugin',
+                    'name' => 'Plugin Translations',
                     'icon' => null,
                     'url' => route('vig-auto-translations.plugin'),
                     'permissions' => ['vig-auto-translations.index'],
@@ -128,7 +128,7 @@ class VigAutoTranslationsServiceProvider extends ServiceProvider
                     'id' => 'cms-plugins-vig-auto-translations-settings',
                     'priority' => 3,
                     'parent_id' => 'cms-plugins-vig-auto-translations',
-                    'name' => 'core/setting::setting.title',
+                    'name' => 'Provider Settings',
                     'icon' => null,
                     'url' => route('vig-auto-translations.settings'),
                     'permissions' => ['vig-auto-translations.index'],

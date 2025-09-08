@@ -30,4 +30,6 @@ return [
     'important_message_pgsql2' => 'Puede ejecutar un comando <strong>php artisan cms:backup:create {name}</strong> para generar la copia de seguridad o <strong>php artisan cms:backup:restore</strong> para restaurar la última copia de seguridad.',
     'cannot_restore_database' => 'No se puede restaurar la base de datos. ¡Falta la copia de seguridad de la base de datos!',
     'database_driver_not_supported' => 'El controlador de base de datos no es compatible.',
+    'backup_only_db' => 'Respaldar solo la base de datos',
+    'backup_only_db_helper' => 'Realice una copia de seguridad solo de la base de datos sin los archivos subidos. Esto es útil cuando desea respaldar únicamente la base de datos.',
 ];

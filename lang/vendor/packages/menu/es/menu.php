@@ -28,5 +28,9 @@ return [
     'menu_id' => 'ID de menú',
     'badge_text' => 'Texto de la insignia',
     'badge_color' => 'Color de la insignia',
+    'items' => 'Artículos',
+    'locations' => 'Ubicaciones',
+    'main_navigation' => 'Navegación principal',
+    'drag_drop_info' => 'Reorganice los elementos del menú arrastrándolos y soltándolos para cambiar su orden o anidarlos como submenús.',
     'edit' => 'Editar menú',
 ];

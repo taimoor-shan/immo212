@@ -15,7 +15,27 @@ return [
         'style' => 'Estilo',
         'full_width' => 'Ancho completo',
         'minimal' => 'Mínimo',
+        'show_reject_button' => 'Mostrar botón de rechazar',
+        'show_reject_button_helper' => 'Cuando esté activado, los usuarios verán un botón para rechazar todas las cookies.',
+        'show_customize_button' => 'Mostrar botón de personalizar preferencias',
+        'show_customize_button_helper' => 'Cuando esté habilitado, los usuarios verán un botón para personalizar sus preferencias de cookies y cumplir con el RGPD.',
     ],
     'message' => 'Su experiencia en este sitio mejorará al permitir cookies.',
     'button_text' => 'Permitir cookies',
+    'reject_text' => 'Rechazar',
+    'customize_text' => 'Personalizar preferencias',
+    'save_text' => 'Guardar preferencias',
+    'cookie_categories' => [
+        'essential' => [
+            'name' => 'Esencial',
+            'description' => 'Estas cookies son esenciales para que el sitio web funcione correctamente.',
+        ],
+        'analytics' => [
+            'name' => 'Analítica',
+            'description' => 'Estas cookies nos ayudan a comprender cómo interactúan los visitantes con el sitio web.',
+        ],
+        'marketing' => [
+            'description' => 'Estas cookies se utilizan para ofrecer anuncios personalizados.',
+        ],
+    ],
 ];

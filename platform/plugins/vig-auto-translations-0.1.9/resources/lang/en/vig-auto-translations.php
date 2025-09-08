@@ -23,7 +23,8 @@ return [
     'chatgpt_key' => 'ChatGPT API Key',
     'chatgpt_model' => 'ChatGPT Model',
     'chatgpt_model_help' => 'Select the OpenAI model to use for translations. GPT-4.1 is the latest flagship model with superior coding and instruction-following capabilities.',
-    'chatgpt_system_message' => 'Custom System Message',
-    'chatgpt_system_message_help' => 'Optional: Customize the system message to define translation style and requirements. Use placeholders: {source_language}, {target_language}, {source}, {target}. Leave empty to use the default professional translation prompt.',
+    'chatgpt_system_message' => 'Additional Style Instructions (Optional)',
+    'chatgpt_system_message_help' => 'Optionally add short guidance to fine-tune tone or style (e.g., "Use a real estate platform tone with professional phrasing"). The system already includes professional safeguards for formatting and variables. Placeholders like {source_language}/{target_language} are supported but not required.',
     'actions' => 'Actions',
+    'bulk_translations' => 'Bulk Translation (All Groups)',
 ];

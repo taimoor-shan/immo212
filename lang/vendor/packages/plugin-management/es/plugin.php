@@ -36,10 +36,11 @@ return [
     'plugins_installed' => 'Complementos instalados',
     'plugins_add_new' => 'Añadir nuevo',
     'update' => 'Actualizar',
-    'requirement_not_met' => 'Plugin :plugin requires plugin(s): :required_plugins. Do you want to install them and activate :plugin now?',
+    'requirement_not_met' => 'El complemento :plugin requiere los siguientes complementos: :required_plugins. ¿Desea instalarlos y activar :plugin ahora?',
     'install' => 'Instalar ahora',
     'install_plugin' => 'Instalar complemento',
-    'minimum_core_version_not_met' => 'Plugin :plugin requires :minimum_core_version version of core, but your core version is :current_core_version. Please upgrade your core to use this plugin!',
+    'minimum_core_version_not_met' => 'El complemento :plugin requiere la versión :minimum_core_version del núcleo, pero su versión actual del núcleo es :current_core_version. ¡Por favor, actualice su núcleo para poder usar este complemento!',
+    'required_by_other_plugins' => 'No se puede desactivar el complemento :plugin porque es requerido por otros complementos: :required_by',
     'enums' => [
         'plugin_filter_status' => [
             'all' => 'Todo',

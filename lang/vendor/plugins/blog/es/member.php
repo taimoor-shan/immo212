@@ -7,4 +7,5 @@ return [
     'published_posts' => 'Publicaciones publicadas',
     'posts' => 'Publicaciones',
     'write_post' => 'Publicar',
+    'dashboard' => 'Panel de control',
 ];

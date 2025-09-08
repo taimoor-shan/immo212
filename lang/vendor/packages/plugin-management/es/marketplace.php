@@ -36,5 +36,5 @@ return [
     'unzip_success' => 'Descargar archivo extraído',
     'install_success' => '¡Complemento instalado correctamente!',
     'update_success' => '¡Plugin actualizado con éxito!',
-    'minimum_core_version_error' => 'Cannot install this plugin. Minimum core version is :version.',
+    'minimum_core_version_error' => 'No se puede instalar este complemento. La versión mínima del núcleo es :version.',
 ];

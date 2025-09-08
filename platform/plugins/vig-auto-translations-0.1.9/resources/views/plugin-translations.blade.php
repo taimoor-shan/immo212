@@ -63,7 +63,7 @@
                 <form method="POST" action="{{ route('vig-auto-translations.plugin.bulk-translate-all') }}" class="mb-4">
                     @csrf
                     <input type="hidden" name="locale" value="{{ $ref_lang }}">
-                    
+
                     <div class="row">
                         <div class="col-md-8">
                             <h5>🌍 Translate All {{ count($allGroups) }} Groups to {{ $locales[$ref_lang]['name'] ?? $ref_lang }}</h5>
@@ -92,7 +92,7 @@
                                 @php
                                     $groupDisplay = $groupItem;
                                     $badgeClass = 'secondary';
-                                    
+
                                     if (str_starts_with($groupItem, 'core/')) {
                                         $badgeClass = 'primary';
                                         $name = \Illuminate\Support\Str::headline(\Illuminate\Support\Str::slug(\Illuminate\Support\Str::afterLast($groupItem, '/')));
@@ -101,7 +101,7 @@
                                         $badgeClass = 'success';
                                         $plugin = \Illuminate\Support\Str::beforeLast(\Illuminate\Support\Str::after($groupItem, 'plugins/'), '/');
                                         $name = \Illuminate\Support\Str::afterLast($groupItem, '/');
-                                        
+
                                         if ($plugin !== $name) {
                                             $name = \Illuminate\Support\Str::headline(\Illuminate\Support\Str::slug($name));
                                             $groupDisplay = $name . ' (' . $plugin . ')';
@@ -134,7 +134,7 @@
                 @if (!empty($ref_lang))
                     {{-- Current Provider Info --}}
                     <div class="alert alert-success" role="alert">
-                        <strong><i class="fas fa-cog"></i> Current provider:</strong> 
+                        <strong><i class="fas fa-cog"></i> Current provider:</strong>
                         @php
                             $currentDriver = setting('vig_translate_driver', 'google');
                             $providerNames = [
@@ -148,49 +148,16 @@
                         | <a href="{{ route('vig-auto-translations.settings') }}" class="alert-link">Change Settings</a>
                     </div>
 
-                    {{-- Action Buttons - Proper Order --}}
+                    {{-- Action Buttons --}}
                     <div class="mb-3">
-                        <button class="btn btn-warning btn-sm btn-translate-all mr-2">
+                        <button class="btn btn-success btn-sm btn-translate-all mr-2">
                             <i class="fa-sharp fa-solid fa-language"></i> {{ trans('plugins/vig-auto-translations::vig-auto-translations.translate_all', ['language' => $locales[$ref_lang]['name']]) }}
                         </button>
-                        
-                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#publishModal">
-                            <i class="fas fa-upload"></i> {{ trans('plugins/translation::translation.publish_translations') }}
-                        </button>
+
                     </div>
 
-                    {{-- Export Warning --}}
-                    <div class="alert alert-info" role="alert">
-                        <i class="fas fa-info-circle"></i> {{ trans('plugins/translation::translation.export_warning', ['lang_path' => lang_path()]) }}
-                    </div>
+                    {{-- Info Message --}}
 
-                    {{-- Publish Modal --}}
-                    <div class="modal fade" id="publishModal" tabindex="-1" role="dialog">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">{{ trans('plugins/translation::translation.publish_translations') }}</h5>
-                                    <button type="button" class="close" data-dismiss="modal">
-                                        <span>&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <p><i class="fas fa-exclamation-triangle text-warning"></i> This will publish all translations for the <strong>{{ $group }}</strong> group.</p>
-                                    <p>Are you sure you want to continue?</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <form method="POST" action="{{ route('translations.group.publish') }}" class="d-inline">
-                                        @csrf
-                                        <input type="hidden" name="group" value="{{ $group }}">
-                                        <button type="submit" class="btn btn-primary button-publish-groups">
-                                            <i class="fas fa-upload"></i> Publish Now
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 @endif
 
                 <hr>
@@ -336,36 +303,18 @@
                 ref_lang: ref_lang
             })
         }
-        
+
         // Bulk translation form handler
         $(document).on('submit', 'form[action*="bulk-translate-all"]', function(e) {
             const submitBtn = $(this).find('#bulk-translate-btn');
-            
+
             // Show loading state
             submitBtn.prop('disabled', true)
                      .html('<i class="fas fa-spinner fa-spin"></i> Translating All Groups...');
-            
+
             // Show progress notification
             Botble.showNotice('Bulk translation started! This may take several minutes. Please wait...', 'info');
         });
-        
-        // Publish translations form handler
-        $(document).on('submit', 'form[action*="translations.group.publish"]', function(e) {
-            const submitBtn = $(this).find('.button-publish-groups');
-            
-            // Show loading state
-            submitBtn.prop('disabled', true)
-                     .html('<i class="fas fa-spinner fa-spin"></i> Publishing...');
-            
-            // Show progress notification
-            Botble.showNotice('Publishing translations to files...', 'info');
-        });
-        
-        // Handle publish modal show event to reset button state if needed
-        $('#publishModal').on('show.bs.modal', function () {
-            const submitBtn = $(this).find('.button-publish-groups');
-            submitBtn.prop('disabled', false)
-                     .html('<i class="fas fa-upload"></i> Publish Now');
-        });
+
     </script>
 @endpush

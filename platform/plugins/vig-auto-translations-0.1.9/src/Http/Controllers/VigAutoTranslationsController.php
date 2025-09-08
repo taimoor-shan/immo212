@@ -223,17 +223,20 @@ class VigAutoTranslationsController extends BaseController
                     }
                 }
                 
-                // Save translations to database (so they can be published later)
+                // Save translations directly to files (same as Botble's approach - no publish step needed)
                 if (!empty($autoTranslations)) {
-                    foreach ($autoTranslations as $key => $translatedValue) {
-                        $this->firstOrNewTranslation($locale, $group, $key, $translatedValue);
-                    }
+                    $manager = app(Manager::class);
+                    $manager->updateTranslation(
+                        $locale,
+                        str_replace('/', DIRECTORY_SEPARATOR, $group),
+                        $autoTranslations
+                    );
                     $processedGroups[] = $group;
                 }
             }
             
             $message = sprintf(
-                'Bulk translation completed! Translated %d strings across %d groups. Skipped: %d, Errors: %d',
+                'Bulk translation completed! Translated %d strings across %d groups. Skipped: %d, Errors: %d. Translations saved directly to files - immediately available!',
                 $translated,
                 count($processedGroups),
                 $skipped,
@@ -415,14 +418,25 @@ class VigAutoTranslationsController extends BaseController
         $locale = $request->input('ref_lang');
 
         $allTranslations = $this->getLang()[$group];
+        $autoTranslations = [];
 
         foreach ($allTranslations as $key => $value) {
             // Use enhanced manager for better translation quality and caching
             $translatedValue = $this->enhancedManager->translate('en', $locale, $value) ?: $value;
-            $this->firstOrNewTranslation($locale, $group, $key, $translatedValue);
+            $autoTranslations[$key] = $translatedValue;
         }
 
-        return $response;
+        // Save directly to files (same as Botble's approach)
+        if (!empty($autoTranslations)) {
+            $manager = app(Manager::class);
+            $manager->updateTranslation(
+                $locale,
+                str_replace('/', DIRECTORY_SEPARATOR, $group),
+                $autoTranslations
+            );
+        }
+
+        return $response->setMessage('Translations saved successfully. No publish step needed - translations are immediately available!');
     }
 
     public function postPluginsTranslations(TranslationRequest $request, Manager $manager, BaseHttpResponse $response)
@@ -440,23 +454,17 @@ class VigAutoTranslationsController extends BaseController
                 $value = $this->enhancedManager->translate('en', $locale, $value) ?: $value;
             }
 
-            $this->firstOrNewTranslation($locale, $group, $key, $value);
+            // Save directly to files (same as Botble's approach)
+            $manager->updateTranslation(
+                $locale,
+                str_replace('/', DIRECTORY_SEPARATOR, $group),
+                [$key => $value]
+            );
         }
 
-        return $response;
+        return $response->setMessage('Translation saved successfully!');
     }
 
-    public function firstOrNewTranslation(string $locale, string $group, string $key, string $value): void
-    {
-        $translation = Translation::query()->firstOrNew([
-            'locale' => $locale,
-            'group' => $group,
-            'key' => $key,
-        ]);
-        $translation->value = $value ?: null;
-        $translation->status = Translation::STATUS_CHANGED;
-        $translation->save();
-    }
 
     public function getAutoTranslate(Request $request, BaseHttpResponse $response)
     {
@@ -472,83 +480,4 @@ class VigAutoTranslationsController extends BaseController
         return $response->setCode(404)->setError();
     }
 
-    /**
-     * Publish translation group to files
-     * This method handles the "Publish Translations" button functionality
-     */
-    public function publishTranslationGroup(Request $request, BaseHttpResponse $response)
-    {
-        $group = $request->input('group');
-        
-        if (empty($group)) {
-            return $response
-                ->setError()
-                ->setMessage('Translation group is required');
-        }
-
-        try {
-            // Get all translations for this group from database (including changed and saved)
-            $changedTranslations = Translation::query()
-                ->where('group', $group)
-                ->where('status', Translation::STATUS_CHANGED)
-                ->get()
-                ->groupBy('locale');
-                
-            // Also get all translations for this group to show total count
-            $allTranslations = Translation::query()
-                ->where('group', $group)
-                ->get()
-                ->groupBy('locale');
-
-            $publishedCount = 0;
-            $totalCount = 0;
-            
-            // Process changed translations
-            foreach ($changedTranslations as $locale => $localeTranslations) {
-                $translationArray = [];
-                
-                foreach ($localeTranslations as $translation) {
-                    $translationArray[$translation->key] = $translation->value;
-                }
-                
-                if (!empty($translationArray)) {
-                    // Use Botble's translation manager to save to files  
-                    app(Manager::class)->updateTranslation(
-                        $locale,
-                        str_replace('/', DIRECTORY_SEPARATOR, $group),
-                        $translationArray
-                    );
-                    $publishedCount += count($translationArray);
-                }
-                
-                // Mark translations as published
-                Translation::query()
-                    ->where('group', $group)
-                    ->where('locale', $locale)
-                    ->where('status', Translation::STATUS_CHANGED)
-                    ->update(['status' => Translation::STATUS_SAVED]);
-            }
-            
-            // Count total translations for this group
-            foreach ($allTranslations as $locale => $localeTranslations) {
-                $totalCount += count($localeTranslations);
-            }
-            
-            // Provide appropriate message based on what happened
-            if ($publishedCount > 0) {
-                $message = "Successfully published {$publishedCount} new/changed translations for group '{$group}'. Files have been updated and are ready to use.";
-            } elseif ($totalCount > 0) {
-                $message = "No new translations to publish for group '{$group}'. All {$totalCount} translations are already up to date in files.";
-            } else {
-                $message = "No translations found for group '{$group}'. Please translate some strings first, then publish.";
-            }
-
-            return $response->setMessage($message);
-                
-        } catch (\Exception $e) {
-            return $response
-                ->setError()
-                ->setMessage('Failed to publish translations: ' . $e->getMessage());
-        }
-    }
 }

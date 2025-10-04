@@ -1,0 +1,2 @@
+$((function(){$(document).on("click",'[data-bb-toggle="duplicate-vacation-rental"]',(function(t){t.preventDefault(),$httpClient.make().withButtonLoading($(this)).post($(this).data("url")).then((function(t){var n=t.data;Botble.showSuccess(n.message),setTimeout((function(){window.location.href=n.data.url}),500)}))}))}));
+//# sourceMappingURL=duplicate-vacation-rental.js.map
